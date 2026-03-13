@@ -279,9 +279,9 @@ class VanAgni(nn.Module):
                 )
             )
 
-        # -- Temporal Attention for tokens_to_2d --------------------------
+        # -- Temporal Delta Attention for tokens_to_2d --------------------
         self.temporal_attn = nn.Sequential(
-            nn.Linear(embed_dim, 64),
+            nn.Linear(embed_dim * 2, 64),
             nn.GELU(),
             nn.Linear(64, 1)
         )
@@ -295,6 +295,15 @@ class VanAgni(nn.Module):
             nn.Dropout2d(dropout),
         )
         self.classifier = nn.Conv2d(64, num_classes, 1)
+        
+        # Uncertainty Head: predicts aleatoric uncertainty (log-variance)
+        self.uncertainty_head = nn.Sequential(
+            nn.Conv2d(64, 32, 3, padding=1, bias=False),
+            nn.BatchNorm2d(32),
+            nn.GELU(),
+            nn.Conv2d(32, 1, 1)
+        )
+        
         # Binary fire detection head (multi-task regression mode only)
         if num_classes == 1:
             self.fire_head = nn.Conv2d(64, 1, 1)
@@ -375,8 +384,13 @@ class VanAgni(nn.Module):
 
         if T > 1:
             spatial = spatial.reshape(B, T, G * G, D)
-            # Temporal Cross-Attention to preserve chronology instead of mean
-            attn_weights = torch.softmax(self.temporal_attn(spatial), dim=1) # (B, T, G*G, 1)
+            # Temporal Delta Attention: compute delta to the last frame (t1)
+            last_frame = spatial[:, -1:, :, :].expand(-1, T, -1, -1)  # (B, T, G*G, D)
+            delta = torch.abs(spatial - last_frame)  # (B, T, G*G, D)
+            
+            # Concatenate spatial tokens and their delta for attention
+            concat_feats = torch.cat([spatial, delta], dim=-1)  # (B, T, G*G, 2*D)
+            attn_weights = torch.softmax(self.temporal_attn(concat_feats), dim=1) # (B, T, G*G, 1)
             spatial = (spatial * attn_weights).sum(dim=1)                     # (B, G*G, D)
 
         spatial = spatial.permute(0, 2, 1).contiguous().reshape(B, D, G, G)
@@ -438,14 +452,21 @@ class VanAgni(nn.Module):
                               mode="bilinear", align_corners=False)
 
         logits = self.classifier(x)   # (B, num_classes, H, W)
+        log_var = self.uncertainty_head(x) # (B, 1, H, W)
 
-        # Multi-task regression mode: return dict with both heads
+        # Multi-task regression mode: return unified dict
         if self.num_classes == 1:
             dnbr = F.relu(logits.squeeze(1))           # (B, H, W) non-negative dNBR
             fire_logit = self.fire_head(x).squeeze(1)  # (B, H, W) fire detection logit
-            return {"dnbr": dnbr, "fire_logit": fire_logit}
+            return {
+                "logits": logits, 
+                "dnbr": dnbr, 
+                "fire_logit": fire_logit, 
+                "log_var": log_var
+            }
 
-        return logits
+        # Classification mode
+        return {"logits": logits, "log_var": log_var}
 
     # -- Cached Forward (precomputed frozen features) ----------------------
 
@@ -514,13 +535,19 @@ class VanAgni(nn.Module):
                               mode="bilinear", align_corners=False)
 
         logits = self.classifier(x)
+        log_var = self.uncertainty_head(x)
 
         if self.num_classes == 1:
             dnbr = F.relu(logits.squeeze(1))
             fire_logit = self.fire_head(x).squeeze(1)
-            return {"dnbr": dnbr, "fire_logit": fire_logit}
+            return {
+                "logits": logits,
+                "dnbr": dnbr,
+                "fire_logit": fire_logit,
+                "log_var": log_var
+            }
 
-        return logits
+        return {"logits": logits, "log_var": log_var}
 
     # -- LoRA Injection ----------------------------------------------------
 

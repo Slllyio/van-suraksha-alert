@@ -411,7 +411,7 @@ const CONFIG = {
   center: [77.31, 24.65],
   zoom: 9.5,
   maxBounds: [[76.4, 23.8], [78.3, 25.5]],
-  geojsonPath: '../gunafinal.geojson',
+  geojsonPath: '/data/aoi/gunafinal.geojson',
   realDataUrl: '/api/real-data',
   beatSopsUrl: '/api/beat-sops',
   weatherLat: 24.65,
@@ -428,7 +428,7 @@ const CONFIG = {
 
 const state = {
   map: null, geojsonData: null, selectedFeature: null, activeRange: null,
-  layers: { compartments: true, heatmap: true, hotspots: true, labels: true },
+  layers: { compartments: true, heatmap: true, hotspots: true, labels: true, uncertainty: true },
   weatherData: null, alertsData: [], is3D: false, timelineDates: [],
   realData: null,     // from /api/real-data
   beatSops: null,     // from /api/beat-sops (indexed by beat_id)
@@ -583,7 +583,20 @@ function setupMapLayers() {
 
   addHotspotLayer();
   addHeatmapLayer();
+  addPrecisionLayer();
   setupMapInteraction();
+}
+
+function addPrecisionLayer() {
+  state.map.addSource('precision-scars', { type: 'geojson', data: '/api/precision-layers' });
+  state.map.addLayer({
+    id: 'precision-scars-fill', type: 'fill', source: 'precision-scars',
+    paint: { 'fill-color': '#f97316', 'fill-opacity': 0.6, 'fill-outline-color': '#ffffff' }
+  });
+  state.map.addLayer({
+    id: 'precision-scars-glow', type: 'line', source: 'precision-scars',
+    paint: { 'line-color': '#f97316', 'line-width': 2, 'line-blur': 2 }
+  });
 }
 
 function buildRangeColorExpr() {
@@ -1173,24 +1186,32 @@ function buildRealHotspots() {
 }
 
 function findBeatRisk(props) {
-  // Try to match GeoJSON properties to a beat in the risk map
   if (!state.realData || !state.realData.beats) return null;
-  const beatName = props.BEAT || '';
-  const compNo = props.NEW_No_ || '';
-  // Beat IDs in fused data look like "AGARA / P 245"
-  // GeoJSON BEAT might be "AGARA" and NEW_No_ might be "P 245" or "245"
-  const searchId = beatName + ' / ' + compNo;
-  const searchId2 = beatName + ' / P ' + compNo;
-  return state.beatRiskMap[searchId] || state.beatRiskMap[searchId2] || null;
+  const beatName = (props.BEAT || '').trim().toUpperCase();
+  const compNo = (props.NEW_No_ || '').trim().toUpperCase();
+  
+  // Fuzzy match against the beats array
+  return state.realData.beats.find(b => {
+    const id = (b.beat_id || '').toUpperCase();
+    return id.includes(beatName) && id.includes(compNo.replace('P ', 'P').replace('P', 'P '));
+  }) || null;
 }
 
 function findBeatSop(props) {
   if (!state.beatSops) return null;
-  const beatName = props.BEAT || '';
-  const compNo = props.NEW_No_ || '';
-  const searchId = beatName + ' / ' + compNo;
-  const searchId2 = beatName + ' / P ' + compNo;
-  return state.beatSops[searchId] || state.beatSops[searchId2] || null;
+  const beatName = (props.BEAT || '').trim().toUpperCase();
+  const compNo = (props.NEW_No_ || '').trim().toUpperCase();
+  
+  // Fuzzy match against the SOP keys
+  for (const key of Object.keys(state.beatSops)) {
+    const k = key.toUpperCase();
+    // Some formats have 'P 245', some have 'P245', some have '245'
+    const numOnly = compNo.replace(/[^0-9]/g, '');
+    if (k.includes(beatName) && (k.includes(compNo) || (numOnly && k.includes(numOnly)))) {
+      return state.beatSops[key];
+    }
+  }
+  return null;
 }
 
 init();

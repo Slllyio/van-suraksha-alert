@@ -60,12 +60,18 @@ def setup_proj_env() -> str | None:
 
     # 4. Apply
     if proj_dir:
+        # Use direct assignment to override existing system-level variables
         os.environ["PROJ_DATA"] = proj_dir  # PROJ >= 9
         os.environ["PROJ_LIB"] = proj_dir   # PROJ < 9 compat alias
 
-    # 5. Suppress noisy PROJ version-mismatch warnings
-    os.environ.setdefault("PROJ_DEBUG", "0")
+    # 5. Suppress noisy GDAL / PROJ version-mismatch and SRS warnings
+    # CPLE_AppDefined logs bypassing python warnings, so we use env vars
+    os.environ["PROJ_DEBUG"] = "0"
+    os.environ["CPL_LOG_ERRORS"] = "OFF"
+    os.environ["GTIFF_SRS_SOURCE"] = "EPSG"
+    
     warnings.filterwarnings("ignore", message=".*PROJ.*")
+    warnings.filterwarnings("ignore", message=".*GDAL.*")
 
     _APPLIED = True
     return proj_dir

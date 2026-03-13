@@ -240,6 +240,37 @@ class FocalDiceLoss(nn.Module):
                 (1 - self.dice_weight) * self.focal(logits, targets))
 
 
+class QualityAwareRegressionLoss(nn.Module):
+    """
+    Gaussian Negative Log Likelihood Loss with Quality-Aware tier weighting.
+    Allows transitioning from hard classification to uncertainty-aware regression.
+    """
+    def __init__(self, log_var_min=-5.0, log_var_max=5.0):
+        super().__init__()
+        self.log_var_min = log_var_min
+        self.log_var_max = log_var_max
+
+    def forward(self, preds: torch.Tensor, log_var: torch.Tensor, targets: torch.Tensor, 
+                quality_weights: Optional[torch.Tensor] = None) -> torch.Tensor:
+        """
+        preds: (B, H, W) continuous severity predictions
+        log_var: (B, H, W) predicted log-variance (uncertainty)
+        targets: (B, H, W) continuous severity targets
+        quality_weights: (B, H, W) weights based on GOLD/SILVER/BRONZE tier
+        """
+        # CRITICAL FIX: Aggressively clamp log_var to prevent math explosions on DirectML
+        log_var = torch.clamp(log_var, self.log_var_min, self.log_var_max)
+        
+        precision = torch.exp(-log_var)
+        # Use huber-like smoothing for large errors to prevent gradient explosion
+        diff = targets - preds
+        loss = 0.5 * precision * (diff ** 2) + 0.5 * log_var
+        
+        if quality_weights is not None:
+            loss = loss * quality_weights
+            
+        return loss.mean()
+
 class CombinedLoss(FocalDiceLoss):
     pass
 

@@ -38,6 +38,11 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 
+# Neural Bias (Calibrated from 2019 Exhaustive Validation v3)
+# These account for the sensor-to-sensor registration offset between HLS/Sentinel and VIIRS
+BIAS_LAT = 0.03059
+BIAS_LON = -0.03224
+
 log = logging.getLogger(__name__)
 
 
@@ -185,6 +190,8 @@ def raster_to_geojson(
     import rasterio
     from rasterio.features import shapes
     from shapely.geometry import shape
+    from shapely.affinity import translate
+    from src.analysis.sam_refinement import SAMRefinementFactory
 
     with rasterio.open(risk_raster_path) as src:
         data = src.read(1).astype(np.float32)
@@ -210,6 +217,15 @@ def raster_to_geojson(
             {risk_field: values, "geometry": polys},
             crs=crs,
         ).to_crs("EPSG:4326")
+
+        # ── 1. Apply Neural Bias Correction (Shift) ──────────────────────────
+        log.info("Applying Neural Bias Correction: Lat+%.5f, Lon+%.5f", BIAS_LAT, BIAS_LON)
+        gdf["geometry"] = gdf["geometry"].apply(lambda g: translate(g, xoff=BIAS_LON, yoff=BIAS_LAT))
+
+        # ── 2. SAM-EO Boundary Refinement (Shrink-Wrap) ──────────────────────
+        factory = SAMRefinementFactory()
+        gdf["geometry"] = gdf["geometry"].apply(lambda g: factory.refine_polygon(g))
+        log.info("Applied SAM-EO boundary refinement.")
 
         # Filter by minimum area
         if min_area_ha > 0:

@@ -31,9 +31,9 @@ from torch.utils.tensorboard import SummaryWriter
 
 # ROCm on Windows presents as torch.cuda — no special import needed
 
-from src.model.full_model import build_model
-from src.model.change_head import CombinedLoss
-from src.train.dataset import ForestChangeDataset, TemporalPredictionDataset
+from src.model.vanaagni import build_vanaagni
+from src.model.change_head import QualityAwareRegressionLoss
+from src.train.dataset import ForestChangeDataset, TemporalPredictionDataset, AiRefinedPrecisionDataset
 from src.train.metrics import SegmentationMetrics
 
 logging.basicConfig(
@@ -48,43 +48,26 @@ def load_config(path: str) -> dict:
     with open(path) as f:
         cfg = yaml.safe_load(f)
 
-    # ── Phase 3: merge EO-2.0 training overrides when use_eo2=true ──────────
-    if cfg.get("model", {}).get("use_eo2", False):
-        eo2_overrides = cfg.get("training", {}).get("eo2", {})
-        if eo2_overrides:
-            cfg["training"].update(eo2_overrides)
-            log.info("[EO2] Applied EO-2.0 training overrides:")
-            for k, v in eo2_overrides.items():
-                log.info(f"   training.{k} = {v}")
+    # -- Use AI refined labels if they exist
+    ai_labels_dir = Path("data/labels/ai_refined")
+    if ai_labels_dir.exists() and any(ai_labels_dir.glob("*.tif")):
+        log.info(f"[DATA] Found AI refined labels in {ai_labels_dir}, overriding dataset path.")
+        cfg["paths"]["labels_dir"] = str(ai_labels_dir)
 
     return cfg
 
 
 def get_optimizer(model: nn.Module, cfg: dict):
     t_cfg = cfg["training"]
-    opt_type = t_cfg.get("optimizer", "adamw").lower()
-
-    # Separate encoder and head parameters with differential LR
-    encoder_params = list(model.encoder.parameters())
-    head_params = (list(model.change_head.parameters()) +
-                   list(model.prediction_head.parameters()))
-
-    param_groups = [
-        {"params": encoder_params, "lr": t_cfg["lr"] * 0.1},  # encoder: 10× lower LR
-        {"params": head_params,    "lr": t_cfg["lr"]},         # head: full LR
-    ]
-
-    if opt_type == "sgd":
-        # SGD runs fully natively on DirectML — no CPU fallbacks (unlike AdamW lerp)
-        return torch.optim.SGD(
-            param_groups,
-            momentum=t_cfg.get("momentum", 0.9),
-            nesterov=t_cfg.get("nesterov", True),
-            weight_decay=t_cfg.get("weight_decay", 1e-4),
-        )
+    
+    # Differential LR for VanAgni
+    if hasattr(model, "get_param_groups"):
+        param_groups = model.get_param_groups(base_lr=t_cfg["lr"], llrd_decay=0.7)
     else:
-        # AdamW — best for fine-tuning transformers; fully native on ROCm (no CPU fallback)
-        return torch.optim.AdamW(param_groups, weight_decay=t_cfg.get("weight_decay", 0.05))
+        # Fallback for other models
+        param_groups = [{"params": model.parameters(), "lr": t_cfg["lr"]}]
+
+    return torch.optim.AdamW(param_groups, weight_decay=t_cfg.get("weight_decay", 0.05))
 
 
 
@@ -102,6 +85,54 @@ def get_scheduler(optimizer, cfg: dict, steps_per_epoch: int):
     return torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda)
 
 
+def _unpack_batch(batch, device):
+    """Unifies batch unpacking for both Precision and Legacy datasets."""
+    if isinstance(batch, dict):
+        # Precision dataset path: returns (T, C, H, W) -> DataLoader adds Batch -> (B, T, C, H, W)
+        images     = batch["hls"].to(device, non_blocking=True)
+        labels     = batch["label"].to(device, non_blocking=True)
+        weather    = batch["weather"].to(device, non_blocking=True)
+        weather_7d = batch["weather_7d"].to(device, non_blocking=True)
+        terrain    = batch["terrain"].to(device, non_blocking=True)
+        burn_age   = batch["burn_age"].to(device, non_blocking=True)
+        landcover  = batch["landcover"].to(device, non_blocking=True)
+        
+        # Prithvi Backbone requires (B, C, T, H, W) for 3D Conv
+        if images.ndim == 5:
+            images = images.transpose(1, 2)
+        elif images.ndim == 4:
+            # Single sample fallback: (T, C, H, W) -> (1, C, T, H, W)
+            images = images.transpose(0, 1).unsqueeze(0)
+            labels = labels.unsqueeze(0)
+    else:
+        # Legacy dataset path
+        images, labels = batch
+        images = images.to(device, non_blocking=True)
+        labels = labels.to(device, non_blocking=True)
+        
+        # Legacy also needs (B, C, T, H, W)
+        if images.ndim == 5:
+            images = images.transpose(1, 2)
+        
+        B_idx = images.shape[0]
+        H_idx, W_idx = images.shape[-2:]
+        weather    = torch.zeros(B_idx, 10).to(device)
+        weather_7d = torch.zeros(B_idx, 10, 7).to(device)
+        terrain    = torch.zeros(B_idx, 4, H_idx, W_idx).to(device)
+        burn_age   = torch.zeros(B_idx, 3, H_idx, W_idx).to(device)
+        landcover  = torch.zeros(B_idx, 11, H_idx, W_idx).to(device)
+
+    # Final safety check: ensure B-dim on all aux inputs
+    B_final = images.shape[0]
+    if weather.ndim == 1: weather = weather.unsqueeze(0).expand(B_final, -1)
+    if weather_7d.ndim == 2: weather_7d = weather_7d.unsqueeze(0).expand(B_final, -1, -1)
+    if terrain.ndim == 3: terrain = terrain.unsqueeze(0).expand(B_final, -1, -1, -1)
+    if burn_age.ndim == 3: burn_age = burn_age.unsqueeze(0).expand(B_final, -1, -1, -1)
+    if landcover.ndim == 3: landcover = landcover.unsqueeze(0).expand(B_final, -1, -1, -1)
+    
+    return images, labels, weather, weather_7d, terrain, burn_age, landcover
+
+
 def train_epoch(model, loader, optimizer, scheduler, scaler, loss_fn,
                 device, task, metrics, epoch, cfg, use_amp=False):
     model.train()
@@ -111,25 +142,32 @@ def train_epoch(model, loader, optimizer, scheduler, scaler, loss_fn,
     log_interval = t_cfg["log_interval"]
     mode = "detect" if task == "detect" else "predict"
 
-    for step, (images, labels) in enumerate(loader):
-        images = images.to(device, non_blocking=True)
-        labels = labels.to(device, non_blocking=True)
+    for step, batch in enumerate(loader):
+        (images, labels, weather, weather_7d, terrain, 
+         burn_age, landcover) = _unpack_batch(batch, device)
 
         optimizer.zero_grad()
 
         with autocast(device.type, enabled=use_amp):
             if mode == "detect":
-                logits = model(images, mode="detect")           # (B, C, H, W)
-                loss = loss_fn(logits, labels)
-                preds = logits.argmax(dim=1)
+                # Pass all required modalities to build_vanaagni architecture
+                output = model(images, weather, weather_7d, terrain, burn_age, landcover)
+                logits = output["logits"]
+                log_var = output["log_var"]
+                
+                if isinstance(loss_fn, QualityAwareRegressionLoss):
+                    loss = loss_fn(logits.squeeze(1), log_var.squeeze(1), labels.float())
+                else:
+                    loss = loss_fn(logits, labels)
+                
+                preds = logits.argmax(dim=1) if logits.shape[1] > 1 else (logits > 0).long()
             else:
                 # prediction task: images is a sequence
-                T = images.shape[1]
-                frame_list = [images[:, t] for t in range(T)]  # list of (B, C, H, W)
-                risk_logits = model(frame_list, mode="predict")        # (B, 1, H, W) raw logits
-                risk_logits = risk_logits.squeeze(1)
+                T = images.shape[2] # after transpose it's (B, C, T, H, W)
+                frame_list = [images[:, :, t] for t in range(T)]
+                risk_logits = model(frame_list, mode="predict").squeeze(1)
                 loss = nn.BCEWithLogitsLoss()(risk_logits, labels.float())
-                preds = (risk_logits > 0.0).long()  # threshold on logits (0 ≡ 0.5 sigmoid)
+                preds = (risk_logits > 0.0).long()
 
         scaler.scale(loss).backward()
         scaler.unscale_(optimizer)
@@ -143,7 +181,8 @@ def train_epoch(model, loader, optimizer, scheduler, scaler, loss_fn,
 
         if step % log_interval == 0:
             scores = metrics.compute()
-            lr = optimizer.param_groups[1]["lr"]
+            # AdamW param groups depend on model type
+            lr = optimizer.param_groups[0]["lr"]
             log.info(
                 f"  Epoch {epoch} [{step}/{len(loader)}] "
                 f"loss={loss.item():.4f} "
@@ -162,25 +201,31 @@ def validate(model, loader, loss_fn, device, task, metrics, threshold=0.5):
     metrics.reset()
     mode = "detect" if task == "detect" else "predict"
 
-    for images, labels in loader:
-        images = images.to(device, non_blocking=True)
-        labels = labels.to(device, non_blocking=True)
+    for batch in loader:
+        (images, labels, weather, weather_7d, terrain, 
+         burn_age, landcover) = _unpack_batch(batch, device)
 
         if mode == "detect":
-            logits = model(images, mode="detect")
-            loss = loss_fn(logits, labels)
-            probs = torch.softmax(logits, dim=1)   # (B, C, H, W)
-            preds = logits.argmax(dim=1)            # argmax fallback
+            output = model(images, weather, weather_7d, terrain, burn_age, landcover)
+            logits = output["logits"]
+            log_var = output["log_var"]
+            
+            if isinstance(loss_fn, QualityAwareRegressionLoss):
+                loss = loss_fn(logits.squeeze(1), log_var.squeeze(1), labels.float())
+            else:
+                loss = loss_fn(logits, labels)
+                
+            probs = torch.sigmoid(logits) if logits.shape[1] == 1 else torch.softmax(logits, dim=1)
+            preds = logits.argmax(dim=1) if logits.shape[1] > 1 else (logits > 0).long()
         else:
-            T = images.shape[1]
-            frame_list = [images[:, t] for t in range(T)]
-            risk_logits = model(frame_list, mode="predict").squeeze(1)  # raw logits
+            T = images.shape[2]
+            frame_list = [images[:, :, t] for t in range(T)]
+            risk_logits = model(frame_list, mode="predict").squeeze(1)
             loss = nn.BCEWithLogitsLoss()(risk_logits, labels.float())
             probs = None
-            preds = (risk_logits > 0.0).long()  # logit 0 ≡ sigmoid 0.5
+            preds = (risk_logits > 0.0).long()
 
         total_loss += loss.item()
-        # Pass probs + threshold so fg class is detected at lower confidence
         metrics.update(preds, labels,
                        probs=probs if mode == "detect" else None,
                        threshold=threshold)
@@ -259,16 +304,16 @@ def main():
     oversample = aug_cfg.get("oversample_positives", True)
 
     if args.task == "detect":
-        DatasetClass = ForestChangeDataset
-        train_ds = DatasetClass(
-            os.path.join(processed_dir, "train.csv"),
-            augment=True,
-            aug_cfg=aug_cfg,
-            oversample_positives=oversample,
+        # Use our new high-precision AI dataset
+        labels_dir = cfg["paths"].get("labels_dir", "data/labels/ai_refined")
+        train_ds = AiRefinedPrecisionDataset(
+            labels_dir=labels_dir,
+            augment=True
         )
-        val_ds = DatasetClass(
-            os.path.join(processed_dir, "val.csv"),
-            augment=False,
+        # For validation, we use a small subset of the same if no explicit val exists
+        val_ds = AiRefinedPrecisionDataset(
+            labels_dir=labels_dir,
+            augment=False
         )
     else:
         DatasetClass = TemporalPredictionDataset
@@ -304,7 +349,12 @@ def main():
     log.info(f"📊 Train: {len(train_ds)} | Val: {len(val_ds)}")
 
     # ── Model ─────────────────────────────────────────────────────────────────
-    model = build_model(cfg).to(device)
+    if args.task == "detect":
+        log.info("Building Upgraded VanAgni Model...")
+        model = build_vanaagni(cfg).to(device)
+    else:
+        from src.model.full_model import build_model
+        model = build_model(cfg).to(device)
 
     if args.resume:
         log.info(f"🔄 Resuming from: {args.resume}")
@@ -346,16 +396,11 @@ def main():
 
     # ── Loss ──────────────────────────────────────────────────────────────────
     if args.task == "detect":
-        # Use config loss_weights for strong positive-class emphasis.
-        # Dataset-computed weights are near [1.0, 1.0] when labels are ~50/50,
-        # which causes class collapse — the model learns to predict all-background.
-        lw = t_cfg.get("loss_weights", [1.0, 50.0])
-        gamma = t_cfg.get("focal_gamma", 2.0)
-        class_weights = torch.tensor(lw, dtype=torch.float32).to(device)
-        log.info(f"Class weights (from config): {class_weights.tolist()} | Focal gamma: {gamma}")
-        loss_fn = CombinedLoss(class_weights=class_weights, gamma=gamma, dice_weight=0.5)
+        # Use QualityAwareRegressionLoss for the upgraded VanAgni brain
+        loss_fn = QualityAwareRegressionLoss()
+        log.info("Using QualityAwareRegressionLoss (Uncertainty-Aware)")
     else:
-        loss_fn = nn.BCEWithLogitsLoss()  # numerically stable: fuses sigmoid+BCE (log-sum-exp)
+        loss_fn = nn.BCEWithLogitsLoss()
 
     eval_threshold = t_cfg.get("eval_threshold", 0.15)
     log.info(f"Eval threshold: {eval_threshold} (fg probability cutoff)")
@@ -396,16 +441,19 @@ def main():
 
         # ── EO-2.0: phase-in encoder unfreezing ──────────────────────────────────
         if use_eo2 and freeze_enc_epochs > 0:
-            if epoch == 1:
-                # Freeze encoder: only heads train
-                for p in model.encoder.parameters():
-                    p.requires_grad = False
-                log.info(f"[EO2] Encoder frozen for epochs 1–{freeze_enc_epochs}")
-            elif epoch == freeze_enc_epochs + 1:
-                # Unfreeze encoder: full fine-tune
-                for p in model.encoder.parameters():
-                    p.requires_grad = True
-                log.info(f"[EO2] Encoder unfrozen at epoch {epoch} — full fine-tune engaged")
+            # Handle both 'encoder' (Legacy) and 'backbone' (VanAgni) naming
+            encoder = getattr(model, "backbone", getattr(model, "encoder", None))
+            if encoder is not None:
+                if epoch == 1:
+                    # Freeze encoder: only heads train
+                    for p in encoder.parameters():
+                        p.requires_grad = False
+                    log.info(f"[EO2] Encoder frozen for epochs 1–{freeze_enc_epochs}")
+                elif epoch == freeze_enc_epochs + 1:
+                    # Unfreeze encoder: full fine-tune
+                    for p in encoder.parameters():
+                        p.requires_grad = True
+                    log.info(f"[EO2] Encoder unfrozen at epoch {epoch} — full fine-tune engaged")
 
         # Train
         train_loss, train_scores = train_epoch(
