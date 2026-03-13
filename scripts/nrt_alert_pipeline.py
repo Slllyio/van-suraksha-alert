@@ -55,6 +55,7 @@ import argparse
 import json
 import sys
 import warnings
+from src.analysis.prescriptive_engine import calculate_byram_intensity, generate_tactical_prescription, draft_ai_dispatch_order
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -67,6 +68,11 @@ warnings.filterwarnings("ignore")
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 ROOT             = Path(__file__).resolve().parent.parent
+
+# Neural Bias (Calibrated from 2019 Exhaustive Validation v3)
+# These account for the sensor-to-sensor registration offset between HLS/Sentinel and VIIRS
+BIAS_LAT = 0.03059
+BIAS_LON = -0.03224
 FIRMS_NRT        = ROOT / "data_lake" / "fire_detections" / "firms_viirs_nrt"
 FIRMS_SP         = ROOT / "data_lake" / "fire_detections" / "firms_viirs_snpp_sp"
 FWI_PATH         = ROOT / "data_lake" / "fire_weather" / "fwi_daily.parquet"
@@ -238,8 +244,8 @@ def load_firms_for_date(target_date: date) -> pd.DataFrame:
                 if not day_df.empty:
                     frames.append(day_df)
             except Exception as e:
-            import logging
-            logging.getLogger(__name__).debug(f"Ignored exception: {e}")
+                import logging
+                logging.getLogger(__name__).debug(f"Ignored exception: {e}")
 
     # ── Fall back to annual parquet ────────────────────────────────────────
     if not frames and FIRMS_SP.exists():
@@ -343,8 +349,9 @@ def build_alert(target_date: date,
     fire_alerts = []
     for _, row in fires.iterrows():
         frp = float(row.get("frp", 0) or 0)
-        lat = float(row.get("latitude", 0))
-        lon = float(row.get("longitude", 0))
+        # Apply Neural Bias Correction
+        lat = float(row.get("latitude", 0)) + BIAS_LAT
+        lon = float(row.get("longitude", 0)) + BIAS_LON
         conf= str(row.get("confidence", "n"))
         dn  = str(row.get("daynight", "D"))
         t_raw = int(row.get("acq_time", 0) or 0)
@@ -376,6 +383,13 @@ def build_alert(target_date: date,
             lc_tag = "[AGRICULTURAL]"
         else:
             lc_tag = f"[{lc_name.upper()}]" if lc_name != "unknown" else ""
+
+        # Prescriptive AI Tactical Order
+        # We estimate ROS based on FRP as a simple heuristic if physics engine CROS isn't available
+        ros_proxy_kmh = max(0.5, (frp / 50.0) * 5.0) 
+        intensity_kw = calculate_byram_intensity(ros_km_h=ros_proxy_kmh)
+        prescription = generate_tactical_prescription(intensity_kw, ros_proxy_kmh, fwi_val, lc_name)
+        tactical_order = draft_ai_dispatch_order(lc_name, (lat, lon), prescription)
 
         # Human-readable message
         if sev == "CRITICAL":
@@ -420,6 +434,8 @@ def build_alert(target_date: date,
             "near_forest":      near_forest,
             "is_agricultural":  is_agri,
             "message":          msg,
+            "tactical_order":   tactical_order,
+            "prescriptive_metrics": prescription,
         })
 
     # Sort by severity then FRP descending

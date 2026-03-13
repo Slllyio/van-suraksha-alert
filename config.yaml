@@ -22,47 +22,39 @@ model:
   # ── Prithvi-100M fallback (used when use_eo2: false or TerraTorch unavailable)
   pretrained: "ibm-nasa-geospatial/Prithvi-100M"
   num_frames: 3           # temporal frames per input (T)
-  num_classes: 2          # 0=no_change, 1=forest_loss
+  num_classes: 1          # 1 = Regression mode (Severity Grading)
   img_size: 224           # spatial chip size (224×224 pixels)
   in_chans: 6             # 6 multi-spectral bands (Blue,Green,Red,NIR,SWIR1,SWIR2)
   embed_dim: 768          # 100M embed_dim (overridden to 1280 when EO2 600M is used)
   depth: 12               # 100M depth (overridden by EO2 backbone when loaded)
   num_heads: 12           # 100M heads (overridden by EO2 backbone when loaded)
-  freeze_encoder: false   # false = full fine-tuning; true = heads-only
+  freeze_encoder: true    # true = heads-only fine-tuning to fix OOM
   # ── Phase 3: Prithvi-EO-2.0 backbone (TerraTorch) ──────────────────────────
-  use_eo2: false          # set true to upgrade to EO-2.0 (requires terratorch pip)
-  eo2_variant: "600M"     # "300M" (embed_dim=1024, d=24) or "600M" (embed_dim=1280, d=32)
+  use_eo2: true          # set true to upgrade to EO-2.0 (requires terratorch pip)
+  eo2_variant: "300M"     # "300M" (embed_dim=1024, d=24) or "600M" (embed_dim=1280, d=32)
 
 training:
-  batch_size: 24          # ROCm fp16 AMP: 24 fills ~57% of 17GB RX 9060 XT VRAM
+  batch_size: 1           # DirectML TDR evasion: strict batch of 1
   epochs: 80              # more data needs more epochs; cosine decay handles LR schedule
-  optimizer: "adamw"
-  lr: 6.0e-5              # scaled from 5e-5 for batch_size 24 (linear LR scaling)
-  weight_decay: 0.05
-  warmup_epochs: 5        # longer warmup for larger batches
+  optimizer: "sgd"        # CRITICAL FIX: SGD runs natively on DirectML. AdamW causes silent crashes.
+  lr: 0.0001              # Explicit decimal to prevent string parsing TypeError
+  momentum: 0.9           # Standard momentum
+  weight_decay: 0.0001
+  warmup_epochs: 10
   loss_weights: [1.0, 10.0]
   focal_gamma: 2.0
   eval_threshold: 0.15
   val_split: 0.15
   test_split: 0.10
   seed: 42
-  amp: true               # ROCm HIP supports fp16 AMP
-  num_workers: 0          # Windows: multiprocessing spawn overhead when GEE runs concurrently;
-                          # 0 = inline dataloader (main thread), avoids 400s->107s regression
-  prefetch_factor: null   # must be null when num_workers=0 (PyTorch requirement)
-  pin_memory: false       # ROCm on Windows: keep false
+  amp: false              # Disable AMP; DirectML autocast is unstable and causes silent crashes
+  num_workers: 0          # Windows: avoid multiprocessing overhead
+  prefetch_factor: null
+  pin_memory: false
   output_dir: "outputs/checkpoints"
-  log_interval: 10
-  # ── Phase 3: Prithvi-EO-2.0 fine-tune profile ────────────────────────────
-  # Applied automatically when use_eo2: true (train.py reads these overrides)
-  # 600M is ~6× larger than 100M: halve batch, triple warmup, lower LR floor.
-  eo2:
-    batch_size: 4           # 600M encoder + FPN heads: ~14 GB VRAM at 224px, bs=4
-    lr: 1.5e-5              # lower peak LR for large ViT (avoid early instability)
-    warmup_epochs: 10       # longer warmup stabilises attention layers
-    freeze_encoder_epochs: 5  # head-only warmup before unfreezing encoder
-    grad_accum_steps: 6     # effective batch = 4×6 = 24 (matches 100M effective batch)
-    amp: true               # fp16 AMP required to fit 600M in 17 GB VRAM
+  log_interval: 1         # Log EVERY step to pinpoint exactly where it fails
+  freeze_encoder_epochs: 5
+  grad_accum_steps: 1     # DirectML TDR evasion: update weights immediately, no accumulation
 
 augmentation:
   noise_std: 0.02          # Gaussian noise sigma (fraction of normalised range)
@@ -80,7 +72,7 @@ prediction:
 paths:
   data_dir: "data"
   raw_dir: "data/raw"
-  labels_dir: "data/labels"
+  labels_dir: "data/labels/ai_refined"
   chip_dir: "data/chips"     # V2: per-chip anchor-dated exports from gee_fetch --mode chips
   processed_dir: "data/processed"
   sample_dir: "data/sample"
