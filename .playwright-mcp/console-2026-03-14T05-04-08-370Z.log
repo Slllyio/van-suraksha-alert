@@ -1,0 +1,65 @@
+[   11138ms] [WARNING] Unrecognized feature: 'ambient-light-sensor'. @ http://localhost:8501/static/js/index.Drusyo5m.js:1
+[   11138ms] [WARNING] Unrecognized feature: 'battery'. @ http://localhost:8501/static/js/index.Drusyo5m.js:1
+[   11138ms] [WARNING] Unrecognized feature: 'document-domain'. @ http://localhost:8501/static/js/index.Drusyo5m.js:1
+[   11138ms] [WARNING] Unrecognized feature: 'layout-animations'. @ http://localhost:8501/static/js/index.Drusyo5m.js:1
+[   11138ms] [WARNING] Unrecognized feature: 'legacy-image-formats'. @ http://localhost:8501/static/js/index.Drusyo5m.js:1
+[   11138ms] [WARNING] Unrecognized feature: 'oversized-images'. @ http://localhost:8501/static/js/index.Drusyo5m.js:1
+[   11138ms] [WARNING] Unrecognized feature: 'vr'. @ http://localhost:8501/static/js/index.Drusyo5m.js:1
+[   11138ms] [WARNING] Unrecognized feature: 'wake-lock'. @ http://localhost:8501/static/js/index.Drusyo5m.js:1
+[   11183ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ about:srcdoc:0
+[   11904ms] [WARNING] Entity geometry outlines are unsupported on terrain. Outlines will be disabled. To enable outlines, disable geometry terrain clamping by explicitly setting height to 0. @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:64
+[   11938ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11944ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11948ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11952ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11955ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11958ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11961ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11964ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11968ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11971ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11974ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11977ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11980ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11983ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   11987ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:71
+[   12170ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js:62
+[  400151ms] [WARNING] WebSocket onclose @ http://localhost:8501/static/js/index.Drusyo5m.js:150
+[  402498ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[  402499ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[  402761ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1014932ms] [WARNING] WebSocket onclose @ http://localhost:8501/static/js/index.Drusyo5m.js:150
+[ 1017251ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1017251ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[ 1017518ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1019703ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[ 1019703ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1020030ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[ 1022044ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1022436ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[ 1025353ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1025353ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[ 1029534ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1029535ms] [ERROR] Client Error in reaching server endpoint - No response received when attempting to reach /_stcore/health @ http://localhost:8501/static/js/index.Drusyo5m.js:148
+[ 1029536ms] [ERROR] Is Streamlit still running? If you accidentally stopped Streamlit, just restart it in your terminal: @ http://localhost:8501/static/js/index.Drusyo5m.js:154
+[ 1029536ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[ 1033861ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1033861ms] [ERROR] Client Error in reaching server endpoint - No response received when attempting to reach /_stcore/health @ http://localhost:8501/static/js/index.Drusyo5m.js:148
+[ 1033861ms] [ERROR] Is Streamlit still running? If you accidentally stopped Streamlit, just restart it in your terminal: @ http://localhost:8501/static/js/index.Drusyo5m.js:154
+[ 1033878ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[ 1038212ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1038212ms] [ERROR] Client Error in reaching server endpoint - No response received when attempting to reach /_stcore/health @ http://localhost:8501/static/js/index.Drusyo5m.js:148
+[ 1038212ms] [ERROR] Is Streamlit still running? If you accidentally stopped Streamlit, just restart it in your terminal: @ http://localhost:8501/static/js/index.Drusyo5m.js:154
+[ 1038228ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[ 1042563ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1042563ms] [ERROR] Client Error in reaching server endpoint - No response received when attempting to reach /_stcore/health @ http://localhost:8501/static/js/index.Drusyo5m.js:148
+[ 1042563ms] [ERROR] Is Streamlit still running? If you accidentally stopped Streamlit, just restart it in your terminal: @ http://localhost:8501/static/js/index.Drusyo5m.js:154
+[ 1042563ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[ 1046927ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1046927ms] [ERROR] Client Error in reaching server endpoint - No response received when attempting to reach /_stcore/health @ http://localhost:8501/static/js/index.Drusyo5m.js:148
+[ 1046927ms] [ERROR] Is Streamlit still running? If you accidentally stopped Streamlit, just restart it in your terminal: @ http://localhost:8501/static/js/index.Drusyo5m.js:154
+[ 1046928ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[ 1474828ms] [WARNING] WebSocket onclose @ http://localhost:8501/static/js/index.Drusyo5m.js:150
+[ 1477168ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[ 1477168ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[ 1477421ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
