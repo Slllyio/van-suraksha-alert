@@ -29,8 +29,10 @@ from tqdm import tqdm
 from typing import Tuple, List
 
 
-from src.model.full_model import build_model
+from src.model.vanaagni import build_vanaagni
 from src.data.preprocess import load_hls_tif
+from src.data.auxiliary_loader import load_spatial_auxiliary, load_7d_weather_sequence
+import rasterio
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)
@@ -44,8 +46,8 @@ def get_device():
 
 
 def load_model(cfg: dict, checkpoint_path: str, device):
-    """Load model and weights from checkpoint."""
-    model = build_model(cfg).to(device)
+    """Load VanAgni model and weights from checkpoint."""
+    model = build_vanaagni(cfg).to(device)
     ckpt = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
     state = ckpt.get("model_state", ckpt)
     model.load_state_dict(state)
@@ -57,23 +59,15 @@ def load_model(cfg: dict, checkpoint_path: str, device):
 def sliding_window_inference(
     model: torch.nn.Module,
     image_stack: np.ndarray,   # (T, C, H, W)
+    reference_tif: str,
+    target_date_str: str,
     tile_size: int = 224,
     overlap: int = 64,
     device: torch.device = None,
-    num_classes: int = 2,
-) -> np.ndarray:
+    num_classes: int = 5,
+) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Run model inference using sliding window over a large image.
-
-    Args:
-        model: Loaded PrithviForestChange model
-        image_stack: (T, C, H, W) normalized numpy array
-        tile_size: Inference patch size (must match training)
-        overlap: Overlap between patches
-        device: Torch device
-
-    Returns:
-        (H, W) change prediction mask (class indices)
+    Run multi-modal model inference using sliding window over a large image.
     """
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -95,15 +89,45 @@ def sliding_window_inference(
         col_starts.append(W - tile_size)
 
     positions = [(r, c) for r in row_starts for c in col_starts]
-    log.info(f"  Running {len(positions)} tile inferences...")
+    log.info(f"  Running {len(positions)} multi-modal tile inferences...")
+    
+    with rasterio.open(reference_tif) as ref:
+        transform = ref.transform
 
     for r, c in tqdm(positions, desc="Inference"):
         patch = image_stack[:, :, r:r + tile_size, c:c + tile_size]
+        
+        # Calculate center lat/lon of this specific patch for auxiliary data
+        center_x = c + tile_size // 2
+        center_y = r + tile_size // 2
+        lon, lat = rasterio.transform.xy(transform, center_y, center_x)
+        
+        # Load real auxiliary data
+        terrain_np, lc_np = load_spatial_auxiliary(lon, lat, patch_size=tile_size)
+        weather_np = load_7d_weather_sequence(target_date_str, lon, lat)
+        
+        # Prepare Tensors
         patch_t = torch.from_numpy(patch[np.newaxis]).float().to(device)  # (1, T, C, H, W)
+        terrain_t = torch.from_numpy(terrain_np[np.newaxis]).float().to(device)
+        lc_t = torch.from_numpy(lc_np[np.newaxis]).float().to(device)
+        weather_t = torch.from_numpy(weather_np[np.newaxis]).float().to(device)
+        
+        # Current weather (using day 3 which is T0)
+        curr_weather_t = weather_t[:, 3, :]
+        
+        # Burn age (mocked as zeros for inference unless tracked)
+        burn_age_t = torch.zeros(1, 1, tile_size, tile_size).to(device)
 
         with torch.no_grad():
-            logits = model(patch_t, mode="detect")  # (1, num_classes, H, W)
-            probs = torch.softmax(logits, dim=1).cpu().numpy()[0]
+            out = model(
+                x_temporal = patch_t,
+                weather_current = curr_weather_t,
+                weather_7d = weather_t,
+                terrain = terrain_t,
+                landcover = lc_t,
+                burn_age = burn_age_t
+            )
+            probs = torch.softmax(out["logits"], dim=1).cpu().numpy()[0]
 
         prob_map[:, r:r + tile_size, c:c + tile_size] += probs
         count_map[r:r + tile_size, c:c + tile_size] += 1
