@@ -89,10 +89,16 @@ st.markdown("""
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ── Dark base ── */
+/* ── Fullscreen layout — remove vertical padding ── */
+[data-testid="stAppViewBlockContainer"] {
+    background: var(--bg-primary) !important;
+    padding-top: 1rem !important;
+    padding-bottom: 0 !important;
+    max-width: 100% !important;
+}
 [data-testid="stAppViewContainer"] > section > div,
 [data-testid="stMain"] > div { background: var(--bg-primary) !important; }
-[data-testid="stAppViewBlockContainer"] { background: var(--bg-primary) !important; }
+.block-container { padding-top: 1rem !important; padding-bottom: 0 !important; max-width: 100% !important; }
 header[data-testid="stHeader"] { background: var(--bg-primary) !important; border-bottom: 1px solid var(--border); }
 
 /* ── Sidebar ── */
@@ -549,11 +555,20 @@ if selected_tab == "3D Digital Twin":
     iframe { border: none !important; }
     </style>""", unsafe_allow_html=True)
 
-    # Date picker in sidebar
+    # Date picker in sidebar — find latest alert with fires as default
+    _default_sim = date.today()
+    for _af in sorted(ALERT_DIR.glob("*_alert.json"), reverse=True):
+        try:
+            _ad = json.loads(_af.read_text(encoding="utf-8"))
+            if _ad.get("fires"):
+                _default_sim = date.fromisoformat(_af.stem.replace("_alert", ""))
+                break
+        except Exception:
+            continue
     with st.sidebar:
         st.markdown("**Simulation**")
         sim_date = st.date_input(
-            "Date", value=date(2019, 4, 14),
+            "Date", value=_default_sim,
             min_value=date(2013, 1, 1), max_value=date.today(), key="sim_date",
         )
         st.caption("Muhurta-2D PDE Engine")
@@ -730,6 +745,9 @@ if selected_tab == "3D Digital Twin":
             <div class="hr"><span class="hl">Peak FRP</span><span class="hv amber">{sim_frp:.1f} MW</span></div>
             <hr class="sep">
             <div class="hr"><span class="hl">Sim Time</span><span class="hv" id="stime">00:00</span></div>
+            <div class="hr"><span class="hl">Intensity</span><span class="hv red" id="intensity-val">-- kW/m</span></div>
+            <div class="hr"><span class="hl">Spread</span><span class="hv amber" id="ros-val">-- m/min</span></div>
+            <div class="hr"><span class="hl">Flame</span><span class="hv" id="flame-val" style="color:#4ecdc4;">-- m</span></div>
             <div class="hr"><span class="hl">Status</span><span class="hv green" id="sstat">Ready</span></div>
             <div class="hr"><span class="hl">Burned Area</span><span class="hv" id="sarea">0 ha</span></div>
             <div class="hr"><span class="hl">Fire Class</span><span class="hv" id="sfcls">&mdash;</span></div>
@@ -769,7 +787,9 @@ if selected_tab == "3D Digital Twin":
         <script>
             // ── Viewer ──
             const viewer = new Cesium.Viewer('cesiumContainer', {{
-                imageryProvider: new Cesium.OpenStreetMapImageryProvider({{ url: 'https://tile.openstreetmap.org/' }}),
+                imageryProvider: new Cesium.ArcGisMapServerImageryProvider({{
+                    url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
+                }}),
                 terrainProvider: new Cesium.EllipsoidTerrainProvider(),
                 baseLayerPicker: false, infoBox: false, animation: false, timeline: false,
                 geocoder: false, homeButton: false, sceneModePicker: false,
@@ -914,62 +934,55 @@ if selected_tab == "3D Digital Twin":
                 document.getElementById('sstat').innerText = (isFl ? 'Firebreak' : 'Backfire') + ' #' + intCount + ' placed at ' + lat.toFixed(3) + 'N ' + lon.toFixed(3) + 'E';
             }}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
-            // ── Simulation engine ──
+            // ── Simulation engine (Real-Time WebSocket) ──
             function toggleSim() {{
-                if (st >= 30) {{ resetSim(); return; }}
                 if (running) {{
-                    running = false; clearInterval(timer);
-                    document.getElementById('simBtn').innerText = 'RESUME';
+                    running = false; if (socket) socket.close();
+                    document.getElementById('simBtn').innerText = 'START SIM';
                     document.getElementById('simBtn').classList.remove('running');
-                    document.getElementById('sstat').innerText = 'Paused';
-                    document.getElementById('sstat').className = 'hv amber';
+                    document.getElementById('sstat').innerText = 'Stopped';
                     document.getElementById('sdot').className = 'sd g';
                     return;
                 }}
-                if (FIRES.length === 0) {{ document.getElementById('sstat').innerText = 'No fire data'; return; }}
 
                 running = true;
-                document.getElementById('simBtn').innerText = 'PAUSE';
+                document.getElementById('simBtn').innerText = 'STOP';
                 document.getElementById('simBtn').classList.add('running');
-                document.getElementById('sstat').innerText = 'Solving PDE...';
-                document.getElementById('sstat').className = 'hv red';
-                document.getElementById('fmet').style.display = 'block';
+                document.getElementById('sstat').innerText = 'Connecting...';
                 document.getElementById('sdot').className = 'sd r';
-                document.getElementById('stxt').innerText = 'Muhurta-2D Level-Set PDE Solver Active';
 
-                const f = FIRES[0];
-                const ros = f.ros || 5.0;
+                // Use 127.0.0.1 for local stability
+                socket = new WebSocket("ws://127.0.0.1:8001/ws/simulate");
+                
+                socket.onopen = () => {{
+                    document.getElementById('sstat').innerText = 'Syncing PDE...';
+                    socket.send(JSON.stringify({{
+                        lat: {sim_center_lat}, lon: {sim_center_lon}, 
+                        wind_u: {sim_wind_speed / 3.6}, wind_v: 0.0,
+                        interventions: interventions
+                    }}));
+                }};
 
-                timer = setInterval(() => {{
-                    st += 0.5;
-                    fCoords = firePeri({{ lat: f.lat, lon: f.lon }}, st, ros, 1.0);
-                    cCoords = firePeri({{ lat: f.lat, lon: f.lon }}, st, ros, 0.35);
-
-                    const area = pArea(fCoords);
-                    const mn = Math.floor(st), sc = Math.floor((st % 1) * 60);
-                    document.getElementById('stime').innerText = '+' + mn + ':' + (sc < 10 ? '0' : '') + sc;
-                    document.getElementById('sarea').innerText = area.toFixed(1) + ' ha';
-
-                    let fc, cls;
-                    if (st > 20) {{ fc = 'CROWN FIRE'; cls = 'red'; }}
-                    else if (st > 10) {{ fc = 'ACTIVE SURFACE+'; cls = 'amber'; }}
-                    else {{ fc = 'SURFACE FIRE'; cls = 'green'; }}
-                    document.getElementById('sfcls').innerText = fc;
-                    document.getElementById('sfcls').className = 'hv ' + cls;
-
-                    const rv = ros * (1 + Math.sin(st * 0.3) * 0.12);
-                    document.getElementById('mRos').innerText = rv.toFixed(1);
-
-                    if (st >= 30) {{
-                        clearInterval(timer); running = false;
-                        document.getElementById('simBtn').innerText = 'RESET';
-                        document.getElementById('simBtn').classList.remove('running');
-                        document.getElementById('sstat').innerText = 'Complete';
-                        document.getElementById('sstat').className = 'hv green';
-                        document.getElementById('sdot').className = 'sd g';
-                        document.getElementById('stxt').innerText = 'Simulation complete \u2014 30 min fire spread modeled (' + area.toFixed(1) + ' ha burned)';
+                socket.onmessage = (e) => {{
+                    const data = JSON.parse(e.data);
+                    if (data.polygons && data.polygons.length > 0) {{
+                        fCoords = data.polygons[0].map(c => ({{ lon: c[0], lat: c[1] }}));
                     }}
-                }}, 400);
+                    
+                    // Update HUD
+                    document.getElementById('stime').innerText = '+' + data.time_elapsed + ':00';
+                    document.getElementById('intensity-val').innerText = data.intensity_kw_m.toFixed(0) + ' kW/m';
+                    document.getElementById('ros-val').innerText = data.ros_m_min.toFixed(1) + ' m/min';
+                    document.getElementById('flame-val').innerText = data.flame_height_m.toFixed(1) + ' m';
+                    
+                    document.getElementById('sstat').innerText = 'Streaming Physics';
+                    document.getElementById('sstat').className = 'hv red';
+                }};
+
+                socket.onerror = () => {{
+                    document.getElementById('sstat').innerText = 'WS Error (Port 8001)';
+                    running = false;
+                }};
             }}
 
             function resetSim() {{

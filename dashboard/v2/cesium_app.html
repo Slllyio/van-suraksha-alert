@@ -60,7 +60,10 @@
         <div class="data-row"><span>Region:</span> <span class="value">Guna Division, MP</span></div>
         <div class="data-row"><span>Mode:</span> <span class="value" id="interaction-mode">View Only</span></div>
         <hr style="border: 0; border-top: 1px solid #555; margin: 10px 0;">
-        <div class="data-row"><span>Simulation Time:</span> <span class="value" id="sim-time">00:00</span></div>
+        <div class="data-row"><span>Sim Time:</span> <span class="value" id="sim-time">00:00</span></div>
+        <div class="data-row"><span>Intensity:</span> <span class="value" id="intensity-val">-- kW/m</span></div>
+        <div class="data-row"><span>Spread Rate:</span> <span class="value" id="ros-val">-- m/min</span></div>
+        <div class="data-row"><span>Flame Height:</span> <span class="value" id="flame-val">-- m</span></div>
         
         <div class="btn-group">
             <button id="toggleSimBtn" onclick="toggleSimulation()">START SIM</button>
@@ -181,7 +184,14 @@
                         lon: coord[0], lat: coord[1]
                     }));
                 }
+                
+                // Update Physics Metrics
                 document.getElementById('sim-time').innerText = `+${data.time_elapsed} mins`;
+                document.getElementById('intensity-val').innerText = `${data.intensity_kw_m.toFixed(0)} kW/m`;
+                document.getElementById('ros-val').innerText = `${data.ros_m_min.toFixed(1)} m/min`;
+                document.getElementById('flame-val').innerText = `${data.flame_height_m.toFixed(1)} m`;
+                
+                document.getElementById('status-indicator').innerText = "Streaming Physics Data";
             };
         }
     </script>

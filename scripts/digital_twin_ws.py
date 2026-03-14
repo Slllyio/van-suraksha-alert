@@ -18,6 +18,7 @@ from src.analysis.simulator import Muhurta2DSimulator
 from src.analysis.micro_met import MicroMetEngine
 from src.analysis.fire_dynamics import FireEventTracker
 from src.data.weather_ingest import get_gfs_wind_at_point
+from src.analysis.fire_physics import FirePhysicsEngine
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("DigitalTwinWS")
@@ -138,51 +139,48 @@ async def websocket_endpoint(websocket: WebSocket):
                     'fuel_anomaly': np.full_like(phi_current, -1.0) # Dry
                 }
                 
-                # Predict base ROS from CNN
-                # (Inside simulator.simulate_spread, we need to apply the fireline mask)
-                # But simulator.simulate_spread doesn't know about the mask yet.
-                # Let's pass it as part of terrain or a new param.
-                
-                # For this implementation, we manually override the ROS field after prediction
-                # by modifying how simulate_spread is called or by patching simulator.py
-                
-                phi_next = simulator.simulate_spread(
+                # ── Physics-Informed Iteration ──
+                # Returns updated phi and the spatial ROS field
+                phi_next, ros_field = simulator.simulate_spread(
                     phi_current, terrain_data, weather, sim_time_minutes=10, dt_minutes=2.0
                 )
                 
-                # --- Post-Inference Override for Firelines ---
-                # Since simulate_spread computes its own ROS, we need to ensure firelines are enforced.
-                # We'll update the simulator.simulate_spread function later to be more robust,
-                # but for now we can simulate the effect by masking phi_next if needed,
-                # though firelines are better applied to R_f.
+                # Calculate Physics Metrics for the current front
+                # Convert m/min to m/s for physics engine
+                ros_ms = ros_field / 60.0
+                intensity_field = simulator.physics.calculate_byram_intensity(ros_ms)
+                flame_height_field = simulator.physics.calculate_flame_length(intensity_field)
                 
-                # Let's add a "mask" to weather_dict or terrain_dict that simulate_spread can use.
-                terrain_data['non_burnable'] = fireline_mask
+                # Extract mean values for the burning front (where phi ~ 0)
+                # For streaming, we send the peak values encountered on the front
+                active_mask = (phi_current <= 0).astype(bool)
+                peak_intensity = float(np.max(intensity_field[active_mask])) if active_mask.any() else 0.0
+                peak_flame_height = float(np.max(flame_height_field[active_mask])) if active_mask.any() else 0.0
                 
                 phi_current = phi_next
                 
-                # apply backfires mid-simulation if any new ones arrived (future proofing)
+                # Apply backfires mid-simulation
                 if backfire_mask.any():
                     phi_current[backfire_mask == 1] = -1.0
                 
-                # 7. Convert Phi to GeoJSON Polygon Coordinates
-                # We extract the contour where phi=0
+                # ── Convert Phi to GeoJSON Polygon Coordinates ──
                 from rasterio import features
                 mask = (phi_current <= 0).astype(np.uint8)
                 polys = []
                 for geom, val in features.shapes(mask, mask=mask, transform=transform):
-                    # Convert to lon/lat list
                     coords = geom['coordinates'][0]
                     polys.append(coords)
                 
-                # Stream coordinates to frontend
+                # Stream coordinates and high-fidelity physics to frontend
                 await websocket.send_json({
                     "time_elapsed": t + 10,
                     "polygons": polys,
-                    "intensity": 4500 # Example placeholder
+                    "intensity_kw_m": peak_intensity,
+                    "flame_height_m": peak_flame_height,
+                    "ros_m_min": float(np.max(ros_field[active_mask])) if active_mask.any() else 0.0
                 })
                 
-                await asyncio.sleep(0.5) # Throttle for visual effect
+                await asyncio.sleep(0.5) 
                 
             log.info("Simulation segment completed.")
 

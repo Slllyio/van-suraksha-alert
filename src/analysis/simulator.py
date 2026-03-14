@@ -14,6 +14,7 @@ import logging
 
 from src.model.ros_unet import ROSGeneratorUNet
 from src.analysis.fire_dynamics import FireEventTracker
+from src.analysis.fire_physics import FirePhysicsEngine
 
 log = logging.getLogger(__name__)
 
@@ -22,6 +23,7 @@ class Muhurta2DSimulator:
         self.device = torch.device(device)
         self.ros_model = ROSGeneratorUNet(n_channels=7).to(self.device)
         self.ros_model.eval()
+        self.physics = FirePhysicsEngine()
         
         if model_path:
             try:
@@ -83,13 +85,13 @@ class Muhurta2DSimulator:
         dt_minutes: float = 1.0,
         dx: float = 30.0,
         dy: float = 30.0
-    ) -> np.ndarray:
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Runs the Physics-Informed CNN-PDE loop.
+        Runs the Physics-Informed CNN-PDE loop with topographic vector coupling.
         
-        initial_phi: The starting Signed Distance Function (SDF). phi < 0 is burning.
-        terrain_dict: Must contain 'slope' and 'aspect' 2D numpy arrays.
-        weather_dict: Must contain 'wind_u', 'wind_v', and 'fuel_anomaly'.
+        Returns:
+            phi_next: Updated Signed Distance Function.
+            ros_field: Final spatial Rate of Spread field (m/min).
         """
         phi_current = initial_phi.copy()
         
@@ -103,33 +105,42 @@ class Muhurta2DSimulator:
         steps = int(sim_time_minutes / dt_minutes)
         log.info(f"Starting Muhurta-2D Simulation: {sim_time_minutes} mins, {steps} steps.")
 
+        ros_field = np.zeros_like(phi_current)
+
         for step in range(steps):
             # 1. Convert current Phi (Distance) to a strict Fire Mask (0 or 1)
-            # We use a smoothed Heaviside or simply binary
             fire_mask = (phi_current <= 0).astype(np.float32)
             
-            # 2. CNN Inference: Predict Spatial ROS Field
+            # 2. CNN Inference: Predict Base Spatial ROS Field (R0)
             with torch.no_grad():
                 input_tensor = self.create_input_tensor(
                     fire_mask, slope, aspect, fuel_anomaly, wind_u, wind_v
                 )
                 ros_tensor = self.ros_model(input_tensor)
-                # Squeeze batch and channel dims, get numpy array
-                ros_field = ros_tensor.squeeze().cpu().numpy()
+                r0_field = ros_tensor.squeeze().cpu().numpy()
+            
+            # 3. Physics Coupling: Rothermel Topographic Vector
+            dy_phi, dx_phi = np.gradient(phi_current, dy, dx)
+            spread_dir = np.arctan2(dy_phi, dx_phi)
+            
+            ros_field = self.physics.calculate_topographic_ros(
+                base_ros=r0_field,
+                slope=slope,
+                aspect=aspect,
+                spread_direction=spread_dir
+            )
             
             # --- Apply Human Interventions (Firelines) ---
             if 'non_burnable' in terrain_dict:
-                # Force ROS to zero where firelines exist
                 ros_field[terrain_dict['non_burnable'] == 1] = 0.0
             
-            # Convert CNN output (m/min) to m/s for the PDE
             ros_field_ms = ros_field / 60.0
             
-            # 3. PDE Evolve: Apply the WRF-Fire Level-Set math
+            # 4. PDE Evolve
             phi_next = FireEventTracker.level_set_advance(
                 phi=phi_current,
                 R_f=ros_field_ms,
-                dt=dt_minutes * 60.0, # seconds
+                dt=dt_minutes * 60.0,
                 dx=dx,
                 dy=dy
             )
@@ -139,7 +150,7 @@ class Muhurta2DSimulator:
             if (step + 1) % 10 == 0 or (step + 1) == steps:
                 log.info(f"  Step {step + 1}/{steps} completed.")
                 
-        return phi_current
+        return phi_current, ros_field
 
     def simulate_probabilistic_spread(
         self,
