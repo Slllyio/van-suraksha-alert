@@ -4,11 +4,12 @@ Van Suraksha — Forest Fire Monitoring Dashboard
 Streamlit dashboard for Guna Division, Madhya Pradesh.
 
 Tabs:
-  1. Live Alert      — today's fire alert bulletin + FWI gauge
-  2. Fire History    — FIRMS fire detections on interactive map
-  3. Burn Scars      — Prithvi burn scar catalog + causal fire links
-  4. FWI Trends      — Canadian FWI time series, annual peaks, seasonality
-  5. Land Cover      — ESA WorldCover forest/agriculture breakdown
+  1. Live Alert       — today's fire alert bulletin + FWI gauge
+  2. Fire History     — FIRMS fire detections on interactive map
+  3. Burn Scars       — Prithvi burn scar catalog + causal fire links
+  4. FWI Trends       — Canadian FWI time series, annual peaks, seasonality
+  5. Weather & Terrain— GFS NWP forecasts + terrain analysis
+  6. Land Cover       — ESA WorldCover forest/agriculture breakdown
 
 Run:
   streamlit run dashboard/app.py
@@ -20,7 +21,17 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import plotly.io as pio
 import streamlit as st
+
+# ── Plotly dark theme override ────────────────────────────────────────────────
+_dark = pio.templates["plotly_dark"]
+_dark.layout.paper_bgcolor = "rgba(0,0,0,0)"
+_dark.layout.plot_bgcolor = "#141a25"
+_dark.layout.font = dict(family="Inter, sans-serif", color="#8b949e")
+_dark.layout.xaxis = dict(gridcolor="rgba(255,255,255,0.04)")
+_dark.layout.yaxis = dict(gridcolor="rgba(255,255,255,0.04)")
+pio.templates.default = "plotly_dark"
 
 # ── Page config (must be first Streamlit call) ────────────────────────────────
 st.set_page_config(
@@ -34,15 +45,190 @@ st.set_page_config(
 ROOT         = Path(__file__).resolve().parent.parent
 ALERT_DIR    = ROOT / "data_lake" / "alerts"
 FIRMS_SP     = ROOT / "data_lake" / "fire_detections" / "firms_viirs_snpp_sp"
+FIRMS_NRT    = ROOT / "data_lake" / "fire_detections" / "firms_viirs_nrt"
 FWI_PATH     = ROOT / "data_lake" / "fire_weather"   / "fwi_daily.parquet"
 LINKS_CSV    = ROOT / "data_lake" / "burn_scars"     / "fire_links.csv"
 LC_STATS     = ROOT / "data_lake" / "land_cover"     / "land_cover_stats.json"
 BOUND_DIR    = ROOT / "data_lake" / "boundaries"
 TERRAIN_DIR  = ROOT / "data_lake" / "terrain"
-WEATHER_DIR  = ROOT / "data_lake" / "weather" / "gfs_0p25"
+WEATHER_DIR  = ROOT / "data_lake" / "weather_forecasts" / "gfs"
 
 # ── Guna Division spatial extent ──────────────────────────────────────────────
 GUNA_BBOX = (76.45, 23.80, 77.85, 24.95)   # min_lon, min_lat, max_lon, max_lat
+
+# ── Clear stale cache on fresh load ──────────────────────────────────────────
+if "cache_cleared" not in st.session_state:
+    st.cache_data.clear()
+    st.session_state["cache_cleared"] = True
+
+# ── Command Horizon Dark Theme ───────────────────────────────────────────────
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-card: #1c2333;
+    --bg-card-hover: #222d3f;
+    --border: rgba(255,255,255,0.06);
+    --border-accent: rgba(255,255,255,0.1);
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #484f58;
+    --amber: #f97316;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --teal: #14b8a6;
+}
+
+[data-testid="stAppViewContainer"] {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ── Dark base ── */
+[data-testid="stAppViewContainer"] > section > div,
+[data-testid="stMain"] > div { background: var(--bg-primary) !important; }
+[data-testid="stAppViewBlockContainer"] { background: var(--bg-primary) !important; }
+header[data-testid="stHeader"] { background: var(--bg-primary) !important; border-bottom: 1px solid var(--border); }
+
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #0a0f1a 0%, #111827 60%, #0d1117 100%) !important;
+    border-right: 1px solid var(--border);
+}
+[data-testid="stSidebar"] * { color: var(--text-primary) !important; }
+[data-testid="stSidebar"] .stRadio label {
+    padding: 10px 14px; border-radius: 8px; transition: all 0.2s; margin-bottom: 2px;
+    border: 1px solid transparent;
+}
+[data-testid="stSidebar"] .stRadio label:hover {
+    background: rgba(249,115,22,0.08); border-color: rgba(249,115,22,0.15);
+}
+[data-testid="stSidebar"] [data-testid="stCaption"] { color: var(--text-muted) !important; }
+
+/* ── Metric cards ── */
+.metric-card {
+    background: var(--bg-card); border-radius: 10px; padding: 18px 22px;
+    border-left: 3px solid var(--accent, var(--blue));
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent, var(--blue));
+    margin-bottom: 10px; transition: all 0.2s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(249,115,22,0.2), transparent);
+}
+.metric-card:hover { background: var(--bg-card-hover); transform: translateY(-1px); }
+.metric-card .label {
+    font-size: 11px; font-weight: 600; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;
+}
+.metric-card .value {
+    font-size: 26px; font-weight: 700; color: var(--accent, var(--amber));
+    font-family: 'JetBrains Mono', monospace; line-height: 1.2;
+}
+.metric-card .sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+/* ── Headers ── */
+h2 {
+    color: var(--text-primary) !important; font-weight: 700 !important;
+    letter-spacing: -0.02em; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border); margin-bottom: 24px !important;
+}
+h3 { color: var(--text-secondary) !important; font-weight: 600 !important; }
+
+/* ── Status banner ── */
+.status-banner {
+    border-radius: 10px; padding: 20px 28px; color: white;
+    font-weight: 700; font-size: 22px; letter-spacing: 0.5px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    position: relative; overflow: hidden;
+}
+.status-banner::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+.status-banner .subtitle { font-size: 13px; font-weight: 400; opacity: 0.85; margin-top: 6px; }
+
+/* ── Meta panel ── */
+.meta-panel {
+    background: var(--bg-card); border-radius: 10px; padding: 14px 16px;
+    border: 1px solid var(--border); font-size: 13px; color: var(--text-secondary);
+}
+.meta-panel strong { color: var(--text-primary); }
+
+/* ── Empty state ── */
+.empty-state {
+    text-align: center; padding: 60px 40px; background: var(--bg-secondary);
+    border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1); margin: 20px 0;
+}
+.empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.7; }
+.empty-state .title { font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+.empty-state .desc {
+    font-size: 14px; color: var(--text-secondary); max-width: 500px; margin: 0 auto; line-height: 1.6;
+}
+.empty-state code {
+    background: rgba(249,115,22,0.1); padding: 2px 8px; border-radius: 4px;
+    font-size: 13px; color: var(--amber); font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Plotly containers ── */
+[data-testid="stPlotlyChart"] {
+    background: var(--bg-card); border-radius: 10px; padding: 8px;
+    border: 1px solid var(--border); margin-bottom: 16px;
+}
+
+/* ── Data frames & tables ── */
+[data-testid="stDataFrame"],
+[data-testid="stTable"] { border-radius: 10px; overflow: hidden; }
+
+/* ── Buttons ── */
+.stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    border: none !important; border-radius: 8px !important; font-weight: 600 !important;
+    color: white !important;
+    box-shadow: 0 0 20px rgba(249,115,22,0.25); transition: all 0.2s;
+}
+.stButton > button[kind="primary"]:hover {
+    box-shadow: 0 0 30px rgba(249,115,22,0.4); transform: translateY(-1px);
+}
+
+/* ── Expanders ── */
+[data-testid="stExpander"] {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+}
+[data-testid="stExpander"] summary span { color: var(--text-primary) !important; }
+
+/* ── Selectbox / multiselect / date input ── */
+[data-testid="stMultiSelect"], [data-testid="stSelectbox"], [data-testid="stDateInput"] {
+    color: var(--text-primary);
+}
+
+/* ── Map container ── */
+[data-testid="stDeckGlJsonChart"] {
+    border-radius: 10px; overflow: hidden; border: 1px solid var(--border);
+}
+
+/* ── Alerts ── */
+[data-testid="stAlert"] { border-radius: 10px; }
+
+/* ── Misc ── */
+hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+#MainMenu {visibility: hidden;} footer {visibility: hidden;}
+[data-testid="stDeployButton"] { display: none; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+</style>
+""", unsafe_allow_html=True)
 
 # ── Colour palette ────────────────────────────────────────────────────────────
 SEV_COLORS = {
@@ -94,14 +280,44 @@ def load_fwi() -> pd.DataFrame:
 
 @st.cache_data(ttl=600)
 def load_firms_all() -> pd.DataFrame:
+    """Load all FIRMS fire detections — annual parquets + NRT CSVs merged."""
     frames = []
+
+    # Annual parquet files (historical)
     for pq in sorted(FIRMS_SP.glob("viirs_snpp_sp_*_annual.parquet")):
         frames.append(pd.read_parquet(pq))
+
+    # NRT daily CSVs (recent — always include alongside historical)
+    if FIRMS_NRT.exists():
+        for csv in sorted(FIRMS_NRT.glob("viirs_nrt_*.csv")):
+            try:
+                chunk = pd.read_csv(csv)
+                if not chunk.empty:
+                    frames.append(chunk)
+            except Exception:
+                continue
+
     if not frames:
         return pd.DataFrame()
+
     df = pd.concat(frames, ignore_index=True)
     df["acq_date"] = pd.to_datetime(df["acq_date"])
-    return df
+    
+    # ── Clip to Guna AOI ──
+    lon_min, lat_min, lon_max, lat_max = GUNA_BBOX
+    df = df[
+        (df["longitude"] >= lon_min) & (df["longitude"] <= lon_max) &
+        (df["latitude"]  >= lat_min) & (df["latitude"]  <= lat_max)
+    ]
+
+    # Normalise column names (parquets have 'instrument', CSVs may not)
+    if "frp" not in df.columns and "FRP" in df.columns:
+        df.rename(columns={"FRP": "frp"}, inplace=True)
+    # Deduplicate: same lat/lon/date/time → keep first
+    dedup_cols = [c for c in ["latitude", "longitude", "acq_date", "acq_time"] if c in df.columns]
+    if dedup_cols:
+        df = df.drop_duplicates(subset=dedup_cols, keep="first")
+    return df.sort_values("acq_date").reset_index(drop=True)
 
 
 @st.cache_data(ttl=600)
@@ -129,6 +345,16 @@ def load_terrain_stats() -> dict:
         return json.load(f)
 
 
+@st.cache_data(ttl=3600)
+def load_boundary_geojson() -> dict:
+    """Load Guna district beat-level GeoJSON boundary."""
+    p = BOUND_DIR / "guna_district.geojson"
+    if not p.exists():
+        return {}
+    with open(p, encoding="utf-8") as f:
+        return json.load(f)
+
+
 @st.cache_data(ttl=600)
 def load_gfs_forecast(target_date) -> pd.DataFrame:
     """
@@ -136,7 +362,10 @@ def load_gfs_forecast(target_date) -> pd.DataFrame:
     Averages variables spatially over the Guna bbox.
     Returns DataFrame with columns: lead_h, temp_c, rh_pct, wind_kmh, precip_mm.
     """
+    # Check both possible directory structures
     date_dir = WEATHER_DIR / str(target_date.year) / f"{target_date.month:02d}" / f"{target_date.day:02d}"
+    if not date_dir.exists():
+        date_dir = WEATHER_DIR / f"{target_date}"
     if not date_dir.exists():
         return pd.DataFrame()
 
@@ -201,7 +430,9 @@ def load_gfs_forecast(target_date) -> pd.DataFrame:
 
 def sev_badge(sev: str) -> str:
     color = SEV_COLORS.get(sev, "#888")
-    return f'<span style="background:{color};color:white;padding:3px 10px;border-radius:4px;font-weight:bold">{sev}</span>'
+    return (f'<span style="background:{color};color:white;padding:4px 12px;border-radius:4px;'
+            f'font-weight:700;font-size:12px;letter-spacing:0.5px;'
+            f'box-shadow:0 0 12px {color}40;text-transform:uppercase">{sev}</span>')
 
 
 def fwi_color(val: float) -> str:
@@ -212,13 +443,23 @@ def fwi_color(val: float) -> str:
     return "#1a9641"
 
 
-def metric_card(label: str, value, sub: str = "", color: str = "#333"):
+def metric_card(label: str, value, sub: str = "", color: str = "#3b82f6"):
     st.markdown(
-        f"""<div style="background:#1e1e1e;border-radius:8px;padding:16px 20px;
-                        border-left:5px solid {color};margin-bottom:8px">
-            <div style="font-size:13px;color:#aaa">{label}</div>
-            <div style="font-size:28px;font-weight:bold;color:{color}">{value}</div>
-            <div style="font-size:12px;color:#888">{sub}</div>
+        f"""<div class="metric-card" style="--accent:{color}">
+            <div class="label">{label}</div>
+            <div class="value">{value}</div>
+            <div class="sub">{sub}</div>
+            </div>""",
+        unsafe_allow_html=True,
+    )
+
+
+def empty_state(icon: str, title: str, description: str):
+    st.markdown(
+        f"""<div class="empty-state">
+            <div class="icon">{icon}</div>
+            <div class="title">{title}</div>
+            <div class="desc">{description}</div>
             </div>""",
         unsafe_allow_html=True,
     )
@@ -229,15 +470,26 @@ def metric_card(label: str, value, sub: str = "", color: str = "#333"):
 # ─────────────────────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/"
-             "Map_of_India_with_state_labels.svg/500px-Map_of_India_with_state_labels.svg.png",
-             width=60)
-    st.title("Van Suraksha")
-    st.caption("Forest Fire Monitoring\nGuna Division, Madhya Pradesh")
+    st.markdown(
+        """<div style="text-align:center;padding:16px 0 8px">
+        <div style="width:56px;height:56px;margin:0 auto 8px;border-radius:12px;
+             background:linear-gradient(135deg,#f97316 0%,#dc2626 100%);
+             display:flex;align-items:center;justify-content:center;
+             box-shadow:0 0 24px rgba(249,115,22,0.3)">
+            <span style="font-size:28px;line-height:1">🔥</span>
+        </div>
+        <h1 style="margin:0;font-size:22px;font-weight:700;letter-spacing:1px;
+            color:#e6edf3;text-transform:uppercase">Van Suraksha</h1>
+        <p style="font-size:10px;color:#8b949e;margin:4px 0 0;letter-spacing:1.5px;
+            text-transform:uppercase">Command Horizon &bull; Guna Division</p>
+        </div>""",
+        unsafe_allow_html=True,
+    )
     st.divider()
 
     tab_names = [
         "Live Alert",
+        "3D Digital Twin",
         "Fire History",
         "Burn Scars",
         "FWI Trends",
@@ -246,14 +498,188 @@ with st.sidebar:
     ]
     selected_tab = st.radio("Navigation", tab_names, label_visibility="collapsed")
     st.divider()
-    st.caption(f"Data: FIRMS VIIRS SNPP  |  NASA POWER  |  ESA WorldCover 2021  |  IBM-NASA Prithvi-EO-2.0")
+    st.caption("FIRMS VIIRS SNPP | NASA POWER | ESA WorldCover 2021 | IBM-NASA Prithvi-EO-2.0")
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TAB: 3D Digital Twin
+# ─────────────────────────────────────────────────────────────────────────────
+
+if selected_tab == "3D Digital Twin":
+    st.header("🛰️ 3D Digital Twin Command Room")
+    st.markdown("""
+    This interactive 3D environment uses **CesiumJS** and the **Muhurta-2D Level-Set Engine** 
+    to simulate fire behavior over Guna's 30m terrain in real-time.
+    """)
+
+    # Check if the WebSocket server is likely running
+    st.sidebar.info("🔗 Physics Engine: Port 8001")
+    
+    # Define the Cesium HTML component
+    cesium_html = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+        <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+        <style>
+            body {{ margin: 0; padding: 0; overflow: hidden; background: #0d1117; font-family: sans-serif; }}
+            #cesiumContainer {{ width: 100%; height: 700px; border-radius: 12px; }}
+            #hud {{
+                position: absolute; top: 20px; left: 20px; background: rgba(20, 20, 20, 0.85);
+                border: 1px solid #444; border-radius: 8px; padding: 15px; color: white;
+                width: 260px; z-index: 1000; pointer-events: auto;
+            }}
+            .btn-group {{ display: flex; gap: 5px; margin-top: 10px; }}
+            button {{
+                flex: 1; background: #444; color: white; border: 1px solid #666; padding: 8px;
+                border-radius: 4px; cursor: pointer; font-size: 0.7rem; font-weight: bold;
+            }}
+            button.active {{ background: #ef4444; border-color: #ef4444; }}
+            #status-indicator {{
+                position: absolute; bottom: 20px; right: 20px; color: #a6d96a;
+                background: rgba(0,0,0,0.5); padding: 5px 10px; font-size: 0.7rem;
+            }}
+        </style>
+    </head>
+    <body>
+        <div id="cesiumContainer"></div>
+        <div id="hud">
+            <div style="font-size: 0.9rem; font-weight:bold; margin-bottom:10px; color:#f97316">🔥 MUHURTA-2D CONTROL</div>
+            <div style="font-size: 0.7rem; margin-bottom: 8px;">
+                Sim Time: <span id="sim-time" style="color:#3b82f6;">00:00</span><br>
+                Status: <span id="twin-status" style="color:#22c55e;">Ready</span>
+            </div>
+            <div class="btn-group">
+                <button id="toggleSimBtn" onclick="toggleSimulation()">START SIM</button>
+                <button id="lineBtn" onclick="setMode('FIRELINE')">LINE</button>
+                <button id="igniteBtn" onclick="setMode('BACKFIRE')">IGNITE</button>
+            </div>
+            <button style="margin-top:5px; width:100%; background:#2c3e50" onclick="clearAll()">CLEAR</button>
+        </div>
+        <div id="status-indicator">PDE Engine Ready</div>
+
+        <script>
+            const viewer = new Cesium.Viewer('cesiumContainer', {{
+                terrainProvider: Cesium.createWorldTerrain(),
+                baseLayerPicker: false, infoBox: false, animation: false, timeline: false
+            }});
+            viewer.scene.globe.depthTestAgainstTerrain = true;
+
+            const centerLon = 77.320;
+            const centerLat = 24.640;
+            viewer.camera.flyTo({{
+                destination: Cesium.Cartesian3.fromDegrees(centerLon, centerLat - 0.05, 5000),
+                orientation: {{ pitch: Cesium.Math.toRadians(-35) }}
+            }});
+
+            let fireCoords = [];
+            let isSimulating = false;
+            let socket = null;
+            let mode = null;
+            let interventions = [];
+
+            const fireEntity = viewer.entities.add({{
+                name: 'Surface Fire',
+                polygon: {{
+                    hierarchy: new Cesium.CallbackProperty(() => {{
+                        return fireCoords.length > 2 ? new Cesium.PolygonHierarchy(
+                            fireCoords.map(c => Cesium.Cartesian3.fromDegrees(c.lon, c.lat))
+                        ) : null;
+                    }}, false),
+                    material: Cesium.Color.ORANGERED.withAlpha(0.6),
+                    outline: true, outlineColor: Cesium.Color.YELLOW,
+                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+                }}
+            }});
+
+            function setMode(m) {{
+                mode = m;
+                document.getElementById('lineBtn').classList.toggle('active', m === 'FIRELINE');
+                document.getElementById('igniteBtn').classList.toggle('active', m === 'BACKFIRE');
+            }}
+
+            function clearAll() {{
+                interventions = []; fireCoords = [];
+                viewer.entities.values.filter(e => e.name === 'Intervention').forEach(e => viewer.entities.remove(e));
+                mode = null;
+            }}
+
+            const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+            handler.setInputAction((click) => {{
+                if (!mode) return;
+                const pos = viewer.scene.pickPosition(click.position);
+                if (Cesium.defined(pos)) {{
+                    const cart = Cesium.Cartographic.fromCartesian(pos);
+                    const lon = Cesium.Math.toDegrees(cart.longitude);
+                    const lat = Cesium.Math.toDegrees(cart.latitude);
+                    interventions.push({{ type: mode, geometry: {{ type: "Point", coordinates: [lon, lat] }} }});
+                    viewer.entities.add({{
+                        name: 'Intervention', position: pos,
+                        point: {{ pixelSize: 8, color: mode === 'FIRELINE' ? Cesium.Color.YELLOW : Cesium.Color.RED, heightReference: Cesium.HeightReference.CLAMP_TO_GROUND }}
+                    }});
+                }}
+            }}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+            function toggleSimulation() {{
+                if (isSimulating) {{
+                    isSimulating = false; if (socket) socket.close();
+                    document.getElementById('toggleSimBtn').innerText = "START SIM";
+                    document.getElementById('twin-status').innerText = "Stopped";
+                    return;
+                }}
+                
+                // Use 127.0.0.1 for local stability
+                const wsHost = "127.0.0.1";
+                socket = new WebSocket("ws://" + wsHost + ":8001/ws/simulate");
+                isSimulating = true;
+                document.getElementById('toggleSimBtn').innerText = "STOP SIM";
+                document.getElementById('twin-status').innerText = "Connecting...";
+
+                socket.onopen = () => {{
+                    document.getElementById('twin-status').innerText = "Connected";
+                    socket.send(JSON.stringify({{ lat: centerLat, lon: centerLon, wind_u: 8.0, wind_v: 3.0, interventions: interventions }}));
+                }};
+                socket.onmessage = (e) => {{
+                    const data = JSON.parse(e.data);
+                    if (data.polygons && data.polygons.length > 0) {{
+                        fireCoords = data.polygons[0].map(c => ({{ lon: c[0], lat: c[1] }}));
+                    }}
+                    document.getElementById('sim-time').innerText = "+" + data.time_elapsed + " mins";
+                    document.getElementById('twin-status').innerText = "Streaming Physics";
+                }};
+                socket.onerror = (err) => {{ 
+                    console.error("WS Error:", err);
+                    document.getElementById('twin-status').innerText = "Conn Failed (Port 8001)"; 
+                    isSimulating = false; 
+                    document.getElementById('toggleSimBtn').innerText = "START SIM";
+                }};
+                socket.onclose = () => {{
+                    document.getElementById('twin-status').innerText = "Disconnected";
+                    isSimulating = false;
+                }};
+            }}
+        </script>
+    </body>
+    </html>
+    """
+    
+    st.components.v1.html(cesium_html, height=800)
+    
+    with st.expander("📖 Digital Twin Instructions"):
+        st.markdown("""
+        1. **View:** Rotate/Zoom the 3D terrain using your mouse.
+        2. **Defend:** Click **FIRELINE**, then click on the map to place defense points.
+        3. **Attack:** Click **IGNITE**, then click on the map to start controlled backfires.
+        4. **Simulate:** Click **START SIM** to run the Level-Set PDE spread model.
+        """)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TAB 1: Live Alert
 # ─────────────────────────────────────────────────────────────────────────────
 
-if selected_tab == "Live Alert":
+elif selected_tab == "Live Alert":
     st.header("Live Fire Alert Bulletin")
 
     # Date picker
@@ -294,18 +720,23 @@ if selected_tab == "Live Alert":
     col_banner, col_meta = st.columns([3, 1])
     with col_banner:
         st.markdown(
-            f'<div style="background:{SEV_COLORS.get(sev,"#888")};'
-            f'color:white;padding:20px 30px;border-radius:10px;'
-            f'font-size:26px;font-weight:bold;letter-spacing:1px">'
-            f'{sev} — {alert.get("target_date","")}'
-            f'<div style="font-size:14px;font-weight:normal;margin-top:4px">'
-            f'Guna Division, Madhya Pradesh</div></div>',
+            f'<div class="status-banner" style="background:{SEV_COLORS.get(sev,"#888")}">'
+            f'{sev} &mdash; {alert.get("target_date","")}'
+            f'<div class="subtitle">Guna Division, Madhya Pradesh</div></div>',
             unsafe_allow_html=True,
         )
     with col_meta:
-        st.caption(f"Generated: {alert.get('generated_at','')[:19]}")
+        gen_at = alert.get('generated_at', '')[:19]
         forest_used = alert.get("forest_mask_used", False)
-        st.caption(f"Forest mask: {'active' if forest_used else 'not loaded'}")
+        forest_icon = "&#9989;" if forest_used else "&#9888;&#65039;"
+        st.markdown(
+            f'<div class="meta-panel">'
+            f'<strong>Generated</strong><br>{gen_at}<br><br>'
+            f'<strong>Forest Mask</strong><br>'
+            f'{forest_icon} {"Active" if forest_used else "Not loaded"}'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
 
     st.divider()
 
@@ -387,27 +818,88 @@ if selected_tab == "Live Alert":
              "daynight","land_cover","in_forest",
              "elevation_m","slope_deg","terrain_risk","viirs_confidence"]
             if c in fire_df.columns]
+        style_kwargs = {"subset": ["severity"]} if "severity" in display_cols else {}
         st.dataframe(
             fire_df[display_cols].style.map(
                 lambda v: f"background-color:{SEV_COLORS.get(v,'')};color:white"
                 if v in SEV_COLORS else "",
-                subset=["severity"]
+                **style_kwargs
             ),
             use_container_width=True, height=350
         )
 
         # ── Map ────────────────────────────────────────────────────────────
         st.subheader("Fire Locations")
+        import pydeck as pdk
         map_df = fire_df[["fire_lat","fire_lon","frp_mw","severity"]].copy()
         map_df.columns = ["lat","lon","frp_mw","severity"]
-        map_df["size"] = (map_df["frp_mw"].clip(1, 100) * 3).astype(int)
-        st.map(map_df[["lat","lon"]], zoom=8)
+        sev_rgb = {"CRITICAL":[215,48,39],"HIGH":[244,109,67],"MODERATE":[253,174,97],"LOW":[116,196,118]}
+        map_df["color"] = map_df["severity"].map(lambda s: sev_rgb.get(s, [200,200,200]))
+        fire_layer = pdk.Layer(
+            "ScatterplotLayer", data=map_df,
+            get_position=["lon","lat"], get_radius="frp_mw * 50 + 400",
+            get_fill_color="color", pickable=True,
+        )
+        layers = [fire_layer]
+        boundary = load_boundary_geojson()
+        if boundary:
+            layers.insert(0, pdk.Layer(
+                "GeoJsonLayer", data=boundary,
+                get_line_color=[249,115,22,100], get_fill_color=[0,0,0,0],
+                line_width_min_pixels=1, pickable=True,
+            ))
+        st.pydeck_chart(pdk.Deck(
+            layers=layers,
+            initial_view_state=pdk.ViewState(latitude=24.4,longitude=77.15,zoom=9,pitch=0),
+            map_style="dark",
+            tooltip={"text": "{severity} — FRP: {frp_mw} MW"},
+        ))
     else:
         if sev == "WATCH":
             st.info(f"No active fires detected. FWI={fwi_val:.1f} ({fwi_data.get('danger_class','')}). "
                     f"Fire weather conditions are DANGEROUS — heightened patrol advised.")
         else:
             st.success("No fires detected. Conditions are safe.")
+
+    # ── Live NRT Hotspot Feed (Clipped to Guna) ─────────────────────────────
+    st.divider()
+    st.subheader("📡 Live NRT Hotspot Feed (Last 48 Hours)")
+    with st.spinner("Fetching latest satellite hotspots..."):
+        all_firms = load_firms_all()
+        if not all_firms.empty:
+            # Filter for last 48 hours
+            cutoff = pd.Timestamp.now() - pd.Timedelta(days=2)
+            recent_fires = all_firms[all_firms["acq_date"] >= cutoff].copy()
+            
+            if not recent_fires.empty:
+                st.caption(f"Detected {len(recent_fires)} raw hotspots in Guna AOI since {cutoff.date()}")
+                
+                map_recent = recent_fires[["latitude","longitude","frp"]].rename(columns={"latitude":"lat","longitude":"lon"})
+                recent_layer = pdk.Layer(
+                    "ScatterplotLayer", data=map_recent,
+                    get_position=["lon","lat"], get_radius="frp * 30 + 500",
+                    get_fill_color=[255, 165, 0, 160], pickable=True,
+                )
+                
+                boundary = load_boundary_geojson()
+                layers_recent = [recent_layer]
+                if boundary:
+                    layers_recent.insert(0, pdk.Layer(
+                        "GeoJsonLayer", data=boundary,
+                        get_line_color=[255, 255, 255, 80], get_fill_color=[0,0,0,0],
+                        line_width_min_pixels=1,
+                    ))
+                
+                st.pydeck_chart(pdk.Deck(
+                    layers=layers_recent,
+                    initial_view_state=pdk.ViewState(latitude=24.4,longitude=77.15,zoom=8,pitch=0),
+                    map_style="dark",
+                    tooltip={"text": "Live Hotspot - FRP: {frp} MW"},
+                ), height=400)
+            else:
+                st.info("No satellite hotspots detected in the last 48 hours.")
+        else:
+            st.info("No FIRMS data available.")
 
     # ── Messages & Tactical Dispatch ──────────────────────────────────────────
     if fires:
@@ -444,11 +936,15 @@ if selected_tab == "Live Alert":
                     order_text = f.get("tactical_order", "No tactical order generated.")
                     st.markdown("**Dispatch Order (Hindi/English)**")
                     
-                    # We simulate the Hindi translation here for the dashboard if not present
-                    from src.analysis.ai_dispatcher import AISignalCorps
-                    corps = AISignalCorps()
-                    hindi_order = corps.translate_to_hindi(order_text)
-                    
+                    try:
+                        import sys
+                        sys.path.insert(0, str(ROOT))
+                        from src.analysis.ai_dispatcher import AISignalCorps
+                        corps = AISignalCorps()
+                        hindi_order = corps.translate_to_hindi(order_text)
+                    except Exception:
+                        hindi_order = order_text
+
                     st.code(hindi_order, language="text")
                     st.caption("Auto-generated by AISignalCorps Agent")
 
@@ -456,9 +952,10 @@ if selected_tab == "Live Alert":
         for f in fires:
             col_sev, col_msg = st.columns([1, 5])
             with col_sev:
-                st.markdown(sev_badge(f["severity"]), unsafe_allow_html=True)
+                sev = f.get("severity", "UNKNOWN")
+                st.markdown(sev_badge(sev), unsafe_allow_html=True)
             with col_msg:
-                st.write(f["message"])
+                st.write(f.get("message", f"Fire at {f.get('fire_lat','?')}, {f.get('fire_lon','?')}"))
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -470,7 +967,13 @@ elif selected_tab == "Fire History":
 
     firms = load_firms_all()
     if firms.empty:
-        st.warning("FIRMS data not found.")
+        empty_state(
+            "&#128752;",
+            "No FIRMS Fire Detection Data Available",
+            "VIIRS SNPP fire detection data has not been downloaded yet.<br>"
+            "Run <code>python scripts/download_firms.py</code> to fetch historical FIRMS data, "
+            "or the data will populate automatically after the next NRT alert pipeline run."
+        )
         st.stop()
 
     # ── Sidebar filters ───────────────────────────────────────────────────────
@@ -499,9 +1002,39 @@ elif selected_tab == "Fire History":
     # ── Map ───────────────────────────────────────────────────────────────────
     st.subheader("Detection Map")
     if not filt.empty:
+        import pydeck as pdk
         map_df = filt[["latitude","longitude","frp"]].rename(
             columns={"latitude":"lat","longitude":"lon"})
-        st.map(map_df[["lat","lon"]], zoom=8)
+        # Fire detection layer
+        fire_layer = pdk.Layer(
+            "ScatterplotLayer",
+            data=map_df,
+            get_position=["lon", "lat"],
+            get_radius="frp * 40 + 300",
+            get_fill_color=[239, 68, 68, 200],
+            pickable=True,
+        )
+        layers = [fire_layer]
+        # Beat boundary overlay
+        boundary = load_boundary_geojson()
+        if boundary:
+            boundary_layer = pdk.Layer(
+                "GeoJsonLayer",
+                data=boundary,
+                get_line_color=[249, 115, 22, 120],
+                get_fill_color=[0, 0, 0, 0],
+                line_width_min_pixels=1,
+                pickable=True,
+            )
+            layers.insert(0, boundary_layer)
+
+        view = pdk.ViewState(latitude=24.4, longitude=77.15, zoom=8, pitch=0)
+        st.pydeck_chart(pdk.Deck(
+            layers=layers,
+            initial_view_state=view,
+            map_style="dark",
+            tooltip={"text": "FRP: {frp} MW"},
+        ))
 
     # ── Monthly heatmap ───────────────────────────────────────────────────────
     st.subheader("Annual Fire Counts by Month")
@@ -572,7 +1105,13 @@ elif selected_tab == "Burn Scars":
 
     links = load_fire_links()
     if links.empty:
-        st.warning("fire_links.csv not found. Run link_fires_to_burnscars.py first.")
+        empty_state(
+            "&#127755;",
+            "No Burn Scar Data Available",
+            "Prithvi-EO-2.0 burn scar analysis has not been run yet.<br>"
+            "Run <code>python scripts/link_fires_to_burnscars.py</code> to process "
+            "satellite imagery and link burn scars to FIRMS fire detections."
+        )
         st.stop()
 
     # ── Summary metrics ───────────────────────────────────────────────────────
@@ -879,10 +1418,11 @@ elif selected_tab == "Weather & Terrain":
             st.dataframe(gfs_df, use_container_width=True)
 
     else:
-        st.info(
-            f"No GFS forecast data found for **{wx_date}**.  \n"
-            f"Click **Download GFS Forecast** to fetch 24/48/72 h NWP data via Herbie.  \n"
-            f"Data will be saved to `data_lake/weather/gfs_0p25/{wx_date.year}/{wx_date.month:02d}/{wx_date.day:02d}/`"
+        empty_state(
+            "&#9925;",
+            f"No GFS Forecast for {wx_date}",
+            f"Click <strong>Download GFS Forecast</strong> above to fetch 24/48/72 h NWP data via Herbie.<br>"
+            f"Data will be saved to <code>data_lake/weather_forecasts/gfs/{wx_date}/</code>"
         )
         # Show the weather variables that will be downloaded
         with st.expander("Variables fetched from GFS 0.25°"):
@@ -957,9 +1497,10 @@ elif selected_tab == "Weather & Terrain":
     terrain = load_terrain_stats()
 
     if not terrain:
-        st.info(
-            "Terrain data not found.  \n"
-            "Run **`python scripts/fetch_dem.py`** to download the Copernicus DEM 30m "
+        empty_state(
+            "&#9968;",
+            "Terrain Data Not Available",
+            "Run <code>python scripts/fetch_dem.py</code> to download the Copernicus DEM 30m "
             "and compute slope, aspect, and terrain fire-risk layers for Guna Division."
         )
         with st.expander("What terrain layers are generated?"):
@@ -1067,11 +1608,12 @@ elif selected_tab == "Weather & Terrain":
             # ── Slope class bar ────────────────────────────────────────────────
             slope_classes = ["0-5°\n(flat)", "5-15°\n(gentle)", "15-30°\n(moderate)",
                              ">30°\n(steep)"]
+            pct_ge_5 = s.get("pct_ge_5", s.get("pct_ge_15", 0))
             slope_pcts = [
-                max(0, 100 - s.get("pct_ge_15", 0) - 0),  # approximation
+                max(0, 100 - pct_ge_5),
+                max(0, pct_ge_5 - s.get("pct_ge_15", 0)),
                 max(0, s.get("pct_ge_15", 0) - s.get("pct_ge_30", 0)),
-                max(0, s.get("pct_ge_30", 0) - s.get("pct_ge_45", 0)),
-                s.get("pct_ge_45", 0),
+                s.get("pct_ge_30", 0),
             ]
             slope_colors = ["#1a9641", "#a6d96a", "#f46d43", "#d73027"]
             fig_s = go.Figure(go.Bar(
@@ -1127,7 +1669,13 @@ elif selected_tab == "Land Cover":
 
     stats = load_lc_stats()
     if not stats:
-        st.warning("Land cover stats not found. Run scripts/fetch_forest_boundary.py first.")
+        empty_state(
+            "&#127795;",
+            "No Land Cover Data Available",
+            "ESA WorldCover 2021 land cover stats have not been generated yet.<br>"
+            "Run <code>python scripts/fetch_forest_boundary.py</code> to download "
+            "WorldCover tiles and compute land cover statistics for Guna Division."
+        )
         st.stop()
 
     summary = stats.get("_summary", {})
@@ -1219,3 +1767,4 @@ elif selected_tab == "Land Cover":
         exists = path.exists()
         size   = f"{path.stat().st_size/1024:.0f} KB" if exists else "—"
         st.write(f"{'✅' if exists else '❌'} **{name}** — `{path.name}` ({size})")
+

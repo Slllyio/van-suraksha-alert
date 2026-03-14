@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>VanAagni - 3D Digital Twin</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', sans-serif; }
+        #cesiumContainer { width: 100vw; height: 100vh; }
+        
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(20, 20, 20, 0.85);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            color: white;
+            width: 300px;
+            z-index: 1000;
+        }
+
+        h2 { margin: 0 0 10px 0; font-size: 1.2rem; color: #ff6b6b; }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; }
+        .value { font-weight: bold; color: #4ecdc4; }
+        
+        .btn-group { display: flex; gap: 5px; margin-top: 10px; }
+        button {
+            flex: 1;
+            background-color: #444;
+            color: white;
+            border: 1px solid #666;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        button.active { background-color: #d73027; border-color: #ff6b6b; }
+        
+        #status-indicator {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #a6d96a;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="cesiumContainer"></div>
+    
+    <div id="hud">
+        <h2>🔥 VanAagni Digital Twin</h2>
+        <div class="data-row"><span>Region:</span> <span class="value">Guna Division, MP</span></div>
+        <div class="data-row"><span>Mode:</span> <span class="value" id="interaction-mode">View Only</span></div>
+        <hr style="border: 0; border-top: 1px solid #555; margin: 10px 0;">
+        <div class="data-row"><span>Simulation Time:</span> <span class="value" id="sim-time">00:00</span></div>
+        
+        <div class="btn-group">
+            <button id="toggleSimBtn" onclick="toggleSimulation()">START SIM</button>
+            <button id="lineBtn" onclick="setInterventionMode('FIRELINE')">FIRELINE</button>
+            <button id="igniteBtn" onclick="setInterventionMode('BACKFIRE')">IGNITE</button>
+        </div>
+        <button style="margin-top:5px; background-color:#2c3e50" onclick="clearInterventions()">CLEAR ALL</button>
+    </div>
+    
+    <div id="status-indicator">Engine Ready</div>
+
+    <script>
+        const viewer = new Cesium.Viewer('cesiumContainer', {
+            terrainProvider: Cesium.createWorldTerrain(),
+            baseLayerPicker: false, infoBox: false, animation: false, timeline: false
+        });
+
+        const centerLon = 77.320;
+        const centerLat = 24.640;
+        viewer.camera.flyTo({
+            destination: Cesium.Cartesian3.fromDegrees(centerLon, centerLat - 0.05, 5000),
+            orientation: { pitch: Cesium.Math.toRadians(-35) }
+        });
+
+        let fireCoordinates = [];
+        let isSimulating = false;
+        let socket = null;
+        let currentInterventionType = null;
+        let interventions = [];
+
+        const fireEntity = viewer.entities.add({
+            name: 'Active Surface Fire',
+            polygon: {
+                hierarchy: new Cesium.CallbackProperty(() => {
+                    return fireCoordinates.length > 2 ? new Cesium.PolygonHierarchy(
+                        fireCoordinates.map(c => Cesium.Cartesian3.fromDegrees(c.lon, c.lat))
+                    ) : null;
+                }, false),
+                material: Cesium.Color.ORANGERED.withAlpha(0.6),
+                outline: true, outlineColor: Cesium.Color.YELLOW,
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+            }
+        });
+
+        // Intervention Mode Handler
+        function setInterventionMode(type) {
+            currentInterventionType = type;
+            document.getElementById('interaction-mode').innerText = type;
+            document.getElementById('lineBtn').classList.toggle('active', type === 'FIRELINE');
+            document.getElementById('igniteBtn').classList.toggle('active', type === 'BACKFIRE');
+        }
+
+        function clearInterventions() {
+            interventions = [];
+            viewer.entities.values.filter(e => e.name === 'Intervention').forEach(e => viewer.entities.remove(e));
+            document.getElementById('interaction-mode').innerText = "View Only";
+            currentInterventionType = null;
+        }
+
+        // Map Click Interaction
+        const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+        handler.setInputAction((click) => {
+            if (!currentInterventionType) return;
+
+            const cartesian = viewer.scene.pickPosition(click.position);
+            if (Cesium.defined(cartesian)) {
+                const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+                const lon = Cesium.Math.toDegrees(cartographic.longitude);
+                const lat = Cesium.Math.toDegrees(cartographic.latitude);
+
+                const intervention = {
+                    type: currentInterventionType,
+                    geometry: {
+                        type: "Point",
+                        coordinates: [lon, lat]
+                    }
+                };
+                interventions.push(intervention);
+
+                viewer.entities.add({
+                    name: 'Intervention',
+                    position: cartesian,
+                    point: {
+                        pixelSize: 10,
+                        color: currentInterventionType === 'FIRELINE' ? Cesium.Color.YELLOW : Cesium.Color.RED,
+                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+                    }
+                });
+            }
+        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+        function toggleSimulation() {
+            if (isSimulating) {
+                isSimulating = false;
+                if (socket) socket.close();
+                document.getElementById('toggleSimBtn').innerText = "START SIM";
+                document.getElementById('toggleSimBtn').style.backgroundColor = "#444";
+                return;
+            }
+
+            socket = new WebSocket("ws://localhost:8001/ws/simulate");
+            isSimulating = true;
+            document.getElementById('toggleSimBtn').innerText = "PAUSE SIM";
+            document.getElementById('toggleSimBtn').style.backgroundColor = "#d73027";
+
+            socket.onopen = () => {
+                socket.send(JSON.stringify({
+                    lat: centerLat, lon: centerLon, 
+                    wind_u: 8.0, wind_v: 3.0,
+                    interventions: interventions
+                }));
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.polygons && data.polygons.length > 0) {
+                    fireCoordinates = data.polygons[0].map(coord => ({
+                        lon: coord[0], lat: coord[1]
+                    }));
+                }
+                document.getElementById('sim-time').innerText = `+${data.time_elapsed} mins`;
+            };
+        }
+    </script>
+</body>
+</html>
