@@ -198,10 +198,56 @@ def download_gfs(
             combined.chunk({"latitude": 50, "longitude": 50}).to_zarr(
                 zarr_path, mode="w"
             )
-            log.info("  Saved Zarr   → %s", zarr_path)
+            log.info(f"  Saved Zarr   → {zarr_path}")
             saved.append(zarr_path)
 
     return saved
+
+
+def get_gfs_wind_at_point(
+    run_date: str,
+    lat: float,
+    lon: float,
+    lead_hours: int = 24,
+    data_lake: Path = DEFAULT_DATA_LAKE,
+) -> tuple[float, float]:
+    """
+    Retrieves GFS 10m U/V wind components at a specific point and date.
+    Downloads the data if not present in the data lake.
+    """
+    import xarray as xr
+    dt = datetime.fromisoformat(run_date)
+    nc_path = _weather_dir(data_lake, "gfs_0p25", dt.date()) / f"gfs_f{lead_hours:03d}.nc"
+
+    if not nc_path.exists():
+        log.info(f"GFS data for {run_date} f{lead_hours:03d} not found. Attempting download...")
+        # Subset to a small box around the point to speed up download
+        bbox = (lon - 0.5, lat - 0.5, lon + 0.5, lat + 0.5)
+        downloaded = download_gfs(run_date, lead_hours=[lead_hours], data_lake=data_lake, bbox=bbox)
+        if not downloaded:
+            log.warning("Failed to download GFS data. Falling back to zero wind.")
+            return 0.0, 0.0
+        nc_path = downloaded[0]
+
+    ds = xr.open_dataset(nc_path)
+    
+    # Variable name variants
+    u_var = ds.get("u10", ds.get("UGRD_10maboveground"))
+    v_var = ds.get("v10", ds.get("VGRD_10maboveground"))
+
+    if u_var is None or v_var is None:
+        log.warning("Wind variables not found in GFS dataset.")
+        return 0.0, 0.0
+
+    # Select nearest
+    dim_lat = "latitude" if "latitude" in ds.dims else "lat"
+    dim_lon = "longitude" if "longitude" in ds.dims else "lon"
+    
+    u_val = float(u_var.sel({dim_lat: lat, dim_lon: lon}, method="nearest").values.flat[0])
+    v_val = float(v_var.sel({dim_lat: lat, dim_lon: lon}, method="nearest").values.flat[0])
+    
+    ds.close()
+    return u_val, v_val
 
 
 # ─────────────────────────────────────────────────────────────────────────────

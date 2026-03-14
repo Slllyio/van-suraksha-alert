@@ -3,12 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JwalaNetra Command Horizon v2</title>
+<title>VanAagni Command Horizon v2</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
 
 <!-- MapLibre GL JS -->
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+
+<!-- CesiumJS library and CSS -->
+<script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+<link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 
 <!-- deck.gl standalone -->
 <script src="https://unpkg.com/deck.gl@9.0.16/dist.min.js"></script>
@@ -56,10 +60,14 @@ body {
   width: 100vw;
 }
 
-#map {
+#map, #cesiumContainer {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: 0;
+}
+
+#cesiumContainer {
+  display: none;
 }
 
 .glass {
@@ -130,132 +138,28 @@ body {
 .threat-level.moderate { color: var(--accent-warn); }
 .threat-level.low { color: var(--accent-safe); }
 
-.threat-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
-.metric-box { background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
-.metric-value { font-family: var(--font-mono); font-size: 20px; font-weight: 700; line-height: 1; }
-.metric-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-
 .fwi-card { padding: 16px; }
 .fwi-gauge { position: relative; width: 100%; height: 14px; background: rgba(255,255,255,0.05); border-radius: 7px; overflow: hidden; margin: 12px 0 8px; }
 .fwi-fill { height: 100%; border-radius: 7px; transition: width 1s ease; background: linear-gradient(90deg, #22c55e, #eab308, #f97316, #ef4444, #7f1d1d); }
 .fwi-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); }
-.fwi-detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
-.fwi-chip { background: rgba(255,255,255,0.04); border-radius: 6px; padding: 6px 8px; text-align: center; }
-.fwi-chip-value { font-family: var(--font-mono); font-size: 14px; font-weight: 600; }
-.fwi-chip-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
-
-.range-card { padding: 16px; }
-.section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 10px; }
-.range-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-
-.range-btn {
-  background: rgba(255,255,255,0.04); border: 1px solid transparent; border-radius: var(--radius-sm);
-  padding: 8px 10px; color: var(--text-secondary); font-size: 11px; font-weight: 500;
-  cursor: pointer; transition: all 0.2s; text-align: left; display: flex; justify-content: space-between; align-items: center;
-}
-.range-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
-.range-btn.active { background: rgba(249, 115, 22, 0.12); border-color: var(--border-active); color: var(--accent-fire); }
-.range-count { font-family: var(--font-mono); font-size: 10px; opacity: 0.6; }
 
 .layers-card { padding: 16px; }
-.layer-toggle { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); cursor: pointer; }
-.layer-toggle:last-child { border-bottom: none; }
-.layer-info { display: flex; align-items: center; gap: 10px; }
-.layer-dot { width: 10px; height: 10px; border-radius: 3px; }
-.layer-name { font-size: 12px; font-weight: 500; }
-.toggle-switch { width: 36px; height: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; position: relative; transition: background 0.3s; }
-.toggle-switch.on { background: rgba(249, 115, 22, 0.4); }
-.toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform 0.3s; }
-.toggle-switch.on::after { transform: translateX(16px); }
+.section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); font-weight: 600; margin-bottom: 10px; }
 
 .sidebar-right { position: fixed; top: 80px; right: 12px; bottom: 12px; width: 360px; z-index: 90; display: flex; flex-direction: column; gap: 10px; }
 
 .alert-feed { flex: 1; padding: 16px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; }
-.alert-feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.alert-count-badge { font-family: var(--font-mono); font-size: 11px; background: rgba(239, 68, 68, 0.15); color: var(--accent-danger); padding: 3px 10px; border-radius: 10px; }
 
-.alert-item {
-  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-  border-radius: var(--radius-sm); padding: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; position: relative;
+.twin-hud {
+    position: fixed; top: 80px; left: 344px; width: 300px; padding: 15px; display: none; z-index: 100;
 }
-.alert-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
-.alert-item.critical { border-left: 3px solid var(--accent-danger); }
-.alert-item.high { border-left: 3px solid var(--accent-fire); }
-.alert-item.moderate { border-left: 3px solid var(--accent-warn); }
-.alert-item.low { border-left: 3px solid var(--accent-safe); }
-
-.alert-severity-badge {
-  display: inline-block; font-size: 9px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 1px; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px;
+.twin-hud.visible { display: block; }
+.twin-btn-group { display: flex; gap: 5px; margin-top: 10px; }
+.twin-btn {
+    flex: 1; background: #444; color: white; border: 1px solid #666; padding: 8px; border-radius: 4px;
+    cursor: pointer; font-size: 0.8rem; font-weight: bold;
 }
-.alert-severity-badge.critical { background: rgba(239,68,68,0.2); color: var(--accent-danger); }
-.alert-severity-badge.high { background: rgba(249,115,22,0.2); color: var(--accent-fire); }
-.alert-severity-badge.moderate { background: rgba(234,179,8,0.2); color: var(--accent-warn); }
-.alert-severity-badge.low { background: rgba(34,197,94,0.15); color: var(--accent-safe); }
-
-.alert-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-.alert-meta { font-size: 11px; color: var(--text-muted); display: flex; gap: 12px; }
-
-.weather-card { padding: 16px; }
-.weather-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-.weather-item { background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); padding: 10px; text-align: center; }
-.weather-icon { font-size: 20px; margin-bottom: 4px; }
-.weather-value { font-family: var(--font-mono); font-size: 16px; font-weight: 700; }
-.weather-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-
-.bottom-bar {
-  position: fixed; bottom: 12px; left: 344px; right: 384px; height: 80px; z-index: 90;
-  display: flex; align-items: center; padding: 0 20px; gap: 20px;
-}
-.timeline-container { flex: 1; }
-.timeline-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-
-.timeline-slider {
-  width: 100%; height: 6px; -webkit-appearance: none; appearance: none;
-  background: rgba(255,255,255,0.08); border-radius: 3px; outline: none;
-}
-.timeline-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
-  background: var(--accent-fire); cursor: pointer; box-shadow: 0 0 10px rgba(249,115,22,0.5);
-}
-.timeline-dates { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 4px; }
-
-.stat-boxes { display: flex; gap: 12px; }
-.stat-box { text-align: center; min-width: 80px; }
-.stat-box-value { font-family: var(--font-mono); font-size: 22px; font-weight: 700; }
-.stat-box-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-
-.detail-panel {
-  position: fixed; bottom: 104px; left: 344px; width: 400px; z-index: 95;
-  padding: 20px; display: none; max-height: 360px; overflow-y: auto;
-}
-.detail-panel.visible { display: block; }
-
-.detail-close {
-  position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.08);
-  border: none; color: var(--text-secondary); width: 28px; height: 28px;
-  border-radius: 50%; cursor: pointer; font-size: 14px;
-  display: flex; align-items: center; justify-content: center;
-}
-.detail-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-.detail-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
-.detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-.detail-item { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 10px; }
-.detail-item-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-.detail-item-value { font-family: var(--font-mono); font-size: 15px; font-weight: 600; margin-top: 2px; }
-
-
-.search-bar { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 95; width: 360px; display: none; }
-.search-bar.visible { display: block; }
-.search-input {
-  width: 100%; background: var(--bg-glass); backdrop-filter: blur(20px);
-  border: 1px solid var(--border-glass); border-radius: var(--radius);
-  padding: 12px 16px; color: var(--text-primary); font-size: 14px; font-family: var(--font-sans); outline: none;
-}
-.search-input::placeholder { color: var(--text-muted); }
-.search-results { margin-top: 4px; max-height: 240px; overflow-y: auto; }
-.search-result-item { padding: 10px 16px; cursor: pointer; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.04); }
-.search-result-item:hover { background: rgba(255,255,255,0.06); }
+.twin-btn.active { background: var(--accent-danger); border-color: var(--accent-danger); }
 
 .map-controls { position: fixed; bottom: 104px; right: 384px; z-index: 90; display: flex; flex-direction: column; gap: 4px; }
 .map-ctrl-btn {
@@ -263,6 +167,7 @@ body {
   cursor: pointer; font-size: 16px; color: var(--text-secondary); transition: all 0.2s;
 }
 .map-ctrl-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.08); }
+.map-ctrl-btn.active { color: var(--accent-fire); background: rgba(249, 115, 22, 0.12); }
 
 .loading-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -272,946 +177,241 @@ body {
 .loading-overlay.hidden { opacity: 0; pointer-events: none; }
 .loading-spinner { width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent-fire); border-radius: 50%; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { margin-top: 16px; font-size: 14px; color: var(--text-secondary); }
-
-@media (max-width: 1400px) { .sidebar-right { width: 300px; } .bottom-bar { right: 324px; } .map-controls { right: 324px; } }
-@media (max-width: 1100px) { .sidebar-left { width: 260px; } .bottom-bar { left: 284px; } }
 </style>
 </head>
 <body>
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-spinner"></div>
-  <div class="loading-text">Initializing Command Horizon...</div>
+  <div class="loading-text">Initializing VanAagni Level 4 Twin...</div>
 </div>
 
 <div class="top-bar glass">
   <div class="brand">
     <div class="brand-icon">&#x1f525;</div>
     <div>
-      <div class="brand-text">Jwala<span>Netra</span></div>
+      <div class="brand-text">Van<span>Aagni</span></div>
       <div class="brand-sub">Command Horizon v2</div>
     </div>
   </div>
   <div class="top-actions">
     <div class="status-pill">
       <div class="status-dot"></div>
-      <span id="systemStatus">System Online</span>
+      <span id="systemStatus">Level 4 Autonomous</span>
     </div>
     <div class="time-display" id="liveTime"></div>
   </div>
 </div>
 
 <div id="map"></div>
+<div id="cesiumContainer"></div>
 
-<div class="sidebar-left" id="sidebarLeft">
-  <div class="threat-card glass" id="threatCard">
+<div class="twin-hud glass" id="twinHud">
+    <div class="section-title">🔥 3D Digital Twin Command</div>
+    <div style="font-size: 0.8rem; margin-bottom: 8px;">
+        Simulation Time: <span id="sim-time" style="color:var(--accent-info); font-weight:bold;">00:00</span><br>
+        Status: <span id="twin-status" style="color:var(--accent-safe);">Engine Ready</span>
+    </div>
+    <div class="twin-btn-group">
+        <button class="twin-btn" id="toggleSimBtn" onclick="toggleTwinSimulation()">START SIM</button>
+        <button class="twin-btn" id="lineBtn" onclick="setTwinIntervention('FIRELINE')">LINE</button>
+        <button class="twin-btn" id="igniteBtn" onclick="setTwinIntervention('BACKFIRE')">IGNITE</button>
+    </div>
+    <button style="margin-top:5px; width:100%; background:#2c3e50; color:white; border:none; padding:5px; border-radius:4px;" onclick="clearTwinInterventions()">CLEAR ALL</button>
+</div>
+
+<div class="sidebar-left">
+  <div class="threat-card glass">
     <div class="threat-header">
       <div class="threat-label">Current Threat Level</div>
       <div class="threat-level moderate" id="threatLevel">MODERATE</div>
-    </div>
-    <div class="threat-metrics">
-      <div class="metric-box">
-        <div class="metric-value" id="metricFires" style="color:var(--accent-danger)">0</div>
-        <div class="metric-label">Active Fires</div>
-      </div>
-      <div class="metric-box">
-        <div class="metric-value" id="metricAlerts" style="color:var(--accent-warn)">0</div>
-        <div class="metric-label">Alerts Today</div>
-      </div>
-      <div class="metric-box">
-        <div class="metric-value" id="metricArea" style="color:var(--accent-fire)">0</div>
-        <div class="metric-label">Ha at Risk</div>
-      </div>
     </div>
   </div>
 
   <div class="fwi-card glass">
     <div class="section-title">Fire Weather Index</div>
-    <div class="fwi-gauge"><div class="fwi-fill" id="fwiFill" style="width: 0%"></div></div>
-    <div class="fwi-labels"><span>Low</span><span>Moderate</span><span>High</span><span>Very High</span><span>Extreme</span></div>
-    <div class="fwi-detail-grid">
-      <div class="fwi-chip"><div class="fwi-chip-value" id="fwiFFMC">--</div><div class="fwi-chip-label">FFMC</div></div>
-      <div class="fwi-chip"><div class="fwi-chip-value" id="fwiDMC">--</div><div class="fwi-chip-label">DMC</div></div>
-      <div class="fwi-chip"><div class="fwi-chip-value" id="fwiDC">--</div><div class="fwi-chip-label">DC</div></div>
-      <div class="fwi-chip"><div class="fwi-chip-value" id="fwiISI">--</div><div class="fwi-chip-label">ISI</div></div>
-      <div class="fwi-chip"><div class="fwi-chip-value" id="fwiBUI">--</div><div class="fwi-chip-label">BUI</div></div>
-      <div class="fwi-chip"><div class="fwi-chip-value" id="fwiFWI">--</div><div class="fwi-chip-label">FWI</div></div>
-    </div>
-  </div>
-
-  <div class="range-card glass">
-    <div class="section-title">Forest Ranges</div>
-    <div class="range-grid" id="rangeGrid"></div>
+    <div class="fwi-gauge"><div class="fwi-fill" id="fwiFill" style="width: 65%"></div></div>
+    <div class="fwi-labels"><span>Low</span><span>Extreme</span></div>
   </div>
 
   <div class="layers-card glass">
-    <div class="section-title">Map Layers</div>
+    <div class="section-title">Map Controls</div>
     <div id="layerToggles"></div>
   </div>
 </div>
 
 <div class="sidebar-right" id="sidebarRight">
-  <div class="weather-card glass">
-    <div class="section-title">Live Weather &mdash; Guna Division</div>
-    <div class="weather-grid" id="weatherGrid">
-      <div class="weather-item"><div class="weather-icon">&#x1f321;</div><div class="weather-value" id="wxTemp">--</div><div class="weather-label">Temperature</div></div>
-      <div class="weather-item"><div class="weather-icon">&#x1f4a7;</div><div class="weather-value" id="wxHumidity">--</div><div class="weather-label">Humidity</div></div>
-      <div class="weather-item"><div class="weather-icon">&#x1f32c;</div><div class="weather-value" id="wxWind">--</div><div class="weather-label">Wind Speed</div></div>
-      <div class="weather-item"><div class="weather-icon">&#x1f327;</div><div class="weather-value" id="wxRain">--</div><div class="weather-label">Precipitation</div></div>
-    </div>
-  </div>
-
   <div class="alert-feed glass">
-    <div class="alert-feed-header">
-      <div class="section-title" style="margin-bottom:0">Alert Feed</div>
-      <div class="alert-count-badge" id="alertCountBadge">0 alerts</div>
-    </div>
+    <div class="section-title">Tactical Alert Feed</div>
     <div id="alertList"></div>
   </div>
 </div>
 
-<div class="bottom-bar glass">
-  <div class="timeline-container">
-    <div class="timeline-label">Detection Timeline (Last 7 Days)</div>
-    <input type="range" class="timeline-slider" id="timelineSlider" min="0" max="6" value="6" step="1">
-    <div class="timeline-dates" id="timelineDates"></div>
-  </div>
-  <div class="stat-boxes">
-    <div class="stat-box"><div class="stat-box-value" id="statCompartments" style="color:var(--accent-info)">747</div><div class="stat-box-label">Compartments</div></div>
-    <div class="stat-box"><div class="stat-box-value" id="statRanges" style="color:var(--accent-purple)">8</div><div class="stat-box-label">Ranges</div></div>
-    <div class="stat-box"><div class="stat-box-value" id="statSatPass" style="color:var(--accent-safe)">--</div><div class="stat-box-label">Last Sat Pass</div></div>
-  </div>
-</div>
-
-<div class="detail-panel glass" id="detailPanel">
-  <button class="detail-close" id="detailClose">&times;</button>
-  <div id="detailContent"></div>
-</div>
-
-<div class="map-controls glass" id="mapControls">
-  <div class="map-ctrl-btn" id="btnZoomIn" title="Zoom In">+</div>
-  <div class="map-ctrl-btn" id="btnZoomOut" title="Zoom Out">&minus;</div>
-  <div class="map-ctrl-btn" id="btnReset" title="Reset View">&#x1f3e0;</div>
-  <div class="map-ctrl-btn" id="btnSearch" title="Search Compartment">&#x1f50d;</div>
-  <div class="map-ctrl-btn" id="btn3D" title="Toggle 3D Terrain">&#x26f0;</div>
-</div>
-
-<div class="search-bar glass" id="searchBar">
-  <input type="text" class="search-input" id="searchInput" placeholder="Search compartment, beat, or range...">
-  <div class="search-results glass" id="searchResults"></div>
+<div class="map-controls glass">
+  <div class="map-ctrl-btn" id="btnZoomIn">+</div>
+  <div class="map-ctrl-btn" id="btnZoomOut">&minus;</div>
+  <div class="map-ctrl-btn" id="btn3D" title="3D War Room Mode">&#x26f0;</div>
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════
-   JwalaNetra Command Horizon v2 - Safe DOM Only
-   ═══════════════════════════════════════════════ */
-
 const CONFIG = {
-  center: [77.31, 24.65],
-  zoom: 9.5,
-  maxBounds: [[76.4, 23.8], [78.3, 25.5]],
-  geojsonPath: '/data/aoi/gunafinal.geojson',
+  center: [77.32, 24.64],
+  zoom: 10,
   realDataUrl: '/api/real-data',
-  beatSopsUrl: '/api/beat-sops',
-  weatherLat: 24.65,
-  weatherLon: 77.31,
-  openMeteoUrl: 'https://api.open-meteo.com/v1/forecast',
-  mapStyles: {
-    dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
-  },
-  rangeColors: {
-    'ARON': '#3b82f6', 'BAMORI': '#8b5cf6', 'BINAGANJ': '#06b6d4', 'FATEHGARH': '#10b981',
-    'GUNA NORTH': '#f59e0b', 'GUNA SOUTH': '#ef4444', 'M GARH': '#ec4899', 'RAGHOGARH': '#f97316'
-  }
+  mapStyles: { dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json' }
 };
 
 const state = {
-  map: null, geojsonData: null, selectedFeature: null, activeRange: null,
-  layers: { compartments: true, heatmap: true, hotspots: true, labels: true, uncertainty: true },
-  weatherData: null, alertsData: [], is3D: false, timelineDates: [],
-  realData: null,     // from /api/real-data
-  beatSops: null,     // from /api/beat-sops (indexed by beat_id)
-  beatRiskMap: {},    // beat_id -> {risk_score, p_ignition, tier, ...}
+  map: null, cesium: null, isTwinMode: false, isSimulating: false, socket: null,
+  fireCoordinates: [], interventions: [], currentInterType: null
 };
 
-// ─── Safe DOM helpers ───
-function el(tag, attrs, children) {
-  const node = document.createElement(tag);
-  if (attrs) {
-    Object.entries(attrs).forEach(([k, v]) => {
-      if (k === 'style' && typeof v === 'object') Object.assign(node.style, v);
-      else if (k === 'className') node.className = v;
-      else if (k.startsWith('on')) node.addEventListener(k.slice(2).toLowerCase(), v);
-      else node.setAttribute(k, v);
-    });
-  }
-  if (children) {
-    (Array.isArray(children) ? children : [children]).forEach(c => {
-      if (typeof c === 'string') node.appendChild(document.createTextNode(c));
-      else if (c) node.appendChild(c);
-    });
-  }
-  return node;
-}
-
-function setText(id, text) { document.getElementById(id).textContent = text; }
-
-// ─── Init ───
 async function init() {
   updateClock();
   setInterval(updateClock, 1000);
 
+  // 1. Initialize MapLibre (2D Mode)
   state.map = new maplibregl.Map({
     container: 'map', style: CONFIG.mapStyles.dark,
-    center: CONFIG.center, zoom: CONFIG.zoom,
-    maxBounds: CONFIG.maxBounds, pitch: 0, bearing: 0, attributionControl: false
-  });
-  state.map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-left');
-
-  state.map.on('load', async () => {
-    await Promise.all([loadGeoJSON(), fetchWeather(), fetchRealData(), fetchBeatSops()]);
-    buildBeatRiskMap();
-    setupMapLayers();
-    applyIgnitionToFeatures();
-    setupRangeFilters();
-    setupLayerToggles();
-    setupMapControls();
-    setupSearch();
-    setupTimeline();
-    generateAlertFeed();
-    updateStatBoxes();
-    applyRealFWI();
-    applyRealThreatLevel();
-    applySatPassInfo();
-    hideLoading();
-  });
-}
-
-async function loadGeoJSON() {
-  try {
-    const resp = await fetch(CONFIG.geojsonPath);
-    state.geojsonData = await resp.json();
-    state.geojsonData.features.forEach((f, i) => { f.id = i; });
-  } catch (e) { console.error('GeoJSON load failed:', e); }
-}
-
-async function fetchRealData() {
-  try {
-    const resp = await fetch(CONFIG.realDataUrl);
-    state.realData = await resp.json();
-    console.log('[REAL DATA] Loaded:', state.realData.total_beats, 'beats, source:', state.realData.source);
-  } catch (e) {
-    console.warn('Real data API not available, using fallback:', e.message);
-    state.realData = null;
-  }
-}
-
-async function fetchBeatSops() {
-  try {
-    const resp = await fetch(CONFIG.beatSopsUrl);
-    state.beatSops = await resp.json();
-    console.log('[BEAT SOPS] Loaded:', Object.keys(state.beatSops).length, 'SOPs');
-  } catch (e) {
-    console.warn('Beat SOPs API not available:', e.message);
-    state.beatSops = {};
-  }
-}
-
-function buildBeatRiskMap() {
-  if (!state.realData || !state.realData.beats) return;
-  state.realData.beats.forEach(b => {
-    state.beatRiskMap[b.beat_id] = b;
-  });
-}
-
-// Apply p_ignition-based tier as feature state for compartment coloring
-function applyIgnitionToFeatures() {
-  if (!state.geojsonData) return;
-  state.geojsonData.features.forEach((f, i) => {
-    const beatData = findBeatRisk(f.properties);
-    const sop = findBeatSop(f.properties);
-    // Fused tier is authoritative (post-fusion); SOP tier is raw pre-fusion (often stale)
-    const tier = (beatData && beatData.fused_tier) || (sop && sop.tier) || 'CLEAR';
-    const p_ign = (beatData && beatData.p_ignition != null) ? beatData.p_ignition : (sop ? (sop.p_ignition || 0) : 0);
-    state.map.setFeatureState({ source: 'compartments', id: i }, { tier: tier, p_ign: p_ign });
-  });
-}
-
-// ─── Map Layers ───
-function setupMapLayers() {
-  const map = state.map;
-  if (!state.geojsonData) return;
-
-  map.addSource('compartments', { type: 'geojson', data: state.geojsonData });
-
-  // Color compartments by fused tier from pipeline (p_ignition-based)
-  map.addLayer({
-    id: 'compartments-fill', type: 'fill', source: 'compartments',
-    paint: {
-      'fill-color': ['case',
-        ['==', ['feature-state', 'tier'], 'OPERATIONAL'], 'rgba(139,0,0,0.75)',
-        ['==', ['feature-state', 'tier'], 'CRITICAL'],    'rgba(239,68,68,0.75)',
-        ['==', ['feature-state', 'tier'], 'WARNING'],     'rgba(239,68,68,0.65)',
-        ['==', ['feature-state', 'tier'], 'WATCH'],       'rgba(249,115,22,0.65)',
-        ['==', ['feature-state', 'tier'], 'ADVISORY'],    'rgba(234,179,8,0.55)',
-        ['==', ['feature-state', 'tier'], 'CLEAR'],       'rgba(34,197,94,0.18)',
-        buildRangeColorExpr()
-      ],
-      'fill-opacity': ['case',
-        ['boolean', ['feature-state', 'hover'], false], 0.75,
-        ['boolean', ['feature-state', 'selected'], false], 0.85,
-        0.5]
-    }
+    center: CONFIG.center, zoom: CONFIG.zoom, pitch: 0
   });
 
-  map.addLayer({
-    id: 'compartments-outline', type: 'line', source: 'compartments',
-    paint: {
-      'line-color': ['case', ['boolean', ['feature-state', 'selected'], false], '#ffffff', 'rgba(255,255,255,0.15)'],
-      'line-width': ['case',
-        ['boolean', ['feature-state', 'selected'], false], 2.5,
-        ['boolean', ['feature-state', 'hover'], false], 1.5, 0.5]
-    }
+  // 2. Initialize Cesium (3D Twin Mode)
+  state.cesium = new Cesium.Viewer('cesiumContainer', {
+    terrainProvider: Cesium.createWorldTerrain(),
+    baseLayerPicker: false, infoBox: false, animation: false, timeline: false
   });
+  state.cesium.scene.globe.depthTestAgainstTerrain = true;
 
-  map.addLayer({
-    id: 'compartments-labels', type: 'symbol', source: 'compartments', minzoom: 12,
-    layout: { 'text-field': ['concat', 'C-', ['get', 'NEW_No_']], 'text-size': 10, 'text-font': ['Open Sans Regular'] },
-    paint: { 'text-color': 'rgba(255,255,255,0.6)', 'text-halo-color': 'rgba(0,0,0,0.7)', 'text-halo-width': 1 }
-  });
-
-  addHotspotLayer();
-  addHeatmapLayer();
-  addPrecisionLayer();
-  setupMapInteraction();
+  setupEvents();
+  setTimeout(() => document.getElementById('loadingOverlay').classList.add('hidden'), 1000);
 }
 
-function addPrecisionLayer() {
-  state.map.addSource('precision-scars', { type: 'geojson', data: '/api/precision-layers' });
-  state.map.addLayer({
-    id: 'precision-scars-fill', type: 'fill', source: 'precision-scars',
-    paint: { 'fill-color': '#f97316', 'fill-opacity': 0.6, 'fill-outline-color': '#ffffff' }
-  });
-  state.map.addLayer({
-    id: 'precision-scars-glow', type: 'line', source: 'precision-scars',
-    paint: { 'line-color': '#f97316', 'line-width': 2, 'line-blur': 2 }
-  });
-}
-
-function buildRangeColorExpr() {
-  const expr = ['match', ['get', 'RANGE']];
-  for (const [r, c] of Object.entries(CONFIG.rangeColors)) expr.push(r, c);
-  expr.push('rgba(255,255,255,0.1)');
-  return expr;
-}
-
-function addHotspotLayer() {
-  // Use real FIRMS fires from pipeline, or real beat centroids with risk > threshold
-  const hotspots = buildRealHotspots();
-  state.map.addSource('hotspots', { type: 'geojson', data: { type: 'FeatureCollection', features: hotspots } });
-
-  state.map.addLayer({
-    id: 'hotspots-glow', type: 'circle', source: 'hotspots',
-    paint: {
-      'circle-radius': ['interpolate', ['linear'], ['get', 'frp'], 0, 12, 50, 28],
-      'circle-color': ['interpolate', ['linear'], ['get', 'confidence'], 0.5, 'rgba(234,179,8,0.3)', 0.8, 'rgba(249,115,22,0.4)', 1.0, 'rgba(239,68,68,0.5)'],
-      'circle-blur': 1
-    }
-  });
-
-  state.map.addLayer({
-    id: 'hotspots-point', type: 'circle', source: 'hotspots',
-    paint: {
-      'circle-radius': ['interpolate', ['linear'], ['get', 'frp'], 0, 4, 50, 10],
-      'circle-color': ['interpolate', ['linear'], ['get', 'confidence'], 0.5, '#eab308', 0.8, '#f97316', 1.0, '#ef4444'],
-      'circle-stroke-width': 1.5, 'circle-stroke-color': 'rgba(255,255,255,0.5)'
-    }
-  });
-}
-
-function buildHeatmapWeight(props) {
-  // Fused beat data is authoritative (post-fusion with varied risk); SOP is raw (often uniform 0.01)
-  const beatData = findBeatRisk(props);
-  if (beatData && beatData.p_ignition != null) return Math.min(1, beatData.p_ignition);
-  const sop = findBeatSop(props);
-  return sop ? Math.min(1, sop.p_ignition || 0.01) : 0.01;
-}
-
-function addHeatmapLayer() {
-  if (!state.geojsonData) return;
-  const pts = [];
-  state.geojsonData.features.forEach(f => {
-    try {
-      const c = turf.centroid(f);
-      c.properties = { risk: buildHeatmapWeight(f.properties) };
-      pts.push(c);
-    } catch (e) {}
-  });
-
-  state.map.addSource('heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: pts } });
-  state.map.addLayer({
-    id: 'risk-heatmap', type: 'heatmap', source: 'heatmap', maxzoom: 14,
-    paint: {
-      'heatmap-weight': ['get', 'risk'],
-      'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 8, 0.5, 13, 2],
-      'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 8, 15, 13, 30],
-      'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'],
-        0, 'rgba(0,0,0,0)', 0.1, 'rgba(34,197,94,0.2)', 0.3, 'rgba(234,179,8,0.4)',
-        0.5, 'rgba(249,115,22,0.5)', 0.7, 'rgba(239,68,68,0.6)', 1.0, 'rgba(127,29,29,0.8)'],
-      'heatmap-opacity': 0.6
-    }
-  }, 'compartments-fill');
-}
-
-// ─── Map Interaction ───
-function setupMapInteraction() {
-  const map = state.map;
-  let hoveredId = null;
-
-  map.on('mousemove', 'compartments-fill', (e) => {
-    if (!e.features.length) return;
-    map.getCanvas().style.cursor = 'pointer';
-    if (hoveredId !== null) map.setFeatureState({ source: 'compartments', id: hoveredId }, { hover: false });
-    hoveredId = e.features[0].id;
-    map.setFeatureState({ source: 'compartments', id: hoveredId }, { hover: true });
-  });
-
-  map.on('mouseleave', 'compartments-fill', () => {
-    map.getCanvas().style.cursor = '';
-    if (hoveredId !== null) { map.setFeatureState({ source: 'compartments', id: hoveredId }, { hover: false }); hoveredId = null; }
-  });
-
-  map.on('click', 'compartments-fill', (e) => {
-    if (!e.features.length) return;
-    const feature = e.features[0];
-    if (state.selectedFeature !== null) map.setFeatureState({ source: 'compartments', id: state.selectedFeature }, { selected: false });
-    state.selectedFeature = feature.id;
-    map.setFeatureState({ source: 'compartments', id: feature.id }, { selected: true });
-    showDetailPanel(feature);
-  });
-
-  map.on('click', 'hotspots-point', (e) => {
-    if (!e.features.length) return;
-    const f = e.features[0];
-    const coords = f.geometry.coordinates;
-    const p = f.properties;
-    const labelColor = p.confidence > 0.8 ? '#ef4444' : '#f97316';
-    const popupEl = el('div', { style: { fontFamily: 'Inter,sans-serif', color: '#f1f5f9', padding: '4px' } }, [
-      el('div', { style: { fontWeight: '700', fontSize: '13px', marginBottom: '6px', color: labelColor } }, ['VIIRS Fire Detection']),
-      el('div', { style: { fontSize: '11px', color: '#94a3b8', lineHeight: '1.6' } }, [
-        el('span', {}, [el('b', {}, ['FRP: ']), document.createTextNode((p.frp || 0).toFixed(1) + ' MW'), el('br')]),
-        el('b', {}, ['Confidence: ']), document.createTextNode((p.confidence * 100).toFixed(0) + '%'), el('br'),
-        el('b', {}, ['Coords: ']), document.createTextNode(coords[1].toFixed(4) + ', ' + coords[0].toFixed(4)), el('br'),
-        el('b', {}, ['Acquired: ']), document.createTextNode(p.time || 'Recent')
-      ])
-    ]);
-    new maplibregl.Popup({ maxWidth: '260px' }).setLngLat(coords).setDOMContent(popupEl).addTo(map);
-  });
-}
-
-// ─── Detail Panel ───
-function showDetailPanel(feature) {
-  const panel = document.getElementById('detailPanel');
-  const content = document.getElementById('detailContent');
-  const p = feature.properties;
-
-  let areaHa = '--';
-  try {
-    const full = state.geojsonData.features.find(f => String(f.properties.NEW_No_) === String(p.NEW_No_) && f.properties.RANGE === p.RANGE);
-    if (full) areaHa = (turf.area(full) / 10000).toFixed(1);
-  } catch (e) {}
-
-  // Look up BOTH fused beat data (tier/risk/p_ignition) and SOP data (muhurta physics)
-  // Fused data is the authoritative source for risk assessment (may differ from SOP if pipeline re-ran)
-  const sop = findBeatSop(p);
-  const fused = findBeatRisk(p);
-  // Prefer fused data for tier/risk/p_ignition (it's the latest pipeline fusion); fall back to SOP
-  const pIgn = fused ? (fused.p_ignition || (sop ? sop.p_ignition : null)) : (sop ? sop.p_ignition : null);
-  const riskScore = pIgn != null ? pIgn.toFixed(3) : 'N/A';
-  const fusedTier = fused ? (fused.fused_tier || 'CLEAR') : (sop ? (sop.tier || 'CLEAR') : 'CLEAR');
-  const fusedRisk = fused ? (fused.risk_score || (sop ? sop.risk_score : null)) : (sop ? sop.risk_score : null);
-  const riskColor = fusedTier === 'CRITICAL' || fusedTier === 'OPERATIONAL' ? 'var(--accent-danger)' : fusedTier === 'WATCH' ? 'var(--accent-fire)' : fusedTier === 'ADVISORY' ? 'var(--accent-warn)' : 'var(--accent-safe)';
-
-  content.replaceChildren();
-
-  content.appendChild(el('div', { className: 'detail-title' }, ['Compartment C-' + (p.NEW_No_ || 'N/A')]));
-  content.appendChild(el('div', { className: 'detail-subtitle' }, [(p.RANGE || 'Unknown') + ' Range \u00B7 Beat: ' + (p.BEAT || 'N/A')]));
-
-  const grid = el('div', { className: 'detail-grid' });
-  const muhurta = sop ? (sop.muhurta || {}) : {};
-  const spreadTier = sop ? (sop.spread_tier || 'None') : 'N/A';
-  const spreadColor = spreadTier === 'EXTREME' ? 'var(--accent-danger)' : spreadTier === 'HIGH' ? 'var(--accent-fire)' : spreadTier === 'MODERATE' ? 'var(--accent-warn)' : 'var(--accent-safe)';
-  const items = [
-    { label: 'Area', value: areaHa + ' ha' },
-    { label: 'P(Ignition)', value: riskScore, color: riskColor },
-    { label: 'Fused Tier', value: fusedTier, color: riskColor },
-    { label: 'Risk Score', value: fusedRisk != null ? String(fusedRisk) : 'N/A' },
-    { label: 'EMA Score', value: sop && sop.ema_score != null ? sop.ema_score.toFixed(3) : 'N/A' },
-    { label: 'Confidence', value: sop && sop.confidence != null ? sop.confidence.toFixed(3) : 'N/A' },
-    { label: 'Muhurta Stage', value: sop ? (sop.muhurta_stage || 'N/A') : 'N/A' },
-    { label: 'Muhurta Safe', value: sop ? (sop.muhurta_safe != null ? (sop.muhurta_safe ? 'Yes' : 'No') : 'N/A') : 'N/A' },
-    { label: 'CFL Rank', value: sop ? (sop.cfl_rank || 'no_line') : 'N/A' },
-    { label: 'Spread Tier', value: spreadTier, color: spreadColor },
-    { label: 'Spread Area (ha)', value: sop && sop.spread_area_ha != null ? sop.spread_area_ha.toFixed(1) : 'N/A' },
-    { label: 'ROS (m/min)', value: muhurta.ros_m_min != null ? muhurta.ros_m_min.toFixed(2) : 'N/A' },
-    { label: 'Wind (km/h)', value: muhurta.wind_speed_kmh != null ? muhurta.wind_speed_kmh.toFixed(1) : 'N/A' },
-    { label: 'Wind Gust (km/h)', value: muhurta.wind_gust_kmh != null ? muhurta.wind_gust_kmh.toFixed(1) : 'N/A' },
-    { label: 'Wind Dir Sigma', value: muhurta.wind_dir_sigma_deg != null ? muhurta.wind_dir_sigma_deg.toFixed(1) + ' deg' : 'N/A' },
-    { label: 'Haines Index', value: muhurta.haines_index != null ? String(muhurta.haines_index) : 'N/A' },
-    { label: 'Flame Length (m)', value: muhurta.flame_length_m != null ? muhurta.flame_length_m.toFixed(1) : 'N/A' },
-    { label: 'Byram Intensity', value: muhurta.byram_intensity_kw_m != null ? muhurta.byram_intensity_kw_m.toFixed(1) + ' kW/m' : 'N/A' },
-    { label: 'Fuel Load (t/ha)', value: muhurta.fuel_load_t_ha != null ? muhurta.fuel_load_t_ha.toFixed(2) : 'N/A' },
-    { label: 'Slope %', value: muhurta.slope_pct != null ? muhurta.slope_pct.toFixed(1) + '%' : 'N/A' },
-    { label: 'Valley Accel', value: muhurta.valley_accel != null ? String(muhurta.valley_accel) : 'N/A' }
-  ];
-
-  items.forEach(item => {
-    const val = el('div', { className: 'detail-item-value' }, [item.value]);
-    if (item.color) val.style.color = item.color;
-    grid.appendChild(el('div', { className: 'detail-item' }, [
-      el('div', { className: 'detail-item-label' }, [item.label]),
-      val
-    ]));
-  });
-  content.appendChild(grid);
-
-  // Lock reason from muhurta
-  if (sop && muhurta.lock_reason) {
-    content.appendChild(el('div', { style: { marginTop: '10px', padding: '8px 10px', background: 'rgba(239,68,68,0.08)', borderRadius: '6px', fontSize: '11px', color: 'var(--accent-danger)' } },
-      [el('b', {}, ['Lock Reason: ']), document.createTextNode(muhurta.lock_reason)]));
-  }
-
-  // SHAP reasons
-  if (sop && sop.shap_reasons && sop.shap_reasons.length) {
-    const shapTitle = el('div', { style: { fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', margin: '10px 0 4px' } }, ['SHAP Risk Drivers']);
-    const shapList = el('div', { style: { fontSize: '11px', lineHeight: '1.6', color: 'var(--text-secondary)' } });
-    sop.shap_reasons.forEach((reason, idx) => {
-      shapList.appendChild(el('div', { style: { padding: '3px 0', borderBottom: idx < sop.shap_reasons.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' } }, [
-        el('span', { style: { color: 'var(--accent-fire)', marginRight: '6px' } }, [String(idx + 1) + '.']),
-        document.createTextNode(String(reason))
-      ]));
-    });
-    content.appendChild(shapTitle);
-    content.appendChild(shapList);
-  }
-
-  panel.classList.add('visible');
-}
-
-// ─── Range Filters ───
-function setupRangeFilters() {
-  const grid = document.getElementById('rangeGrid');
-  grid.replaceChildren();
-  const rangeCounts = {};
-  if (state.geojsonData) state.geojsonData.features.forEach(f => { const r = f.properties.RANGE || 'Unknown'; rangeCounts[r] = (rangeCounts[r] || 0) + 1; });
-
-  const allBtn = el('button', { className: 'range-btn active', 'data-range': 'ALL', onClick: () => filterByRange('ALL') }, [
-    el('span', {}, ['All Ranges']),
-    el('span', { className: 'range-count' }, [String(state.geojsonData ? state.geojsonData.features.length : 0)])
-  ]);
-  grid.appendChild(allBtn);
-
-  Object.entries(CONFIG.rangeColors).forEach(([range, color]) => {
-    const dot = el('span', { style: { width: '8px', height: '8px', borderRadius: '2px', background: color, display: 'inline-block' } });
-    const btn = el('button', { className: 'range-btn', 'data-range': range, onClick: () => filterByRange(range) }, [
-      el('span', { style: { display: 'flex', alignItems: 'center', gap: '6px' } }, [dot, document.createTextNode(fmtRange(range))]),
-      el('span', { className: 'range-count' }, [String(rangeCounts[range] || 0)])
-    ]);
-    grid.appendChild(btn);
-  });
-}
-
-function fmtRange(name) { return name.split(' ').map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(' '); }
-
-function filterByRange(range) {
-  state.activeRange = range === 'ALL' ? null : range;
-  document.querySelectorAll('.range-btn').forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-range') === range));
-  const filter = range === 'ALL' ? null : ['==', ['get', 'RANGE'], range];
-  ['compartments-fill', 'compartments-outline', 'compartments-labels'].forEach(lid => state.map.setFilter(lid, filter));
-
-  if (range !== 'ALL' && state.geojsonData) {
-    const rf = state.geojsonData.features.filter(f => f.properties.RANGE === range);
-    if (rf.length) { const bb = turf.bbox(turf.featureCollection(rf)); state.map.fitBounds([[bb[0],bb[1]],[bb[2],bb[3]]], { padding: 60, duration: 1200 }); }
-  } else {
-    state.map.flyTo({ center: CONFIG.center, zoom: CONFIG.zoom, duration: 1200 });
-  }
-}
-
-// ─── Layer Toggles ───
-function setupLayerToggles() {
-  const container = document.getElementById('layerToggles');
-  container.replaceChildren();
-  const layers = [
-    { key: 'compartments', name: 'Forest Compartments', color: '#3b82f6' },
-    { key: 'heatmap', name: 'Risk Heatmap (p_ignition)', color: '#ef4444' },
-    { key: 'hotspots', name: 'VIIRS Hotspots', color: '#f97316' },
-    { key: 'labels', name: 'Compartment Labels', color: '#94a3b8' }
-  ];
-
-  const layerMapIds = {
-    compartments: ['compartments-fill', 'compartments-outline'],
-    heatmap: ['risk-heatmap'],
-    hotspots: ['hotspots-glow', 'hotspots-point'],
-    labels: ['compartments-labels']
-  };
-
-  layers.forEach(layer => {
-    const sw = el('div', { className: 'toggle-switch' + (state.layers[layer.key] ? ' on' : ''), 'data-layer': layer.key });
-    const toggle = el('div', { className: 'layer-toggle' }, [
-      el('div', { className: 'layer-info' }, [
-        el('div', { className: 'layer-dot', style: { background: layer.color } }),
-        el('div', { className: 'layer-name' }, [layer.name])
-      ]),
-      sw
-    ]);
-    toggle.addEventListener('click', () => {
-      state.layers[layer.key] = !state.layers[layer.key];
-      sw.classList.toggle('on', state.layers[layer.key]);
-      (layerMapIds[layer.key] || []).forEach(lid => {
-        if (state.map.getLayer(lid)) state.map.setLayoutProperty(lid, 'visibility', state.layers[layer.key] ? 'visible' : 'none');
-      });
-    });
-    container.appendChild(toggle);
-  });
-}
-
-// ─── Weather ───
-async function fetchWeather() {
-  try {
-    const url = CONFIG.openMeteoUrl + '?latitude=' + CONFIG.weatherLat + '&longitude=' + CONFIG.weatherLon + '&current=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code&timezone=Asia/Kolkata';
-    const resp = await fetch(url);
-    const data = await resp.json();
-    state.weatherData = data.current;
-    if (data.current) {
-      setText('wxTemp', data.current.temperature_2m.toFixed(1) + '\u00B0C');
-      setText('wxHumidity', data.current.relative_humidity_2m + '%');
-      setText('wxWind', data.current.wind_speed_10m.toFixed(1) + ' km/h');
-      setText('wxRain', data.current.precipitation.toFixed(1) + ' mm');
-    }
-  } catch (e) { console.error('Weather fetch failed:', e); }
-}
-
-// ─── Build real alert feed from pipeline data ───
-function buildRealAlertFeed() {
-  if (!state.realData) return;
-  const beats = state.realData.beats || [];
-  // Sort by risk_score descending - show ALL beats ranked by risk
-  const sorted = [...beats].sort((a, b) => b.risk_score - a.risk_score || b.p_ignition - a.p_ignition);
-
-  state.alertsData = sorted.slice(0, 30).map((b, i) => {
-    const tier = b.fused_tier || 'CLEAR';
-    const severity = tier === 'CRITICAL' ? 'critical' : tier === 'HIGH' ? 'high' : tier === 'WATCH' || tier === 'MODERATE' ? 'moderate' : 'low';
-    return {
-      id: 'BEAT-' + String(i+1).padStart(3,'0'),
-      severity: severity,
-      title: b.beat_id,
-      beat: b.beat_id,
-      frp: (b.peak_frp || 0).toFixed(1),
-      confidence: (b.p_ignition * 100).toFixed(1),
-      area: '--',
-      time: 'Risk: ' + b.risk_score + ' | P(ign): ' + b.p_ignition.toFixed(3),
-      lat: b.lat,
-      lon: b.lon,
-      tier: tier
-    };
-  });
-}
-
-function computeHaAtRisk() {
-  // Sum turf.area for all non-CLEAR beats from geojson, matched against realData
-  if (!state.geojsonData) return 0;
-  let totalHa = 0;
-  state.geojsonData.features.forEach(f => {
-    const beatData = findBeatRisk(f.properties);
-    // Fused tier is authoritative (SOP tiers are pre-fusion and often stale)
-    const tier = (beatData && beatData.fused_tier) || 'CLEAR';
-    if (tier !== 'CLEAR') {
-      try { totalHa += turf.area(f) / 10000; } catch (e) {}
-    }
-  });
-  return Math.round(totalHa);
-}
-
-function computeAlertsToday() {
-  // Count ALL non-CLEAR beats from the full realData (not just top-30 in alertsData)
-  if (!state.realData || !state.realData.beats) return 0;
-  return state.realData.beats.filter(b => (b.fused_tier || 'CLEAR') !== 'CLEAR').length;
-}
-
-function updateStatBoxes() {
-  if (!state.geojsonData) return;
-  const totalCompartments = state.geojsonData.features.length;
-  const rangeSet = new Set(state.geojsonData.features.map(f => f.properties.RANGE || 'Unknown'));
-  setText('statCompartments', String(totalCompartments));
-  setText('statRanges', String(rangeSet.size));
-}
-
-function generateAlertFeed() {
-  buildRealAlertFeed();
-  const list = document.getElementById('alertList');
-  list.replaceChildren();
-
-  const rd = state.realData;
-  const fires = rd ? (rd.total_firms_fires || 0) : 0;
-  const alertsToday = computeAlertsToday();
-  const haAtRisk = computeHaAtRisk();
-  const totalBeats = rd ? rd.total_beats : 0;
-
-  setText('alertCountBadge', totalBeats + ' beats');
-  setText('metricFires', String(fires));
-  setText('metricAlerts', String(alertsToday));
-  setText('metricArea', haAtRisk > 0 ? haAtRisk.toLocaleString('en-IN') + ' ha' : '0 ha');
-  updateStatBoxes();
-
-  state.alertsData.forEach(alert => {
-    const tierColor = alert.tier === 'CLEAR' ? 'low' : alert.severity;
-    const badge = el('div', { className: 'alert-severity-badge ' + tierColor }, [alert.tier]);
-    const title = el('div', { className: 'alert-title' }, [alert.title]);
-    const meta = el('div', { className: 'alert-meta' }, [
-      el('span', { className: 'alert-meta-item' }, [alert.time]),
-      alert.frp !== '0.0' ? el('span', { className: 'alert-meta-item' }, ['FRP: ' + alert.frp + ' MW']) : null
-    ].filter(Boolean));
-    const item = el('div', { className: 'alert-item ' + tierColor, onClick: () => state.map.flyTo({ center: [alert.lon, alert.lat], zoom: 14, duration: 1000 }) }, [badge, title, meta]);
-    list.appendChild(item);
-  });
-}
-
-// ─── Real FWI from pipeline ───
-function applyRealFWI() {
-  const fwi = state.realData ? (state.realData.division_fwi || state.realData.fwi) : null;
-  if (!fwi || !fwi.ffmc) {
-    setText('fwiFFMC', '--');
-    setText('fwiDMC', '--');
-    setText('fwiDC', '--');
-    setText('fwiISI', '--');
-    setText('fwiBUI', '--');
-    setText('fwiFWI', '--');
-    document.getElementById('fwiFill').style.width = '0%';
-    return;
-  }
-  setText('fwiFFMC', fwi.ffmc.toFixed(1));
-  setText('fwiDMC', fwi.dmc.toFixed(1));
-  setText('fwiDC', fwi.dc.toFixed(1));
-  setText('fwiISI', fwi.isi.toFixed(1));
-  setText('fwiBUI', fwi.bui.toFixed(1));
-  setText('fwiFWI', fwi.value.toFixed(1));
-  // FWI scale: 0-50 maps to 0-100%
-  document.getElementById('fwiFill').style.width = Math.min(100, (fwi.value / 50) * 100) + '%';
-}
-
-function applyRealThreatLevel() {
-  const rd = state.realData;
-  const sev = (rd && rd.bulletin_severity) ? rd.bulletin_severity : 'UNKNOWN';
-  const tEl = document.getElementById('threatLevel');
-  const map = { 'CRITICAL': 'critical', 'HIGH': 'high', 'MODERATE': 'moderate', 'LOW': 'low', 'CLEAR': 'low', 'UNKNOWN': 'low' };
-  tEl.textContent = sev;
-  tEl.className = 'threat-level ' + (map[sev] || 'low');
-}
-
-function applySatPassInfo() {
-  const rd = state.realData;
-  const satEl = document.getElementById('statSatPass');
-  if (!rd || !rd.sat_pass) {
-    setText('statSatPass', '--');
-    satEl.title = '';
-    return;
-  }
-  const sp = rd.sat_pass;
-  setText('statSatPass', sp.last_pass || '--');
-  // Tooltip with data sources
-  if (sp.sources && sp.sources.length) {
-    satEl.title = 'Sources: ' + sp.sources.join(', ');
-  } else {
-    satEl.title = '';
-  }
-}
-
-// ─── Map Controls ───
-function setupMapControls() {
+function setupEvents() {
+  document.getElementById('btn3D').addEventListener('click', toggleTwinMode);
   document.getElementById('btnZoomIn').addEventListener('click', () => state.map.zoomIn());
   document.getElementById('btnZoomOut').addEventListener('click', () => state.map.zoomOut());
-  document.getElementById('btnReset').addEventListener('click', () => {
-    state.map.flyTo({ center: CONFIG.center, zoom: CONFIG.zoom, pitch: 0, bearing: 0, duration: 1200 });
-    filterByRange('ALL');
-  });
-  document.getElementById('btnSearch').addEventListener('click', () => {
-    const bar = document.getElementById('searchBar');
-    bar.classList.toggle('visible');
-    if (bar.classList.contains('visible')) document.getElementById('searchInput').focus();
-  });
-  document.getElementById('btn3D').addEventListener('click', () => {
-    state.is3D = !state.is3D;
-    state.map.easeTo({ pitch: state.is3D ? 55 : 0, bearing: state.is3D ? -20 : 0, duration: 1000 });
-    if (state.is3D) {
-      // Add terrain DEM source + exaggeration if not already added
-      if (!state.map.getSource('terrain-dem')) {
-        state.map.addSource('terrain-dem', {
-          type: 'raster-dem',
-          url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json',
-          tileSize: 256
+
+  // Cesium Click Handler for Interventions
+  const handler = new Cesium.ScreenSpaceEventHandler(state.cesium.scene.canvas);
+  handler.setInputAction((click) => {
+    if (!state.currentInterType || !state.isTwinMode) return;
+    const cartesian = state.cesium.scene.pickPosition(click.position);
+    if (Cesium.defined(cartesian)) {
+        const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+        const lon = Cesium.Math.toDegrees(cartographic.longitude);
+        const lat = Cesium.Math.toDegrees(cartographic.latitude);
+        state.interventions.push({ type: state.currentInterType, geometry: { type: "Point", coordinates: [lon, lat] } });
+        state.cesium.entities.add({
+            name: 'Intervention', position: cartesian,
+            point: { pixelSize: 10, color: state.currentInterType === 'FIRELINE' ? Cesium.Color.YELLOW : Cesium.Color.RED, heightReference: Cesium.HeightReference.CLAMP_TO_GROUND }
         });
-      }
-      state.map.setTerrain({ source: 'terrain-dem', exaggeration: 1.8 });
-    } else {
-      state.map.setTerrain(null);
     }
-    document.getElementById('btn3D').style.color = state.is3D ? 'var(--accent-fire)' : '';
-  });
-  document.getElementById('detailClose').addEventListener('click', () => {
-    document.getElementById('detailPanel').classList.remove('visible');
-    if (state.selectedFeature !== null) { state.map.setFeatureState({ source: 'compartments', id: state.selectedFeature }, { selected: false }); state.selectedFeature = null; }
-  });
+  }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }
 
-// ─── Search ───
-function setupSearch() {
-  const input = document.getElementById('searchInput');
-  const results = document.getElementById('searchResults');
-  input.addEventListener('input', () => {
-    const q = input.value.trim().toLowerCase();
-    results.replaceChildren();
-    if (q.length < 1 || !state.geojsonData) return;
-    state.geojsonData.features.filter(f => {
-      const p = f.properties;
-      return String(p.NEW_No_||'').includes(q) || (p.RANGE||'').toLowerCase().includes(q) || (p.BEAT||'').toLowerCase().includes(q) || (p.SUB_RANGE||'').toLowerCase().includes(q);
-    }).slice(0, 8).forEach(f => {
-      results.appendChild(el('div', { className: 'search-result-item', onClick: () => {
-        const c = turf.centroid(f);
-        state.map.flyTo({ center: c.geometry.coordinates, zoom: 14, duration: 1000 });
-        document.getElementById('searchBar').classList.remove('visible');
-        input.value = ''; results.replaceChildren();
-      }}, ['C-' + f.properties.NEW_No_ + ' \u00B7 ' + f.properties.RANGE + ' \u00B7 ' + (f.properties.BEAT || 'N/A')]));
+function toggleTwinMode() {
+  state.isTwinMode = !state.isTwinMode;
+  const mapEl = document.getElementById('map');
+  const cesiumEl = document.getElementById('cesiumContainer');
+  const hudEl = document.getElementById('twinHud');
+  const btn = document.getElementById('btn3D');
+
+  if (state.isTwinMode) {
+    mapEl.style.display = 'none';
+    cesiumEl.style.display = 'block';
+    hudEl.classList.add('visible');
+    btn.classList.add('active');
+    state.cesium.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(CONFIG.center[0], CONFIG.center[1] - 0.05, 5000),
+        orientation: { pitch: Cesium.Math.toRadians(-35) }
     });
-  });
-  input.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.getElementById('searchBar').classList.remove('visible'); });
-}
-
-// ─── Timeline ───
-function setupTimeline() {
-  const datesDiv = document.getElementById('timelineDates');
-  const slider = document.getElementById('timelineSlider');
-  datesDiv.replaceChildren();
-
-  state.timelineDates = [];
-  const availDates = (state.realData && state.realData.available_dates) || [];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().slice(0, 10);
-    state.timelineDates.push(dateStr);
-    const span = el('span', {}, [d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })]);
-    if (availDates.includes(dateStr)) {
-      span.style.color = 'var(--accent-fire)';
-      span.style.fontWeight = '600';
-    }
-    datesDiv.appendChild(span);
+  } else {
+    mapEl.style.display = 'block';
+    cesiumEl.style.display = 'none';
+    hudEl.classList.remove('visible');
+    btn.classList.remove('active');
+    if (state.isSimulating) toggleTwinSimulation();
   }
+}
 
-  slider.addEventListener('input', async () => {
-    const idx = parseInt(slider.value);
-    const selectedDate = state.timelineDates[idx];
-    if (!selectedDate) return;
+// ─── Digital Twin Simulation Logic ───
+function toggleTwinSimulation() {
+    const btn = document.getElementById('toggleSimBtn');
+    const status = document.getElementById('twin-status');
 
-    if (!availDates.includes(selectedDate)) {
-      setText('metricFires', '0');
-      setText('metricAlerts', '--');
-      setText('alertCountBadge', 'No data');
-      const list = document.getElementById('alertList');
-      list.replaceChildren();
-      list.appendChild(el('div', { style: { padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' } },
-        ['No pipeline data for ' + selectedDate]));
-      return;
+    if (state.isSimulating) {
+        state.isSimulating = false;
+        if (state.socket) state.socket.close();
+        btn.innerText = "START SIM";
+        btn.classList.remove('active');
+        status.innerText = "Simulation Paused";
+        return;
     }
 
-    try {
-      const [dataResp, sopResp] = await Promise.all([
-        fetch(CONFIG.realDataUrl + '?date=' + selectedDate),
-        fetch(CONFIG.beatSopsUrl + '?date=' + selectedDate)
-      ]);
-      state.realData = await dataResp.json();
-      state.beatSops = await sopResp.json();
-      state.beatRiskMap = {};
-      buildBeatRiskMap();
-      applyIgnitionToFeatures();
-      generateAlertFeed();
-      applyRealFWI();
-      applyRealThreatLevel();
-      updateHotspots();
-      updateHeatmap();
-      setText('alertCountBadge', state.realData.total_beats + ' beats (' + selectedDate + ')');
-    } catch (e) {
-      console.error('Failed to load data for', selectedDate, e);
+    state.socket = new WebSocket("ws://" + window.location.hostname + ":8001/ws/simulate");
+    state.isSimulating = true;
+    btn.innerText = "STOP SIM";
+    btn.classList.add('active');
+    status.innerText = "Syncing with PDE Engine...";
+
+    state.socket.onopen = () => {
+        state.socket.send(JSON.stringify({
+            lat: CONFIG.center[1], lon: CONFIG.center[0], 
+            wind_u: 8.0, wind_v: 3.0,
+            interventions: state.interventions
+        }));
+    };
+
+    state.socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        status.innerText = "Streaming Physics Data";
+        if (data.polygons && data.polygons.length > 0) {
+            updateFireEntity(data.polygons[0]);
+        }
+        document.getElementById('sim-time').innerText = "+" + data.time_elapsed + " mins";
+    };
+    
+    state.socket.onerror = (e) => {
+        console.error("WS Error", e);
+        status.innerText = "Connection Failed (Port 8001)";
+        state.isSimulating = false;
+    };
+}
+
+function updateFireEntity(coords) {
+    if (!state.fireEntity) {
+        state.fireEntity = state.cesium.entities.add({
+            name: 'Active Surface Fire',
+            polygon: {
+                hierarchy: new Cesium.CallbackProperty(() => {
+                    return state.fireCoordinates.length > 2 ? new Cesium.PolygonHierarchy(
+                        state.fireCoordinates.map(c => Cesium.Cartesian3.fromDegrees(c.lon, c.lat))
+                    ) : null;
+                }, false),
+                material: Cesium.Color.ORANGERED.withAlpha(0.6),
+                outline: true, outlineColor: Cesium.Color.YELLOW,
+                heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+            }
+        });
     }
-  });
+    state.fireCoordinates = coords.map(c => ({ lon: c[0], lat: c[1] }));
 }
 
-function updateHotspots() {
-  const src = state.map.getSource('hotspots');
-  if (src) src.setData({ type: 'FeatureCollection', features: buildRealHotspots() });
+function setTwinIntervention(type) {
+    state.currentInterType = type;
+    document.getElementById('lineBtn').classList.toggle('active', type === 'FIRELINE');
+    document.getElementById('igniteBtn').classList.toggle('active', type === 'BACKFIRE');
 }
 
-function updateHeatmap() {
-  if (!state.geojsonData) return;
-  const pts = [];
-  state.geojsonData.features.forEach(f => {
-    try {
-      const c = turf.centroid(f);
-      c.properties = { risk: buildHeatmapWeight(f.properties) };
-      pts.push(c);
-    } catch (e) {}
-  });
-  const src = state.map.getSource('heatmap');
-  if (src) src.setData({ type: 'FeatureCollection', features: pts });
+function clearTwinInterventions() {
+    state.interventions = [];
+    state.cesium.entities.values.filter(e => e.name === 'Intervention').forEach(e => state.cesium.entities.remove(e));
+    state.currentInterType = null;
 }
 
-// ─── Utilities ───
 function updateClock() {
-  setText('liveTime', new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' }) + ' IST');
-}
-
-function hideLoading() { setTimeout(() => document.getElementById('loadingOverlay').classList.add('hidden'), 800); }
-
-// ─── Real data helpers ───
-function buildRealHotspots() {
-  // Only show real VIIRS/FIRMS fire detections from the pipeline.
-  // If no FIRMS fires exist, show nothing - do NOT fabricate markers from vulnerability.
-  if (state.realData && state.realData.fires && state.realData.fires.length > 0) {
-    return state.realData.fires.map(f => ({
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: [f.longitude, f.latitude] },
-      properties: { frp: f.frp || 5, confidence: f.confidence === 'high' ? 0.9 : f.confidence === 'nominal' ? 0.7 : 0.5, time: f.acq_time || '', source: 'VIIRS NOAA-20' }
-    }));
-  }
-  return [];
-}
-
-function findBeatRisk(props) {
-  if (!state.realData || !state.realData.beats) return null;
-  const beatName = (props.BEAT || '').trim().toUpperCase();
-  const compNo = (props.NEW_No_ || '').trim().toUpperCase();
-  
-  // Fuzzy match against the beats array
-  return state.realData.beats.find(b => {
-    const id = (b.beat_id || '').toUpperCase();
-    return id.includes(beatName) && id.includes(compNo.replace('P ', 'P').replace('P', 'P '));
-  }) || null;
-}
-
-function findBeatSop(props) {
-  if (!state.beatSops) return null;
-  const beatName = (props.BEAT || '').trim().toUpperCase();
-  const compNo = (props.NEW_No_ || '').trim().toUpperCase();
-  
-  // Fuzzy match against the SOP keys
-  for (const key of Object.keys(state.beatSops)) {
-    const k = key.toUpperCase();
-    // Some formats have 'P 245', some have 'P245', some have '245'
-    const numOnly = compNo.replace(/[^0-9]/g, '');
-    if (k.includes(beatName) && (k.includes(compNo) || (numOnly && k.includes(numOnly)))) {
-      return state.beatSops[key];
-    }
-  }
-  return null;
+  document.getElementById('liveTime').textContent = new Date().toLocaleTimeString('en-IN', { hour12: false, timeZone: 'Asia/Kolkata' }) + ' IST';
 }
 
 init();
