@@ -13,11 +13,74 @@ import pandas as pd
 from datetime import datetime, timedelta
 import logging
 from pathlib import Path
+from geopy.distance import geodesic
 
 log = logging.getLogger(__name__)
 
 # Constants
 ROOT = Path(__file__).resolve().parent.parent.parent
+
+def load_burn_age(lon: float, lat: float, target_date_str: str, patch_size: int = 224, resolution_m: float = 30.0) -> np.ndarray:
+    """
+    Computes a 2D 'Burn Age' tensor (years since last fire) for a given patch.
+    If no historical fire exists, defaults to 10.0 years (mature unburned).
+    """
+    # Initialize with mature forest age (10 years = safe baseline)
+    burn_age_tensor = np.full((1, patch_size, patch_size), 10.0, dtype=np.float32)
+    
+    links_path = ROOT / "data_lake" / "burn_scars" / "fire_links.csv"
+    if not links_path.exists():
+        log.warning("No fire_links.csv found. Using baseline burn age.")
+        return burn_age_tensor
+
+    try:
+        target_dt = datetime.strptime(target_date_str, "%Y-%m-%d")
+        df = pd.read_csv(links_path)
+        df['fire_date'] = pd.to_datetime(df['fire_date'])
+        
+        # Filter fires that occurred BEFORE the target date
+        historical_fires = df[df['fire_date'] < target_dt]
+        
+        if not historical_fires.empty:
+            # Simple spatial proximity check (radius around patch center)
+            # Patch width in meters ~ patch_size * resolution_m
+            patch_radius_km = (patch_size * resolution_m / 2.0) / 1000.0
+            
+            for _, row in historical_fires.iterrows():
+                f_lat, f_lon = row['fire_lat'], row['fire_lon']
+                dist_km = geodesic((lat, lon), (f_lat, f_lon)).km
+                
+                # If a historical fire happened near this patch
+                if dist_km <= patch_radius_km:
+                    years_since = (target_dt - row['fire_date']).days / 365.25
+                    
+                    # For a true pixel-perfect map, we would rasterize the historical burn polygon.
+                    # Since we only have points in the CSV right now, we apply a Gaussian 
+                    # footprint of 'recent burn age' around the fire center.
+                    
+                    # Approximate pixel coords of the fire within the patch
+                    # (Center of patch is patch_size/2)
+                    dx = (f_lon - lon) * 111000 * np.cos(np.radians(lat)) / resolution_m
+                    dy = (lat - f_lat) * 111000 / resolution_m # y is flipped
+                    
+                    px = int(patch_size/2 + dx)
+                    py = int(patch_size/2 + dy)
+                    
+                    # Create a simple circular splash of the age
+                    radius_px = int(np.sqrt((row.get('burn_area_ha', 1.0) * 10000) / np.pi) / resolution_m)
+                    radius_px = max(1, radius_px)
+                    
+                    y, x = np.ogrid[-py:patch_size-py, -px:patch_size-px]
+                    mask = x**2 + y**2 <= radius_px**2
+                    
+                    # Only update if this fire is more recent than what's already there
+                    current_mask_ages = burn_age_tensor[0][mask]
+                    burn_age_tensor[0][mask] = np.minimum(current_mask_ages, max(0.0, years_since))
+
+    except Exception as e:
+        log.error(f"Failed to compute burn age: {e}")
+        
+    return burn_age_tensor
 
 def load_spatial_auxiliary(lon: float, lat: float, patch_size: int = 224, resolution_m: float = 30.0):
     """
