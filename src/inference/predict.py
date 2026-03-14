@@ -29,7 +29,7 @@ from tqdm import tqdm
 from src.model.vanaagni import build_vanaagni
 from src.data.preprocess import load_hls_tif
 from src.inference.detect import save_geotiff
-from src.data.auxiliary_loader import load_spatial_auxiliary, load_7d_weather_sequence
+from src.data.auxiliary_loader import load_spatial_auxiliary, load_7d_weather_sequence, load_burn_age
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)

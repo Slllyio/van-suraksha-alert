@@ -31,7 +31,7 @@ from typing import Tuple, List
 
 from src.model.vanaagni import build_vanaagni
 from src.data.preprocess import load_hls_tif
-from src.data.auxiliary_loader import load_spatial_auxiliary, load_7d_weather_sequence
+from src.data.auxiliary_loader import load_spatial_auxiliary, load_7d_weather_sequence, load_burn_age
 import rasterio
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
