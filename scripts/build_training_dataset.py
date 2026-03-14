@@ -141,13 +141,17 @@ log = logging.getLogger(__name__)
 
 def find_hls_scene(tile: str, target: datetime,
                    search_days: int = SEARCH_WINDOW) -> Optional[Path]:
-    """Return path to HLS scene directory nearest to target date."""
+    """
+    Return path to HLS scene directory. 
+    STRICT CAUSALITY: We only look for scenes BEFORE or ON the target date.
+    We NEVER look forward in time toward the fire event.
+    """
+    # Only look at negative deltas (backwards in time)
     for delta in range(0, search_days + 1):
-        for sign in ([0] if delta == 0 else [+delta, -delta]):
-            dt = target + timedelta(days=sign)
-            scene_dir = HLS_DIR / tile / f"{dt.year}" / f"{dt.month:02d}" / f"{dt.day:02d}"
-            if scene_dir.exists() and any(scene_dir.glob("*.B02.tif")):
-                return scene_dir
+        dt = target - timedelta(days=delta)
+        scene_dir = HLS_DIR / tile / f"{dt.year}" / f"{dt.month:02d}" / f"{dt.day:02d}"
+        if scene_dir.exists() and any(scene_dir.glob("*.B02.tif")):
+            return scene_dir
     return None
 
 
