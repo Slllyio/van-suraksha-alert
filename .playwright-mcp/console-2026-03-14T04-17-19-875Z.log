@@ -1,0 +1,4 @@
+[  495549ms] [WARNING] WebSocket onclose @ http://localhost:8501/static/js/index.Drusyo5m.js:150
+[  497894ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
+[  497894ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/host-config:0
+[  498148ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8501/_stcore/health:0
