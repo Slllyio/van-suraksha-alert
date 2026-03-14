@@ -2,6 +2,8 @@ import os
 import requests
 import json
 import logging
+from typing import List, Optional
+from shapely.geometry import Polygon
 
 log = logging.getLogger(__name__)
 
@@ -12,9 +14,32 @@ class AISignalCorps:
     """
 
     def __init__(self):
-        # We use a simulated webhook or a predefined endpoint
-        # For production, this would be a Twilio WhatsApp API or similar
         self.webhook_url = os.environ.get("VANAAGNI_DISPATCH_WEBHOOK", None)
+
+    def generate_evacuation_guidance(
+        self, 
+        lat: float, 
+        lon: float, 
+        danger_polys: List[Polygon]
+    ) -> str:
+        """
+        Uses the LogisticsEngine to find a safe path out of the danger zone.
+        """
+        try:
+            from src.analysis.logistics_engine import LogisticsEngine
+            engine = LogisticsEngine(lat, lon, dist_km=10.0)
+            result = engine.calculate_safe_evacuation(lat, lon, danger_polys)
+            
+            if "error" in result:
+                return f"⚠️ LOGISTICS WARNING: {result['error']}. Maintain shelter in place."
+            
+            status = "CLEAN" if not result['is_compromised'] else "COMPROMISED (Smoke likely)"
+            msg = f"🗺️ SAFE EVACUATION ROUTE FOUND ({result['distance_m']:.0f}m).\n"
+            msg += f"Route Status: {status}\n"
+            msg += f"Guidance: Exit via coordinates {result['route_geojson'][-1]}."
+            return msg
+        except Exception as e:
+            return f"Logistics Engine unavailable: {e}"
 
     def translate_to_hindi(self, order: str) -> str:
         """
