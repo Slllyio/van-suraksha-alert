@@ -113,25 +113,28 @@ def _unpack_batch(batch, device):
         # Legacy also needs (B, C, T, H, W)
         if images.ndim == 5:
             images = images.transpose(1, 2)
-        
+
         B_idx = images.shape[0]
         H_idx, W_idx = images.shape[-2:]
-        weather    = torch.zeros(B_idx, 10).to(device)
-        weather_7d = torch.zeros(B_idx, 10, 7).to(device)
-        terrain    = torch.zeros(B_idx, 4, H_idx, W_idx).to(device)
-        burn_age   = torch.zeros(B_idx, 3, H_idx, W_idx).to(device)
-        landcover  = torch.zeros(B_idx, 11, H_idx, W_idx).to(device)
 
-    # Final safety check: ensure B-dim on all aux inputs
-    B_final = images.shape[0]
-    if weather.ndim == 1: weather = weather.unsqueeze(0).expand(B_final, -1)
-    if weather_7d.ndim == 2: weather_7d = weather_7d.unsqueeze(0).expand(B_final, -1, -1)
-    if terrain.ndim == 3: terrain = terrain.unsqueeze(0).expand(B_final, -1, -1, -1)
-    if burn_age.ndim == 3: burn_age = burn_age.unsqueeze(0).expand(B_final, -1, -1, -1)
-    if landcover.ndim == 3: landcover = landcover.unsqueeze(0).expand(B_final, -1, -1, -1)
-    
-    return images, labels, weather, weather_7d, terrain, burn_age, landcover
+        # We must prevent 'fake' zero-filling from masking missing auxiliary data.
+        # If the model expects multi-modal inputs but the dataset only provides images, it should fail.
+        # However, to support legacy Prithvi-EO tests, we return None for missing aux instead of 0s.
+        weather    = None
+        weather_7d = None
+        terrain    = None
+        burn_age   = None
+        landcover  = None
 
+        # Final safety check: ensure B-dim on all aux inputs if they exist
+        B_final = images.shape[0]
+        if weather is not None and weather.ndim == 1: weather = weather.unsqueeze(0).expand(B_final, -1)
+        if weather_7d is not None and weather_7d.ndim == 2: weather_7d = weather_7d.unsqueeze(0).expand(B_final, -1, -1)
+        if terrain is not None and terrain.ndim == 3: terrain = terrain.unsqueeze(0).expand(B_final, -1, -1, -1)
+        if burn_age is not None and burn_age.ndim == 3: burn_age = burn_age.unsqueeze(0).expand(B_final, -1, -1, -1)
+        if landcover is not None and landcover.ndim == 3: landcover = landcover.unsqueeze(0).expand(B_final, -1, -1, -1)
+
+        return images, labels, weather, weather_7d, terrain, burn_age, landcover
 
 def train_epoch(model, loader, optimizer, scheduler, scaler, loss_fn,
                 device, task, metrics, epoch, cfg, use_amp=False):
