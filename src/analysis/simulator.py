@@ -11,6 +11,7 @@ It ingests static terrain and dynamic weather to evolve a fire front.
 import numpy as np
 import torch
 import logging
+from typing import Tuple
 
 from src.model.ros_unet import ROSGeneratorUNet
 from src.analysis.fire_dynamics import FireEventTracker
