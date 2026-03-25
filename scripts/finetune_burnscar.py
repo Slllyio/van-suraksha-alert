@@ -95,8 +95,9 @@ class BurnScarDataset(Dataset):
         for c in range(6):
             hls[c] = (hls[c] - MEANS[c]) / (STDS[c] + 1e-8)
 
-        # Augmentations (D4 group: flips + 90-degree rotations)
+        # Augmentations
         if self.augment:
+            # D4 group: flips + 90-degree rotations
             k = np.random.randint(4)
             if k > 0:
                 hls = np.rot90(hls, k, axes=(1, 2)).copy()
@@ -104,6 +105,19 @@ class BurnScarDataset(Dataset):
             if np.random.random() > 0.5:
                 hls = np.flip(hls, axis=2).copy()
                 label = np.flip(label, axis=1).copy()
+            # Spectral jitter: ±10% brightness, ±5% per-band
+            if np.random.random() > 0.5:
+                # Global brightness shift (same across bands)
+                brightness = np.random.uniform(0.9, 1.1)
+                hls = hls * brightness
+            if np.random.random() > 0.5:
+                # Per-band jitter (different per band)
+                jitter = np.random.uniform(0.95, 1.05, size=(6, 1, 1)).astype(np.float32)
+                hls = hls * jitter
+            # Gaussian noise
+            if np.random.random() > 0.5:
+                noise = np.random.normal(0, 0.02, hls.shape).astype(np.float32)
+                hls = hls + noise
 
         # Add temporal dimension: (6, 224, 224) -> (6, 1, 224, 224)
         hls = hls[:, np.newaxis, :, :]
@@ -177,13 +191,26 @@ def build_model():
 
     apply_directml_patch(model)
 
-    # Freeze the ENTIRE backbone permanently — DirectML TDR kills backward
-    # through 24 transformer blocks even with gradient checkpointing.
-    # The backbone already has good spectral representations from US pretraining;
-    # we only need the decoder/neck/head to adapt to Guna's characteristics.
+    # Freeze backbone EXCEPT last N blocks.
+    # Full 24-block backward triggers DirectML TDR (>2s), but last 4 blocks
+    # (~49M params) keep backward fast enough. This lets the backbone adapt
+    # its high-level features to Guna's dry deciduous spectral signatures.
+    UNFREEZE_LAST_N = 4
     for p in model.encoder.parameters():
         p.requires_grad = False
-    log.info("Backbone FROZEN permanently (DirectML TDR workaround)")
+    # Unfreeze last N transformer blocks
+    n_blocks = len(model.encoder.blocks)
+    for i in range(n_blocks - UNFREEZE_LAST_N, n_blocks):
+        for p in model.encoder.blocks[i].parameters():
+            p.requires_grad = True
+    # Unfreeze norm layer (after last block)
+    if hasattr(model.encoder, "norm"):
+        for p in model.encoder.norm.parameters():
+            p.requires_grad = True
+
+    frozen = sum(p.numel() for p in model.encoder.parameters() if not p.requires_grad)
+    unfrozen_bb = sum(p.numel() for p in model.encoder.parameters() if p.requires_grad)
+    log.info(f"Backbone: {frozen:,} frozen + {unfrozen_bb:,} unfrozen (last {UNFREEZE_LAST_N} blocks)")
 
     total_params = sum(p.numel() for p in model.parameters())
     train_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -194,17 +221,28 @@ def build_model():
 
 # ─── Loss ─────────────────────────────────────────────────────────────────────
 
-class FocalDiceLoss(nn.Module):
-    """Combined focal + dice loss for binary segmentation.
+class DiceDominantLoss(nn.Module):
+    """Dice-dominant loss for extremely imbalanced binary segmentation.
 
-    NOTE: Focal loss already handles class imbalance via (1-pt)^gamma.
-    Do NOT also use class weights — they compound and destabilize training.
+    With 0.49% fire pixels:
+    - CE (even weighted) is gradient-dominated by the 99.5% background
+    - Dice is inherently balanced: computed on fire class only, so
+      a model predicting all-BG gets dice_loss=1.0 (max penalty)
+    - Strategy: dice as PRIMARY loss (weight=3.0), weighted CE as regularizer
+
+    This directly punishes the all-background collapse mode that killed
+    previous runs using focal-only or lightly-weighted CE.
     """
 
-    def __init__(self, gamma: float = 2.0, dice_weight: float = 0.5):
+    def __init__(self, ce_weight: float = 1.0, dice_weight: float = 3.0,
+                 fire_class_weight: float = 20.0):
         super().__init__()
-        self.gamma = gamma
+        self.ce_weight = ce_weight
         self.dice_weight = dice_weight
+        self.register_buffer(
+            "class_weights",
+            torch.tensor([1.0, fire_class_weight], dtype=torch.float32),
+        )
 
     def forward(self, logits: torch.Tensor, targets: torch.Tensor):
         """
@@ -212,19 +250,13 @@ class FocalDiceLoss(nn.Module):
             logits: (B, 2, H, W)
             targets: (B, H, W) with -1 for ignore
         """
-        # Standard CE (no class weights — focal handles imbalance)
-        ce = F.cross_entropy(logits, targets, ignore_index=-1, reduction="none")
+        # ── Weighted CE (regularizer) ──
+        ce_loss = F.cross_entropy(
+            logits, targets, weight=self.class_weights,
+            ignore_index=-1, reduction="mean",
+        )
 
-        # Focal modulation: down-weight easy (well-classified) pixels
-        with torch.no_grad():
-            probs = F.softmax(logits, dim=1)
-            pt = probs.gather(1, targets.clamp(min=0).unsqueeze(1)).squeeze(1)
-            focal_factor = (1 - pt) ** self.gamma
-            focal_factor[targets == -1] = 0.0
-
-        focal_loss = (ce * focal_factor).sum() / focal_factor.sum().clamp(min=1)
-
-        # Dice loss (fire class only, differentiable)
+        # ── Dice loss (PRIMARY — fire class only) ──
         valid = targets >= 0
         if valid.any():
             fire_probs = F.softmax(logits, dim=1)[:, 1]
@@ -234,12 +266,12 @@ class FocalDiceLoss(nn.Module):
             fg = fire_gt[valid]
 
             intersection = (fp * fg).sum()
-            dice = (2 * intersection + 1) / (fp.sum() + fg.sum() + 1)
-            dice_loss = 1 - dice
+            dice = (2.0 * intersection + 1.0) / (fp.sum() + fg.sum() + 1.0)
+            dice_loss = 1.0 - dice
         else:
             dice_loss = torch.tensor(0.0, device=logits.device)
 
-        return focal_loss + self.dice_weight * dice_loss
+        return self.ce_weight * ce_loss + self.dice_weight * dice_loss
 
 
 # ─── Training Loop ────────────────────────────────────────────────────────────
@@ -298,10 +330,14 @@ def train_one_epoch(model, loader, optimizer, criterion, device, epoch,
 
 @torch.no_grad()
 def validate(model, loader, criterion, device):
-    model.eval()
+    """Validate with threshold sweep — find optimal fire threshold on val."""
+    model.train(False)
     total_loss = 0.0
-    total_tp = total_fp = total_fn = total_tn = 0
     n_batches = 0
+
+    # Collect all fire probabilities and ground truth for threshold sweep
+    all_probs = []
+    all_gt = []
 
     for hls, label in loader:
         hls = hls.to(device)
@@ -314,45 +350,71 @@ def validate(model, loader, criterion, device):
         total_loss += loss.item()
         n_batches += 1
 
-        pred = logits.argmax(dim=1)
-        valid = label >= 0
-        p = pred[valid]
-        g = label[valid]
-        total_tp += int(((p == 1) & (g == 1)).sum())
-        total_fp += int(((p == 1) & (g == 0)).sum())
-        total_fn += int(((p == 0) & (g == 1)).sum())
-        total_tn += int(((p == 0) & (g == 0)).sum())
+        probs = F.softmax(logits, dim=1)[:, 1]  # fire probability
+        valid_mask = label >= 0
+        all_probs.append(probs[valid_mask].cpu())
+        all_gt.append(label[valid_mask].cpu())
 
     avg_loss = total_loss / max(n_batches, 1)
-    precision = total_tp / max(total_tp + total_fp, 1)
-    recall = total_tp / max(total_tp + total_fn, 1)
-    f1 = 2 * precision * recall / max(precision + recall, 1e-8)
-    iou = total_tp / max(total_tp + total_fp + total_fn, 1)
-    accuracy = (total_tp + total_tn) / max(total_tp + total_tn + total_fp + total_fn, 1)
+    all_probs = torch.cat(all_probs)
+    all_gt = torch.cat(all_gt)
 
-    return {
-        "loss": avg_loss,
-        "precision": precision,
-        "recall": recall,
-        "f1": f1,
-        "iou": iou,
-        "accuracy": accuracy,
-        "tp": total_tp,
-        "fp": total_fp,
-        "fn": total_fn,
-    }
+    # Sweep thresholds to find best F1
+    best_f1 = 0.0
+    best_thresh = 0.5
+    best_metrics = {}
+
+    for thresh in [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
+        pred = (all_probs >= thresh).long()
+        tp = int(((pred == 1) & (all_gt == 1)).sum())
+        fp = int(((pred == 1) & (all_gt == 0)).sum())
+        fn = int(((pred == 0) & (all_gt == 1)).sum())
+        tn = int(((pred == 0) & (all_gt == 0)).sum())
+
+        p = tp / max(tp + fp, 1)
+        r = tp / max(tp + fn, 1)
+        f1 = 2 * p * r / max(p + r, 1e-8)
+        iou = tp / max(tp + fp + fn, 1)
+
+        if f1 > best_f1:
+            best_f1 = f1
+            best_thresh = thresh
+            best_metrics = {
+                "loss": avg_loss, "precision": p, "recall": r,
+                "f1": f1, "iou": iou, "tp": tp, "fp": fp, "fn": fn,
+                "accuracy": (tp + tn) / max(tp + tn + fp + fn, 1),
+                "threshold": thresh,
+            }
+
+    # Also report fixed threshold=0.5 for comparison
+    pred_05 = (all_probs >= 0.5).long()
+    tp05 = int(((pred_05 == 1) & (all_gt == 1)).sum())
+    fp05 = int(((pred_05 == 1) & (all_gt == 0)).sum())
+    fn05 = int(((pred_05 == 0) & (all_gt == 1)).sum())
+    p05 = tp05 / max(tp05 + fp05, 1)
+    r05 = tp05 / max(tp05 + fn05, 1)
+    f105 = 2 * p05 * r05 / max(p05 + r05, 1e-8)
+
+    best_metrics["f1_at_05"] = f105
+    best_metrics["p_at_05"] = p05
+    best_metrics["r_at_05"] = r05
+    return best_metrics
 
 
 # ─── LLRD (Layer-wise Learning Rate Decay) ────────────────────────────────────
 
 def get_param_groups(model, base_lr: float):
-    """Collect trainable params (backbone is permanently frozen)."""
-    params = []
-    for name, module in [("neck", model.neck), ("decoder", model.decoder), ("head", model.head)]:
-        for p in module.parameters():
-            if p.requires_grad:
-                params.append(p)
-    return [{"params": params, "lr": base_lr}]
+    """LLRD: backbone unfrozen blocks at 0.1× base_lr, decoder/neck/head at base_lr."""
+    backbone_params = [p for p in model.encoder.parameters() if p.requires_grad]
+    head_params = []
+    for module in [model.neck, model.decoder, model.head]:
+        head_params.extend(p for p in module.parameters() if p.requires_grad)
+
+    groups = []
+    if backbone_params:
+        groups.append({"params": backbone_params, "lr": base_lr * 0.1})
+    groups.append({"params": head_params, "lr": base_lr})
+    return groups
 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
@@ -364,7 +426,10 @@ def main():
     parser.add_argument("--batch-size", type=int, default=1)
     parser.add_argument("--grad-accum", type=int, default=8)
     # NOTE: backbone permanently frozen (DirectML TDR workaround)
-    parser.add_argument("--focal-gamma", type=float, default=2.0)
+    parser.add_argument("--fire-weight", type=float, default=20.0,
+                        help="Class weight for fire pixels in CE loss")
+    parser.add_argument("--dice-weight", type=float, default=3.0,
+                        help="Weight for dice loss (primary anti-collapse signal)")
     parser.add_argument("--fire-oversample", type=float, default=3.0,
                         help="Oversample fire patches by this factor")
     args = parser.parse_args()
@@ -405,8 +470,12 @@ def main():
     model = build_model()
     model = model.to(device)
 
-    # Loss
-    criterion = FocalDiceLoss(gamma=args.focal_gamma, dice_weight=0.5)
+    # Loss — dice-dominant to prevent all-BG collapse (dice is class-balanced)
+    criterion = DiceDominantLoss(
+        ce_weight=1.0, dice_weight=args.dice_weight,
+        fire_class_weight=args.fire_weight,
+    )
+    criterion = criterion.to(device)
 
     # Output dir
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -419,7 +488,7 @@ def main():
 
     # Create optimizer ONCE — AdamW needs persistent momentum/variance estimates
     param_groups = get_param_groups(model, args.lr)
-    optimizer = torch.optim.AdamW(param_groups, weight_decay=0.01)
+    optimizer = torch.optim.AdamW(param_groups, weight_decay=0.05)
     n_trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     log.info(f"Optimizer: AdamW, {n_trainable:,} trainable params (backbone frozen)")
 
@@ -445,7 +514,9 @@ def main():
         val_metrics = validate(model, val_loader, criterion, device)
         log.info(f"  Val:   loss={val_metrics['loss']:.4f} P={val_metrics['precision']:.3f} "
                  f"R={val_metrics['recall']:.3f} F1={val_metrics['f1']:.3f} "
-                 f"IoU={val_metrics['iou']:.3f}")
+                 f"IoU={val_metrics['iou']:.3f} thresh={val_metrics.get('threshold', 0.5):.1f}")
+        log.info(f"  Val@0.5: P={val_metrics.get('p_at_05', 0):.3f} "
+                 f"R={val_metrics.get('r_at_05', 0):.3f} F1={val_metrics.get('f1_at_05', 0):.3f}")
 
         scheduler.step()
         elapsed = time.time() - t0

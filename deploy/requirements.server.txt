@@ -1,0 +1,41 @@
+# Van Suraksha Server — minimal dependencies (no GPU, no training)
+# For Oracle Cloud ARM64 / any Linux server
+
+# Data
+numpy>=1.26.4
+pandas>=2.1.4
+pyarrow>=14.0.0
+
+# ML inference only
+lightgbm>=4.2.0
+scikit-learn>=1.3.2
+joblib>=1.3.0
+
+# Geospatial
+geopandas>=0.14.3
+shapely>=2.0.3
+pyproj>=3.6.1
+rasterio>=1.3.9
+fiona>=1.9.5
+
+# Weather
+requests>=2.31.0
+scipy>=1.12.0
+
+# Dashboard
+streamlit>=1.31.0
+
+# API
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+
+# Utilities
+pyyaml>=6.0.1
+tqdm>=4.66.1
+Pillow>=10.2.0
+plotly>=5.18.0
+matplotlib>=3.8.2
+folium>=0.15.1
+
+# Cron
+python-crontab>=3.0.0

@@ -1,4 +1,22 @@
-"""Generate realistic sample data for Van Suraksha dashboard demo."""
+"""
+DEPRECATED — DO NOT USE
+========================
+This script generated SYNTHETIC fire detection data using random.seed(42).
+It has been REPLACED by real MODIS/VIIRS satellite data aggregated by:
+  scripts/aggregate_real_fire_data.py
+
+The synthetic data it generated has been backed up to:
+  data_lake/fire_detections/firms_viirs_snpp_sp/_synthetic_backup/
+
+Running this script will NOT overwrite the real data — it exits immediately.
+"""
+
+import sys
+print("ERROR: This script is DEPRECATED. Use aggregate_real_fire_data.py instead.")
+print("       Real MODIS/VIIRS data has replaced the synthetic seed(42) data.")
+sys.exit(1)
+
+# --- Original code below (preserved for reference, never executed) ---
 import json, random
 from datetime import datetime, timedelta
 from pathlib import Path

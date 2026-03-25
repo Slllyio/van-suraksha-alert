@@ -17,8 +17,8 @@ from typing import Dict, Tuple
 class FirePhysicsEngine:
     def __init__(self):
         # ── Fuel Constants for MP (Teak/Sal leaf litter) ──
-        self.HEAT_OF_COMBUSTION = 18500.0  # kJ/kg
-        self.FUEL_LOAD_DEFAULT = 0.8       # kg/m^2 (approx 8 tonnes/ha)
+        self.HEAT_OF_COMBUSTION = 18000.0  # kJ/kg (consistent with prescriptive_engine)
+        self.FUEL_LOAD_DEFAULT = 1.0       # kg/m^2 (10 tonnes/ha, consistent with prescriptive_engine)
         self.ROTHERMEL_CONSTANT = 0.069    # a-parameter for deciduous litter
 
     def calculate_topographic_ros(
@@ -60,20 +60,21 @@ class FirePhysicsEngine:
 
     def calculate_flame_length(self, intensity: np.ndarray) -> np.ndarray:
         """
-        Calculates physical flame length (meters) using Thomas's Law.
-        L = 0.045 * I^0.46
+        Calculates physical flame length (meters) using Thomas (1963).
+        L = 0.0775 * I^0.46  (I in kW/m, L in metres)
         """
         # Ensure intensity is non-negative
         intensity_safe = np.maximum(0.0, intensity)
-        return 0.045 * (intensity_safe ** 0.46)
+        return 0.0775 * (intensity_safe ** 0.46)
 
     def calculate_convective_indraft(self, intensity: np.ndarray) -> np.ndarray:
         """
         Calculates fire-induced wind speed (m/s) pointing toward the fire.
-        Vc = 0.5 * sqrt(I)
+        Empirical: Vc = 0.005 * sqrt(I)  (Byram 1959, I in kW/m, Vc in m/s)
+        Typical results: 1-5 m/s for moderate-to-intense fires.
         """
         intensity_safe = np.maximum(0.0, intensity)
-        return 0.5 * np.sqrt(intensity_safe)
+        return 0.005 * np.sqrt(intensity_safe)
 
 if __name__ == "__main__":
     # Simple verification

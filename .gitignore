@@ -9,21 +9,20 @@ venv/
 logs/
 tmp/
 outputs/
-data_lake/
 nul
 *.DS_Store
 .idea/
 .vscode/
 
-# Large binary files
-**/*.tif
+# Large binary files (global)
 **/*.pt
 **/*.pth
 **/*.onnx
-**/*.pkl
 **/*.bin
 **/*.h5
 **/*.safetensors
+
+# Data directories (keep out of repo by default)
 data/ground_truth/
 data/terrain/
 data/weather_cache/
@@ -33,7 +32,57 @@ data/rasters/
 data/phenology/
 data/labels/
 data/state/
+data/training/
 notebooks/
 models/vanaagni_v1.0/
 models/prithvi_burnscar/
 models/presto/*.pt
+models/muhurta/
+models/sam_vit_h_4b8939.pth
+
+# data_lake: ignore everything EXCEPT essential deployment data
+data_lake/*
+!data_lake/fire_detections/
+data_lake/fire_detections/*
+!data_lake/fire_detections/firms_viirs_snpp_sp/
+data_lake/fire_detections/firms_viirs_snpp_sp/*
+!data_lake/fire_detections/firms_viirs_snpp_sp/*.parquet
+!data_lake/fire_detections/firms_viirs_nrt/
+
+!data_lake/fire_weather/
+data_lake/fire_weather/*
+!data_lake/fire_weather/fwi_daily.*
+!data_lake/fire_weather/nasa_power_*.parquet
+
+!data_lake/alerts/
+data_lake/alerts/*
+!data_lake/alerts/*.json
+!data_lake/alerts/*.csv
+
+!data_lake/land_cover/
+data_lake/land_cover/*
+!data_lake/land_cover/forest_mask_guna_30m.tif
+!data_lake/land_cover/worldcover_guna_raw.tif
+!data_lake/land_cover/land_cover_stats.json
+
+# Models: allow ignition models (small, needed for inference)
+!models/ignition/
+models/ignition/*
+!models/ignition/*.pkl
+!models/ignition/*.json
+!models/ignition/*.joblib
+
+# Temp files
+catboost_info/
+cache/
+*.tar.gz
+bb_result.txt
+out.txt
+tmp_out.txt
+test_out.txt
+fwi_out.txt
+vanaagni_out.txt
+tests_output.txt
+failures.txt
+fail2.txt
+remaining_failures.txt

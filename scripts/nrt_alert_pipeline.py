@@ -149,7 +149,8 @@ def _open_masks():
             _lc_src = rasterio.open(RAW_LC_PATH)
     except Exception as e:
             import logging
-            logging.getLogger(__name__).debug(f"Ignored exception: {e}")
+            logging.getLogger(__name__).warning(f"Could not open land cover masks: {e}. "
+                                                 "All fires will get land_cover='unknown'.")
 
 
 def check_fire_land_cover(lat: float, lon: float) -> dict:
@@ -197,7 +198,11 @@ def check_fire_land_cover(lat: float, lon: float) -> dict:
             lH, lW = _lc_src.shape
             if 0 <= lc_row < lH and 0 <= lc_col < lW:
                 lc_code = int(_lc_src.read(1)[lc_row, lc_col])
-                lc_name = _LC_NAMES.get(lc_code, f"class_{lc_code}")
+                if lc_code == 0:
+                    # ESA WorldCover v200 code 0 = nodata/outside district polygon
+                    lc_name = "outside_district"
+                else:
+                    lc_name = _LC_NAMES.get(lc_code, f"class_{lc_code}")
 
         return {
             "in_forest":       in_forest,
@@ -336,6 +341,55 @@ def load_fwi(target_date: date) -> dict:
 # SECTION 4: Build alert bulletin
 # =============================================================================
 
+def _compute_abm_ignition_risk(target_date: date, fwi_row: dict) -> dict:
+    """Run ABM Monte Carlo for today's weather to predict human ignition risk.
+
+    Returns a dict with top-10 ignition hotspots, overall risk level,
+    and dominant cause category. Degrades gracefully if ABM unavailable.
+    """
+    try:
+        from src.model.ignition_abm import DayWeather, run_monte_carlo
+
+        weather = DayWeather(
+            fwi=float(fwi_row.get("fwi") or 15),
+            ffmc=float(fwi_row.get("ffmc") or 85),
+            temp_c=float(fwi_row.get("temp_c") or 35),
+            rh_pct=float(fwi_row.get("rh_pct") or 25),
+            wind_kmh=float(fwi_row.get("wind_kmh") or 10),
+            precip_mm=0.0,
+        )
+
+        mc = run_monte_carlo(
+            sim_date=str(target_date),
+            weather=weather,
+            n_runs=10,  # fast: 10 runs for NRT (not 50)
+        )
+
+        # Classify overall ignition risk
+        mean_ign = mc["mean_ignitions"]
+        if mean_ign >= 30:
+            risk_level = "VERY HIGH"
+        elif mean_ign >= 15:
+            risk_level = "HIGH"
+        elif mean_ign >= 5:
+            risk_level = "MODERATE"
+        else:
+            risk_level = "LOW"
+
+        return {
+            "risk_level": risk_level,
+            "mean_ignitions_per_day": round(mean_ign, 1),
+            "hotspots": mc["hotspots"][:10],
+            "model": "Mesa ABM v1 (5 agent types, beat-calibrated)",
+        }
+
+    except Exception as e:
+        return {
+            "risk_level": "UNAVAILABLE",
+            "error": str(e)[:100],
+        }
+
+
 def build_alert(target_date: date,
                 fires: pd.DataFrame,
                 fwi_row: dict) -> dict:
@@ -369,9 +423,10 @@ def build_alert(target_date: date,
         dn_label = "daytime" if dn == "D" else "nighttime"
         conf_label = {"h": "high", "n": "nominal", "l": "low"}.get(conf, conf)
 
-        # Downgrade CRITICAL->HIGH if definitely NOT near any forest
-        # (agricultural fires still warrant alert, but lower forest priority)
-        if sev == "CRITICAL" and in_forest is False and near_forest is False:
+        # Downgrade CRITICAL->HIGH if definitely NOT near any forest.
+        # Treat null/unknown land cover as non-forest for severity purposes
+        # (out_of_bounds and unknown fires should not keep CRITICAL by default).
+        if sev == "CRITICAL" and in_forest is not True and near_forest is not True:
             sev = "HIGH"
 
         # Land cover tag for message
@@ -385,8 +440,9 @@ def build_alert(target_date: date,
             lc_tag = f"[{lc_name.upper()}]" if lc_name != "unknown" else ""
 
         # Prescriptive AI Tactical Order
-        # We estimate ROS based on FRP as a simple heuristic if physics engine CROS isn't available
-        ros_proxy_kmh = max(0.5, (frp / 50.0) * 5.0) 
+        # FRP-to-ROS proxy heuristic (used when physics engine CROS is unavailable).
+        # Floor scaled to FRP: prevents inflating intensity for weak detections.
+        ros_proxy_kmh = max(frp * 0.1, (frp / 50.0) * 5.0)
         intensity_kw = calculate_byram_intensity(ros_km_h=ros_proxy_kmh)
         prescription = generate_tactical_prescription(intensity_kw, ros_proxy_kmh, fwi_val, lc_name)
         tactical_order = draft_ai_dispatch_order(lc_name, (lat, lon), prescription)
@@ -489,6 +545,7 @@ def build_alert(target_date: date,
             "bbox":        GUNA_BBOX,
         },
         "data_sources":    ["FIRMS VIIRS SNPP", "NASA POWER / GFS FWI"],
+        "abm_ignition_risk": _compute_abm_ignition_risk(target_date, fwi_row),
     }
 
 
@@ -512,6 +569,19 @@ def print_bulletin(alert: dict):
     print(f"  FWI components     : "
           f"FFMC={fwi['ffmc']}  DMC={fwi['dmc']}  DC={fwi['dc']}  "
           f"ISI={fwi['isi']}  BUI={fwi['bui']}")
+
+    # ABM ignition risk
+    abm = alert.get("abm_ignition_risk", {})
+    if abm.get("risk_level") and abm["risk_level"] != "UNAVAILABLE":
+        print(f"\n  ABM Ignition Risk  : {abm['risk_level']} "
+              f"(~{abm['mean_ignitions_per_day']:.0f} human-caused fires/day)")
+        hotspots = abm.get("hotspots", [])[:3]
+        if hotspots:
+            print(f"  Top ignition zones : ", end="")
+            print(", ".join(
+                f"({h['latitude']:.2f}N {h['longitude']:.2f}E p={h['probability']:.0%})"
+                for h in hotspots
+            ))
 
     fires = alert["fires"]
     print(f"\n  Active fires       : {len(fires)}")

@@ -1,0 +1,53 @@
+{
+    "model_type": "ordinal_frank_hall",
+    "ordinal_thresholds": [
+        0,
+        1,
+        2
+    ],
+    "frp_tier_breaks": [
+        1.31,
+        5.41,
+        14.56
+    ],
+    "intensity_classes": [
+        "Low",
+        "Moderate",
+        "High",
+        "Extreme"
+    ],
+    "features_used": [
+        "slope_mean_deg",
+        "elevation_m",
+        "wind_speed_ms",
+        "wind_gust_ms",
+        "vpd_kpa",
+        "max_temp_c",
+        "min_rh_pct",
+        "rain_7d_mm",
+        "doy_sin",
+        "doy_cos",
+        "ffmc_proxy",
+        "isi",
+        "vpd_x_wind",
+        "ffmc_x_gust",
+        "fuel_load_t_ha",
+        "emb_pc0",
+        "emb_pc1",
+        "emb_pc2",
+        "emb_pc3",
+        "emb_pc4",
+        "emb_pc5",
+        "emb_pc6",
+        "emb_pc7"
+    ],
+    "holdout_years": [
+        2023,
+        2024,
+        2025
+    ],
+    "n_train": 830,
+    "n_holdout": 1244,
+    "blowout_threshold": 0.1,
+    "blowout_threshold_note": "P(Extreme) must exceed this to override argmax. Original 0.15 caused 62% of all fires to be predicted Extreme (precision=11%). Recalibrate after each retrain: sweep 0.15-0.90 on val set, pick lowest threshold where Extreme precision >= 0.40."
+}

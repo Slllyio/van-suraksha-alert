@@ -76,6 +76,21 @@ class VanAgniDataset(Dataset):
     include_negatives : whether to include NEGATIVE patches
     """
 
+    # Guna-specific RBR severity thresholds (derived from spectral data analysis)
+    # See scripts/analyze_real_rbr.py for rationale
+    GUNA_THRESHOLDS = {
+        # num_classes → list of RBR boundaries between classes
+        2: [],                         # binary: fire (RBR>0) / no-fire
+        4: [0.01, 0.12, 0.30],        # Guna 4-class: unburned / ground_litter / active_surface / severe
+        5: [0.05, 0.15, 0.30, 0.50],  # Parks et al. 2014 (legacy, not recommended for Guna)
+    }
+
+    GUNA_CLASS_NAMES = {
+        2: ["no_fire", "fire"],
+        4: ["unburned", "ground_litter", "active_surface", "severe"],
+        5: ["no_burn", "very_low", "low", "moderate", "high"],
+    }
+
     def __init__(
         self,
         manifest_path: str | Path,
@@ -87,11 +102,20 @@ class VanAgniDataset(Dataset):
         binary_mode: bool = False,
         regression: bool = False,
         cache_dir: Optional[str | Path] = None,
+        spectral_only: bool = False,
+        num_classes: int = 5,
+        dilate_fire: bool = False,
+        dilation_radius: int = 8,
+        boundary_ignore_radius: int = 0,
     ) -> None:
         self.split   = split
         self.augment = augment and (split == "train")
         self.binary_mode = binary_mode
         self.regression  = regression
+        self.num_classes = num_classes
+        self.dilate_fire = dilate_fire
+        self.dilation_radius = dilation_radius
+        self.boundary_ignore_radius = boundary_ignore_radius
         self.root    = _ROOT
         self.cache_dir = Path(cache_dir) if cache_dir else None
 
@@ -108,14 +132,25 @@ class VanAgniDataset(Dataset):
             mask = (df["fire_pixels"] >= min_fire_pixels) | (df["is_fire"] == 0)
             df = df[mask]
 
+        # Filter to spectral-only patches (real RBR labels, not 0.10 fallback)
+        if spectral_only and "has_spectral" in df.columns:
+            # Keep patches with real spectral labels + all negative patches
+            df = df[(df["has_spectral"] == 1) | (df["is_fire"] == 0)]
+
         self.df = df.reset_index(drop=True)
+
+        # Index fire patches for copy-paste augmentation (train only)
+        self._fire_indices = list(
+            self.df.index[self.df["is_fire"] == 1]
+        ) if self.augment else []
 
         n_fire = int(self.df["is_fire"].sum())
         n_neg  = len(self.df) - n_fire
+        spectral_tag = " [spectral-only]" if spectral_only else ""
         print(
             f"VanAgniDataset [{split:5s}]: {len(self.df):5d} patches  "
             f"({n_fire} fire / {n_neg} negative)  "
-            f"augment={self.augment}"
+            f"augment={self.augment}  num_classes={num_classes}{spectral_tag}"
         )
 
     # ── Dataset protocol ──────────────────────────────────────────────────────
@@ -155,19 +190,74 @@ class VanAgniDataset(Dataset):
 
         if self.regression:
             label = data["label"].astype(np.float32)
-        elif self.binary_mode:
-            # Labels are continuous dNBR (float32, 0.0-1.0+).
-            # Any positive dNBR = fire occurred at this pixel.
+        elif self.binary_mode or self.num_classes == 2:
+            # Binary fire/no-fire: any RBR > 0 = fire
             raw = data["label"].astype(np.float32)
             label = np.zeros(raw.shape, dtype=np.int64)
             label[raw > 0.0] = 1       # fire
             label[np.isnan(raw)] = -1   # ignore
-        else:
-            label = data["label"].astype(np.int64)
-            label[label == 255] = -1
 
-        # ── D4 augmentation (train only) ──────────────────────────────────
+            # -- Handling sparse fire labels at ViT backbone resolution -----------
+            # Fire is only 0.8% of pixels — ViT 14×14 cells span 16×16px each.
+            # Two strategies (boundary_ignore preferred over dilation):
+            #
+            # A) boundary_ignore_radius > 0:  Create an ignore zone around fire.
+            #    Fire pixels stay as class 1, distant bg stays class 0, and the
+            #    boundary ring becomes -1 (ignored).  The model learns precise
+            #    fire locations but isn't penalized for ViT-scale imprecision.
+            #    Same labels for train/val/test — no distribution mismatch.
+            #
+            # B) dilate_fire (legacy):  Expand fire labels to match ViT scale.
+            #    Creates train/test distribution mismatch — not recommended.
+            if self.boundary_ignore_radius > 0:
+                from scipy.ndimage import binary_dilation as _bd
+                fire_mask = (label == 1)
+                if fire_mask.any():
+                    k = 2 * self.boundary_ignore_radius + 1
+                    _struct = np.ones((k, k), dtype=bool)
+                    dilated = _bd(fire_mask, structure=_struct)
+                    # Boundary zone: dilated ring around fire → ignore
+                    boundary = dilated & (label == 0)
+                    label[boundary] = -1
+            elif self.dilate_fire:
+                from scipy.ndimage import binary_dilation as _bd
+                fire_mask = (label == 1)
+                if fire_mask.any():
+                    k = 2 * self.dilation_radius + 1
+                    _struct = np.ones((k, k), dtype=bool)
+                    dilated = _bd(fire_mask, structure=_struct)
+                    label[(dilated) & (label == 0)] = 1
+        else:
+            # Multi-class severity: use threshold table for num_classes
+            raw = data["label"].astype(np.float32)
+            thresholds = self.GUNA_THRESHOLDS.get(
+                self.num_classes,
+                self.GUNA_THRESHOLDS[5]  # fallback to Parks
+            )
+            label = np.zeros(raw.shape, dtype=np.int64)  # default: class 0
+            for cls_idx, thresh in enumerate(thresholds, start=1):
+                label[raw >= thresh] = cls_idx
+            label[np.isnan(raw)] = -1  # ignore (nodata)
+
+        # ── Augmentation pipeline (train only) ────────────────────────────
         if self.augment:
+            # 1. Copy-paste fire regions (50% prob, only if fire patches exist)
+            if (self._fire_indices
+                    and cached_feat is None
+                    and np.random.random() < 0.5):
+                hls, indices, label, weight = self._copy_paste_fire(
+                    hls, indices, label, weight
+                )
+
+            # 2. Random scale crop (30% prob) — adds scale diversity
+            if cached_feat is None and np.random.random() < 0.3:
+                hls, indices, terrain, burn_age, landcover, label, weight = (
+                    _random_scale_crop(
+                        hls, indices, terrain, burn_age, landcover, label, weight
+                    )
+                )
+
+            # 3. D4 geometric augmentation (always)
             k       = int(np.random.randint(0, 4))    # rotation steps
             do_flip = bool(np.random.random() < 0.5)  # horizontal flip
 
@@ -203,6 +293,74 @@ class VanAgniDataset(Dataset):
             sample["cached_feat"] = torch.from_numpy(cached_feat)
 
         return sample
+
+    # ── Copy-paste fire augmentation ────────────────────────────────────────
+
+    def _copy_paste_fire(
+        self,
+        hls: np.ndarray,
+        indices: np.ndarray,
+        label: np.ndarray,
+        weight: np.ndarray,
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Extract fire regions from a random fire patch and paste onto this sample.
+
+        Picks a random fire sample, finds connected fire components via
+        scipy.ndimage.label, selects the largest one, and composites it
+        onto the current sample (overwriting HLS, indices, label, weight
+        at fire pixel locations).
+        """
+        from scipy.ndimage import label as nd_label
+
+        # Pick a random fire sample
+        donor_idx = self._fire_indices[
+            np.random.randint(len(self._fire_indices))
+        ]
+        donor_row = self.df.iloc[donor_idx]
+        # Load our own .npz training patches (trusted local data)
+        donor_data = np.load(
+            str(self.root / donor_row["path"]), allow_pickle=True
+        )
+
+        # Build donor binary label
+        donor_raw = donor_data["label"].astype(np.float32)
+        donor_fire_mask = (donor_raw > 0.0) & (~np.isnan(donor_raw))
+
+        if not donor_fire_mask.any():
+            return hls, indices, label, weight
+
+        # Find largest connected fire component
+        labeled_arr, n_components = nd_label(donor_fire_mask)
+        if n_components == 0:
+            return hls, indices, label, weight
+
+        # Pick the largest component
+        component_sizes = np.bincount(labeled_arr.ravel())[1:]  # skip background
+        largest_id = np.argmax(component_sizes) + 1
+        paste_mask = (labeled_arr == largest_id)
+
+        # Apply D4 transform to donor fire region for diversity
+        dk = int(np.random.randint(0, 4))
+        dflip = bool(np.random.random() < 0.5)
+        paste_mask = _rot_flip_2d(
+            paste_mask.astype(np.int64), dk, dflip
+        ).astype(bool)
+
+        donor_hls = _rot_flip_4d(
+            donor_data["hls"].astype(np.float32), dk, dflip
+        )
+        donor_indices = _rot_flip_4d(
+            donor_data["indices"].astype(np.float32), dk, dflip
+        )
+
+        # Paste: overwrite target at fire locations
+        hls[:, :, paste_mask] = donor_hls[:, :, paste_mask]
+        indices[:, :, paste_mask] = donor_indices[:, :, paste_mask]
+        label[paste_mask] = 1  # fire
+        weight[paste_mask] = 1.0
+
+        return hls, indices, label, weight
 
     # ── Weighted sampler ──────────────────────────────────────────────────────
 
@@ -297,6 +455,58 @@ def _rot_flip_tokens(feat: np.ndarray, k: int, flip: bool,
     return np.concatenate([cls_token, spatial], axis=0)   # (1+T*H*W, D)
 
 
+def _random_scale_crop(
+    hls: np.ndarray,        # (6, T, H, W)
+    indices: np.ndarray,    # (3, T, H, W)
+    terrain: np.ndarray,    # (4, H, W)
+    burn_age: np.ndarray,   # (3, H, W)
+    landcover: np.ndarray,  # (11, H, W)
+    label: np.ndarray,      # (H, W)
+    weight: np.ndarray,     # (H, W)
+    scale_range: Tuple[float, float] = (0.75, 1.0),
+) -> Tuple[np.ndarray, ...]:
+    """Random crop at a smaller scale, then resize back to original size.
+
+    Adds scale diversity: the model sees the same fire at different
+    apparent sizes. Uses nearest-neighbor for label/weight to avoid
+    interpolation artifacts on discrete classes.
+    """
+    from scipy.ndimage import zoom as nd_zoom
+
+    H, W = label.shape
+    scale = np.random.uniform(*scale_range)
+    crop_h, crop_w = int(H * scale), int(W * scale)
+
+    # Random crop origin
+    y0 = np.random.randint(0, H - crop_h + 1)
+    x0 = np.random.randint(0, W - crop_w + 1)
+
+    # Zoom factors to resize crop back to (H, W)
+    zy, zx = H / crop_h, W / crop_w
+
+    def _crop_zoom_4d(arr: np.ndarray) -> np.ndarray:
+        cropped = arr[:, :, y0:y0+crop_h, x0:x0+crop_w]
+        return nd_zoom(cropped, (1, 1, zy, zx), order=1)
+
+    def _crop_zoom_3d(arr: np.ndarray) -> np.ndarray:
+        cropped = arr[:, y0:y0+crop_h, x0:x0+crop_w]
+        return nd_zoom(cropped, (1, zy, zx), order=1)
+
+    def _crop_zoom_2d_nearest(arr: np.ndarray) -> np.ndarray:
+        cropped = arr[y0:y0+crop_h, x0:x0+crop_w]
+        return nd_zoom(cropped, (zy, zx), order=0)  # nearest for labels
+
+    return (
+        _crop_zoom_4d(hls),
+        _crop_zoom_4d(indices),
+        _crop_zoom_3d(terrain),
+        _crop_zoom_3d(burn_age),
+        _crop_zoom_3d(landcover),
+        _crop_zoom_2d_nearest(label),
+        _crop_zoom_2d_nearest(weight),
+    )
+
+
 def _spectral_augment(hls: np.ndarray) -> np.ndarray:
     """Apply spectral augmentations to HLS bands (6, T, H, W).
 
@@ -358,6 +568,11 @@ def get_dataloaders(
     binary_mode: bool = False,
     regression: bool = False,
     cache_dir: Optional[str | Path] = None,
+    spectral_only: bool = False,
+    num_classes: int = 5,
+    dilate_fire: bool = False,
+    dilation_radius: int = 8,
+    boundary_ignore_radius: int = 0,
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
     """
     Build train / val / test DataLoaders.
@@ -373,40 +588,52 @@ def get_dataloaders(
     pin_memory      : pin CPU tensors to CUDA-pinned memory
     prefetch_factor : DataLoader prefetch depth per worker
     regression      : if True, labels are float32 dNBR (continuous regression)
+    spectral_only   : if True, filter to patches with real spectral RBR labels
+    num_classes     : number of severity classes (2=binary, 4=Guna, 5=Parks)
+    dilate_fire     : if True, dilate binary fire labels (train+val only, NOT test)
+    dilation_radius : radius in pixels for fire label dilation
+    boundary_ignore_radius : if >0, create ignore zone around fire (all splits)
 
     Returns
     -------
     (train_dl, val_dl, test_dl)
     """
+    _ds_kwargs = dict(
+        exclude_tiers  = exclude_tiers,
+        binary_mode    = binary_mode,
+        regression     = regression,
+        cache_dir      = cache_dir,
+        spectral_only  = spectral_only,
+        num_classes    = num_classes,
+        boundary_ignore_radius = boundary_ignore_radius,
+    )
+
     train_ds = VanAgniDataset(
         manifest_path,
         split          = "train",
         augment        = True,
-        exclude_tiers  = exclude_tiers,
         min_fire_pixels= min_fire_pixels,
-        binary_mode    = binary_mode,
-        regression     = regression,
-        cache_dir      = cache_dir,
+        dilate_fire    = dilate_fire,
+        dilation_radius= dilation_radius,
+        **_ds_kwargs,
     )
     val_ds = VanAgniDataset(
         manifest_path,
         split          = "val",
         augment        = False,
-        exclude_tiers  = exclude_tiers,
         min_fire_pixels= 0,
-        binary_mode    = binary_mode,
-        regression     = regression,
-        cache_dir      = cache_dir,
+        dilate_fire    = dilate_fire,
+        dilation_radius= dilation_radius,
+        **_ds_kwargs,
     )
     test_ds = VanAgniDataset(
         manifest_path,
         split          = "test",
         augment        = False,
-        exclude_tiers  = exclude_tiers,
         min_fire_pixels= 0,
-        binary_mode    = binary_mode,
-        regression     = regression,
-        cache_dir      = cache_dir,
+        dilate_fire    = False,
+        dilation_radius= 0,
+        **_ds_kwargs,
     )
 
     # Weighted sampler for training (fire-aware upsampling)

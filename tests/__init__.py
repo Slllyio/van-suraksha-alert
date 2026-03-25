@@ -1,1 +1,1 @@
-# Van Suraksha — test suite root
+"""Test suite for FIRE - jwala_gemini project."""

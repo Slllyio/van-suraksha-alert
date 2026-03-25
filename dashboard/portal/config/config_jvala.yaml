@@ -1,0 +1,282 @@
+# ========================================================================
+# JvalaNetra AI — Configuration
+# Van Suraksha Alert System — Guna Division, Madhya Pradesh
+# GEE Asset: projects/van-suraksha-alert/assets/gunafinal
+#
+# Disciplines: Anthropology · Eco-Hydrology · Physics · GeoAI · GIS · SOP
+# ========================================================================
+
+gee:
+  # Guna Division beats FeatureCollection (137 unique beats, 32 sub-ranges)
+  gunafinal_asset:    "projects/van-suraksha-alert/assets/gunafinal"
+  # After running scripts/enrich_gunafinal_asset.py and the GEE Export task
+  # completes, swap to the enriched asset to get real slope/TPI/road values:
+  # gunafinal_asset:  "projects/van-suraksha-alert/assets/gunafinal_enriched"
+  gee_project:        "van-suraksha-alert"
+  hansen_collection:  "UMD/hansen/global_forest_change_2024_v1_12"
+  srtm_dem:           "USGS/SRTMGL1_003"              # 30m DEM for Tobler + TPI
+  s1_collection:      "COPERNICUS/S1_GRD"
+  s2_collection:      "COPERNICUS/S2_SR_HARMONIZED"
+  era5_collection:    "ECMWF/ERA5_LAND/DAILY_AGGR"    # for GDD accumulation
+  gfs_collection:     "NOAA/GFS0P25"                  # 0.25° weather model
+  dw_collection:      "GOOGLE/DYNAMICWORLD/V1"
+  modis_ndvi:         "MODIS/061/MOD13Q1"
+  modis_sr:           "MODIS/061/MOD09A1"
+  # BHR/NH road centerlines (OpenStreetMap-derived, Guna Division)
+  road_asset:         "projects/van-suraksha-alert/assets/guna_roads"
+
+# ── Terrain Sampler ────────────────────────────────────────────────────────
+# Point-based terrain sampling from pre-downloaded local GeoTIFFs.
+# Run once: python scripts/download_guna_rasters.py --local
+# After rasters are in data/rasters/, sampling is instant (<1ms) and works
+# offline with no GEE calls.
+terrain:
+  raster_dir:     "data/rasters"      # relative to project root
+  sample_buffer_m: 500                # radius around compartment centroid
+                                      # 500m ≈ typical GPS uncertainty + fire
+                                      #   perimeter at T-minus detection stage
+
+# ── Module 1: Anthropology (Ignition Head) ─────────────────────────────
+anthropology:
+  # Growing Degree Days — triggers NTFP activity risk multiplier
+  # FIX (Tropical Phenology): In Central India, using base 10°C from Jan 1
+  # triggers the Mahua/Tendu season flag in mid-January (avg daily mean ~16°C,
+  # so GDD accumulates instantly). Tropical dry-deciduous species have a
+  # physiological base of 14–15°C; leaf-fall actually begins in March.
+  # Use 15°C base + Feb 1 start (DOY 32).
+  gdd_base_temp_c:       15.0    # TUNED: base temperature for tropical dry deciduous
+  mahua_gdd_threshold:  120.0    # GDD above which Mahua flowers drop (≈ early March)
+  tendu_gdd_threshold:  180.0    # GDD above which Tendu leaf harvest begins (≈ mid-March)
+  gdd_start_doy:         32      # FIX: Feb 1 (DOY 32) — prevents mid-January false trigger
+
+  # Tobler Hiking Function parameters
+  tobler_k:             6.0      # base speed coefficient (km/h at flat)
+  max_access_cost_km:   10.0     # normalise friction cost surface to 10km equivalent
+
+  # NTFP mandi price integration
+  # Set to a JSON URL that returns {"tendu_rs_per_std_bag": <float>, "mahua_rs_per_kg": <float>}
+  ntfp_mandi_api_url:   ""       # leave blank to use static defaults
+  tendu_baseline_price: 4500.0   # Rs per standard bag (2024 baseline)
+  mahua_baseline_price: 40.0     # Rs per kg (2024 baseline)
+  price_risk_multiplier_max: 1.5 # max multiplier when price is 2× baseline
+
+  # Ignition Head classification thresholds
+  # NOTE: ignition_threshold here is a LAST-RESORT fallback only.
+  # At inference, threshold is loaded from the model's _meta.json first
+  # (set by data-driven F-β sweep at training time). Only used if meta.json
+  # is missing (e.g. first boot before training has run).
+  ignition_threshold:   0.50     # fallback only — meta.json takes priority
+
+  # Feature vector for LightGBM ignition model (used when model not fine-tuned)
+  # physics-prior weights (normalised; sum=1.0)
+  prior_weights:
+    mahua_zone:          0.25
+    tendu_zone:          0.20
+    road_access_km:      0.20
+    gdd_fraction:        0.15
+    ntfp_price_ratio:    0.10
+    slope_mean_deg:      0.05
+    doy_sin:             0.025
+    doy_cos:             0.025
+
+# ── Module 2: Eco-Hydrology (Senescence Fusion) ────────────────────────
+eco_hydrology:
+  # SAR structural-moisture confirmation window (days either side of anchor)
+  sar_window_days:      30
+  # PROSAIL LAI inversion parameters
+  specific_leaf_mass_g_m2: 100.0  # Sal/Teak typical (g dry mass per m² leaf)
+  # SAR VV/VH ratio threshold (linear, NOT dB)
+  # FIX (SAR Geometry): Now using cross-polarisation ratio VV/VH instead of
+  # raw VH dB. Low ratio (< 1.5 linear) = moist volume scattering. This
+  # cancels topographic artefacts on Vindhya/Satpura slopes.
+  sar_moisture_proxy_thresh: 1.5   # VV/VH ratio below = structurally moist
+  # Fuel load top-cap (real data may exceed; cap for physics model stability)
+  max_fuel_load_t_ha:   8.0
+  # Threshold below which LAI drop is considered senescent (not structural loss)
+  lai_drop_senescence_thresh: 0.8
+
+# ── Module 3: Physics (Muhurta Engine) ─────────────────────────────────
+muhurta:
+  # Safe-window hard constraints
+  max_wind_speed_kmh:   15.0     # abort if sustained wind > this
+  max_wind_dir_sigma_deg: 20.0   # directional variability limit (3-hr window)
+  max_flame_length_m:    1.2     # manual hand-tool control limit
+  # Byram fireline intensity ceiling (kW/m) — flags high-intensity burns
+  max_byram_intensity_kw_m: 300.0
+  # Haines Index threshold — locks window if atmosphere is unstable
+  haines_lock_threshold: 5       # HI ≥ 5 → lock (Stage-B only)
+  # Ensemble wind variance threshold — locks if model spread is high
+  wind_ensemble_sigma_lock: 0.30
+  # Heat of combustion (kJ/kg) for surface litter — Teak/Sal mix
+  heat_combustion_kj_kg: 18000.0
+  # Rothermel ROS correction for slope (upslope fire spreads faster)
+  slope_ros_factor:     0.02     # ROS × (1 + factor × slope_pct)
+  # DEM channel factor for wind acceleration through valleys
+  valley_wind_accel_factor: 1.35  # max wind multiplier in valley corridors
+
+# ── Module 4: GeoAI (Dual-Head + Persistence Filter) ──────────────────
+geoai:
+  # ── Ignition Decision Threshold Policy (data-driven at train time) ──────
+  # The optimal threshold is computed during training via F-β sweep and
+  # saved to ignition_lgbm_NEW_No__meta.json.  At inference, meta.json takes
+  # priority over all config values below (which serve as policy guardrails).
+  ignition_fbeta_weight: 2.0       # β for F-β score: Recall weighted 2× over Precision
+                                    # (false negatives = missed fire → far costlier than
+                                    # false positives = wasted patrol)
+  min_alert_precision:   0.20      # Operational precision floor (anti-alert-fatigue):
+                                    # at most 4 false alarms per real fire.
+                                    # Below this, Beat Guards experience Cry-Wolf effect.
+  min_alert_threshold:   0.15      # Absolute probability floor — prevents noise-driven
+                                    # alerts even if F-β optimum would go lower.
+  # EMA persistence state (SQLite) — persists per-beat EMA between daily cron runs.
+  # FIX: Without this the 2-day persistence threshold can never be crossed
+  # because EMA_{t-1} is always 0 in a stateless script.
+  # ── Model paths (resolved relative to project root / CWD at runtime) ───
+  ignition_model_path:  "C:/Users/S.C.C/OneDrive/Desktop/jwalaNetra/projects/van-suraksha-alert/models/ignition2_lgbm.pkl"
+  # intensity model: auto-resolved from ignition model dir if not set here
+  # intensity_model_path: ""  # leave blank → auto (models/intensity_lgbm_NEW_No_.pkl)
+  ema_db_path:          "state/jvala_ema.db"
+  # EMA persistence filter
+  ema_alpha:            0.40     # smoothing factor (higher = more responsive)
+  persistence_days:     2        # days EMA must stay above threshold to escalate
+  persistence_threshold: 0.65    # EMA level that triggers SOP escalation
+  # Spread Head: calls existing rules_engine.run_gee_rules_engine
+  spread_head_min_tier: 2        # only escalate if spread head returns tier ≤ 2
+  # History window for risk score rolling mean
+  history_window_days:  3
+
+# ── Phase 15: Zenith Intelligence ──────────────────────────────────────────
+zenith:
+  model_path: "models/phase14_multimodal_xgb.pkl"
+  threshold: 0.4777    # data-driven; override in meta.json takes priority if available
+  grid_size: 8
+  # Bounding box for mapping spatial grids; change when scaling to new districts
+  bounds:
+    min_lon: 76.10
+    min_lat: 23.75
+    max_lon: 78.40
+    max_lat: 25.30
+
+# ── Module 5: GIS (CFL Routing) ────────────────────────────────────────
+gis:
+  # Cost surface weights (cost = 1 → traversable; higher = harder)
+  cost_road:            1.0
+  cost_ridge:           2.0      # TPI > 1σ — preferred line location
+  cost_gentle_slope:    3.0      # 0–15% slope
+  cost_moderate_slope:  8.0      # 15–30% slope
+  cost_steep_slope:     100.0    # > 30% — crew safety exclusion
+  cost_dense_brush:     15.0     # NDVI > 0.55 in dry season
+  cost_ravine:          50.0     # TPI < -1σ
+  # TPI kernel radius for ridge/ravine detection
+  tpi_radius_m:         300.0
+  # Wind perpendicularity threshold for P1 ranking
+  p1_perpendicularity_thresh: 0.85
+  # Minimum CFL length (m) — shorter lines ignored
+  cfl_min_length_m:     200.0
+  # Safety zone buffer around retreat paths (m)
+  safety_zone_buffer_m: 50.0
+  # GEE export scale for cost raster
+  cost_raster_scale_m:  30
+
+# ── Module 6: SOP Engine (Escalation + Rakshak Spec) ──────────────────
+sop:
+  # T-Minus tier thresholds (hours before projected ignition)
+  tier_advisory_h:      72
+  tier_watch_h:         48
+  tier_critical_h:      24
+  tier_operational_h:   0
+  # Kafka configuration (leave broker blank to use local NDJSON queue fallback)
+  # Start the local broker: docker compose -f docker-compose.kafka.yml up -d
+  kafka_broker:         "localhost:9092"
+  kafka_topic:          "jvala.sop.events"
+  # Rakshak offline sync schedule (local time, HH:MM)
+  rakshak_sync_time:    "07:00"
+  # PMTiles offline map tile server URL
+  pmtiles_base_url:     ""
+  # Cryptographic proof — HMAC algorithm
+  hmac_algo:            "sha256"
+  # HMAC device secret for Rakshak photo attestation.
+  # WARNING: Leave blank in version control. Set via JVALA_HMAC_SECRET env-var
+  # or deployment secret manager. SOPEngine raises RuntimeError if unset.
+  hmac_secret:          ""
+  # Output directories
+  out_dir:              "outputs/jvala"
+  gpx_out_dir:          "outputs/jvala/gpx"
+  muhurta_out_dir:      "outputs/jvala/muhurta"
+  # Persistent NDJSON event queue (used when Kafka broker is not configured)
+  # To flush: from jvala.sop_engine import flush_local_queue; flush_local_queue(cfg)
+  queue_file:           "outputs/jvala/sop_event_queue.ndjson"
+
+# ── Intensity Model (Stage 2 — Conditional Hurdle) ─────────────────────
+intensity:
+  # Blowout guardrail threshold — P(Extreme) must EXCEED this to override argmax.
+  #
+  # CALIBRATION NOTE (Phase 10): The original threshold of 0.15 caused near-constant
+  # Extreme predictions because uncertain 4-class softmax outputs P(Extreme) ≈ 0.25,
+  # which trivially exceeds 0.15. This collapsed 62% of all fires into Extreme,
+  # destroying precision (11%) while faking high recall (81%).
+  #
+  # Recalibrated to 0.10 after March 2026 retrain (emb_pc0-7 + real FWI).
+  # Threshold sweep on 2023-2025 holdout (119 Extreme fires):
+  #   0.55 -> Extreme recall = 0.0% (all blowouts missed)
+  #   0.10 -> Extreme recall = 27.7%, precision = 14.5% (33/119 caught)
+  # Lower threshold is acceptable: missing a blowout costs far more than a false
+  # Extreme alert. Revisit after Malwa-augmented retrain (target n_extreme_train > 200).
+  # The meta.json blowout_threshold takes priority over this config value.
+  blowout_threshold: 0.10
+
+# ── Monitoring ─────────────────────────────────────────────────────────
+monitoring:
+  log_level:            "INFO"
+  run_log_dir:          "outputs/jvala/pipeline_runs"
+
+# ── Telegram Alert Notifier ────────────────────────────────────────────
+# Sends formatted alert cards to Beat Guard / Range Officer Telegram chats
+# when a compartment tier is ADVISORY or higher.
+#
+# Setup:
+#   1. Create a bot via @BotFather → /newbot → copy the token
+#   2. Add the bot to your group OR send /start to get your chat ID
+#   3. Set token via env-var:  $env:JVALA_TELEGRAM_TOKEN="your_token_here"
+#   4. Run test:  python -m jvala.telegram_notifier --config config_jvala.yaml --test
+#
+# WARNING: Never commit bot_token to version control. Use env-var only.
+telegram:
+  enabled:        false        # set to true once token + chat_ids are configured
+  bot_token:      ""           # LEAVE BLANK — set via JVALA_TELEGRAM_TOKEN env-var
+  chat_ids:       []           # list of Telegram chat IDs  e.g. [-1001234567890, 987654321]
+  min_tier:       "ADVISORY"   # minimum tier to notify: ADVISORY | WATCH | CRITICAL | OPERATIONAL
+  quiet_hours:    []           # e.g. ["22:00", "06:00"] — suppress alerts during IST night window
+
+# ── Scheduler Configuration ────────────────────────────────────────────
+# Controls automatic log rotation and behavior of jvala_scheduler.py
+scheduler:
+  max_log_days: 14         # delete scheduler logs older than 14 days
+  alert_on_failure: true   # log failures to state/scheduler_state.json
+
+# ── 3-Day Fire Forecast ────────────────────────────────────────────────
+# Generates per-compartment fire risk for anchor_date + 2 future days.
+# Weather source: Open-Meteo forecast API (free, no key needed).
+# Run: py -3.12 scripts/run_jvala_forecast.py --config config_jvala.yaml
+# Output: outputs/jvala/forecast/forecast_YYYY-MM-DD.json
+#         outputs/jvala/forecast/forecast_latest.json
+forecast:
+  days_ahead: 3
+  output_dir: "outputs/jvala/forecast"
+  # Ignition v1 (AUC=0.9998) — weather+terrain only, no satellite cubes needed
+  ignition_model: "models/ignition_lgbm_NEW_No_.pkl"
+  # Intensity model for conditional severity prediction when ignition triggered
+  intensity_model: "models/intensity_lgbm_NEW_No_.pkl"
+  weather_api: "https://api.open-meteo.com/v1/forecast"
+  # Auto-trigger after each scheduler run (set false to disable)
+  run_after_pipeline: true
+
+# ── Kafka Configuration ────────────────────────────────────────────────
+# Settings for Phase 16B (Real-time Streams)
+kafka:
+  enabled: true
+  bootstrap_servers: "localhost:9092"
+  topics:
+    firms_inbound: "firms.live"
+    sop_outbound: "jvala.sop.events"
+  consumer_group: "jvala-realtime-cg"

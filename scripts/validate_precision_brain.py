@@ -71,15 +71,51 @@ def validate():
         # Transpose to (B, C, T, H, W) for Prithvi
         hls = hls.transpose(1, 2)
     
-    # 4. Prepare Placeholders for Aux
+    # 4. Load REAL auxiliary data (not zero-filled placeholders)
     B, C, T, H, W = hls.shape
-    weather    = torch.zeros(B, 10)
-    weather_7d = torch.zeros(B, 10, 7)
-    terrain    = torch.zeros(B, 4, H, W)
-    burn_age   = torch.zeros(B, 3, H, W)
-    landcover  = torch.zeros(B, 11, H, W)
 
-    # 5. Inference
+    # Extract lat/lon/date from sample filename for auxiliary data loading
+    parts = sample_path.stem.split("_")
+    val_lat = float(parts[0].replace("lat", ""))
+    val_lon = float(parts[1].replace("lon", ""))
+    val_date = parts[2]
+
+    try:
+        from src.data.auxiliary_loader import load_spatial_auxiliary, load_7d_weather_sequence, load_burn_age
+
+        # Load real terrain + landcover
+        terrain_np, lc_np = load_spatial_auxiliary(val_lon, val_lat, patch_size=H)
+        terrain   = torch.from_numpy(terrain_np).unsqueeze(0)   # (1, 4, H, W)
+        landcover = torch.from_numpy(lc_np).unsqueeze(0)        # (1, 11, H, W)
+
+        # Load real weather
+        weather_seq = load_7d_weather_sequence(val_date, val_lon, val_lat)
+        if weather_seq is not None and weather_seq.ndim == 2:
+            weather_7d = torch.from_numpy(weather_seq.T).unsqueeze(0).float()  # (1, 10, 7)
+            weather    = torch.from_numpy(weather_seq[3]).unsqueeze(0).float() # (1, 10)
+        else:
+            print("  WARNING: Weather data unavailable, using zeros")
+            weather    = torch.zeros(B, 10)
+            weather_7d = torch.zeros(B, 10, 7)
+
+        # Load real burn age
+        burn_age_np = load_burn_age(val_lon, val_lat, val_date, patch_size=H)
+        burn_age = torch.from_numpy(burn_age_np).unsqueeze(0)   # (1, 3, H, W)
+
+        print(f"  Loaded REAL auxiliary data for ({val_lat:.2f}, {val_lon:.2f}, {val_date})")
+        print(f"  Terrain range: [{terrain.min():.3f}, {terrain.max():.3f}]")
+        print(f"  Weather range: [{weather.min():.3f}, {weather.max():.3f}]")
+
+    except Exception as e:
+        print(f"  WARNING: Could not load real auxiliary data: {e}")
+        print(f"  Falling back to zeros — validation results will be UNRELIABLE")
+        weather    = torch.zeros(B, 10)
+        weather_7d = torch.zeros(B, 10, 7)
+        terrain    = torch.zeros(B, 4, H, W)
+        burn_age   = torch.zeros(B, 3, H, W)
+        landcover  = torch.zeros(B, 11, H, W)
+
+    # 5. Inference with real multi-modal inputs
     print("Running multi-modal inference...")
     with torch.no_grad():
         output = model(hls, weather, weather_7d, terrain, burn_age, landcover)

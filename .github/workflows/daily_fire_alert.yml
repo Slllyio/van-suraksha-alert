@@ -1,0 +1,48 @@
+name: Daily Fire Alert Pipeline
+
+on:
+  schedule:
+    # 00:30 UTC = 06:00 AM IST (daily)
+    - cron: '30 0 * * *'
+  workflow_dispatch:  # manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  fire-alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y gdal-bin libgdal-dev
+          pip install numpy pandas pyarrow requests scipy lightgbm scikit-learn \
+                      geopandas shapely pyproj rasterio fiona pyyaml joblib
+
+      - name: Update FWI
+        run: python scripts/compute_fwi.py --start 2025 --end 2026
+        env:
+          PYTHONPATH: .
+
+      - name: Run NRT Alert Pipeline
+        run: python scripts/nrt_alert_pipeline.py --fetch-nrt --api-key ${{ secrets.FIRMS_MAP_KEY }}
+        env:
+          PYTHONPATH: .
+
+      - name: Commit updated alerts
+        run: |
+          git config user.name "Van Suraksha Bot"
+          git config user.email "vansuraksha-bot@users.noreply.github.com"
+          git add data_lake/alerts/ data_lake/fire_weather/fwi_daily.csv data_lake/fire_weather/fwi_daily.parquet
+          git diff --staged --quiet || git commit -m "alert: $(date -u +%Y-%m-%d) daily fire alert update"
+          git push

@@ -282,7 +282,13 @@ def compute_fire_weather_index(nc_path: Path) -> "xr.Dataset":
 
     fwi = 100 - rh / 2 + (temp_c - 20) / 5
     if prec is not None:
-        prec_mm = prec * 1000 if prec.attrs.get("units", "").startswith("m") else prec
+        # Fix: GFS APCP units can be "kg m**-2" (=mm) or "m" (meters).
+        # Previous code matched "m" prefix too broadly, catching "mm" and "m s-1".
+        units = prec.attrs.get("units", "").lower().strip()
+        if units in ("m", "meter", "meters"):
+            prec_mm = prec * 1000  # meters -> mm
+        else:
+            prec_mm = prec  # already in mm or kg/m2 (equivalent)
         fwi = fwi - prec_mm * 2
 
     fwi = fwi.clip(0, 100).rename("fwi_proxy")

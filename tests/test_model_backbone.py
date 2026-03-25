@@ -196,9 +196,13 @@ class TestPrithviEO2Fallback:
     def test_get_intermediate_layers_count(self, eo2_backbone):
         B, C, T, H, W = 1, 6, 2, 32, 32
         x = torch.randn(B, C, T, H, W)
+        n_last = 4
+        # depth=2 in the fixture, so backbone clamps to min(n_last, depth)
+        depth = len(eo2_backbone._backbone.blocks)
+        expected_count = min(n_last, depth)
         with torch.no_grad():
-            feats = eo2_backbone.get_intermediate_layers(x, n_last=4)
-        assert len(feats) == 4, f"Expected 4 feature maps, got {len(feats)}"
+            feats = eo2_backbone.get_intermediate_layers(x, n_last=n_last)
+        assert len(feats) == expected_count, f"Expected {expected_count} feature maps, got {len(feats)}"
         for f in feats:
             assert f.ndim == 3
             assert f.shape[0] == B

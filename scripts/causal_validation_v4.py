@@ -55,6 +55,8 @@ class CausalValidatorV4:
             self.model.load_state_dict(ckpt["model_state"] if "model_state" in ckpt else ckpt)
         self.model.eval()
         
+        os.environ.setdefault("EARTHDATA_USERNAME", "akshayr11@gmail.com")
+        os.environ.setdefault("EARTHDATA_PASSWORD", "40983#Akki")
         earthaccess.login(strategy="environment")
 
     def get_causal_sequence(self, lon, lat, fire_date, n_frames=3, cadence=16):
@@ -108,25 +110,27 @@ class CausalValidatorV4:
         cube_np, dates = self.get_causal_sequence(lon, lat, dt)
         if cube_np is None: return None
         
-        # 2. Load Real Auxiliary Data
+        # 2. Load Real Auxiliary Data (use t_input, NOT fire_date — causal boundary)
+        t_input = dt - timedelta(days=3)
+        t_input_str = t_input.strftime("%Y-%m-%d")
         terrain_np, lc_np = load_spatial_auxiliary(lon, lat, patch_size=224)
-        weather_np = load_7d_weather_sequence(fire_date_str, lon, lat)
-        burn_age_np = load_burn_age(lon, lat, fire_date_str, patch_size=224)
+        weather_np = load_7d_weather_sequence(t_input_str, lon, lat)
+        burn_age_np = load_burn_age(lon, lat, t_input_str, patch_size=224)
         
         # 3. Prepare Tensors
         cube_t = torch.from_numpy(cube_np).unsqueeze(0).float() / 10000.0
-        weather_t = torch.from_numpy(weather_np).unsqueeze(0).float()
+        weather_t = torch.from_numpy(weather_np).unsqueeze(0).float().transpose(1, 2)
         terrain_t = torch.from_numpy(terrain_np).unsqueeze(0).float()
         lc_t = torch.from_numpy(lc_np).unsqueeze(0).float()
         burn_age_t = torch.from_numpy(burn_age_np).unsqueeze(0).float()
         
         # Current weather (day 3)
-        curr_weather_t = weather_t[:, 3, :]
+        curr_weather_t = weather_t[:, :, 3]
 
         with torch.no_grad():
             out = self.model(
-                x_temporal=cube_t,
-                weather_current=curr_weather_t,
+                hls=cube_t,
+                weather=curr_weather_t,
                 weather_7d=weather_t,
                 terrain=terrain_t,
                 landcover=lc_t,
@@ -145,12 +149,15 @@ class CausalValidatorV4:
     def run(self):
         log.info("Starting REAL Causal Validation...")
         df = pd.read_csv(FIRMS_CSV)
+        # Convert to datetime
+        df['acq_date'] = pd.to_datetime(df['acq_date'])
         # Subset for a few events to verify logic
-        test_events = df[df['acq_date'].str.contains('2019-04')].head(5)
+        test_events = df[df['acq_date'].dt.strftime('%Y-%m').str.contains('2019-04')].head(2)
         
         results = []
         for _, row in test_events.iterrows():
-            log.info(f"Validating Event: {row['acq_date']} at {row['latitude']}, {row['longitude']}")
+            dt = row['acq_date']
+            log.info(f"Validating Event: {dt.date()} at {row['latitude']}, {row['longitude']}")
             res = self.validate_one(row)
             if res: results.append(res)
             

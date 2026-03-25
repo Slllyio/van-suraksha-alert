@@ -59,11 +59,24 @@ class SegmentationMetrics:
             threshold: if probs supplied AND binary mode (2 classes), use this
                        threshold for fg class instead of argmax
         """
-        if probs is not None and self.num_classes == 2:
-            # Binary mode: threshold on fg probability
-            fg_prob = probs[:, 1, :, :]          # (B, H, W)
-            preds = (fg_prob >= threshold).long() # (B, H, W)
-        # Multi-class: always use argmax (threshold doesn't apply)
+        if probs is not None:
+            if self.num_classes == 2:
+                # Binary mode: threshold on fg probability
+                fg_prob = probs[:, 1, :, :]          # (B, H, W)
+                preds = (fg_prob >= threshold).long() # (B, H, W)
+            elif self.num_classes > 2:
+                # Multi-class mode: if threshold > 0, we treat classes 1+ as 'fire'
+                # and only predict a fire class if sum(probs[1:]) >= threshold.
+                # Otherwise, we default to class 0 (no_burn).
+                # This helps reduce false positives by requiring higher confidence for any fire.
+                fire_prob = probs[:, 1:, :, :].sum(dim=1) # (B, H, W)
+                is_fire = (fire_prob >= threshold)
+                
+                # Use argmax for the base predictions
+                base_preds = probs.argmax(dim=1)
+                
+                # Mask out fire predictions that are below the threshold
+                preds = torch.where(is_fire, base_preds, torch.zeros_like(base_preds))
 
         preds = preds.cpu().numpy().flatten()
         targets = targets.cpu().numpy().flatten()
