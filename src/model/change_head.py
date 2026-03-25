@@ -1,4 +1,4 @@
-﻿"""
+"""
 Change Detection Head
 =====================
 UperNet-style segmentation head for bi-temporal forest change detection.
@@ -91,6 +91,10 @@ class FPN(nn.Module):
         return spatial_2d
 
     def forward(self, feature_list: List[torch.Tensor]) -> torch.Tensor:
+        # Pad feature_list to num_scales by repeating the last map if needed
+        while len(feature_list) < self.num_scales:
+            feature_list = list(feature_list) + [feature_list[-1]]
+
         # Convert tokens to 2D
         maps = [self.tokens_to_2d(f) for f in feature_list]
 
@@ -194,10 +198,14 @@ class DiceLoss(nn.Module):
                                       device=predictions.device)
         targets_one_hot.scatter_(1, targets_clamped.unsqueeze(1), 1.0)
 
-        if self.ignore_index >= 0:
-            mask = (targets != self.ignore_index).unsqueeze(1).float()
-            probs = probs * mask
-            targets_one_hot = targets_one_hot * mask
+        # CRITICAL: Always mask ignored pixels.  Previous code checked
+        # `ignore_index >= 0` which NEVER masked when ignore_index=-1,
+        # causing -1 pixels (clamped to 0) to count as background.
+        # With boundary-ignore zones, this bug would penalize fire
+        # predictions in the boundary ring (defeating the whole purpose).
+        mask = (targets != self.ignore_index).unsqueeze(1).float()
+        probs = probs * mask
+        targets_one_hot = targets_one_hot * mask
 
         intersection = (probs * targets_one_hot).sum(dim=(2, 3))
         union = probs.sum(dim=(2, 3)) + targets_one_hot.sum(dim=(2, 3))
@@ -229,10 +237,12 @@ class FocalLoss(nn.Module):
 class FocalDiceLoss(nn.Module):
     """Focal Loss + Dice Loss."""
     def __init__(self, class_weights: Optional[torch.Tensor] = None,
-                 gamma: float = 2.0, dice_weight: float = 0.5):
+                 gamma: float = 2.0, dice_weight: float = 0.5,
+                 ignore_index: int = -1):
         super().__init__()
-        self.focal = FocalLoss(gamma=gamma, class_weights=class_weights)
-        self.dice  = DiceLoss()
+        self.focal = FocalLoss(gamma=gamma, class_weights=class_weights,
+                               ignore_index=ignore_index)
+        self.dice  = DiceLoss(ignore_index=ignore_index)
         self.dice_weight = dice_weight
 
     def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:

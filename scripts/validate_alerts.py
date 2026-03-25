@@ -1,39 +1,42 @@
 """
-Alert Validation Engine  (v2 — DW-native class schema)
-========================================================
-Intersects daily alert GeoJSONs with annual Dynamic World ground truth polygons.
+Alert Validation Engine  (v3 — Multi-source independent ground truth)
+=====================================================================
+Validates daily alert GeoJSONs against INDEPENDENT ground truth sources.
+
+CRITICAL FIX (2026-03-14): Previous version used Dynamic World (DW) as BOTH
+the alert signal source AND the ground truth, creating CIRCULAR VALIDATION.
+This version requires independent ground truth from at least one of:
+
+  1. VIIRS FIRMS fire detections (375m thermal anomalies) — INDEPENDENT
+  2. Hansen Global Forest Change (annual tree cover loss)  — INDEPENDENT
+  3. Field verification reports (GPS points from rangers)  — INDEPENDENT (gold standard)
+  4. Sentinel-2 dNBR burn scars (post-fire spectral index) — INDEPENDENT
+  5. DW ground truth — STILL SUPPORTED but flagged as CIRCULAR in reports
+
+Ground truth priority: Field > VIIRS > Hansen > dNBR > DW (with warning)
 
 Alert class comes directly from the `Source` field produced by ALERT_GUNA.ipynb:
-    Trees         — tree probability dropped  (can be defor OR encroachment origin)
-    Crops         — crop probability rose     (encroachment destination signal)
-    Bare          — bare probability rose     (deforestation destination signal)
-    Shrub and Scrub — scrub probability changed
-    Built         — built-up probability rose (settlement expansion)
-    Grass         — grass probability changed
-
-Cross-referencing `Source` against GT class:
-    GT=deforestation: expect Source ∈ {Trees, Bare, Shrub and Scrub}
-    GT=encroachment:  expect Source ∈ {Trees, Crops, Shrub and Scrub}
-    Class AGREE if alert Source aligns with GT class (using mapping below)
-    Class MISMATCH if e.g. Crops alert matches a deforestation GT polygon
+    Trees, Crops, Bare, Shrub and Scrub, Built, Grass
 
 This answers:
   1. ACCURACY    — IoU match ≥ threshold with a GT polygon?
   2. CLASS MATCH — Does alert Source align with the GT class type?
   3. AREA DELTA  — Alert area vs confirmed GT polygon area (ha)
-  4. TIME LEAD   — Days before Dec 31 ground truth the alert fired
+  4. TIME LEAD   — Days before GT reference date the alert fired
   5. RECALL      — What % of GT polygons had at least one alert?
+  6. GT SOURCE   — Which independent source confirmed/refuted the alert?
 
 Input layout:
     data/alerts/            ← named alert_YYYY-MM-DD.geojson
-                              each feature must have a `Source` attribute
-    data/ground_truth/      ← dw_gt_{YEAR}_{deforestation|encroachment}.geojson
-    (optional)
+    data/ground_truth/      ← Multi-source GT files (see load_ground_truth)
     data/validation/        ← output directory
 
 Usage:
     python scripts/validate_alerts.py --year 2025
-    python scripts/validate_alerts.py --year 2025 --iou-threshold 0.10
+    python scripts/validate_alerts.py --year 2025 --gt-source viirs
+    python scripts/validate_alerts.py --year 2025 --gt-source hansen
+    python scripts/validate_alerts.py --year 2025 --gt-source field
+    python scripts/validate_alerts.py --year 2025 --gt-source dw   # warns about circular validation
 """
 
 # ── PROJ/GDAL env fix ──
@@ -141,25 +144,117 @@ def load_alerts(year: int) -> gpd.GeoDataFrame:
     return alerts
 
 
-def load_ground_truth(year: int) -> gpd.GeoDataFrame:
+def load_ground_truth(year: int, gt_source: str = "auto") -> gpd.GeoDataFrame:
+    """
+    Load ground truth from INDEPENDENT sources (not circular DW by default).
+
+    Priority order for 'auto' mode:
+      1. Field verification (data/ground_truth/field_{YEAR}_*.geojson)
+      2. VIIRS FIRMS fires (data/ground_truth/viirs_{YEAR}_fires.geojson)
+      3. Hansen tree cover loss (data/ground_truth/hansen_{YEAR}_loss.geojson)
+      4. dNBR burn scars (data/ground_truth/dnbr_{YEAR}_burnscars.geojson)
+      5. DW (data/ground_truth/dw_gt_{YEAR}_*.geojson) — LAST RESORT, with WARNING
+
+    Args:
+        year: Validation year
+        gt_source: One of "auto", "field", "viirs", "hansen", "dnbr", "dw"
+    """
     frames = []
-    for cls in ["deforestation", "encroachment"]:
-        p = GT_DIR / f"dw_gt_{year}_{cls}.geojson"
-        if p.exists():
-            gdf = gpd.read_file(p)
+    source_used = None
+
+    # Define GT source loaders in priority order
+    gt_sources = {
+        "field": {
+            "pattern": f"field_{year}_*.geojson",
+            "label": "Field verification (INDEPENDENT — gold standard)",
+            "circular": False,
+        },
+        "viirs": {
+            "pattern": f"viirs_{year}_fires.geojson",
+            "label": "VIIRS FIRMS thermal detections (INDEPENDENT)",
+            "circular": False,
+        },
+        "hansen": {
+            "pattern": f"hansen_{year}_loss.geojson",
+            "label": "Hansen Global Forest Change (INDEPENDENT)",
+            "circular": False,
+        },
+        "dnbr": {
+            "pattern": f"dnbr_{year}_burnscars.geojson",
+            "label": "Sentinel-2 dNBR burn scars (INDEPENDENT)",
+            "circular": False,
+        },
+        "dw": {
+            "pattern": f"dw_gt_{year}_*.geojson",
+            "label": "Dynamic World annual change (CIRCULAR — same source as alerts!)",
+            "circular": True,
+        },
+    }
+
+    if gt_source == "auto":
+        # Try each source in priority order
+        for src_key, src_info in gt_sources.items():
+            files = sorted(GT_DIR.glob(src_info["pattern"]))
+            if files:
+                source_used = src_key
+                break
+    elif gt_source in gt_sources:
+        source_used = gt_source
+    else:
+        log.error(f"Unknown gt_source '{gt_source}'. Choose from: {list(gt_sources.keys())}")
+        return gpd.GeoDataFrame()
+
+    if source_used is None:
+        log.error(f"No ground truth files found for {year} in {GT_DIR}/")
+        log.error("Available GT source patterns: " + ", ".join(
+            f"{k}: {v['pattern']}" for k, v in gt_sources.items()
+        ))
+        return gpd.GeoDataFrame()
+
+    src_info = gt_sources[source_used]
+    files = sorted(GT_DIR.glob(src_info["pattern"]))
+
+    # CRITICAL: Warn about circular validation
+    if src_info["circular"]:
+        log.warning("=" * 70)
+        log.warning("  CIRCULAR VALIDATION WARNING")
+        log.warning("  Ground truth source: Dynamic World (DW)")
+        log.warning("  Alert source: Also DW-derived signals")
+        log.warning("  This means you are validating DW alerts against DW ground truth.")
+        log.warning("  Results will be ARTIFICIALLY INFLATED and NOT reliable.")
+        log.warning("  Use --gt-source viirs|hansen|field for independent validation.")
+        log.warning("=" * 70)
+
+    log.info(f"GT source: {src_info['label']}")
+
+    for f in files:
+        try:
+            gdf = gpd.read_file(f)
+            if gdf.crs is None or gdf.crs.to_epsg() != 4326:
+                gdf = gdf.to_crs("EPSG:4326")
             if "class" not in gdf.columns:
-                gdf["class"] = cls
+                # Infer class from filename
+                if "deforestation" in f.stem:
+                    gdf["class"] = "deforestation"
+                elif "encroachment" in f.stem:
+                    gdf["class"] = "encroachment"
+                elif "fire" in f.stem:
+                    gdf["class"] = "fire"
+                else:
+                    gdf["class"] = "forest_loss"
+            gdf["gt_source"] = source_used
             frames.append(gdf)
-        else:
-            log.warning(f"  GT not found: {p}")
+        except Exception as e:
+            log.warning(f"  Failed to load {f.name}: {e}")
 
     if not frames:
+        log.warning(f"No GT data loaded for source '{source_used}'")
         return gpd.GeoDataFrame()
 
     gt = pd.concat(frames, ignore_index=True)
-    log.info(f"GT polygons: {len(gt)} "
-             f"({(gt['class']=='deforestation').sum()} defor, "
-             f"{(gt['class']=='encroachment').sum()} encr)")
+    class_counts = {cls: int((gt["class"] == cls).sum()) for cls in gt["class"].unique()}
+    count_str = ", ".join(f"{cls}={n}" for cls, n in class_counts.items())
+    log.info(f"GT polygons: {len(gt)} from {source_used} ({count_str})")
     return gpd.GeoDataFrame(gt, crs="EPSG:4326")
 
 
@@ -315,19 +410,27 @@ def build_report(records: list, missed_gt: gpd.GeoDataFrame,
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Validate alerts against INDEPENDENT ground truth sources. "
+                    "Default: auto-selects best available independent GT."
+    )
     parser.add_argument("--year",          type=int,   required=True)
     parser.add_argument("--iou-threshold", type=float, default=DEFAULT_IOU)
+    parser.add_argument("--gt-source",     type=str,   default="auto",
+                        choices=["auto", "field", "viirs", "hansen", "dnbr", "dw"],
+                        help="Ground truth source. 'auto' selects best independent source. "
+                             "'dw' uses Dynamic World (CIRCULAR — not recommended).")
     args = parser.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     log.info(f"\n{'='*55}")
     log.info(f"  eNetra Alert Validation  |  Year: {args.year}")
+    log.info(f"  GT Source: {args.gt_source}")
     log.info(f"{'='*55}\n")
 
     alerts       = load_alerts(args.year)
-    ground_truth = load_ground_truth(args.year)
+    ground_truth = load_ground_truth(args.year, gt_source=args.gt_source)
 
     if alerts.empty or ground_truth.empty:
         log.error("Need both alert GeoJSONs and GT GeoJSONs to validate.")

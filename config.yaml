@@ -19,42 +19,43 @@ gee:
   hls_bands: ["B02", "B03", "B04", "B8A", "B11", "B12"]  # Blue,Green,Red,NIR,SWIR1,SWIR2
 
 model:
-  # ── Prithvi-100M fallback (used when use_eo2: false or TerraTorch unavailable)
-  pretrained: "ibm-nasa-geospatial/Prithvi-100M"
+  # ── Prithvi-EO-2.0 backbone (production) ──────────────────────────────────
+  pretrained: "ibm-nasa-geospatial/Prithvi-EO-2.0-600M-TL"
   num_frames: 3           # temporal frames per input (T)
-  num_classes: 1          # 1 = Regression mode (Severity Grading)
+  num_classes: 5          # 5 = Severity classification (no_burn, very_low, low, moderate, high)
   img_size: 224           # spatial chip size (224×224 pixels)
   in_chans: 6             # 6 multi-spectral bands (Blue,Green,Red,NIR,SWIR1,SWIR2)
-  embed_dim: 768          # 100M embed_dim (overridden to 1280 when EO2 600M is used)
-  depth: 12               # 100M depth (overridden by EO2 backbone when loaded)
-  num_heads: 12           # 100M heads (overridden by EO2 backbone when loaded)
-  freeze_encoder: true    # true = heads-only fine-tuning to fix OOM
-  # ── Phase 3: Prithvi-EO-2.0 backbone (TerraTorch) ──────────────────────────
-  use_eo2: true          # set true to upgrade to EO-2.0 (requires terratorch pip)
-  eo2_variant: "300M"     # "300M" (embed_dim=1024, d=24) or "600M" (embed_dim=1280, d=32)
+  embed_dim: 1280         # EO2-600M embed_dim
+  depth: 32               # EO2-600M depth
+  num_heads: 16           # EO2-600M heads
+  freeze_encoder: false   # false = full fine-tuning with differential LR (Phase 2)
+  use_eo2: true           # Use Prithvi-EO-2.0 backbone via TerraTorch
+  eo2_variant: "600M-TL"  # "600M-TL" for production (transfer-learning variant)
 
 training:
-  batch_size: 1           # DirectML TDR evasion: strict batch of 1
-  epochs: 80              # more data needs more epochs; cosine decay handles LR schedule
-  optimizer: "sgd"        # CRITICAL FIX: SGD runs natively on DirectML. AdamW causes silent crashes.
-  lr: 0.0001              # Explicit decimal to prevent string parsing TypeError
-  momentum: 0.9           # Standard momentum
-  weight_decay: 0.0001
-  warmup_epochs: 10
-  loss_weights: [1.0, 10.0]
-  focal_gamma: 2.0
-  eval_threshold: 0.15
-  val_split: 0.15
-  test_split: 0.10
+  batch_size: 4           # Standard batch size for CUDA/ROCm (increase for multi-GPU)
+  epochs: 80              # Cosine decay LR schedule across all epochs
+  optimizer: "adamw"      # AdamW with weight decay (standard for ViT fine-tuning)
+  lr: 0.0001              # Base learning rate (decoder); backbone uses differential LR
+  momentum: 0.9           # For SGD fallback only
+  weight_decay: 0.01      # AdamW weight decay (standard for ViT, was 0.0001 — too low)
+  warmup_epochs: 10       # Linear warmup before cosine decay
+  # 5-class severity loss weights: [no_burn, very_low, low, moderate, high]
+  # Inverse frequency-based: rare classes (moderate, high) get higher weight
+  loss_weights: [0.1, 1.0, 2.0, 5.0, 10.0]
+  focal_gamma: 2.0        # Focal loss gamma for hard example mining
+  eval_threshold: 0.35    # Confidence threshold for evaluation metrics
+  val_split: 0.15         # 15% validation split (stratified by tier)
+  test_split: 0.10        # 10% held-out test split
   seed: 42
-  amp: false              # Disable AMP; DirectML autocast is unstable and causes silent crashes
-  num_workers: 0          # Windows: avoid multiprocessing overhead
-  prefetch_factor: null
-  pin_memory: false
+  amp: true               # Enable AMP for CUDA (disable for DirectML/CPU)
+  num_workers: 4          # Parallel data loading workers (0 for Windows/DirectML)
+  prefetch_factor: 2      # DataLoader prefetch depth per worker
+  pin_memory: true         # Pin CPU tensors to CUDA-pinned memory
   output_dir: "outputs/checkpoints"
-  log_interval: 1         # Log EVERY step to pinpoint exactly where it fails
-  freeze_encoder_epochs: 5
-  grad_accum_steps: 1     # DirectML TDR evasion: update weights immediately, no accumulation
+  log_interval: 10        # Log every N steps
+  freeze_encoder_epochs: 5 # Phase 1: freeze backbone for 5 epochs (decoder warm-up)
+  grad_accum_steps: 4     # Effective batch = batch_size × grad_accum = 16
 
 augmentation:
   noise_std: 0.02          # Gaussian noise sigma (fraction of normalised range)
@@ -124,10 +125,10 @@ inference:
   num_frames: 3
 
   # Detection mode: "neural" | "rules" | "hybrid"
-  # neural  = Prithvi-100M change detection (requires local chip)
+  # neural  = VanAgni multi-modal model (requires local chip + auxiliary data)
   # rules   = GEE-SRC rules cascade (5 signals, server-side, no chip download)
-  # hybrid  = rules for triage, neural for confirmation
-  detection_mode: "rules"
+  # hybrid  = rules for triage, neural for confirmation (RECOMMENDED)
+  detection_mode: "hybrid"
 
   # ── GEE-SRC rules engine thresholds ──────────────────────────────────────
   rules_engine:

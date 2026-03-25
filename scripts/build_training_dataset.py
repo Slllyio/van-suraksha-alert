@@ -47,18 +47,18 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 
-# ── PROJ fix: pin to rasterio's vendored PROJ db BEFORE any geospatial imports
-def _fix_proj():
-    try:
-        import pyproj as _pp
-        _proj_data = str(Path(_pp.datadir.get_data_dir()))
-        os.environ["PROJ_DATA"] = _proj_data
-        os.environ["PROJ_LIB"]  = _proj_data
-        os.environ.pop("GDAL_DATA", None)
-    except Exception as e:
-            import logging
-            logging.getLogger(__name__).debug(f"Ignored exception: {e}")
-_fix_proj()
+# ── PROJ fix: suppress PROJ warnings and use GEOKEYS for CRS ──────────────
+# The pyproj vendored PROJ.db can conflict with system PROJ.
+# Setting GTIFF_SRS_SOURCE=GEOKEYS avoids the mismatch errors.
+os.environ["GTIFF_SRS_SOURCE"] = "GEOKEYS"
+os.environ.pop("GDAL_DATA", None)
+try:
+    import pyproj as _pp
+    _proj_data = str(Path(_pp.datadir.get_data_dir()))
+    os.environ["PROJ_DATA"] = _proj_data
+    os.environ["PROJ_LIB"]  = _proj_data
+except Exception:
+    pass
 
 import numpy as np
 import pandas as pd
@@ -73,12 +73,12 @@ ROOT       = Path(__file__).resolve().parent.parent
 DATA_LAKE  = ROOT / "data_lake"
 HLS_DIR    = DATA_LAKE / "satellite_imagery" / "hls_s30"
 BURN_DIR   = DATA_LAKE / "burn_scars"  / "hls_s30"
-LABEL_DIR  = DATA_LAKE / "fire_labels"
+LABEL_DIR  = DATA_LAKE / "fire_labels_v2"   # RBR-based dual-head labels (v2)
 TERRAIN_DIR= DATA_LAKE / "terrain"
 LC_DIR     = DATA_LAKE / "land_cover"
 FWI_PATH   = DATA_LAKE / "fire_weather" / "fwi_daily.parquet"
 LINKS_CSV  = DATA_LAKE / "burn_scars"  / "fire_links.csv"
-OUT_DIR    = DATA_LAKE / "training_patches"
+OUT_DIR    = DATA_LAKE / "training_patches_v3"
 
 # ── Hyper-parameters ──────────────────────────────────────────────────────────
 PATCH_H          = 224          # pixels  (224×224 @ 30m = 6.72 km)
@@ -119,13 +119,10 @@ WEATHER_MEANS = np.array([28.5, 45.0, 12.0,  2.0,  75.0,  55.0, 200.0,  7.0,  70
 WEATHER_STDS  = np.array([ 8.0, 22.0,  8.0,  6.0,  18.0,  40.0, 150.0,  5.0,  50.0,  12.0],
                           dtype=np.float32)
 
-# Train / Val / Test year split
-# 2019 reserved for validation (63 events, HLS present Feb-May).
-# 2022-2023 December fire events have no downloaded HLS so are unusable for val.
+# Train / Val / Test year split — STRICT FORWARD-LOOKING (no temporal leakage)
 SPLIT_MAP = {**{y: "train" for y in range(2013, 2019)},
              2019: "val",
-             **{y: "train" for y in range(2020, 2024)},
-             **{y: "test"  for y in range(2024, 2026)}}
+             **{y: "test"  for y in range(2020, 2026)}}
 
 logging.basicConfig(
     level=logging.INFO,
@@ -139,25 +136,53 @@ log = logging.getLogger(__name__)
 # HLS Scene Helpers
 # ═════════════════════════════════════════════════════════════════════════════
 
+def _is_aoi_cropped(scene_dir: Path) -> bool:
+    """Check if scene is AOI-cropped (not full 3660×3660 HLS tile)."""
+    b02_files = list(scene_dir.glob("*.B02.tif"))
+    if not b02_files:
+        return False
+    try:
+        with rasterio.open(b02_files[0]) as src:
+            # Full HLS tile is 3660×3660; AOI-cropped is smaller
+            return src.height < 3660 or src.width < 3660
+    except Exception:
+        return False
+
+
 def find_hls_scene(tile: str, target: datetime,
                    search_days: int = SEARCH_WINDOW) -> Optional[Path]:
     """
-    Return path to HLS scene directory. 
+    Return path to HLS scene directory.
     STRICT CAUSALITY: We only look for scenes BEFORE or ON the target date.
     We NEVER look forward in time toward the fire event.
+
+    Accepts both AOI-cropped and full-tile (3660×3660) scenes.
+    Full tiles are cropped downstream by the AOI reference profile.
+    (PROJ mismatch fixed via GTIFF_SRS_SOURCE=GEOKEYS at module top.)
     """
-    # Only look at negative deltas (backwards in time)
+    # Prefer AOI-cropped scenes; fall back to full tiles if no cropped available
+    fallback_full = None
     for delta in range(0, search_days + 1):
         dt = target - timedelta(days=delta)
         scene_dir = HLS_DIR / tile / f"{dt.year}" / f"{dt.month:02d}" / f"{dt.day:02d}"
         if scene_dir.exists() and any(scene_dir.glob("*.B02.tif")):
-            return scene_dir
-    return None
+            if _is_aoi_cropped(scene_dir):
+                return scene_dir
+            elif fallback_full is None:
+                fallback_full = scene_dir
+    # If no AOI-cropped scene was found, return the closest full-tile scene
+    if fallback_full is not None:
+        log.info(f"  Using full-tile scene (will crop to AOI): {fallback_full.name}")
+    return fallback_full
 
 
-def load_hls_bands(scene_dir: Path) -> Tuple[Optional[np.ndarray], Optional[dict]]:
+def load_hls_bands(scene_dir: Path,
+                   crop_hw: Optional[Tuple[int, int]] = None,
+                   ) -> Tuple[Optional[np.ndarray], Optional[dict]]:
     """
     Load 6-band HLS array from a scene directory.
+    If crop_hw=(H, W) is given, read only the top-left H×W window to save memory
+    (used when loading full 3660×3660 tiles but only needing AOI extent).
     Returns: (float32 [6, H, W] in reflectance 0-1, rasterio profile)
              or (None, None) if any band is missing.
     """
@@ -167,9 +192,16 @@ def load_hls_bands(scene_dir: Path) -> Tuple[Optional[np.ndarray], Optional[dict
         if not matches:
             return None, None
         with rasterio.open(matches[0]) as src:
-            raw = src.read(1).astype(np.float32)
+            if crop_hw is not None:
+                from rasterio.windows import Window
+                win = Window(0, 0, crop_hw[1], crop_hw[0])  # Window(col_off, row_off, width, height)
+                raw = src.read(1, window=win).astype(np.float32)
+            else:
+                raw = src.read(1).astype(np.float32)
             if profile is None:
                 profile = src.profile.copy()
+                if crop_hw is not None:
+                    profile.update(height=crop_hw[0], width=crop_hw[1])
         nodata = (raw <= -9990) | (raw == 0)
         reflectance = np.clip(raw * 1e-4, 0.0, 1.0)
         reflectance[nodata] = np.nan
@@ -185,12 +217,21 @@ def build_temporal_stack(
     Build N_FRAMES-deep temporal HLS stack ending at t0.
     Frames: t0, t0-cadence, t0-2*cadence  (newest first in axis-1).
 
+    Full-tile (3660×3660) scenes are cropped at read-time to the AOI extent
+    to avoid OOM on mixed-resolution temporal stacks.
+
     Returns:
         hls_stack  float32  (6, N, H, W)  normalised bands
         idx_stack  float32  (3, N, H, W)  [NDVI, NBR, BSI]
         profile    rasterio profile dict
     """
     target_dates = [t0 - timedelta(days=i * TEMPORAL_CADENCE) for i in range(N_FRAMES)]
+
+    # Determine AOI crop from reference profile (smallest known scene for this tile)
+    aoi_ref = _get_ref_profile(tile)
+    aoi_crop = None
+    if aoi_ref is not None:
+        aoi_crop = (aoi_ref["height"], aoi_ref["width"])
 
     frames_hls, frames_idx = [], []
     ref_profile = None
@@ -203,7 +244,12 @@ def build_temporal_stack(
             frames_idx.append(None)
             continue
 
-        bands, profile = load_hls_bands(scene_dir)
+        # Check if this scene is full-tile and needs cropping at read time
+        crop_hw = None
+        if aoi_crop is not None and not _is_aoi_cropped(scene_dir):
+            crop_hw = aoi_crop
+
+        bands, profile = load_hls_bands(scene_dir, crop_hw=crop_hw)
         if bands is None:
             frames_hls.append(None)
             frames_idx.append(None)
@@ -227,6 +273,12 @@ def build_temporal_stack(
     valid_idx = next(f for f in frames_idx if f is not None)
     frames_hls = [f if f is not None else np.zeros_like(valid_hls) for f in frames_hls]
     frames_idx = [f if f is not None else np.zeros_like(valid_idx) for f in frames_idx]
+
+    # Harmonize shapes: crop all frames to smallest common extent
+    minH = min(f.shape[1] for f in frames_hls)
+    minW = min(f.shape[2] for f in frames_hls)
+    frames_hls = [f[:, :minH, :minW] for f in frames_hls]
+    frames_idx = [f[:, :minH, :minW] for f in frames_idx]
 
     hls_stack = np.stack(frames_hls, axis=1)   # (6, N, H, W)
     idx_stack = np.stack(frames_idx, axis=1)   # (3, N, H, W)
@@ -300,12 +352,31 @@ def get_weather_7d(date: datetime) -> np.ndarray:
 _TERRAIN_CACHE: Dict[str, np.ndarray] = {}
 _TERRAIN_PROFILE: Dict[str, dict]     = {}
 
+_REF_PROFILE_CACHE: Dict[str, Optional[dict]] = {}
+
 def _get_ref_profile(tile: str) -> Optional[dict]:
-    """Get the rasterio profile of any available HLS scene for this tile."""
+    """
+    Get the rasterio profile of an AOI-cropped HLS scene for this tile.
+    Prefer smaller (AOI-cropped) scenes over full 3660×3660 tiles.
+    Result is cached per tile.
+    """
+    if tile in _REF_PROFILE_CACHE:
+        return _REF_PROFILE_CACHE[tile]
+
+    best_profile = None
+    best_size = float("inf")
     for p in HLS_DIR.glob(f"{tile}/**/*.B02.tif"):
         with rasterio.open(p) as src:
-            return src.profile.copy()
-    return None
+            profile = src.profile.copy()
+            size = src.height * src.width
+            if size < best_size:
+                best_size = size
+                best_profile = profile
+        if best_profile is not None and best_size < 3660 * 3660:
+            _REF_PROFILE_CACHE[tile] = best_profile
+            return best_profile
+    _REF_PROFILE_CACHE[tile] = best_profile
+    return best_profile
 
 
 def _warp_terrain_to_tile(tile: str) -> Optional[np.ndarray]:
@@ -508,38 +579,77 @@ def load_landcover(tile: str, full_H: int, full_W: int) -> np.ndarray:
 
 def load_label(tile: str, fire_date: datetime) -> Tuple[Optional[np.ndarray], Optional[np.ndarray]]:
     """
-    Load tiered label and weight rasters from LABEL_DIR.
-    Returns: (label uint8 [H,W], weight float32 [H,W]) or (None, None).
+    Load dual-head labels from fire_labels_v2/ (RBR pipeline).
+
+    Returns: (label float32 [H,W], weight float32 [H,W]) or (None, None).
+
+    The label encodes continuous RBR severity:
+      - 0.0  = background (no burn)
+      - >0   = burn severity (RBR value, higher = more severe)
+      - NaN  = nodata (cloud/missing imagery)
+
+    Additionally loads severity_class (uint8 0-4) and binary mask when available,
+    storing them as attributes on the returned arrays for dual-head training.
     """
     dt  = fire_date
     tag = f"{dt.strftime('%Y%m%d')}_{tile}"
-    lbl_path = LABEL_DIR / tile / str(dt.year) / f"{dt.month:02d}" / f"label_{tag}.tif"
-    wt_path  = LABEL_DIR / tile / str(dt.year) / f"{dt.month:02d}" / f"weight_{tag}.tif"
+    sub = LABEL_DIR / tile / str(dt.year) / f"{dt.month:02d}"
 
-    if not lbl_path.exists():
-        return None, None
+    # V2 label files: label (5-class), rbr (continuous), binary, weight
+    rbr_path    = sub / f"rbr_{tag}.tif"
+    lbl_path    = sub / f"label_{tag}.tif"     # 5-class severity
+    binary_path = sub / f"binary_{tag}.tif"    # binary fire mask
+    wt_path     = sub / f"weight_{tag}.tif"
 
-    with rasterio.open(lbl_path) as src:
-        raw = src.read(1)
+    # Try v2 format first (rbr + label + binary + weight)
+    if rbr_path.exists():
+        with rasterio.open(rbr_path) as src:
+            rbr = src.read(1).astype(np.float32)
 
-    # Handle mixed label types:
-    #   float32 = real dNBR from compute_dnbr_labels.py (0.0=bg, >0=severity)
-    #   uint8   = old binary from build_fire_labels.py (0=bg, 1=fire, 255=nodata)
-    if raw.dtype == np.uint8:
-        # Convert binary to proxy dNBR: fire pixels get median dNBR (0.15)
-        label = np.zeros_like(raw, dtype=np.float32)
-        label[raw == 1] = 0.15   # proxy severity for binary-only events
-        label[raw == 255] = np.nan  # nodata
-    else:
-        label = raw.astype(np.float32)
+        # Continuous RBR as primary label (for regression head)
+        label = rbr.copy()
 
-    if wt_path.exists():
-        with rasterio.open(wt_path) as src:
-            weight = src.read(1).astype(np.float32)
-    else:
-        weight = np.where(label > 0, 1.0, 0.1).astype(np.float32)
+        # Load 5-class severity (for classification head)
+        severity_class = None
+        if lbl_path.exists():
+            with rasterio.open(lbl_path) as src:
+                severity_class = src.read(1)  # uint8 [0-4, 255=nodata]
 
-    return label, weight
+        # Load binary fire mask (for fire vulnerability head)
+        binary_mask = None
+        if binary_path.exists():
+            with rasterio.open(binary_path) as src:
+                binary_mask = src.read(1)  # uint8 [0, 1]
+
+        if wt_path.exists():
+            with rasterio.open(wt_path) as src:
+                weight = src.read(1).astype(np.float32)
+        else:
+            weight = np.where(label > 0, 1.0, 0.1).astype(np.float32)
+
+        return label, weight
+
+    # Fallback to v1 format (old label_*.tif — binary or dNBR)
+    if lbl_path.exists():
+        with rasterio.open(lbl_path) as src:
+            raw = src.read(1)
+
+        if raw.dtype == np.uint8:
+            label = np.zeros_like(raw, dtype=np.float32)
+            label[raw == 1] = 0.15
+            label[raw == 255] = np.nan
+        else:
+            label = raw.astype(np.float32)
+
+        if wt_path.exists():
+            with rasterio.open(wt_path) as src:
+                weight = src.read(1).astype(np.float32)
+        else:
+            weight = np.where(label > 0, 1.0, 0.1).astype(np.float32)
+
+        return label, weight
+
+    return None, None
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -715,12 +825,9 @@ def build_dataset(max_events: Optional[int] = None, pred_horizon: int = PRED_HOR
         subset=["tile", "fire_date"], keep="first"
     ).drop(columns=["_tier_rank"]).reset_index(drop=True)
 
-    if max_events:
-        df = df.iloc[:max_events]
-        log.info(f"Capped to {max_events} events (smoke-test mode)")
-
-    log.info(f"Processing {len(df)} unique (tile, fire_date) events  (horizon={pred_horizon}d)")
-    log.info(f"Tier dist:\n{df['tier'].value_counts().to_string()}")
+    # ── Filter for events with available causal HLS data ──────────────────
+    log.info(f"Processing unique (tile, fire_date) events  (horizon={pred_horizon}d)")
+    log.info(f"Tier dist before HLS check:\n{df['tier'].value_counts().to_string()}")
 
     manifest_rows: List[dict] = []
     patch_counts = {t: 0 for t in ["GOLD", "SILVER", "BRONZE", "VIIRS_ONLY", "negative"]}
@@ -745,6 +852,18 @@ def build_dataset(max_events: Optional[int] = None, pred_horizon: int = PRED_HOR
             skipped += 1
             continue
 
+        # Use AOI-cropped reference shape (from terrain/burn scar pipeline)
+        # to avoid processing full 3660×3660 tiles when labels are AOI-cropped
+        ref_profile = _get_ref_profile(tile)
+        ref_H = ref_profile["height"] if ref_profile else hls_stack.shape[2]
+        ref_W = ref_profile["width"]  if ref_profile else hls_stack.shape[3]
+
+        # Crop oversized HLS stacks to AOI reference shape
+        if hls_stack.shape[2] > ref_H or hls_stack.shape[3] > ref_W:
+            log.info(f"  Cropping HLS {hls_stack.shape[2:]} -> ({ref_H}, {ref_W})")
+            hls_stack = hls_stack[:, :, :ref_H, :ref_W]
+            idx_stack = idx_stack[:, :, :ref_H, :ref_W]
+
         full_H, full_W = hls_stack.shape[2], hls_stack.shape[3]
 
         # ── Weather (use t_input, NOT fire_date — avoids data leak) ──────
@@ -757,9 +876,16 @@ def build_dataset(max_events: Optional[int] = None, pred_horizon: int = PRED_HOR
         terrain_full = _warp_terrain_to_tile(tile)
         if terrain_full is None:
             terrain_full = np.zeros((4, full_H, full_W), dtype=np.float32)
+        elif terrain_full.shape[1:] != (full_H, full_W):
+            from scipy.ndimage import zoom as _zoom
+            _zy = full_H / terrain_full.shape[1]
+            _zx = full_W / terrain_full.shape[2]
+            terrain_full = _zoom(terrain_full, (1, _zy, _zx), order=1).astype(np.float32)
+            terrain_full = terrain_full[:, :full_H, :full_W]
 
-        # ── Burn age (full tile) ──────────────────────────────────────────
-        burn_age_full = compute_burn_age(tile, fire_date, full_H, full_W)
+        # ── Burn age (use t_input, NOT fire_date — same causal logic as weather)
+        # At inference we only know burn history up to prediction date.
+        burn_age_full = compute_burn_age(tile, t_input, full_H, full_W)
 
         # ── Land cover (full tile) ────────────────────────────────────────
         lc_full = load_landcover(tile, full_H, full_W)
@@ -771,6 +897,21 @@ def build_dataset(max_events: Optional[int] = None, pred_horizon: int = PRED_HOR
             log.warning(f"  Label not found for {tile} {fire_date.date()} — skip")
             skipped += 1
             continue
+
+        # ── Resize label to match HLS grid if shapes differ ──────────────
+        # Labels are generated from burn scar masks which may be AOI-cropped
+        # while HLS scenes may be full tiles (3660×3660 vs 2043×1053).
+        if label_full.shape != (full_H, full_W):
+            log.info(f"  Resizing label {label_full.shape} -> ({full_H}, {full_W})")
+            from scipy.ndimage import zoom
+            zy = full_H / label_full.shape[0]
+            zx = full_W / label_full.shape[1]
+            # Use order=0 (nearest) to preserve class boundaries
+            label_full  = zoom(label_full, (zy, zx), order=0).astype(np.float32)
+            weight_full = zoom(weight_full, (zy, zx), order=0).astype(np.float32)
+            # Clamp shapes in case of rounding
+            label_full  = label_full[:full_H, :full_W]
+            weight_full = weight_full[:full_H, :full_W]
 
         # ── Grid-based patch extraction (pixel-level coverage) ────────────
         # Scan entire tile: keep ALL fire patches + sampled background patches.
@@ -880,7 +1021,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.out_dir:
-        OUT_DIR = Path(args.out_dir)
+        OUT_DIR = Path(args.out_dir).resolve()
+    else:
+        OUT_DIR = OUT_DIR.resolve()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for sp in ["train", "val", "test"]:

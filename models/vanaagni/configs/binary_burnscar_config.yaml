@@ -1,0 +1,91 @@
+# ==========================================================================
+# Prithvi Burn Scar Detection -- Binary (burned/not-burned)
+# Guna Division, MP, India | 2026-03-11
+# ==========================================================================
+# Prithvi-EO-2.0-600M-TL backbone + UNet decoder + FiLM weather conditioning
+# Binary detection: 0=background, 1=burned
+#
+# Usage:
+#   py -3.12 src/train/train_vanaagni.py --config configs/binary_burnscar_config.yaml
+# ==========================================================================
+
+# --------------------------------------------------------------------------
+# Model Architecture
+# --------------------------------------------------------------------------
+model:
+  eo2_variant:        "600M-TL"
+  num_frames:         3                    # T=3 temporal frames (16-day cadence)
+  in_chans:           6                    # HLS bands: B02, B03, B04, B8A, B11, B12
+  img_size:           224                  # 224x224 pixel patches
+  backbone_init_from: null
+  freeze_backbone:    false
+  decoder_channels:   [512, 256, 128, 64]
+  weather_input_dim:  10
+  weather_cond_dim:   128
+
+  # BINARY mode: 2 classes (background + burned)
+  # Dataset uses binary_mode=True to collapse severity 1-4 into fire=1
+  num_classes:        2
+  dropout:            0.1
+
+
+# --------------------------------------------------------------------------
+# Data
+# --------------------------------------------------------------------------
+data:
+  manifest_path:      "C:/Users/S.C.C/OneDrive/Desktop/jwalaNetra/naughty-easley/data_lake/training_patches/manifest.csv"
+  num_workers:        0                    # 0 for DirectML (no CUDA shared memory)
+  fire_oversample:    5.0
+  min_fire_pixels:    25
+  exclude_tiers:      null                 # include all tiers including VIIRS_ONLY
+
+
+# --------------------------------------------------------------------------
+# LLRD (Layer-Wise Learning Rate Decay)
+# --------------------------------------------------------------------------
+llrd:
+  enabled:          true
+  decay:            0.65
+  detach_prefix:    28                     # Freeze blocks 0-27, train 28-31 + decoder
+
+
+# --------------------------------------------------------------------------
+# LoRA -- DISABLED (incompatible with DirectML)
+# --------------------------------------------------------------------------
+lora:
+  enabled:          false
+
+
+# --------------------------------------------------------------------------
+# Training Schedule
+# --------------------------------------------------------------------------
+training:
+  epochs:                   80
+  freeze_backbone_epochs:   10
+  batch_size:               1
+  grad_accum_steps:         8              # Effective batch = 8
+
+  lr:                       5.0e-5
+  warmup_epochs:            5
+  min_lr_fraction:          0.01
+  weight_decay:             0.01
+  amp:                      false          # Disabled for DirectML
+
+  # Binary loss: [bg_weight, fire_weight]
+  # Fire is rare (~5% of pixels), so upweight fire class
+  loss_weights:             [0.1, 1.0]
+  focal_gamma:              2.0
+  dice_weight:              0.5
+
+  eval_threshold:           0.3            # Probability threshold for fire class
+  log_interval:             20
+  save_every_epochs:        10
+  early_stop_patience:      25
+
+
+# --------------------------------------------------------------------------
+# Paths
+# --------------------------------------------------------------------------
+paths:
+  output_dir:         "outputs"
+  checkpoint_dir:     "outputs/checkpoints"

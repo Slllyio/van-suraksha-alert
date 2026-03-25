@@ -1,0 +1,61 @@
+{
+  "10": {
+    "class_code": 10,
+    "label": "Tree cover",
+    "pixels": 5077916,
+    "area_ha": 43698.8,
+    "pct_of_area": 7.0
+  },
+  "20": {
+    "class_code": 20,
+    "label": "Shrubland",
+    "pixels": 2107173,
+    "area_ha": 18133.6,
+    "pct_of_area": 2.9
+  },
+  "30": {
+    "class_code": 30,
+    "label": "Grassland",
+    "pixels": 13031698,
+    "area_ha": 112146.3,
+    "pct_of_area": 18.0
+  },
+  "40": {
+    "class_code": 40,
+    "label": "Cropland",
+    "pixels": 50629506,
+    "area_ha": 435700.0,
+    "pct_of_area": 70.0
+  },
+  "50": {
+    "class_code": 50,
+    "label": "Built-up",
+    "pixels": 740093,
+    "area_ha": 6369.0,
+    "pct_of_area": 1.0
+  },
+  "60": {
+    "class_code": 60,
+    "label": "Bare/sparse veg",
+    "pixels": 237317,
+    "area_ha": 2042.3,
+    "pct_of_area": 0.3
+  },
+  "80": {
+    "class_code": 80,
+    "label": "Water",
+    "pixels": 508090,
+    "area_ha": 4372.4,
+    "pct_of_area": 0.7
+  },
+  "_summary": {
+    "total_pixels": 72331793,
+    "total_area_ha": 622462.4,
+    "forest_ha": 43698.8,
+    "forest_pct": 7.0,
+    "agriculture_ha": 435700.0,
+    "scrub_ha": 18133.6,
+    "source": "ESA WorldCover v200 (2021), 10m resolution",
+    "computed_from": "worldcover_guna_raw.tif pixel counting"
+  }
+}

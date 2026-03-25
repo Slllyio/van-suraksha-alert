@@ -59,8 +59,8 @@ def load_model(cfg: dict, checkpoint_path: str, device):
 def sliding_window_inference(
     model: torch.nn.Module,
     image_stack: np.ndarray,   # (T, C, H, W)
-    reference_tif: str,
-    target_date_str: str,
+    reference_tif: str = None,
+    target_date_str: str = None,
     tile_size: int = 224,
     overlap: int = 64,
     device: torch.device = None,
@@ -68,6 +68,7 @@ def sliding_window_inference(
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Run multi-modal model inference using sliding window over a large image.
+    Loads real auxiliary data (terrain, weather, landcover, burn_age) per tile.
     """
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -106,26 +107,39 @@ def sliding_window_inference(
         terrain_np, lc_np = load_spatial_auxiliary(lon, lat, patch_size=tile_size)
         weather_np = load_7d_weather_sequence(target_date_str, lon, lat)
         
-        # Prepare Tensors
+        # Prepare Tensors — match VanAgni forward() positional signature:
+        #   hls (B, C=6, T, H, W), weather (B, 10), weather_7d (B, 10, 7),
+        #   terrain (B, 4, H, W), burn_age (B, 3, H, W), landcover (B, 11, H, W)
+
+        # patch shape: (T, C, H, W) → need (1, C, T, H, W) for Prithvi
         patch_t = torch.from_numpy(patch[np.newaxis]).float().to(device)  # (1, T, C, H, W)
-        terrain_t = torch.from_numpy(terrain_np[np.newaxis]).float().to(device)
-        lc_t = torch.from_numpy(lc_np[np.newaxis]).float().to(device)
-        weather_t = torch.from_numpy(weather_np[np.newaxis]).float().to(device)
-        
-        # Current weather (using day 3 which is T0)
-        curr_weather_t = weather_t[:, 3, :]
-        
-        # Burn age (mocked as zeros for inference unless tracked)
-        burn_age_t = torch.zeros(1, 1, tile_size, tile_size).to(device)
+        patch_t = patch_t.permute(0, 2, 1, 3, 4)  # (1, C, T, H, W) — model contract
+
+        terrain_t = torch.from_numpy(terrain_np[np.newaxis]).float().to(device)  # (1, 4, H, W)
+        lc_t = torch.from_numpy(lc_np[np.newaxis]).float().to(device)            # (1, 11, H, W)
+
+        # Weather: load_7d_weather_sequence returns (7, 10) or similar
+        if weather_np is not None and weather_np.ndim == 2:
+            # Reshape to model contract: weather (1, 10), weather_7d (1, 10, 7)
+            weather_7d_t = torch.from_numpy(weather_np.T[np.newaxis]).float().to(device)  # (1, 10, 7)
+            curr_weather_t = torch.from_numpy(weather_np[3:4]).float().to(device)         # (1, 10)
+        else:
+            weather_7d_t = torch.zeros(1, 10, 7).to(device)
+            curr_weather_t = torch.zeros(1, 10).to(device)
+
+        # Burn age: load real data if available
+        burn_age_np = load_burn_age(lon, lat, target_date_str, patch_size=tile_size)
+        burn_age_t = torch.from_numpy(burn_age_np[np.newaxis]).float().to(device)  # (1, 3, H, W)
 
         with torch.no_grad():
+            # Use POSITIONAL args matching VanAgni.forward() signature
             out = model(
-                x_temporal = patch_t,
-                weather_current = curr_weather_t,
-                weather_7d = weather_t,
-                terrain = terrain_t,
-                landcover = lc_t,
-                burn_age = burn_age_t
+                patch_t,          # hls:        (B, 6, T, H, W)
+                curr_weather_t,   # weather:    (B, 10)
+                weather_7d_t,     # weather_7d: (B, 10, 7)
+                terrain_t,        # terrain:    (B, 4, H, W)
+                burn_age_t,       # burn_age:   (B, 3, H, W)
+                lc_t,             # landcover:  (B, 11, H, W)
             )
             probs = torch.softmax(out["logits"], dim=1).cpu().numpy()[0]
 
@@ -192,18 +206,28 @@ def run_detection(cfg: dict, checkpoint: str, tif_paths: List[str],
     image_stack = np.stack(frames, axis=0)  # (T, C, H, W)
     log.info(f"  Image stack shape: {image_stack.shape}")
 
-    # Run sliding window inference
+    # Derive target date from last TIF path or use today
+    reference_tif = tif_paths[-1]
+    try:
+        # Extract date from filename pattern hls_YYYY.tif or similar
+        import re
+        date_match = re.search(r'(\d{4}[-_]?\d{2}[-_]?\d{2})', Path(reference_tif).stem)
+        target_date_str = date_match.group(1).replace("_", "-") if date_match else datetime.now().strftime("%Y-%m-%d")
+    except Exception:
+        from datetime import datetime
+        target_date_str = datetime.now().strftime("%Y-%m-%d")
+
+    # Run sliding window inference with real auxiliary data
     change_mask, prob_map = sliding_window_inference(
         model=model,
         image_stack=image_stack,
+        reference_tif=reference_tif,
+        target_date_str=target_date_str,
         tile_size=cfg["model"]["img_size"],
         overlap=64,
         device=device,
         num_classes=cfg["model"]["num_classes"],
     )
-
-    # Save change mask GeoTIFF
-    reference_tif = tif_paths[-1]
     save_geotiff(change_mask, reference_tif, output_path)
 
     # Save probability map for visualization

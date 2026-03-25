@@ -757,40 +757,45 @@ def fig3_data_pipeline():
 
 
 # ============================================================================
-# Figure 5: Confusion Matrix (placeholder from test_results)
+# Figure 5: Confusion Matrix — REQUIRES_INFERENCE
 # ============================================================================
 def fig5_confusion_matrix():
     """5x5 confusion matrix heatmap from test results.
-    NOTE: Requires per-class confusion matrix data. Using approximation
-    from precision/recall/support when full matrix not available.
+
+    REQUIRES_INFERENCE: This figure MUST be generated from actual model
+    inference on the test set. The confusion matrix must come from
+    sklearn.metrics.confusion_matrix() applied to real predictions,
+    NOT from hardcoded or approximated values.
+
+    Expected workflow:
+        1. Run inference on test set (385 patches, 2024-2025)
+        2. Save confusion matrix to outputs/vanaagni/test_results.json
+           with key "confusion_matrix" as a 5x5 nested list
+        3. Then run this function to generate the figure
     """
     results_path = OUTPUT_DIR / "test_results.json"
     if not results_path.exists():
-        print(f"  SKIP fig5: {results_path} not found")
+        print(f"  SKIP fig5: {results_path} not found — run model inference first")
         return None
 
     with open(str(results_path)) as f:
         results = json.load(f)
 
-    scores = results["test_scores"]
+    if "confusion_matrix" not in results:
+        print("  SKIP fig5: test_results.json missing 'confusion_matrix' key")
+        print("  The confusion matrix must come from actual model inference,")
+        print("  not from approximated or hardcoded values.")
+        return None
 
-    # We can approximate confusion matrix from precision, recall
-    # For the actual paper, this should come from model inference
-    # For now, create an illustrative version based on known per-class metrics
+    cm_raw = np.array(results["confusion_matrix"])
+    if cm_raw.shape != (5, 5):
+        print(f"  SKIP fig5: confusion_matrix shape {cm_raw.shape}, expected (5, 5)")
+        return None
 
-    # Classes: no_burn(0), very_low(1), low(2), moderate(3), high(4)
-    # From test results: only 0 and 1 have non-zero recall
-    # Approximate support from pixel_accuracy and ratios
-    # Using approximate pixel counts from a typical test run
-
-    # Approximated confusion matrix (normalised by row)
-    cm_norm = np.array([
-        [0.851, 0.149, 0.000, 0.000, 0.000],  # no_burn
-        [0.362, 0.638, 0.000, 0.000, 0.000],  # very_low
-        [0.400, 0.600, 0.000, 0.000, 0.000],  # low (all predicted as 0 or 1)
-        [0.400, 0.600, 0.000, 0.000, 0.000],  # moderate
-        [0.400, 0.600, 0.000, 0.000, 0.000],  # high
-    ])
+    # Normalise by row (true class)
+    row_sums = cm_raw.sum(axis=1, keepdims=True)
+    row_sums = np.where(row_sums == 0, 1, row_sums)  # avoid division by zero
+    cm_norm = cm_raw / row_sums
 
     fig, ax = plt.subplots(1, 1, figsize=(6, 5))
 
@@ -803,18 +808,18 @@ def fig5_confusion_matrix():
     ax.set_xticklabels(classes, rotation=45, ha="right")
     ax.set_yticklabels(classes)
 
-    # Annotate cells
+    # Annotate cells with both normalised proportion and raw count
     for i in range(5):
         for j in range(5):
             val = cm_norm[i, j]
+            raw = int(cm_raw[i, j])
             color = "white" if val > 0.5 else "black"
-            ax.text(j, i, f"{val:.2f}", ha="center", va="center",
-                    color=color, fontsize=9)
+            ax.text(j, i, f"{val:.2f}\n({raw})", ha="center", va="center",
+                    color=color, fontsize=8)
 
     ax.set_xlabel("Predicted Class")
     ax.set_ylabel("True Class")
-    ax.set_title("Normalised Confusion Matrix (Test Set)\n"
-                 "Note: Approximate from per-class metrics; full matrix from inference")
+    ax.set_title("Normalised Confusion Matrix (Test Set, 2024--2025)")
 
     plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label="Proportion")
     fig.tight_layout()

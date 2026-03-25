@@ -41,8 +41,8 @@ model:
 # Data
 # --------------------------------------------------------------------------
 data:
-  manifest_path:      "data_lake/training_patches/manifest.csv"
-  num_workers:        2                    # DataLoader workers (0 for debugging)
+  manifest_path:      "data_lake/training_patches_v3/manifest.csv"
+  num_workers:        0                    # 0 for DirectML/Windows (multiprocessing crashes)
   fire_oversample:    5.0                  # Upsample fire patches 5x in training
   min_fire_pixels:    25                   # Minimum fire pixels for positive patches
   exclude_tiers:      null                 # Set to ["VIIRS_ONLY"] to skip noisy tier
@@ -98,9 +98,10 @@ training:
   # Phase 1: Frozen backbone (skipped when LLRD enabled — LLRD uses single phase)
   freeze_backbone_epochs:   10             # Phase 1 = epochs 1-10
 
-  # Batch size: batch_size=1 on 16GB DirectML, grad accum for effective batch
-  batch_size:               1
-  grad_accum_steps:         8              # Effective batch = 1 x 8 = 8
+  # Batch size: 2 for DirectML on RX 9060 XT (16GB VRAM)
+  # Use 4 on CUDA/ROCm (16GB+). Effective batch = batch_size × grad_accum.
+  batch_size:               2
+  grad_accum_steps:         8              # Effective batch = 2 x 8 = 16
 
   # Learning rate
   # LLRD mode: base_lr applies to decoder; backbone gets base_lr * 0.1 * decay^layer
@@ -117,8 +118,9 @@ training:
   amp:                      true
 
   # Loss: FocalDice with 5-class severity weights
-  # Weights from NASA burn_intensity config (class 4 = High is rare, needs most weight)
-  loss_weights:             [0.018, 0.14, 0.076, 0.11, 0.65]
+  # Inverse-frequency weights: rare classes get higher weight to combat imbalance
+  # [no_burn=0.1, very_low=1.0, low=2.0, moderate=5.0, high=10.0]
+  loss_weights:             [0.1, 1.0, 2.0, 5.0, 10.0]
   focal_gamma:              2.0            # Focal loss focusing parameter
   dice_weight:              0.5            # 0.5 x Focal + 0.5 x Dice
 

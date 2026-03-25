@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JvalaNetra AI — Tactical Dashboard | Van Suraksha Alert</title>
+  <meta name="description"
+    content="JvalaNetra AI wildfire management dashboard for Guna Division, MP. Shows ignition risk, spread corridors, CFL routes, and Muhurta safe-window timers for forest guards." />
+
+  <!-- Deck.gl + MapLibre GL JS (offline-friendly CDN pins) -->
+  <script src="https://unpkg.com/deck.gl@8.9.34/dist.min.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+  <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────────────────────── */
+    :root {
+      --bg: #0b0f1a;
+      --bg-card: rgba(15, 22, 40, 0.88);
+      --bg-card2: rgba(20, 30, 55, 0.75);
+      --border: rgba(255, 255, 255, 0.07);
+      --accent: #f97316;
+      /* fire orange */
+      --accent-2: #22d3ee;
+      /* sky blue — safe / clear */
+      --accent-3: #a855f7;
+      /* violet — spread */
+      --red: #ef4444;
+      --yellow: #facc15;
+      --green: #22c55e;
+      --text: #e2e8f0;
+      --text-muted: #64748b;
+      --font: 'Inter', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --radius: 12px;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      height: 100vh;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: 56px 1fr;
+      grid-template-columns: 340px 1fr;
+    }
+
+    /* ─── Header ──────────────────────────────────────────────────────── */
+    header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 24px;
+      background: rgba(11, 15, 26, 0.97);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+
+    header .flame {
+      font-size: 24px;
+    }
+
+    header h1 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header .subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-left: 4px;
+    }
+
+    #live-clock {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent-2);
+      opacity: 0.9;
+    }
+
+    #status-pill {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      transition: background 0.4s, color 0.4s, border-color 0.4s;
+    }
+
+    #status-pill.loading {
+      background: rgba(250, 204, 21, 0.15);
+      color: var(--yellow);
+      border-color: rgba(250, 204, 21, 0.3);
+    }
+
+    #status-pill.offline {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--red);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    #last-updated {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+
+    /* Loading skeleton */
+    .skel {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.04) 75%);
+      background-size: 200% 100%;
+      animation: skel-shimmer 1.4s infinite;
+      border-radius: 6px;
+    }
+
+    @keyframes skel-shimmer {
+      0% {
+        background-position: 200% 0
+      }
+
+      100% {
+        background-position: -200% 0
+      }
+    }
+
+    /* ─── Scheduler Widget ───────────────────────────────────────────── */
+    .scheduler-widget {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-right: 16px;
+      gap: 2px;
+    }
+
+    .scheduler-widget .sched-status {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .scheduler-widget .sched-run {
+      font-family: var(--mono);
+      font-size: 9px;
+    }
+
+    .sched-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
+    .sched-dot.ok {
+      background: #22c55e;
+    }
+
+    .sched-dot.error {
+      background: #ef4444;
+    }
+
+    .sched-dot.running {
+      background: #f59e0b;
+      animation: pulse 1.5s infinite;
+    }
+
+    .sched-dot.not {
+      background: #64748b;
+    }
+
+    /* ─── Sidebar ─────────────────────────────────────────────────────── */
+    #sidebar {
+      background: rgba(11, 15, 26, 0.96);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    #sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    #sidebar::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .sidebar-section {
+      padding: 0 16px;
+    }
+
+    .sidebar-section h2 {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 16px 0 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+
+    /* Beat cards */
+    .beat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .beat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--tier-color, var(--text-muted));
+    }
+
+    .beat-card:hover {
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateX(2px);
+      box-shadow: var(--shadow);
+    }
+
+    .beat-card.active {
+      border-color: var(--accent);
+      background: rgba(249, 115, 22, 0.08);
+    }
+
+    .beat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .beat-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .tier-badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--tier-bg, rgba(100, 116, 139, 0.2));
+      color: var(--tier-color, var(--text-muted));
+      border: 1px solid var(--tier-color, var(--text-muted));
+      white-space: nowrap;
+    }
+
+    .beat-meta {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .beat-meta span {
+      font-size: 10px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .beat-meta span b {
+      color: var(--text);
+    }
+
+    /* Muhurta mini-timer */
+    .muhurta-mini {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .muhurta-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.6;
+        transform: scale(0.8);
+      }
+    }
+
+    .muhurta-text {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* SHAP reason pills */
+    .shap-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .shap-pill {
+      font-size: 9px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(168, 85, 247, 0.12);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+    }
+
+    /* ─── Map ─────────────────────────────────────────────────────────── */
+    #map-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Legend */
+    #legend {
+      position: absolute;
+      bottom: 24px;
+      left: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 11px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+      min-width: 160px;
+    }
+
+    #legend h3 {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-line {
+      width: 20px;
+      height: 3px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* Layer controls */
+    #layer-controls {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .layer-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 11px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      transition: border-color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+
+    .layer-btn.on {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(249, 115, 22, 0.1);
+    }
+
+    /* ─── Detail Panel (right-side overlay when beat selected) ─────────── */
+    #detail-panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 320px;
+      height: 100%;
+      background: var(--bg-card2);
+      border-left: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 99;
+      padding: 20px;
+    }
+
+    #detail-panel.open {
+      transform: translateX(0);
+    }
+
+    #detail-panel::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    #detail-panel::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    #close-panel {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+
+    #close-panel:hover {
+      color: var(--text);
+    }
+
+    .dp-section {
+      margin-top: 20px;
+    }
+
+    .dp-section h3 {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .stat-box .label {
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .stat-box .value {
+      font-size: 18px;
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    /* Muhurta countdown */
+    #muhurta-countdown {
+      background: rgba(34, 211, 238, 0.05);
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      text-align: center;
+    }
+
+    #muhurta-countdown .muh-time {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent-2);
+      letter-spacing: 0.04em;
+    }
+
+    #muhurta-countdown .muh-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    #muhurta-stage-badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* SHAP bar chart */
+    .shap-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .shap-bar-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      width: 110px;
+      flex-shrink: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .shap-bar-bg {
+      flex: 1;
+      background: var(--border);
+      border-radius: 3px;
+      height: 5px;
+    }
+
+    .shap-bar-fill {
+      height: 5px;
+      border-radius: 3px;
+      transition: width 0.8s ease;
+    }
+
+    .shap-bar-value {
+      font-size: 10px;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      width: 36px;
+      text-align: right;
+    }
+
+    /* Responsive: stack on small screens */
+    @media (max-width: 768px) {
+      body {
+        grid-template-columns: 1fr;
+        grid-template-rows: 56px auto 1fr;
+      }
+
+      #sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        max-height: 240px;
+      }
+
+      #detail-panel {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── Header ──────────────────────────────────────────────────────────── -->
+  <header>
+    <span class="flame">🔥</span>
+    <div>
+      <h1>JvalaNetra AI</h1>
+      <span class="subtitle">Van Suraksha Alert · Guna Division · Tactical Dashboard</span>
+    </div>
+    <div style="flex:1"></div>
+    <div id="scheduler-widget" class="scheduler-widget">
+      <div class="sched-status"><span class="sched-dot not"></span>Scheduler: Unknown</div>
+    </div>
+    <span id="status-pill" class="loading">⟳ LOADING</span>
+    <span id="last-updated" title="Last data refresh"></span>
+    <span id="live-clock">--:--:-- IST</span>
+  </header>
+
+  <!-- ─── Sidebar ─────────────────────────────────────────────────────────── -->
+  <aside id="sidebar">
+    <div class="sidebar-section">
+      <h2>Beat Risk Status</h2>
+      <div id="beat-list"><!-- Beat cards injected by JS --></div>
+    </div>
+  </aside>
+
+  <!-- ─── Map ─────────────────────────────────────────────────────────────── -->
+  <div id="map-container">
+    <div id="map"></div>
+
+    <!-- Layer toggles -->
+    <div id="layer-controls">
+      <button class="layer-btn on" id="btn-risk" onclick="toggleLayer('risk')">🌡 Ignition Risk</button>
+      <button class="layer-btn on" id="btn-spread" onclick="toggleLayer('spread')">🔴 Spread Zone</button>
+      <button class="layer-btn on" id="btn-cfl" onclick="toggleLayer('cfl')">🟢 CFL Lines</button>
+      <button class="layer-btn on" id="btn-beats" onclick="toggleLayer('beats')">🗺 Beat Outlines</button>
+      <button class="layer-btn" id="btn-backtest" onclick="openBacktest()"
+        style="background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.3);color:#a855f7">&#x1F4CA;
+        Back-test</button>
+    </div>
+
+    <!-- Legend -->
+    <div id="legend">
+      <h3>Legend</h3>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:#ef4444"></div>OPERATIONAL (risk 1)
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:#f97316"></div>CRITICAL (risk 2)
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:#facc15"></div>WATCH (risk 3)
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:#94a3b8"></div>ADVISORY / CLEAR
+      </div>
+      <div class="legend-row">
+        <div class="legend-line" style="background:#a855f7"></div>Spread Zone
+      </div>
+      <div class="legend-row">
+        <div class="legend-line" style="background:#22c55e"></div>CFL Patrol – P1
+      </div>
+      <div class="legend-row">
+        <div class="legend-line" style="background:#86efac;opacity:0.5"></div>CFL Patrol – P2
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,0.07);margin:8px 0 6px"></div>
+      <div style="font-size:9px;color:#64748b;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px">1-ha Pixel Risk (Ignition v2)</div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:rgba(255,220,100,0.7)"></div>Low (&lt;5%)
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:rgba(255,140,50,0.85)"></div>Medium (5–15%)
+      </div>
+      <div class="legend-row">
+        <div class="legend-dot" style="background:rgba(255,40,30,0.95)"></div>High (&gt;15%)
+      </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <div id="detail-panel">
+      <button id="close-panel" onclick="closePanel()">✕</button>
+      <div id="dp-content"></div>
+    </div>
+  </div>
+
+  <!-- Script (crash-proof rewrite v3 — shapefile + fly-to) -->
+  <script>
+    /* =====================================================================
+       JvalaNetra Dashboard — defensive JS with MapLibre shapefile overlay
+       ===================================================================== */
+
+    function safe(fn, fb) { try { return fn(); } catch (e) { return fb !== undefined ? fb : null; } }
+    function safeNum(v, d) { return (v == null || isNaN(v)) ? 'n/a' : Number(v).toFixed(d || 0); }
+    function safeVal(v, fb) { return v == null ? (fb == null ? 'n/a' : fb) : v; }
+
+    // Kill DeckGL phantom body-canvas immediately
+    (function () {
+      var s = document.createElement('style');
+      s.textContent = 'body > canvas { pointer-events: none !important; }';
+      document.head.appendChild(s);
+    })();
+
+    // ── Global state ──────────────────────────────────────────────────────
+    window.JVALA_DATA = { anchor_date: '', beats: [], generated_at: null };
+    var _usingDemo = false;
+    var _muhurta_tick = null;
+    var _activeBeatId = null;
+    var _shapLoaded = false;   // true once GeoJSON added to map
+
+    // ── Demo data ────────────────────────────────────────────────────────
+    var DEMO_DATA = {
+      anchor_date: 'demo', beats: [
+        {
+          id: 'd_ops', name: 'Fatehgarh North', tier: 'OPERATIONAL',
+          risk_score: 1, p_ignition: 0.87, ema_score: 0.79, spread_area_ha: 145, confidence: 0.83,
+          centroid: [77.312, 24.681], polygon: null, cfl_line: [[77.290, 24.672], [77.308, 24.678], [77.320, 24.680]],
+          cfl_rank: 'P1', muhurta: { start_utc: null, end_utc: null, stage: 'A', safe: true },
+          shap: [{ feature: 'road_access_km', value: 0.31 }, { feature: 'doy_sin', value: 0.24 }]
+        },
+        {
+          id: 'd_crit', name: 'Jeron East', tier: 'CRITICAL',
+          risk_score: 2, p_ignition: 0.73, ema_score: 0.68, spread_area_ha: 82, confidence: 0.71,
+          centroid: [77.380, 24.710], polygon: null, cfl_line: [[77.360, 24.705], [77.382, 24.712]],
+          cfl_rank: 'P1', muhurta: { start_utc: null, end_utc: null, stage: 'B', safe: false },
+          shap: [{ feature: 'slope_mean_deg', value: 0.28 }]
+        },
+        {
+          id: 'd_wtch', name: 'Bamori South', tier: 'WATCH',
+          risk_score: 3, p_ignition: 0.58, ema_score: 0.52, spread_area_ha: 34, confidence: 0.55,
+          centroid: [77.250, 24.590], polygon: null, cfl_line: null, cfl_rank: 'none',
+          muhurta: { start_utc: null, end_utc: null, stage: 'C', safe: false },
+          shap: [{ feature: 'wind_speed_ms', value: 0.20 }]
+        },
+      ]
+    };
+
+    // ── Tier colours ──────────────────────────────────────────────────────
+    var TC = { OPERATIONAL: '#ef4444', CRITICAL: '#f97316', WATCH: '#facc15', ADVISORY: '#94a3b8', CLEAR: '#334155' };
+    var TBG = {
+      OPERATIONAL: 'rgba(239,68,68,.15)', CRITICAL: 'rgba(249,115,22,.15)',
+      WATCH: 'rgba(250,204,21,.12)', ADVISORY: 'rgba(148,163,184,.1)', CLEAR: 'rgba(51,65,85,.1)'
+    };
+    function tierColor(t) { return TC[t] || TC.CLEAR; }
+    function tierBg(t) { return TBG[t] || TBG.CLEAR; }
+
+    // ── Clock ─────────────────────────────────────────────────────────────
+    function updateClock() {
+      var el = document.getElementById('live-clock');
+      if (!el) return;
+      var ist = new Date(Date.now() + 5.5 * 3600000);
+      el.textContent = [ist.getUTCHours(), ist.getUTCMinutes(), ist.getUTCSeconds()]
+        .map(function (n) { return String(n).padStart(2, '0'); }).join(':') + ' IST';
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    function fmtIst(iso) {
+      if (!iso) return '';
+      return safe(function () {
+        return new Date(iso).toLocaleTimeString('en-IN',
+          { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' }) + ' IST';
+      }, iso);
+    }
+
+    // ── Muhurta helpers ───────────────────────────────────────────────────
+    function getMuh(beat) { return (beat && beat.muhurta) ? beat.muhurta : null; }
+    function getMuhStage(beat) { var m = getMuh(beat); return (m && m.stage) ? m.stage : 'C'; }
+
+    function muhurtaCountdown(beat) {
+      var muh = getMuh(beat);
+      if (!muh || !muh.start_utc) return null;
+      return safe(function () {
+        var now = Date.now(), start = new Date(muh.start_utc).getTime(), end = new Date(muh.end_utc).getTime();
+        if (now < start) return { label: 'Window opens in', ms: start - now, active: false };
+        if (now <= end) return { label: 'Window closes in', ms: end - now, active: true };
+        return { label: 'Window closed', ms: 0, active: false };
+      });
+    }
+
+    function formatMs(ms) {
+      if (!ms || ms <= 0) return '--:--:--';
+      var h = Math.floor(ms / 3600000), m = Math.floor(ms % 3600000 / 60000), s = Math.floor(ms % 60000 / 1000);
+      return [h, m, s].map(function (n) { return String(n).padStart(2, '0'); }).join(':');
+    }
+
+    // ── Fetch live data ───────────────────────────────────────────────────
+    async function fetchData() {
+      var pill = document.getElementById('status-pill');
+      if (pill) { pill.className = 'loading'; pill.textContent = '\u27F3 LOADING'; }
+      try {
+        var resp = await fetch('/api/status', { cache: 'no-store' });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        var data = await resp.json();
+        window.JVALA_DATA = data; _usingDemo = false;
+        if (pill) { pill.className = ''; pill.textContent = '\u25CF LIVE \u00B7 ' + (data.total_beats || 0) + ' beats'; }
+        var lu = document.getElementById('last-updated');
+        if (lu) lu.textContent = 'Updated ' + fmtIst(data.generated_at);
+      } catch (err) {
+        if (!_usingDemo) { window.JVALA_DATA = DEMO_DATA; _usingDemo = true; }
+        if (pill) { pill.className = 'offline'; pill.textContent = '\u26A0 OFFLINE (demo)'; }
+        var lu2 = document.getElementById('last-updated');
+        if (lu2) lu2.textContent = 'Run: python scripts/dashboard_server.py';
+      }
+      safe(function () { buildBeatList(); });
+      safe(function () { updateActiveBeatHighlight(); });
+      safe(function () { rebuildDeckLayers(); });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.ctrlKey && e.key === 'r') { e.preventDefault(); fetchData(); }
+    });
+
+    // ── Beat sidebar ──────────────────────────────────────────────────────
+    function buildBeatList() {
+      var container = document.getElementById('beat-list');
+      if (!container) return;
+      container.innerHTML = '';
+      var beats = (window.JVALA_DATA && window.JVALA_DATA.beats) || [];
+      beats.forEach(function (beat) {
+        var muh = muhurtaCountdown(beat), stage = getMuhStage(beat);
+        var muhHtml = muh
+          ? ('<div class="muhurta-mini"><div class="muhurta-dot" style="background:' +
+            (muh.active ? '#22c55e' : '#f97316') + '"></div>' +
+            '<span class="muhurta-text" id="muh-mini-' + beat.id + '">' +
+            muh.label + ': <b>' + formatMs(muh.ms) + '</b> (Stage ' + stage + ')</span></div>')
+          : ('<div class="muhurta-mini"><span class="muhurta-text" style="color:#64748b">' +
+            'Muhurta Stage ' + stage + ' \u2014 no window</span></div>');
+
+        var shaps = (beat.shap && Array.isArray(beat.shap)) ? beat.shap : [];
+        var shapPills = shaps.map(function (s) {
+          return '<span class="shap-pill">' + String(s.feature || '').replace(/_/g, ' ') + '</span>';
+        }).join('');
+        var spreadSpan = (beat.spread_area_ha != null)
+          ? '<span>Spread <b>' + safeNum(beat.spread_area_ha, 0) + ' ha</b></span>' : '';
+
+        var card = document.createElement('div');
+        card.className = 'beat-card'; card.id = 'card-' + beat.id;
+        card.style.setProperty('--tier-color', tierColor(beat.tier));
+        card.style.setProperty('--tier-bg', tierBg(beat.tier));
+        card.innerHTML =
+          '<div class="beat-header">' +
+          '<span class="beat-name">' + (beat.name || beat.id) + '</span>' +
+          '<span class="tier-badge" style="color:' + tierColor(beat.tier) +
+          ';border-color:' + tierColor(beat.tier) + ';background:' + tierBg(beat.tier) + '">' +
+          (beat.tier || '\u2014') + '</span></div>' +
+          '<div class="beat-meta">' +
+          '<span>P_I <b>' + safeNum((beat.p_ignition || 0) * 100, 0) + '%</b></span>' +
+          '<span>EMA <b>' + safeNum((beat.ema_score || 0) * 100, 0) + '%</b></span>' +
+          spreadSpan + '<span>CFL <b>' + safeVal(beat.cfl_rank, '\u2014') + '</b></span></div>' +
+          muhHtml + '<div class="shap-pills">' + shapPills + '</div>';
+
+        (function (id) { card.addEventListener('click', function () { selectBeat(id); }); })(beat.id);
+        container.appendChild(card);
+      });
+    }
+
+    setInterval(function () {
+      safe(function () {
+        ((window.JVALA_DATA && window.JVALA_DATA.beats) || []).forEach(function (beat) {
+          var el = document.getElementById('muh-mini-' + beat.id);
+          var muh = muhurtaCountdown(beat);
+          if (el && muh) el.innerHTML = muh.label + ': <b>' + formatMs(muh.ms) + '</b> (Stage ' + getMuhStage(beat) + ')';
+        });
+      });
+    }, 1000);
+
+    // ── Beat Polygon Highlight on map ─────────────────────────────────────
+    // Build a GeoJSON FeatureCollection of only the active beats, with tier in properties
+    function buildActiveBeatsGeoJSON() {
+      var beats = (window.JVALA_DATA && window.JVALA_DATA.beats) || [];
+      var features = [];
+      beats.forEach(function (beat) {
+        if (!beat.polygon) return;
+        features.push({
+          type: 'Feature',
+          properties: { id: beat.id, tier: beat.tier || 'CLEAR', active: beat.id === _activeBeatId },
+          geometry: { type: 'Polygon', coordinates: [beat.polygon] }
+        });
+      });
+      return { type: 'FeatureCollection', features: features };
+    }
+
+    function updateActiveBeatHighlight() {
+      if (!window._jvMap || !window._jvMap.isStyleLoaded()) return;
+      safe(function () {
+        var gj = buildActiveBeatsGeoJSON();
+        if (window._jvMap.getSource('active-beats')) {
+          window._jvMap.getSource('active-beats').setData(gj);
+        }
+      });
+    }
+
+    // ── Detail panel + fly-to ─────────────────────────────────────────────
+    function selectBeat(beatId) {
+      _activeBeatId = beatId;
+      var beats = (window.JVALA_DATA && window.JVALA_DATA.beats) || [];
+      var beat = null;
+      for (var i = 0; i < beats.length; i++) { if (beats[i].id === beatId) { beat = beats[i]; break; } }
+      if (!beat) return;
+
+      // Highlight card
+      document.querySelectorAll('.beat-card').forEach(function (c) { c.classList.remove('active'); });
+      var cardEl = document.getElementById('card-' + beatId);
+      if (cardEl) { cardEl.classList.add('active'); cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+
+      // Fly map to beat centroid
+      safe(function () {
+        var c = beat.centroid;
+        if (window._jvMap && c && c[0] != null && c[1] != null) {
+          window._jvMap.flyTo({ center: [c[0], c[1]], zoom: 13, duration: 1400, essential: true });
+        }
+      });
+
+      // Update polygon highlight
+      safe(function () { updateActiveBeatHighlight(); });
+
+      // SHAP bars
+      var shaps = (beat.shap && Array.isArray(beat.shap)) ? beat.shap : [];
+      var maxV = 0.001;
+      shaps.forEach(function (s) { var v = Math.abs(s.value || 0); if (v > maxV) maxV = v; });
+      function shapCol(v) {
+        var t = Math.min(v / 0.35, 1);
+        return 'rgb(' + Math.round(168 + 87 * t) + ',' + Math.round(85 - 17 * t) + ',' + Math.round(247 - 179 * t) + ')';
+      }
+      var shapBars = shaps.map(function (s) {
+        var pct = (Math.abs(s.value || 0) / maxV * 100).toFixed(0);
+        return '<div class="shap-bar-row">' +
+          '<div class="shap-bar-label" title="' + (s.feature || '') + '">' + String(s.feature || '').replace(/_/g, ' ') + '</div>' +
+          '<div class="shap-bar-bg"><div class="shap-bar-fill" style="width:' + pct + '%;background:' + shapCol(Math.abs(s.value || 0)) + '"></div></div>' +
+          '<div class="shap-bar-value">' + ((s.value || 0) * 100).toFixed(1) + '%</div></div>';
+      }).join('');
+
+      var muhObj = getMuh(beat) || {}, stage = muhObj.stage || 'C', isSafe = !!muhObj.safe;
+      var sc = { A: '#22c55e', B: '#facc15', C: '#ef4444' }[stage] || '#94a3b8';
+      var smsg = isSafe ? '\u2713 IGNITION AUTHORISED' : (stage === 'B' ? '\u26A0 LINE PREP ONLY' : '\u2717 ABORT \u2014 NO FIRE OPS');
+
+      var cflHtml = '';
+      if (beat.cfl_line) {
+        var cc = beat.cfl_rank === 'P1' ? '#22c55e' : '#facc15';
+        cflHtml = '<div class="dp-section"><h3>\uD83D\uDEE1 CFL Route</h3>' +
+          '<div class="stat-box" style="margin-bottom:8px"><div class="label">Rank</div>' +
+          '<div style="font-size:15px;font-weight:700;color:' + cc + '">' + safeVal(beat.cfl_rank, '\u2014') + '</div></div>' +
+          '<button onclick="downloadGPX(\'' + beat.id + '\')" ' +
+          'style="width:100%;padding:8px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);' +
+          'color:#22c55e;border-radius:8px;cursor:pointer;font-size:12px">\u2B07 Download GPX</button></div>';
+      }
+
+      document.getElementById('dp-content').innerHTML =
+        '<div style="margin-bottom:16px">' +
+        '<div style="font-size:18px;font-weight:700;margin-bottom:4px">' + (beat.name || beat.id) + '</div>' +
+        '<span class="tier-badge" style="color:' + tierColor(beat.tier) + ';border-color:' + tierColor(beat.tier) + ';background:' + tierBg(beat.tier) + '">' +
+        (beat.tier || '\u2014') + '</span></div>' +
+        '<div class="stat-grid">' +
+        '<div class="stat-box"><div class="label">Ignition P_I</div><div class="value" style="color:' + tierColor(beat.tier) + '">' + safeNum((beat.p_ignition || 0) * 100, 0) + '%</div></div>' +
+        '<div class="stat-box"><div class="label">EMA Score</div><div class="value">' + safeNum((beat.ema_score || 0) * 100, 0) + '%</div></div>' +
+        '<div class="stat-box"><div class="label">Risk Score</div><div class="value">' + safeVal(beat.risk_score, '\u2014') + '/5</div></div>' +
+        '<div class="stat-box"><div class="label">Confidence</div><div class="value">' + safeNum((beat.confidence || 0) * 100, 0) + '%</div></div>' +
+        '</div>' +
+        '<div class="dp-section"><h3>Muhurta Window</h3>' +
+        '<div id="muhurta-countdown">' +
+        '<div class="muh-time" id="dp-muh-time">--:--:--</div>' +
+        '<div class="muh-label" id="dp-muh-label">Calculating\u2026</div>' +
+        '<div id="muhurta-stage-badge" style="background:' + sc + '22;color:' + sc + ';border:1px solid ' + sc + '44;' +
+        'margin-top:8px;padding:6px 10px;border-radius:8px;font-size:11px;text-align:center">' +
+        'Stage ' + stage + ' \u2014 ' + smsg + '</div>' +
+        '</div></div>' +
+        '<div class="dp-section"><h3>SHAP Explanations</h3>' +
+        (shapBars || '<span style="color:#475569;font-size:12px">No SHAP data available</span>') +
+        '</div>' + cflHtml;
+
+      if (_muhurta_tick) clearInterval(_muhurta_tick);
+      _muhurta_tick = setInterval(function () {
+        safe(function () {
+          var m = muhurtaCountdown(beat);
+          var te = document.getElementById('dp-muh-time');
+          var le = document.getElementById('dp-muh-label');
+          if (te) { te.textContent = m ? formatMs(m.ms) : '--:--:--'; if (m) te.style.color = m.active ? '#22c55e' : '#22d3ee'; }
+          if (le && m) le.textContent = m.label;
+        });
+      }, 1000);
+      document.getElementById('detail-panel').classList.add('open');
+      // Show animated 1-ha pixel risk grid within this beat's polygon
+      safe(function () { showPixelRiskLayer(beat); });
+    }
+
+    function closePanel() {
+      safe(function () { document.getElementById('detail-panel').classList.remove('open'); });
+      document.querySelectorAll('.beat-card').forEach(function (c) { c.classList.remove('active'); });
+      if (_muhurta_tick) { clearInterval(_muhurta_tick); _muhurta_tick = null; }
+      safe(function () { clearPixelRiskLayer(); });
+    }
+
+    function downloadGPX(beatId) {
+      // Try the API endpoint first; fall back to 404 message
+      var url = '/api/gpx/' + encodeURIComponent(beatId);
+      fetch(url, { method: 'HEAD' }).then(function (r) {
+        if (r.ok) {
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = '';    // uses Content-Disposition filename from server
+          a.style.display = 'none';
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function () { document.body.removeChild(a); }, 1000);
+        } else {
+          showToast('⚠ No GPX file yet — run the pipeline first to generate a CFL route for this beat.', 4000);
+        }
+      }).catch(function () {
+        showToast('⚠ Could not reach server. Is the dashboard server running?', 3000);
+      });
+    }
+
+    function showToast(msg, duration) {
+      var t = document.getElementById('jvala-toast');
+      if (!t) {
+        t = document.createElement('div');
+        t.id = 'jvala-toast';
+        t.style.cssText = [
+          'position:fixed', 'bottom:24px', 'left:50%', 'transform:translateX(-50%)',
+          'background:#1e293b', 'color:#cbd5e1', 'padding:10px 20px',
+          'border-radius:10px', 'font-size:13px', 'z-index:9999',
+          'border:1px solid rgba(148,163,184,0.2)', 'transition:opacity 0.4s',
+          'pointer-events:none', 'max-width:360px', 'text-align:center'
+        ].join(';');
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.style.opacity = '1';
+      clearTimeout(t._to);
+      t._to = setTimeout(function () { t.style.opacity = '0'; }, duration || 3000);
+    }
+
+    // ── Layer toggles ─────────────────────────────────────────────────────
+    var layerState = { risk: true, spread: true, cfl: true, beats: true };
+    function toggleLayer(name) {
+      layerState[name] = !layerState[name];
+      var btn = document.getElementById('btn-' + name);
+      if (btn) btn.classList.toggle('on', layerState[name]);
+      safe(function () { rebuildDeckLayers(); });
+      safe(function () {
+        if (window._jvMap && window._jvMap.getLayer('beats-fill'))
+          window._jvMap.setLayoutProperty('beats-fill', 'visibility', layerState.beats ? 'visible' : 'none');
+        if (window._jvMap && window._jvMap.getLayer('beats-outline'))
+          window._jvMap.setLayoutProperty('beats-outline', 'visibility', layerState.beats ? 'visible' : 'none');
+        if (window._jvMap && window._jvMap.getLayer('beats-active-outline'))
+          window._jvMap.setLayoutProperty('beats-active-outline', 'visibility', layerState.beats ? 'visible' : 'none');
+      });
+    }
+
+    // ── 1-ha Pixel Risk Layer (animated grid within selected beat) ────────
+    var _pixelAnimInterval = null;
+    var _pixelAlpha = 80;
+    var _pixelAlphaDir = 1;
+
+    // Simple point-in-polygon test (ray casting)
+    function _pointInPoly(pt, poly) {
+      var x = pt[0], y = pt[1], inside = false;
+      for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+        var xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1];
+        if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi))
+          inside = !inside;
+      }
+      return inside;
+    }
+
+    // Update the SHAP Explanations section in the detail panel with live model data.
+    // Data comes from our own server's /api/pixel-risk endpoint (trusted, not user input).
+    function _updateShapPanel(shap) {
+      // Find the SHAP section by scanning h3 elements
+      var sections = document.querySelectorAll('#dp-content .dp-section');
+      var shapSection = null;
+      for (var i = 0; i < sections.length; i++) {
+        var h3 = sections[i].querySelector('h3');
+        if (h3 && h3.textContent.indexOf('SHAP') >= 0) { shapSection = sections[i]; break; }
+      }
+      if (!shapSection) return;
+
+      // Clear existing content
+      while (shapSection.firstChild) shapSection.removeChild(shapSection.firstChild);
+
+      var heading = document.createElement('h3');
+      heading.textContent = 'SHAP Explanations';
+      shapSection.appendChild(heading);
+
+      if (!shap || !shap.length) {
+        var noData = document.createElement('span');
+        noData.style.cssText = 'color:#475569;font-size:12px';
+        noData.textContent = 'No SHAP data available';
+        shapSection.appendChild(noData);
+        return;
+      }
+
+      // Subtitle
+      var sub = document.createElement('div');
+      sub.style.cssText = 'color:#64748b;font-size:10px;margin-bottom:6px';
+      sub.textContent = 'Ignition v2 -- mean |SHAP| across all 1-ha cells';
+      shapSection.appendChild(sub);
+
+      var maxV = 0.001;
+      shap.forEach(function(s) { var v = Math.abs(s.value || 0); if (v > maxV) maxV = v; });
+
+      // Human-readable feature labels
+      var _labels = {
+        'doy_sin': 'Season (sin)', 'doy_cos': 'Season (cos)',
+        'rain_7d_mm': '7-day Rain', 'vpd_kpa': 'VPD (dryness)',
+        'wind_speed_ms': 'Wind Speed', 'wind_gust_ms': 'Wind Gust',
+        'max_temp_c': 'Max Temp', 'min_rh_pct': 'Min Humidity',
+        'elevation': 'Elevation', 'slope': 'Slope',
+        'ffmc_proxy': 'Fine Fuel MC', 'isi': 'Spread Index',
+        'gdd_fraction': 'GDD (Mahua)', 'mahua_zone': 'Mahua Zone',
+        'tendu_zone': 'Tendu Zone'
+      };
+      function shapLabel(f) { return _labels[f] || String(f).replace(/_/g, ' ').replace(/emb pc/g, 'Embed PC'); }
+
+      shap.forEach(function(s) {
+        var pct = (Math.abs(s.value || 0) / maxV * 100).toFixed(0);
+        var t = Math.min(Math.abs(s.value || 0) / maxV, 1);
+        var col = 'rgb(' + Math.round(168 + 87*t) + ',' + Math.round(85 - 17*t) + ',' + Math.round(247 - 179*t) + ')';
+
+        var row = document.createElement('div');
+        row.className = 'shap-bar-row';
+
+        var label = document.createElement('div');
+        label.className = 'shap-bar-label';
+        label.title = s.feature || '';
+        label.textContent = shapLabel(s.feature);
+        row.appendChild(label);
+
+        var bg = document.createElement('div');
+        bg.className = 'shap-bar-bg';
+        var fill = document.createElement('div');
+        fill.className = 'shap-bar-fill';
+        fill.style.width = pct + '%';
+        fill.style.background = col;
+        bg.appendChild(fill);
+        row.appendChild(bg);
+
+        var val = document.createElement('div');
+        val.className = 'shap-bar-value';
+        val.textContent = (Math.abs(s.value || 0)).toFixed(3);
+        row.appendChild(val);
+
+        shapSection.appendChild(row);
+      });
+    }
+
+    function showPixelRiskLayer(beat) {
+      if (!beat || !beat.polygon || !deckOverlay || !ScatterL) return;
+      clearPixelRiskLayer();
+
+      // Try real Ignition v2 model predictions first; fall back to simulated grid
+      if (beat.new_no) {
+        fetch('/api/pixel-risk/' + encodeURIComponent(beat.new_no))
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data.cells && data.cells.length > 0) {
+              var pts = data.cells.map(function(c) {
+                var t = Math.max(0.01, Math.min(1.0, c.risk / 100));
+                return { position: [c.lon, c.lat], weight: t, t: t };
+              });
+              _renderPixelLayers(beat, pts);
+            } else {
+              _renderPixelLayers(beat, _simulateGrid(beat));
+            }
+            // Update SHAP panel with live model explanations
+            if (data.shap && data.shap.length > 0) {
+              _updateShapPanel(data.shap);
+            }
+          })
+          .catch(function() {
+            _renderPixelLayers(beat, _simulateGrid(beat));
+          });
+      } else {
+        _renderPixelLayers(beat, _simulateGrid(beat));
+      }
+    }
+
+    // Simulated grid fallback (used when Ignition v2 API is unavailable)
+    function _simulateGrid(beat) {
+      var poly = beat.polygon;
+      var lons = poly.map(function(p) { return p[0]; });
+      var lats = poly.map(function(p) { return p[1]; });
+      var minLon = Math.min.apply(null, lons), maxLon = Math.max.apply(null, lons);
+      var minLat = Math.min.apply(null, lats), maxLat = Math.max.apply(null, lats);
+      var pIgn = beat.p_ignition || 0.3;
+      var cLon = beat.centroid ? beat.centroid[0] : (minLon + maxLon) / 2;
+      var cLat = beat.centroid ? beat.centroid[1] : (minLat + maxLat) / 2;
+      var maxD = Math.max(maxLon - minLon, maxLat - minLat) * 0.65;
+      var step = 0.001;
+      var pts = [];
+      for (var lon = minLon; lon <= maxLon + step; lon += step) {
+        for (var lat = minLat; lat <= maxLat + step; lat += step) {
+          if (!_pointInPoly([lon, lat], poly)) continue;
+          var dLon = lon - cLon, dLat = lat - cLat;
+          var d = Math.sqrt(dLon * dLon + dLat * dLat);
+          var t = Math.max(0.05, 1 - d / maxD) * pIgn;
+          t = Math.min(1, t + (Math.random() - 0.5) * 0.18);
+          pts.push({ position: [lon, lat], weight: Math.max(0.01, t), t: Math.max(0.01, t) });
+        }
+      }
+      return pts;
+    }
+
+    // Core rendering: takes pre-computed pts array and builds all Deck.gl layers
+    function _renderPixelLayers(beat, pts) {
+      if (!pts.length) return;
+
+      // ── 1. DOT-PIXEL INTENSITY GRID (ScatterplotLayer -- 1 dot = 1 ha cell) ─
+      // Each ~100m cell rendered as a disc: larger + redder = higher ignition risk
+      var gridLayer = new ScatterL({
+        id: 'beat-grid',
+        data: pts,
+        getPosition: function(d) { return d.position; },
+        // Radius: 28m (low risk) -> 78m (peak risk)  -- non-overlapping at 100m grid
+        getRadius: function(d) { return 28 + d.t * 50; },
+        radiusUnits: 'meters',
+        // Colour ramp: pale-cream -> amber -> orange -> crimson  (dual-encoded with radius)
+        getFillColor: function(d) {
+          var t = d.t;
+          // R always 255; G drops from 245 to 30; B drops from 200 to 0; A from 130 to 230
+          return [
+            255,
+            Math.round(Math.max(30,  245 - 215 * t)),
+            Math.round(Math.max(0,   200 - 200 * t)),
+            Math.round(130 + 100 * t)
+          ];
+        },
+        stroked: false,
+        pickable: false
+      });
+
+      // ── 2. HOTSPOTS (top cells by intensity) ─────────────────────────────
+      var sorted = pts.slice().sort(function(a, b) { return b.t - a.t; });
+      var nHot = Math.min(10, Math.max(4, Math.floor(pts.length * 0.12)));
+      var hotspots = sorted.slice(0, nHot);
+
+      // ── 3. SPREAD ZONE -- patch of cells around hotspots WITHIN polygon ──
+      // spread_area_ha -> radius in degrees (~111km/deg lat). Fire spread is
+      // modelled as cells reachable from ANY hotspot within the spread radius,
+      // naturally clipped to the compartment boundary by the grid filter above.
+      var spreadHa = beat.spread_area_ha || 0;
+      // Convert ha to metres radius, then to approx degrees (1 deg ~ 111km)
+      var spreadRadM = spreadHa > 0 ? Math.sqrt(spreadHa * 10000 / Math.PI) : 0;
+      var spreadRadDeg = spreadRadM / 111000;  // approximate
+      // If no explicit spread data, use 35% of polygon extent as heuristic
+      if (spreadRadDeg <= 0) {
+        spreadRadDeg = Math.max(maxLon - minLon, maxLat - minLat) * 0.35;
+      }
+
+      var spreadZonePts = [];
+      if (hotspots.length && spreadRadDeg > 0) {
+        pts.forEach(function(p) {
+          // Check distance to nearest hotspot
+          var minD2 = Infinity;
+          hotspots.forEach(function(h) {
+            var dx = p.position[0] - h.position[0];
+            var dy = p.position[1] - h.position[1];
+            minD2 = Math.min(minD2, dx*dx + dy*dy);
+          });
+          if (minD2 <= spreadRadDeg * spreadRadDeg) {
+            // Proximity factor: 1.0 at hotspot, 0.0 at spread edge
+            var prox = 1 - Math.sqrt(minD2) / spreadRadDeg;
+            spreadZonePts.push({ position: p.position, prox: prox, t: p.t });
+          }
+        });
+      }
+
+      // Spread zone ScatterplotLayer -- purple/violet patch showing affected area
+      var spreadLayer = (spreadZonePts.length && layerState.spread) ? new ScatterL({
+        id: 'beat-spread-zone',
+        data: spreadZonePts,
+        getPosition: function(d) { return d.position; },
+        getRadius: function(d) { return 40 + d.prox * 20; },
+        radiusUnits: 'meters',
+        getFillColor: function(d) {
+          // Violet core near hotspot -> pale lavender at edge
+          var p = d.prox;
+          return [
+            Math.round(140 + 80 * p),    // R: 140-220  (rose-violet)
+            Math.round(30  + 20 * (1-p)), // G: 30-50
+            Math.round(200 + 55 * p),     // B: 200-255  (deep violet)
+            Math.round(80  + 120 * p)     // A: 80-200
+          ];
+        },
+        stroked: false, pickable: false
+      }) : null;
+
+      // ── 4. PATH joining hotspots (nearest-neighbour fire-spread order) ──
+      function _nnOrder(spots) {
+        if (spots.length <= 1) return spots;
+        var visited = [spots[0]], remaining = spots.slice(1);
+        while (remaining.length) {
+          var last = visited[visited.length - 1];
+          var nearI = 0, nearD = Infinity;
+          remaining.forEach(function(s, i) {
+            var dx = s.position[0] - last.position[0];
+            var dy = s.position[1] - last.position[1];
+            var d2 = dx*dx + dy*dy;
+            if (d2 < nearD) { nearD = d2; nearI = i; }
+          });
+          visited.push(remaining[nearI]);
+          remaining.splice(nearI, 1);
+        }
+        return visited;
+      }
+      var orderedHots = _nnOrder(hotspots);
+      var spreadPath = orderedHots.map(function(s) { return s.position; });
+
+      var pathLayer = PathL ? new PathL({
+        id: 'beat-path',
+        data: [{ path: spreadPath }],
+        getPath: function(d) { return d.path; },
+        getColor: [255, 255, 255, 210],
+        getWidth: 2.5, widthUnits: 'pixels',
+        capRounded: true, jointRounded: true
+      }) : null;
+
+      // ── 5. ANIMATED HOTSPOT MARKERS (pulsing glow) ───────────────────────
+      _pixelAlpha = 140; _pixelAlphaDir = 1;
+
+      function _buildHotspotLayer(alpha) {
+        return new ScatterL({
+          id: 'beat-hotspots',
+          data: hotspots,
+          getPosition: function(d) { return d.position; },
+          getRadius: function(d) { return 80 + d.t * 120; },
+          getFillColor: function(d) {
+            var g = Math.round(Math.max(50, 200 - d.t * 180));
+            var b = Math.round(Math.max(0, 150 - d.t * 150));
+            return [255, g, b, Math.round(alpha * Math.max(0.5, d.t))];
+          },
+          getLineColor: [255, 255, 255, 200],
+          getLineWidth: 1.5, lineWidthUnits: 'pixels',
+          stroked: true, filled: true,
+          radiusUnits: 'meters', pickable: false,
+          updateTriggers: { getFillColor: alpha, getRadius: alpha }
+        });
+      }
+
+      // Dim polygon base fill -- dot-pixel grid takes over as primary risk visual
+      safe(function () {
+        if (window._jvMap && window._jvMap.getLayer('beats-fill')) {
+          window._jvMap.setPaintProperty('beats-fill', 'fill-opacity', ['case',
+            ['get', 'active'], 0.06,
+            ['==', ['get', 'tier'], 'CLEAR'], 0.06,
+            ['==', ['get', 'tier'], 'ADVISORY'], 0.12,
+            0.22
+          ]);
+        }
+      });
+
+      // Layer order: grid (bottom) -> spread zone -> path -> hotspots (top)
+      function _tick() {
+        _pixelAlpha += _pixelAlphaDir * 6;
+        if (_pixelAlpha >= 240) _pixelAlphaDir = -1;
+        if (_pixelAlpha <= 80)  _pixelAlphaDir = 1;
+        var composite = [gridLayer, spreadLayer, pathLayer, _buildHotspotLayer(_pixelAlpha)].filter(Boolean);
+        deckOverlay.setProps({ layers: _baseDeckLayers.concat(composite) });
+      }
+      // Initial render
+      var composite0 = [gridLayer, spreadLayer, pathLayer, _buildHotspotLayer(_pixelAlpha)].filter(Boolean);
+      deckOverlay.setProps({ layers: _baseDeckLayers.concat(composite0) });
+      _pixelAnimInterval = setInterval(_tick, 130);
+    }
+
+    function clearPixelRiskLayer() {
+      if (_pixelAnimInterval) { clearInterval(_pixelAnimInterval); _pixelAnimInterval = null; }
+      if (deckOverlay) {
+        deckOverlay.setProps({ layers: _baseDeckLayers });
+      }
+      // Restore normal polygon fill opacity
+      safe(function () {
+        if (window._jvMap && window._jvMap.getLayer('beats-fill')) {
+          window._jvMap.setPaintProperty('beats-fill', 'fill-opacity', ['case',
+            ['get', 'active'], 0.40,
+            ['==', ['get', 'tier'], 'CLEAR'], 0.06,
+            ['==', ['get', 'tier'], 'ADVISORY'], 0.12,
+            0.22
+          ]);
+        }
+      });
+    }
+
+    // ── Map init ──────────────────────────────────────────────────────────
+    window._jvMap = null;
+    var deckOverlay = null;
+    var ScatterL = null, PolyL = null, PathL = null;
+    var _baseDeckLayers = [];   // non-pixel layers; updated by rebuildDeckLayers()
+
+    function hexRgb(hex) {
+      return [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+    }
+
+    // Guna Division rough bounding box (with 15km padding) for CFL validity check
+    var _GUNA_LON_MIN = 76.95, _GUNA_LON_MAX = 77.60;
+    var _GUNA_LAT_MIN = 24.25, _GUNA_LAT_MAX = 25.00;
+
+    function _cflInBounds(cflLine) {
+      if (!cflLine || !cflLine.length) return false;
+      var c0 = cflLine[0];
+      return c0[0] >= _GUNA_LON_MIN && c0[0] <= _GUNA_LON_MAX &&
+             c0[1] >= _GUNA_LAT_MIN && c0[1] <= _GUNA_LAT_MAX;
+    }
+
+    function rebuildDeckLayers() {
+      if (!deckOverlay || !ScatterL) return;
+      var beats = (window.JVALA_DATA && window.JVALA_DATA.beats) || [];
+      var layers = [];
+
+      // ── GLOW HEATMAP (HeatmapLayer) -- aggregated ignition risk as vibrant thermal field ──
+      // Uses beat centroids weighted by p_ignition. Purple -> Neon Pink -> Yellow -> White.
+      if (layerState.risk) {
+        var HeatL = (typeof deck !== 'undefined') ? deck.HeatmapLayer : null;
+        if (HeatL) {
+          var heatData = beats.filter(function(b) {
+            return b.centroid && b.centroid[0] != null && (b.p_ignition || 0) > 0.05;
+          });
+          if (heatData.length) {
+            layers.push(new HeatL({
+              id: 'ignition-heatmap',
+              data: heatData,
+              getPosition: function(d) { return [d.centroid[0], d.centroid[1]]; },
+              getWeight: function(d) { return Math.pow(d.p_ignition || 0.1, 1.4); },
+              radiusPixels: 45,
+              intensity: 2.8,
+              threshold: 0.04,
+              colorRange: [
+                [90,  24, 154, 60],    // Deep indigo/purple -- faint background
+                [180, 10, 120, 130],   // Violet-pink        -- low risk fringe
+                [255,  0,  84, 190],   // Neon pink          -- moderate clusters
+                [255, 120, 20, 220],   // Orange bridge      -- high risk
+                [255, 190, 11, 240],   // Solar yellow       -- very high
+                [255, 255, 255, 255]   // Pure white core    -- extreme hotspots
+              ],
+              pickable: false
+            }));
+          }
+        }
+      }
+
+      // Spread corridor -- shown as a patch INSIDE the selected beat's polygon
+      // (via showPixelRiskLayer). No ring overlay in the overview; the heatmap +
+      // polygon tier fill convey cluster risk at the division level.
+
+      // CFL fire-line routes (PathLayer) -- only render lines within Guna bounds
+      if (layerState.cfl && PathL) {
+        var cl = beats.filter(function (b) { return _cflInBounds(b.cfl_line); });
+        if (cl.length) layers.push(new PathL({
+          id: 'cfl-layer', data: cl,
+          getPath: function (d) { return d.cfl_line; },
+          getColor: function (d) { return d.cfl_rank === 'P1' ? [34, 197, 94, 240] : [134, 239, 172, 150]; },
+          getWidth: 4, widthUnits: 'pixels', capRounded: true, jointRounded: true
+        }));
+      }
+
+      // Save base layers; pixel-risk is managed independently via _baseDeckLayers
+      _baseDeckLayers = layers;
+      // If a pixel layer is currently animating, keep it on top
+      if (_pixelAnimInterval) {
+        // _tick will re-add pixel layer on next cycle; just set base layers now
+      }
+      safe(function () { deckOverlay.setProps({ layers: layers }); });
+    }
+
+    // ── Load GeoJSON shapefile into MapLibre ───────────────────────────────
+    async function loadShapefile() {
+      if (!window._jvMap) return;
+      try {
+        var resp = await fetch('/api/beats-geojson', { cache: 'no-store' });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        var geojson = await resp.json();
+
+        // Add as a MapLibre source (kept for reference; rendering done by active-beats layers)
+        if (!window._jvMap.getSource('guna-beats')) {
+          window._jvMap.addSource('guna-beats', { type: 'geojson', data: geojson });
+        }
+        // NOTE: division-fill and division-outline REMOVED -- they caused double color coding
+        // on top of beats-fill/beats-outline which already render all 747 compartments.
+        // beats-fill (active-beats source) is the single source of truth for polygon color.
+
+        _shapLoaded = true;
+        // Overlay active-beats tier-colored layers
+        addActiveBeatsLayers();
+
+      } catch (err) {
+        console.warn('GeoJSON shapefile not loaded:', err.message);
+      }
+    }
+
+    // ── Load Zenith Risk Grid ──────────────────────────────────────────────
+    // Fetches outputs/daily_predictions/latest_risk.geojson (Phase 14 / 15)
+    // and renders the 8x8 km cell grid as a choropleth heatmap layer.
+    var _zenithVisible = false;   // OFF by default -- user toggles on
+    async function loadZenithRiskGrid() {
+      if (!window._jvMap) return;
+      try {
+        var resp = await fetch('../outputs/daily_predictions/latest_risk.geojson', { cache: 'no-store' });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        var geojson = await resp.json();
+
+        if (window._jvMap.getSource('zenith-risk')) {
+          window._jvMap.getSource('zenith-risk').setData(geojson);
+          return;
+        }
+        window._jvMap.addSource('zenith-risk', { type: 'geojson', data: geojson });
+
+        // Filled choropleth — color interpolated from transparent → amber → red
+        window._jvMap.addLayer({
+          id: 'zenith-fill', type: 'fill', source: 'zenith-risk',
+          paint: {
+            'fill-color': [
+              'interpolate', ['linear'], ['get', 'p_ignition'],
+              0.00, 'rgba(34,  197,  94, 0.00)',   // safe — invisible
+              0.10, 'rgba(250, 204,  21, 0.12)',   // low — faint yellow
+              0.25, 'rgba(249, 115,  22, 0.28)',   // medium — orange
+              0.40, 'rgba(239,  68,  68, 0.45)',   // high — red
+              0.50, 'rgba(239,  68,  68, 0.70)'    // critical — solid red
+            ],
+            'fill-opacity': 1
+          }
+        });   // division-fill removed; zenith added above beats-fill
+
+        // Stroke grid lines for spatial reference
+        window._jvMap.addLayer({
+          id: 'zenith-outline', type: 'line', source: 'zenith-risk',
+          paint: {
+            'line-color': [
+              'interpolate', ['linear'], ['get', 'p_ignition'],
+              0.00, 'rgba(255,255,255,0.04)',
+              0.25, 'rgba(249,115, 22,0.35)',
+              0.50, 'rgba(239, 68, 68,0.70)'
+            ],
+            'line-width': 0.8,
+            'line-opacity': 0.9
+          }
+        });
+
+        // Start hidden -- user toggles on via button
+        window._jvMap.setLayoutProperty('zenith-fill', 'visibility', 'none');
+        window._jvMap.setLayoutProperty('zenith-outline', 'visibility', 'none');
+        console.log('[JvalaNetra] Zenith risk grid loaded (hidden) -- ' + ((geojson.features || []).length) + ' cells');
+      } catch (err) {
+        console.warn('[JvalaNetra] Zenith risk grid not loaded:', err.message);
+      }
+    }
+
+    function toggleZenithLayer() {
+      _zenithVisible = !_zenithVisible;
+      var btn = document.getElementById('btn-zenith');
+      if (btn) btn.classList.toggle('on', _zenithVisible);
+      safe(function () {
+        var vis = _zenithVisible ? 'visible' : 'none';
+        if (window._jvMap && window._jvMap.getLayer('zenith-fill'))
+          window._jvMap.setLayoutProperty('zenith-fill', 'visibility', vis);
+        if (window._jvMap && window._jvMap.getLayer('zenith-outline'))
+          window._jvMap.setLayoutProperty('zenith-outline', 'visibility', vis);
+      });
+    }
+
+    // Source+layers for active beat polygons (highlighted with tier colour)
+    function addActiveBeatsLayers() {
+      if (!window._jvMap) return;
+      var emptyGJ = { type: 'FeatureCollection', features: [] };
+      if (!window._jvMap.getSource('active-beats')) {
+        window._jvMap.addSource('active-beats', { type: 'geojson', data: emptyGJ });
+      }
+      if (!window._jvMap.getLayer('beats-fill')) {
+        window._jvMap.addLayer({
+          id: 'beats-fill', type: 'fill', source: 'active-beats',
+          paint: {
+            'fill-color': ['get', 'tier_color'],
+            // Active beat: high opacity; risk tiers: medium; CLEAR: very faint
+            'fill-opacity': ['case',
+              ['get', 'active'], 0.40,
+              ['==', ['get', 'tier'], 'CLEAR'], 0.06,
+              ['==', ['get', 'tier'], 'ADVISORY'], 0.12,
+              0.22  // WATCH / CRITICAL / OPERATIONAL
+            ]
+          }
+        });
+      }
+      if (!window._jvMap.getLayer('beats-outline')) {
+        window._jvMap.addLayer({
+          id: 'beats-outline', type: 'line', source: 'active-beats',
+          paint: {
+            'line-color': ['get', 'tier_color'],
+            'line-width': ['case', ['get', 'active'], 2.5, 1.0],
+            // Tier-based opacity: CLEAR compartments are very faint grid lines;
+            // risk beats are prominent. Selected beat overrides to full opacity.
+            'line-opacity': ['case',
+              ['get', 'active'], 0.95,
+              ['==', ['get', 'tier'], 'CLEAR'], 0.18,
+              ['==', ['get', 'tier'], 'ADVISORY'], 0.35,
+              0.85  // WATCH / CRITICAL / OPERATIONAL
+            ]
+          }
+        });
+      }
+      // Pulsing active outline — thicker dashed
+      if (!window._jvMap.getLayer('beats-active-outline')) {
+        window._jvMap.addLayer({
+          id: 'beats-active-outline', type: 'line', source: 'active-beats',
+          filter: ['==', ['get', 'active'], true],
+          paint: {
+            'line-color': '#ffffff',
+            'line-width': 1.5,
+            'line-dasharray': [3, 2],
+            'line-opacity': 0.7
+          }
+        });
+      }
+      // Populate with real data
+      updateActiveBeatHighlightFull();
+    }
+
+    // Build GeoJSON with tier_color property for MapLibre expressions
+    function buildActiveBeatsGeoJSON() {
+      var beats = (window.JVALA_DATA && window.JVALA_DATA.beats) || [];
+      var features = [];
+      beats.forEach(function (beat) {
+        if (!beat.polygon) return;
+        features.push({
+          type: 'Feature',
+          properties: {
+            id: beat.id,
+            tier: beat.tier || 'CLEAR',
+            tier_color: tierColor(beat.tier),
+            active: beat.id === _activeBeatId
+          },
+          geometry: { type: 'Polygon', coordinates: [beat.polygon] }
+        });
+      });
+      return { type: 'FeatureCollection', features: features };
+    }
+
+    function updateActiveBeatHighlight() {
+      if (!window._jvMap || !window._jvMap.isStyleLoaded()) return;
+      safe(function () {
+        if (window._jvMap.getSource('active-beats')) {
+          window._jvMap.getSource('active-beats').setData(buildActiveBeatsGeoJSON());
+        }
+      });
+    }
+
+    function updateActiveBeatHighlightFull() {
+      if (!window._jvMap) return;
+      safe(function () {
+        if (window._jvMap.getSource('active-beats')) {
+          window._jvMap.getSource('active-beats').setData(buildActiveBeatsGeoJSON());
+        }
+      });
+    }
+
+    // Init MapLibre
+    safe(function () {
+      window._jvMap = new maplibregl.Map({
+        container: 'map',
+        style: {
+          version: 8,
+          sources: {
+            carto: {
+              type: 'raster', tileSize: 256,
+              tiles: ['https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'],
+              attribution: '\u00A9 CartoDB \u00A9 OSM'
+            }
+          },
+          layers: [{ id: 'carto', type: 'raster', source: 'carto' }]
+        },
+        center: [77.28, 24.65], zoom: 10, attributionControl: false
+      });
+    }, null);
+
+    if (!window._jvMap) {
+      safe(function () {
+        var el = document.getElementById('map');
+        if (el) {
+          el.style.cssText = 'display:flex;align-items:center;justify-content:center;background:#0b0f1a;color:#64748b;font-size:13px;text-align:center;';
+          el.innerHTML = '<div>\uD83D\uDDFA Map unavailable<br><small>CDN offline \u2014 beat data in sidebar</small></div>';
+        }
+      });
+    } else {
+      window._jvMap.on('move', function () {
+        if (!deckOverlay) return;
+        safe(function () {
+          var m = window._jvMap, c = m.getCenter();
+          deckOverlay.setProps({
+            viewState: {
+              longitude: c.lng, latitude: c.lat,
+              zoom: m.getZoom(), pitch: m.getPitch(), bearing: m.getBearing()
+            }
+          });
+        });
+      });
+
+      window._jvMap.on('load', function () {
+        // 1. Load the Guna Division shapefile
+        safe(function () { loadShapefile(); });
+        // 2. Load Zenith Phase 14/15 Risk Grid
+        safe(function () { loadZenithRiskGrid(); });
+
+        // 2. Add deck.Deck canvas for scatter/CFL layers
+        var canvas = document.createElement('canvas');
+        canvas.id = 'deck-canvas';
+        canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;';
+        document.getElementById('map').appendChild(canvas);
+
+        safe(function () {
+          if (typeof deck === 'undefined') return;
+          var DeckCore = deck.Deck;
+          ScatterL = deck.ScatterplotLayer;
+          PathL = deck.PathLayer;
+          var c0 = window._jvMap.getCenter();
+          deckOverlay = new DeckCore({
+            canvas: canvas, controller: false, useDevicePixels: true,
+            initialViewState: {
+              longitude: c0.lng, latitude: c0.lat,
+              zoom: window._jvMap.getZoom(), pitch: 0, bearing: 0
+            },
+            layers: []
+          });
+          setTimeout(function () {
+            document.querySelectorAll('body > canvas').forEach(function (c) {
+              c.style.pointerEvents = 'none';
+            });
+          }, 300);
+        });
+
+        window._jvMap.fitBounds([[77.14, 24.52], [77.48, 24.80]], { padding: 30, duration: 1200 });
+        setTimeout(rebuildDeckLayers, 1400);
+      });
+    }
+
+    // ── Bootstrap ─────────────────────────────────────────────────────────
+    fetchData();
+
+    // Phase 16B: Real-time UI updates via Server-Sent Events (SSE)
+    var evtSource = new EventSource("/api/stream");
+    evtSource.onmessage = function (e) {
+      var d = JSON.parse(e.data);
+      if (d.update) {
+        console.log("Live stream updated. Refreshing UI...");
+        fetchData();
+      }
+    };
+    evtSource.onerror = function () {
+      console.warn("SSE stream disconnected. Reconnecting...");
+    };
+
+    // ── Scheduler Polling ─────────────────────────────────────────────────
+    function fetchSchedulerState() {
+      fetch('/api/scheduler', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (state) {
+          var widget = document.getElementById('scheduler-widget');
+          if (!widget) return;
+          var statusEl = widget.querySelector('.sched-status');
+          var runEl = widget.querySelector('.sched-run');
+
+          if (!state || Object.keys(state).length === 0 || state.status === 'not_running') {
+            statusEl.innerHTML = '<span class="sched-dot not"></span>Scheduler: Offline';
+            if (runEl) runEl.remove();
+            return;
+          }
+
+          var dotClass = 'not';
+          var statusText = state.status.toUpperCase();
+          if (state.status === 'ok') { dotClass = 'ok'; statusText = 'OK'; }
+          else if (state.status === 'error') { dotClass = 'error'; statusText = 'ERROR'; }
+          else if (state.status === 'running') { dotClass = 'running'; statusText = 'RUNNING...'; }
+
+          statusEl.innerHTML = '<span class="sched-dot ' + dotClass + '"></span>' + statusText + ' \u2014 ' + (state.last_run_at || 'Never');
+
+          var nextRun = state.next_run_at ? ' | Next: ' + state.next_run_at.split('T')[1].substring(0, 5) : '';
+          var dur = state.duration_s ? Math.round(state.duration_s) + 's' : '';
+          var infoHtml = '<div class="sched-run">Runs: ' + (state.run_count || 0) + ' \u2022 Beats: ' + (state.beats_processed || 0) + ' \u2022 ' + dur + nextRun + '</div>';
+
+          if (runEl) {
+            runEl.outerHTML = infoHtml;
+          } else {
+            widget.innerHTML += infoHtml;
+          }
+        })
+        .catch(function (e) {
+          var widget = document.getElementById('scheduler-widget');
+          if (widget) {
+            widget.querySelector('.sched-status').innerHTML = '<span class="sched-dot not"></span>Scheduler: Disconnected';
+          }
+        });
+    }
+    fetchSchedulerState();
+    setInterval(fetchSchedulerState, 60000);
+
+    // ── Back-test tab ─────────────────────────────────────────────────────
+    var _btData = null;
+
+    function openBacktest() {
+      var el = document.getElementById('backtest-overlay');
+      if (el) el.classList.add('open');
+      if (!_btData) fetchBacktest();
+    }
+
+    function closeBacktest() {
+      var el = document.getElementById('backtest-overlay');
+      if (el) el.classList.remove('open');
+    }
+
+    function fetchBacktest() {
+      var body = document.getElementById('bt-body');
+      if (body) body.innerHTML = '<div class="bt-loading">\u231B Loading model data\u2026</div>';
+      fetch('/api/backtest', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { _btData = d; renderBacktest(d); })
+        .catch(function () {
+          if (body) body.innerHTML = '<div class="bt-loading">\u26A0 Server offline \u2014 start dashboard_server.py</div>';
+        });
+    }
+
+    function renderBacktest(d) {
+      var body = document.getElementById('bt-body');
+      if (!body) return;
+
+      var ig = d.ignition_model || {};
+      var it = d.intensity_model || {};
+
+      // ── Ignition model card ───────────────────────────────────────────
+      var igHtml = '<div class="bt-card">' +
+        '<div class="bt-card-title">\uD83D\uDD25 Ignition Model (LightGBM)</div>' +
+        '<div class="bt-metrics">' +
+        metricBadge('AUC-ROC', pct(ig.auc_roc, 4)) +
+        metricBadge('F\u03B2=2 @ thresh', pct(ig['f2.0_at_thresh'], 4)) +
+        metricBadge('Recall', pct(ig.recall_at_thresh, 4)) +
+        metricBadge('Precision', pct(ig.precision_at_thresh, 4)) +
+        metricBadge('Threshold', ig.ignition_threshold ? Number(ig.ignition_threshold).toFixed(4) : 'n/a') +
+        metricBadge('N train', ig.n_train || 'n/a') +
+        metricBadge('N val', ig.n_val || 'n/a') +
+        metricBadge('Holdout year', ig.holdout_year || 'n/a') +
+        '</div>' +
+        '<div class="bt-meta">Trained on: ' + (ig.trained_on || '?') + ' &bull; ' + (ig.level || 'compartment level') + '</div>' +
+        renderPRsvg(ig) +
+        '</div>';
+
+      // ── Intensity model card ──────────────────────────────────────────
+      var tierBreaks = (it.frp_tier_breaks || []).map(function (b) { return b.toFixed(2); }).join(', ');
+      var itHtml = '<div class="bt-card">' +
+        '<div class="bt-card-title">\uD83D\uDCCA Intensity Model (LightGBM)</div>' +
+        '<div class="bt-metrics">' +
+        metricBadge('Balanced Acc.', pct(it.balanced_accuracy, 4)) +
+        metricBadge('N train (+)', it.n_train_positives || 'n/a') +
+        metricBadge('N val (+)', it.n_val_positives || 'n/a') +
+        metricBadge('Classes', (it.intensity_classes || []).join(' < ')) +
+        metricBadge('FRP tier breaks', tierBreaks || 'n/a') +
+        metricBadge('Units', 'MW (VIIRS)') +
+        '</div>' +
+        '<div class="bt-meta">Trained: ' + (it.trained_on || '?') + ' &bull; Holdout: ' + (it.holdout_years || []).join(', ') + '</div>' +
+        '</div>';
+
+      // ── GDD validation images ─────────────────────────────────────────
+      var gddImgs = (d.gdd_images || []);
+      var gddHtml = '<div class="bt-card">' +
+        '<div class="bt-card-title">\uD83C\uDF31 GDD Vegetation Senescence Validation</div>';
+      if (gddImgs.length === 0) {
+        gddHtml += '<div class="bt-meta" style="margin:12px 0">No GDD images found. Run the pipeline first.</div>';
+      } else {
+        gddHtml += '<div class="bt-gdd-grid">';
+        gddImgs.forEach(function (url) {
+          var yr = url.match(/(\d{4})/) ? url.match(/(\d{4})/)[1] : '?';
+          gddHtml += '<div class="bt-gdd-item">' +
+            '<div class="bt-gdd-label">' + yr + ' Season</div>' +
+            '<img class="bt-gdd-img" src="' + url + '" alt="GDD ' + yr + '" ' +
+            'onerror="this.style.display=\'none\'" />' +
+            '</div>';
+        });
+        gddHtml += '</div>';
+      }
+      gddHtml += '</div>';
+
+      // ── Run history table ─────────────────────────────────────────────
+      var runs = d.run_history || [];
+      var runHtml = '<div class="bt-card">' +
+        '<div class="bt-card-title">\uD83D\uDCC5 Pipeline Run History</div>';
+      if (runs.length === 0) {
+        runHtml += '<div class="bt-meta" style="margin:12px 0">No runs yet. Execute run_jvala_pipeline.py to populate.</div>';
+      } else {
+        runHtml += '<div class="bt-table-wrap"><table class="bt-table">' +
+          '<thead><tr><th>Date</th><th>Beats</th><th>Escalated</th><th>Errors</th><th>Elapsed</th></tr></thead><tbody>';
+        runs.forEach(function (r) {
+          var elap = (r.results || []).reduce(function (s, x) { return s + (x.elapsed_s || 0); }, 0);
+          runHtml += '<tr>' +
+            '<td>' + (r.anchor_date || '?') + '</td>' +
+            '<td>' + (r.beats_processed || 0) + '</td>' +
+            '<td><span style="color:' + (r.beats_escalated ? '#facc15' : '#22c55e') + '">' + (r.beats_escalated || 0) + '</span></td>' +
+            '<td><span style="color:' + (r.errors ? '#ef4444' : '#22c55e') + '">' + (r.errors || 0) + '</span></td>' +
+            '<td>' + (elap > 0 ? elap.toFixed(1) + 's' : '\u2014') + '</td>' +
+            '</tr>';
+        });
+        runHtml += '</tbody></table></div>';
+      }
+      runHtml += '</div>';
+
+      // == Live Validation Metrics (from validation_report.json) ===============
+      // All nested access uses explicit null-checks (ES5-safe) to prevent
+      // TypeError crashes when validation_report.json does not exist yet,
+      // or when a specific class had 0 holdout samples and was omitted from JSON.
+      var vm = d.validation_metrics;
+      var valHtml = '';
+      if (vm && Object.keys(vm).length > 0) {
+        var igh = (vm.ignition_holdout) || null;
+        var igValHtml = '';
+        if (igh) {
+          igValHtml = '<div class="bt-card" style="border-left:3px solid #f97316">' +
+            '<div class="bt-card-title">&#x1F525; Ignition Holdout &mdash; ' + (igh.holdout_year || '?') + ' (Out-of-Time)</div>' +
+            '<div class="bt-metrics">' +
+            metricBadge('AUC-ROC', pct(igh.auc_roc, 4)) +
+            metricBadge('PR-AUC', pct(igh.pr_auc, 4)) +
+            metricBadge('F\u03B2=2', pct(igh.f2_at_thresh, 4)) +
+            metricBadge('Recall', pct(igh.recall_at_thresh, 4)) +
+            metricBadge('Precision', pct(igh.precision_at_thresh, 4)) +
+            metricBadge('Threshold', igh.threshold != null ? Number(igh.threshold).toFixed(4) : 'n/a') +
+            '</div>';
+          var vp = d.validation_plots || [];
+          var igPlots = vp.filter(function (u) { return u.indexOf('ignition') > -1; });
+          if (igPlots.length > 0) {
+            igValHtml += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">';
+            igPlots.forEach(function (url) {
+              var lbl = url.indexOf('roc_') > -1 ? 'ROC' : url.indexOf('pr_') > -1 ? 'PR' : 'Confusion';
+              igValHtml += '<a href="' + url + '" target="_blank" title="' + lbl + ' Curve">' +
+                '<img src="' + url + '" style="height:90px;border:1px solid #334155;border-radius:6px;cursor:pointer" ' +
+                'onerror="this.style.display=\'none\'" /></a>';
+            });
+            igValHtml += '</div>';
+          }
+          igValHtml += '</div>';
+        }
+
+        var ith = (vm.intensity_holdout) || null;
+        var itValHtml = '';
+        if (ith) {
+          var pc2 = (ith.per_class) || {};
+          itValHtml = '<div class="bt-card" style="border-left:3px solid #a855f7">' +
+            '<div class="bt-card-title">&#x1F4CA; Intensity Holdout &mdash; Per-Class Recall (2023&ndash;2025)</div>' +
+            '<div class="bt-metrics">' +
+            metricBadge('Balanced Acc.', pct(ith.balanced_accuracy, 4)) +
+            metricBadge('n (+)', ith.n_positives || 'n/a') +
+            '</div>' +
+            '<div class="bt-table-wrap"><table class="bt-table" style="margin-top:8px">' +
+            '<thead><tr><th>Tier</th><th>Recall</th><th>Precision</th><th>F1</th><th>Support</th><th>Status</th></tr></thead>' +
+            '<tbody>';
+          ['Low', 'Moderate', 'High', 'Extreme'].forEach(function (tier) {
+            var cls = pc2[tier] || null;
+            if (!cls) return;
+            var recall = (cls.recall != null) ? Number(cls.recall) : null;
+            var rowBg = '#1e293b', badgeColor = '#64748b', badgeText = '&mdash;';
+            if (recall !== null) {
+              if (recall < 0.60) {
+                rowBg = 'rgba(239,68,68,0.12)'; badgeColor = '#ef4444';
+                badgeText = tier === 'Extreme' ? '&#x26A0; ADVISORY' : '&#x26A0; LOW';
+              } else if (recall < 0.80) {
+                rowBg = 'rgba(250,204,21,0.10)'; badgeColor = '#facc15'; badgeText = '&#x25B2; MOD';
+              } else {
+                rowBg = 'rgba(34,197,94,0.10)'; badgeColor = '#22c55e'; badgeText = '&#x2713; OK';
+              }
+            }
+            itValHtml += '<tr style="background:' + rowBg + '">' +
+              '<td style="font-weight:600">' + tier + '</td>' +
+              '<td>' + pct(recall, 4) + '</td>' +
+              '<td>' + pct(cls.precision, 4) + '</td>' +
+              '<td>' + pct(cls.f1, 4) + '</td>' +
+              '<td>' + (cls.support || '0') + '</td>' +
+              '<td><span style="color:' + badgeColor + ';font-size:11px;font-weight:700">' + badgeText + '</span></td>' +
+              '</tr>';
+          });
+          itValHtml += '</tbody></table></div>';
+          // Confusion matrix thumbnail
+          var allP2 = d.validation_plots || [], confUrl2 = null;
+          for (var ci2 = 0; ci2 < allP2.length; ci2++) {
+            if (allP2[ci2].indexOf('intensity') > -1 && allP2[ci2].indexOf('confusion') > -1) { confUrl2 = allP2[ci2]; break; }
+          }
+          if (confUrl2) {
+            itValHtml += '<div style="margin-top:10px">' +
+              '<a href="' + confUrl2 + '" target="_blank" title="Intensity Confusion Matrix">' +
+              '<img src="' + confUrl2 + '" style="height:120px;border:1px solid #334155;border-radius:6px;cursor:pointer" ' +
+              'onerror="this.style.display=\'none\'" /></a>' +
+              '<div class="bt-meta" style="margin-top:4px">Confusion matrix — click to enlarge</div></div>';
+          }
+          // Extreme advisory banner (recall < 0.60)
+          var extCls2 = (ith.per_class && ith.per_class.Extreme) || null;
+          var extR2 = extCls2 ? extCls2.recall : null;
+          if (extR2 !== null && extR2 < 0.60) {
+            itValHtml += '<div style="margin-top:10px;padding:8px 12px;border:1px solid #ef4444;' +
+              'border-radius:6px;background:rgba(239,68,68,0.10);color:#fca5a5;font-size:12px">' +
+              '&#x26A0;&#xFE0F; <strong>Extreme Recall&nbsp;=&nbsp;' + pct(extR2, 2) + '</strong> &mdash; ' +
+              'Probabilistic advisory mode active. Extreme tier carries elevated uncertainty. ' +
+              'Use wind gust + VPD thresholds as primary physical confirmation.' +
+              '</div>';
+          }
+          itValHtml += '</div>';
+        }
+        valHtml = igValHtml + itValHtml;
+      }
+      // =========================================================================
+
+      body.innerHTML = '<div class="bt-grid">' + igHtml + itHtml + '</div>' +
+        (valHtml ? '<div style="margin-top:16px">' +
+          '<div class="bt-card-title" style="margin-bottom:8px;font-size:13px;color:#94a3b8">' +
+          '&#x1F4CA; Live Out-of-Time Validation Metrics (validation_report.json)</div>' +
+          '<div class="bt-grid">' + valHtml + '</div>' +
+          '</div>' : '') +
+        gddHtml + runHtml;
+    }
+
+
+    function metricBadge(label, val) {
+      return '<div class="bt-badge"><div class="bt-badge-label">' + label + '</div>' +
+        '<div class="bt-badge-val">' + val + '</div></div>';
+    }
+
+    function pct(v, decimals) {
+      if (v == null || isNaN(v)) return 'n/a';
+      return (Number(v) * 100).toFixed(decimals != null ? Math.max(0, decimals - 2) : 1) + '%';
+    }
+
+    function renderPRsvg(ig) {
+      // Render a simple precision-recall operating point marker on an SVG canvas.
+      // We don\'t have the full PR-curve array, just the operating point from meta.
+      var rec = Number(ig.recall_at_thresh || 0);
+      var prec = Number(ig.precision_at_thresh || 0);
+      if (!rec && !prec) return '';
+      var W = 260, H = 160, PAD = 32;
+      var plotW = W - PAD * 2, plotH = H - PAD * 2;
+      // x = recall (0→1), y = precision (0→1)
+      var px = PAD + rec * plotW, py = PAD + (1 - prec) * plotH;
+      // Random-baseline line: from (0,1) to (1,0)
+      var lx0 = PAD, ly0 = PAD, lx1 = PAD + plotW, ly1 = PAD + plotH;
+      return '<svg width="' + W + '" height="' + H + '" class="bt-pr-svg" viewBox="0 0 ' + W + ' ' + H + '">' +
+        // Axes
+        '<line x1="' + PAD + '" y1="' + PAD + '" x2="' + PAD + '" y2="' + (PAD + plotH) + '" stroke="#334155" stroke-width="1"/>' +
+        '<line x1="' + PAD + '" y1="' + (PAD + plotH) + '" x2="' + (PAD + plotW) + '" y2="' + (PAD + plotH) + '" stroke="#334155" stroke-width="1"/>' +
+        // Random-baseline dashed diagonal
+        '<line x1="' + lx0 + '" y1="' + ly1 + '" x2="' + lx1 + '" y2="' + ly0 + '" stroke="#475569" stroke-width="1" stroke-dasharray="4 3"/>' +
+        // Horizontal / vertical guide lines to axes
+        '<line x1="' + PAD + '" y1="' + py + '" x2="' + px + '" y2="' + py + '" stroke="#1e40af" stroke-width="0.5" stroke-dasharray="2 2" opacity="0.6"/>' +
+        '<line x1="' + px + '" y1="' + (PAD + plotH) + '" x2="' + px + '" y2="' + py + '" stroke="#1e40af" stroke-width="0.5" stroke-dasharray="2 2" opacity="0.6"/>' +
+        // Operating point dot
+        '<circle cx="' + px + '" cy="' + py + '" r="5" fill="#f97316"/>' +
+        // Axis labels
+        '<text x="' + (PAD + plotW / 2) + '" y="' + (H - 4) + '" text-anchor="middle" fill="#64748b" font-size="9">Recall</text>' +
+        '<text x="10" y="' + (PAD + plotH / 2) + '" text-anchor="middle" fill="#64748b" font-size="9" transform="rotate(-90,10,' + (PAD + plotH / 2) + ')" >Precision</text>' +
+        // Tick labels
+        '<text x="' + PAD + '" y="' + (PAD + plotH + 12) + '" text-anchor="middle" fill="#475569" font-size="8">0</text>' +
+        '<text x="' + (PAD + plotW) + '" y="' + (PAD + plotH + 12) + '" text-anchor="middle" fill="#475569" font-size="8">1</text>' +
+        '<text x="' + (PAD - 4) + '" y="' + (PAD + plotH) + '" text-anchor="end" fill="#475569" font-size="8">0</text>' +
+        '<text x="' + (PAD - 4) + '" y="' + PAD + '" text-anchor="end" fill="#475569" font-size="8">1</text>' +
+        // Value annotation
+        '<text x="' + (px + 8) + '" y="' + (py - 6) + '" fill="#f97316" font-size="9" font-weight="bold">P=' + (prec * 100).toFixed(1) + '% R=' + (rec * 100).toFixed(1) + '%</text>' +
+        '</svg>';
+    }
+
+  </script>
+
+  <style>
+    #backtest-overlay {
+      display: none;
+      position: fixed;
+      inset: 56px 0 0 340px;
+      z-index: 500;
+      background: rgba(11, 15, 26, 0.98);
+      overflow-y: auto;
+      padding: 24px;
+      animation: bt-fade 0.25s ease;
+    }
+
+    #backtest-overlay.open {
+      display: block;
+    }
+
+    @keyframes bt-fade {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    #bt-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #94a3b8;
+      padding: 4px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    #bt-close:hover {
+      color: #e2e8f0;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    #bt-heading {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #f97316, #22d3ee);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .bt-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 1000px) {
+      .bt-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bt-card {
+      background: rgba(15, 22, 40, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 0;
+    }
+
+    .bt-card+.bt-card {
+      margin-top: 16px;
+    }
+
+    .bt-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+
+    .bt-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .bt-badge {
+      background: rgba(30, 40, 70, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 6px 10px;
+      min-width: 90px;
+    }
+
+    .bt-badge-label {
+      font-size: 9px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .bt-badge-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-top: 1px;
+    }
+
+    .bt-meta {
+      font-size: 11px;
+      color: #475569;
+      margin-top: 6px;
+    }
+
+    .bt-pr-svg {
+      display: block;
+      margin: 12px auto 0;
+      background: rgba(30, 40, 70, 0.4);
+      border-radius: 8px;
+    }
+
+    .bt-loading {
+      color: #64748b;
+      text-align: center;
+      padding: 40px;
+      font-size: 14px;
+    }
+
+    .bt-gdd-grid {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .bt-gdd-item {
+      flex: 1 1 180px;
+      min-width: 160px;
+    }
+
+    .bt-gdd-label {
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 4px;
+      text-align: center;
+    }
+
+    .bt-gdd-img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #0b0f1a;
+    }
+
+    .bt-table-wrap {
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    .bt-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .bt-table th {
+      text-align: left;
+      padding: 6px 10px;
+      color: #64748b;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .bt-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
+    }
+
+    .bt-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .bt-table tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+  </style>
+  <div id="backtest-overlay">
+    <button id="bt-close" onclick="closeBacktest()">&#x2715; Close</button>
+    <div id="bt-heading">&#x1F4CA; Historical Back-test &amp; Model Validation</div>
+    <div id="bt-body">
+      <div class="bt-loading">&#x231B; Loading&#x2026;</div>
+    </div>
+  </div>
+
+</body>
+
+</html>

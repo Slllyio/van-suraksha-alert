@@ -3,6 +3,10 @@ Dataset Classes
 ===============
 PyTorch Dataset wrappers for change detection and temporal prediction tasks.
 STRICTLY LOCAL VERSION: No web/earthaccess dependencies.
+
+FIX (2026-03-14): Replaced zero-filled auxiliary placeholders with real data
+loading from data_lake via auxiliary_loader. All auxiliary channels (weather,
+terrain, burn_age, landcover) now load real on-disk data.
 """
 
 import os
@@ -17,6 +21,69 @@ from pathlib import Path
 from datetime import datetime, timedelta
 
 log = logging.getLogger(__name__)
+
+# Project root for auxiliary data resolution
+_DATASET_ROOT = Path(__file__).resolve().parent.parent.parent
+
+
+def _load_real_auxiliary(lat: float, lon: float, date_str: str, patch_size: int = 224):
+    """
+    Load real auxiliary data (weather, terrain, burn_age, landcover) from data_lake.
+    Falls back to zeros with a WARNING if data is unavailable — never silently.
+
+    Returns:
+        weather:    (10,) float32
+        weather_7d: (10, 7) float32
+        terrain:    (4, H, W) float32
+        burn_age:   (3, H, W) float32
+        landcover:  (11, H, W) float32
+    """
+    weather    = np.zeros(10, dtype=np.float32)
+    weather_7d = np.zeros((10, 7), dtype=np.float32)
+    terrain    = np.zeros((4, patch_size, patch_size), dtype=np.float32)
+    burn_age   = np.zeros((3, patch_size, patch_size), dtype=np.float32)
+    landcover  = np.zeros((11, patch_size, patch_size), dtype=np.float32)
+
+    # Try importing the real auxiliary loader (available in full project)
+    try:
+        from src.data.auxiliary_loader import (
+            load_spatial_auxiliary,
+            load_7d_weather_sequence,
+            load_burn_age,
+        )
+
+        # Terrain + Landcover
+        try:
+            terrain_np, lc_np = load_spatial_auxiliary(lon, lat, patch_size=patch_size)
+            terrain = terrain_np.astype(np.float32)
+            landcover = lc_np.astype(np.float32)
+        except Exception as e:
+            log.warning(f"Terrain/LC load failed for ({lat:.2f}, {lon:.2f}): {e}")
+
+        # Weather (7-day sequence → current = day index 3)
+        try:
+            weather_seq = load_7d_weather_sequence(date_str, lon, lat)
+            if weather_seq is not None and weather_seq.shape == (7, 10):
+                weather_7d = weather_seq.T.astype(np.float32)  # (10, 7)
+                weather = weather_seq[3].astype(np.float32)    # current day
+            elif weather_seq is not None:
+                weather_7d = weather_seq.astype(np.float32) if weather_seq.ndim == 2 else weather_7d
+        except Exception as e:
+            log.warning(f"Weather load failed for {date_str} ({lat:.2f}, {lon:.2f}): {e}")
+
+        # Burn age
+        try:
+            burn_age = load_burn_age(lon, lat, date_str, patch_size=patch_size).astype(np.float32)
+        except Exception as e:
+            log.warning(f"Burn age load failed for {date_str} ({lat:.2f}, {lon:.2f}): {e}")
+
+    except ImportError:
+        log.warning(
+            "auxiliary_loader not available — using zero-filled auxiliary data. "
+            "This WILL degrade model performance. Install full project dependencies."
+        )
+
+    return weather, weather_7d, terrain, burn_age, landcover
 
 class SatelliteAugment:
     def __init__(self, noise_std=0.02, bright_delta=0.05, band_drop_p=0.15, flip_p=0.5, rot_p=0.5):
@@ -71,13 +138,16 @@ class AiRefinedPrecisionDataset(Dataset):
         else:
             raise FileNotFoundError(f"CRITICAL: Cache miss for {sample_tag}. Run pre_cache agent first.")
 
-        # Aux placeholders
-        weather    = torch.zeros(10)
-        weather_7d = torch.zeros(10, 7)
-        terrain    = torch.zeros(4, 224, 224)
-        burn_age   = torch.zeros(3, 224, 224)
-        landcover  = torch.zeros(11, 224, 224)
-        
+        # Load REAL auxiliary data from data_lake (no more zero-fill placeholders)
+        weather_np, weather_7d_np, terrain_np, burn_age_np, landcover_np = \
+            _load_real_auxiliary(lat, lon, date_str, patch_size=224)
+
+        weather    = torch.from_numpy(weather_np)
+        weather_7d = torch.from_numpy(weather_7d_np)
+        terrain    = torch.from_numpy(terrain_np)
+        burn_age   = torch.from_numpy(burn_age_np)
+        landcover  = torch.from_numpy(landcover_np)
+
         with rasterio.open(label_path) as src:
             label = src.read(1, boundless=True, fill_value=0)[:224, :224].astype(np.int64)
 

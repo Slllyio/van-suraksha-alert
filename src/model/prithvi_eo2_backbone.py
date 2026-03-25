@@ -10,8 +10,10 @@ _EO2_600M_ID = "ibm-nasa-geospatial/Prithvi-EO-2.0-600M"
 _EO2_300M_ID = "ibm-nasa-geospatial/Prithvi-EO-2.0-300M"
 
 _EO2_ARCH = {
-    "600M": {"embed_dim": 1280, "depth": 32, "num_heads": 16},
-    "300M": {"embed_dim": 1024, "depth": 24, "num_heads": 16},
+    "600M":    {"embed_dim": 1280, "depth": 32, "num_heads": 16},
+    "600M-TL": {"embed_dim": 1280, "depth": 32, "num_heads": 16},
+    "300M":    {"embed_dim": 1024, "depth": 24, "num_heads": 16},
+    "300M-TL": {"embed_dim": 1024, "depth": 24, "num_heads": 16},
 }
 
 class PrithviEO2Backbone(nn.Module):
@@ -69,45 +71,98 @@ class PrithviEO2Backbone(nn.Module):
     def forward(self, x):
         return self._backbone(x)
 
-    def get_intermediate_layers(self, x, n_last=4):
-        """Manual implementation of intermediate layer extraction for PrithviViT."""
-        # x is (B, C, T, H, W)
-        x = self._backbone.patch_embed(x)
-        B, D, T, Hp, Wp = x.shape
-        
-        # Flatten spatial-temporal dims for transformer
-        x = x.flatten(2).transpose(1, 2) # (B, T*Hp*Wp, D)
-        
-        # ─── Fix: Handling CLS Token and Positional Embeddings ────────────────
+    def forward_features(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Extract full token sequence from the backbone.
+
+        Args:
+            x: (B, C, T, H, W)
+
+        Returns:
+            (B, N, embed_dim) token sequence (CLS token removed)
+        """
+        # patch_embed returns (B, D, T, Hp, Wp) for PrithviViT
+        out = self._backbone.patch_embed(x)
+        B, D, T, Hp, Wp = out.shape
+
+        # Flatten to (B, T*Hp*Wp, D)
+        out = out.flatten(2).transpose(1, 2)
+
+        # Prepend CLS token
         if hasattr(self._backbone, "cls_token") and self._backbone.cls_token is not None:
             cls_tokens = self._backbone.cls_token.expand(B, -1, -1)
-            x = torch.cat((cls_tokens, x), dim=1) # (B, 1 + T*Hp*Wp, D)
-        
+            out = torch.cat((cls_tokens, out), dim=1)
+
+        # Add positional embeddings (best-effort; trim if size mismatch)
         if hasattr(self._backbone, "pos_embed") and self._backbone.pos_embed is not None:
-            x = x + self._backbone.pos_embed
-            
-        # Collect outputs from the last N blocks
-        outputs = []
+            pe = self._backbone.pos_embed
+            out = out + pe[:, : out.shape[1], :]
+
+        for block in self._backbone.blocks:
+            out = block(out)
+
+        if hasattr(self._backbone, "norm"):
+            out = self._backbone.norm(out)
+
+        # Return without CLS token → (B, N, D)
+        if hasattr(self._backbone, "cls_token") and self._backbone.cls_token is not None:
+            out = out[:, 1:]
+
+        return out  # (B, N, embed_dim)
+
+    def get_intermediate_layers(self, x: torch.Tensor, n_last: int = 4):
+        """
+        Return token sequences from the last n_last transformer blocks.
+
+        Returns:
+            List of (B, N, embed_dim) tensors — length == min(n_last, depth)
+        """
+        # patch_embed returns (B, D, T, Hp, Wp)
+        out = self._backbone.patch_embed(x)
+        B, D, T, Hp, Wp = out.shape
+
+        # Flatten to (B, T*Hp*Wp, D)
+        out = out.flatten(2).transpose(1, 2)
+
+        # Prepend CLS token
+        if hasattr(self._backbone, "cls_token") and self._backbone.cls_token is not None:
+            cls_tokens = self._backbone.cls_token.expand(B, -1, -1)
+            out = torch.cat((cls_tokens, out), dim=1)
+
+        # Add positional embeddings
+        if hasattr(self._backbone, "pos_embed") and self._backbone.pos_embed is not None:
+            pe = self._backbone.pos_embed
+            out = out + pe[:, : out.shape[1], :]
+
         n_blocks = len(self._backbone.blocks)
+        # Clamp n_last so we never request more layers than exist
+        n_last = min(n_last, n_blocks)
+
+        outputs = []
         for i, block in enumerate(self._backbone.blocks):
-            x = block(x)
+            out = block(out)
             if i >= (n_blocks - n_last):
-                # Remove CLS token if present
-                feat = x[:, 1:] if (hasattr(self._backbone, "cls_token") and self._backbone.cls_token is not None) else x
-                
-                # Reshape back to (B, D, T, Hp, Wp)
-                feat = feat.transpose(1, 2).reshape(B, D, T, Hp, Wp)
-                # Take temporal mean for UNet
-                feat = feat.mean(dim=2) # (B, D, Hp, Wp)
-                outputs.append(feat)
-                
+                # Keep 3-D tokens (B, N or N+1, D); strip CLS for decoder
+                feat = out[:, 1:] if (
+                    hasattr(self._backbone, "cls_token")
+                    and self._backbone.cls_token is not None
+                ) else out
+                outputs.append(feat)  # (B, N, embed_dim)
+
         return outputs
+
+_EO2_HF_IDS = {
+    "600M":    _EO2_600M_ID,
+    "600M-TL": "ibm-nasa-geospatial/Prithvi-EO-2.0-600M-TL",
+    "300M":    _EO2_300M_ID,
+    "300M-TL": "ibm-nasa-geospatial/Prithvi-EO-2.0-300M-TL",
+}
 
 def build_prithvi_eo2(variant="600M", num_frames=3, in_chans=6, img_size=224):
     if variant not in _EO2_ARCH:
-        raise ValueError(f"Unknown variant '{variant}'.")
-    hf_id = _EO2_300M_ID if variant == "300M" else _EO2_600M_ID
-    return PrithviEO2Backbone(pretrained=hf_id, num_frames=num_frames, in_chans=in_chans, 
+        raise ValueError(f"Unknown variant '{variant}'. Choose from: {list(_EO2_ARCH.keys())}")
+    hf_id = _EO2_HF_IDS[variant]
+    return PrithviEO2Backbone(pretrained=hf_id, num_frames=num_frames, in_chans=in_chans,
                               img_size=img_size, **_EO2_ARCH[variant])
 
 def _patch_detach_prefix(model, n):

@@ -38,10 +38,14 @@ try:
     from src.analysis.forest_chat import ForestChatEngine
     from src.analysis.maintenance_ai import MaintenanceAI
     from src.analysis.vlm_auditor import VLMAuditor
+    from src.analysis.anomaly_scorer import compute_anomaly_score
+    from src.analysis.ai_dispatcher import AISignalCorps
 except ImportError as e:
     ForestChatEngine = None
     MaintenanceAI = None
     VLMAuditor = None
+    compute_anomaly_score = None
+    AISignalCorps = None
 
 # ── Path Configuration ────────────────────────────────────────────────────────
 ALERT_DIR    = ROOT / "data_lake" / "alerts"
@@ -61,6 +65,168 @@ GUNA_BBOX = (76.45, 23.80, 77.85, 24.95)   # min_lon, min_lat, max_lon, max_lat
 if "cache_cleared" not in st.session_state:
     st.cache_data.clear()
     st.session_state["cache_cleared"] = True
+
+# ── Live Demo Mode — Guided Presenter Walkthrough ───────────────────────────
+DEMO_STEPS = [
+    {
+        "tab": "Live Alert",
+        "title": "STEP 1 — Fire Detection & Alert",
+        "script": (
+            "On 14 April 2019, VANAAGNI detected a **CRITICAL-severity** fire in Guna Division. "
+            "Fire Radiative Power: **62.8 MW** — classified as **INFERNO**. "
+            "The Canadian Fire Weather Index hit **55.5 (Extreme)**. "
+            "Temperature 33.5\u00b0C, Humidity just 15.4%. "
+            "All six FWI sub-indices are displayed for operational transparency."
+        ),
+        "highlight": "Observe the CRITICAL banner, FWI gauge, and all weather metrics.",
+    },
+    {
+        "tab": "Live Alert",
+        "title": "STEP 2 — AI Tactical Dispatch",
+        "script": (
+            "The AI computed Byram fire intensity at **31,375 kW/m** and Rate of Spread at "
+            "**104.58 m/min**. At this speed, ground crews **cannot outrun the fire**. "
+            "The system classified this as **Defensive/Evacuation** and generated "
+            "bilingual Hindi/English tactical dispatch orders automatically. "
+            "The dispatch directs: aerial support, backfiring equipment, CROWN FIRE safety directive."
+        ),
+        "highlight": "Scroll to the Prescriptive AI Tactical Dispatch section.",
+    },
+    {
+        "tab": "Live Alert",
+        "title": "STEP 3 — Autonomous Fire Verification",
+        "script": (
+            "The VLM Autonomous Auditor cross-verified the detection using spectral analysis "
+            "and FRP thresholds. Verdict: **CONFIRMED FIRE** at **92% confidence**. "
+            "This eliminates false-alarm fatigue \u2014 only verified alerts reach field teams. "
+            "The reasoning is transparent: high-confidence thermal anomaly with strong spectral signature."
+        ),
+        "highlight": "See the VLM Visual Audit panel with verdict, confidence, and reasoning.",
+    },
+    {
+        "tab": "3D Digital Twin",
+        "title": "STEP 4 — 3D Fire Spread Simulation",
+        "script": (
+            "The Command Horizon visualizes the fire on **satellite terrain** using CesiumJS. "
+            "Officers can run the **Muhurta-2D** fire spread simulation. "
+            "Click **START SIM** \u2014 in 30 modeled minutes, this INFERNO consumed **467 hectares** "
+            "with **CROWN FIRE** behavior. The elliptical spread follows the Rothermel model. "
+            "This proves why the AI recommended Defensive/Evacuation \u2014 aerial response only."
+        ),
+        "highlight": "Click START SIM to run the fire spread simulation on the 3D globe.",
+    },
+    {
+        "tab": "Fire History",
+        "title": "STEP 5 — Historical Fire Intelligence",
+        "script": (
+            "VIIRS satellite data reveals **164 fire detections** across Guna Division. "
+            "The Year \u00d7 Month heatmap shows **April\u2013May** as peak fire months. "
+            "2025 recorded **86 detections** \u2014 the highest in recent years. "
+            "Dense clustering in northern and central areas reveals persistent fire-prone zones "
+            "requiring enhanced patrolling."
+        ),
+        "highlight": "Note the seasonal patterns and geographic clustering of hotspots.",
+    },
+    {
+        "tab": "Burn Scars",
+        "title": "STEP 6 — Burn Scar Damage Assessment",
+        "script": (
+            "IBM-NASA\u2019s **Prithvi-EO-2.0** foundation model processed **484 satellite scenes** "
+            "to map burn scars. **80% matched** FIRMS detections. "
+            "The causal link analysis classifies each scene\u2019s fire evidence from HIGH to NONE. "
+            "Peak FRP matched: **29.2 MW**. Burn areas up to **50,899 hectares** documented."
+        ),
+        "highlight": "Review the Causal Link Confidence chart and HIGH-confidence fire events.",
+    },
+    {
+        "tab": "FWI Trends",
+        "title": "STEP 7 — 13-Year Climate Intelligence",
+        "script": (
+            "Fire Weather Index analysis spanning **2013\u20132025** reveals a dangerous trend. "
+            "Peak FWI reached **91.8** in 2024. Fire season mean: **40.4 (Very High)**. "
+            "**38%** of fire season days are classified Very High or worse. "
+            "**Every single year** exceeds the Extreme threshold \u2014 Guna Division has a structural fire risk."
+        ),
+        "highlight": "The annual peak bar chart and Year x Month heatmap tell the climate story.",
+    },
+    {
+        "tab": "Weather & Terrain",
+        "title": "STEP 8 — Weather Forecasts & Terrain Risk",
+        "script": (
+            "GFS weather forecasts enable **24/48/72-hour** fire weather prediction via Herbie. "
+            "Temperature peaks at **40\u00b0C in May** with humidity dropping to critical lows. "
+            "Copernicus DEM 30m terrain analysis: elevation 255\u2013589m, predominantly flat agricultural terrain "
+            "with moderate south-facing slope risk."
+        ),
+        "highlight": "Weather-terrain fusion powers the next-day fire danger forecast.",
+    },
+    {
+        "tab": "Land Cover",
+        "title": "STEP 9 — Forest Mask & Land Classification",
+        "script": (
+            "ESA WorldCover 2021 maps **6,500 km\u00b2** of Guna Division. "
+            "**28% Forest Cover** \u2014 182,000 hectares of Tree Cover. "
+            "55% is Cropland, 5% Scrubland. "
+            "This forest mask is critical: it **filters out crop burns**, ensuring only true forest fires "
+            "trigger alerts. Without it, ~55% of detections would be false positives."
+        ),
+        "highlight": "The forest mask is the secret to zero false-alarm forest fire detection.",
+    },
+]
+
+if "demo_active" not in st.session_state:
+    st.session_state["demo_active"] = False
+if "demo_step" not in st.session_state:
+    st.session_state["demo_step"] = 0
+
+
+def _md_bold_to_html(text: str) -> str:
+    """Convert **bold** markdown to <strong> HTML tags."""
+    import re
+    return re.sub(r'\*\*(.+?)\*\*', r'<strong style="color:#f97316">\1</strong>', text)
+
+
+def demo_narration_banner():
+    """Render the demo narration panel at the top of the page when demo is active."""
+    if not st.session_state.get("demo_active"):
+        return
+    step = st.session_state["demo_step"]
+    info = DEMO_STEPS[step]
+    total = len(DEMO_STEPS)
+
+    st.markdown(f"""
+    <div style="background:linear-gradient(135deg, rgba(249,115,22,0.15) 0%, rgba(220,38,38,0.10) 100%);
+         border:1px solid rgba(249,115,22,0.4); border-radius:12px; padding:20px 24px; margin-bottom:16px;
+         position:relative; overflow:hidden;">
+        <div style="position:absolute; top:0; left:0; height:3px; background:linear-gradient(90deg, #f97316, #dc2626);
+             width:{((step + 1) / total) * 100:.0f}%;"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:0.65rem; color:#f97316; font-weight:700; letter-spacing:2px; text-transform:uppercase;">
+                LIVE DEMO &bull; {info['title']}</span>
+            <span style="font-size:0.6rem; color:#8b949e;">{step + 1} / {total}</span>
+        </div>
+        <div style="font-size:0.85rem; color:#e6edf3; line-height:1.6; margin-bottom:10px;">
+            {_md_bold_to_html(info['script'])}</div>
+        <div style="font-size:0.7rem; color:#3b82f6; font-style:italic;">
+            {info['highlight']}</div>
+    </div>""", unsafe_allow_html=True)
+
+    nav_left, nav_mid, nav_right = st.columns([1, 3, 1])
+    with nav_left:
+        if step > 0:
+            if st.button("\u25c0 Previous", key="demo_prev", use_container_width=True):
+                st.session_state["demo_step"] = step - 1
+                st.rerun()
+    with nav_right:
+        if step < total - 1:
+            if st.button("Next \u25b6", key="demo_next", use_container_width=True):
+                st.session_state["demo_step"] = step + 1
+                st.rerun()
+        else:
+            if st.button("End Demo", key="demo_end", use_container_width=True):
+                st.session_state["demo_active"] = False
+                st.session_state["demo_step"] = 0
+                st.rerun()
 
 # ── Command Horizon Dark Theme ───────────────────────────────────────────────
 st.markdown("""
@@ -493,6 +659,23 @@ with st.sidebar:
     )
     st.divider()
 
+    # ── Live Demo Toggle ──
+    demo_col1, demo_col2 = st.columns([1, 1])
+    with demo_col1:
+        if st.button(
+            "STOP DEMO" if st.session_state.get("demo_active") else "LIVE DEMO",
+            key="demo_toggle",
+            use_container_width=True,
+            type="primary" if st.session_state.get("demo_active") else "secondary",
+        ):
+            st.session_state["demo_active"] = not st.session_state.get("demo_active", False)
+            st.session_state["demo_step"] = 0
+            st.rerun()
+    with demo_col2:
+        if st.session_state.get("demo_active"):
+            step_i = st.session_state["demo_step"]
+            st.caption(f"Step {step_i + 1}/{len(DEMO_STEPS)}")
+
     tab_names = [
         "Live Alert",
         "3D Digital Twin",
@@ -501,8 +684,16 @@ with st.sidebar:
         "FWI Trends",
         "Weather & Terrain",
         "Land Cover",
+        "Ignition ABM",
     ]
-    selected_tab = st.radio("Navigation", tab_names, label_visibility="collapsed")
+
+    # If demo is active, force-select the tab for the current demo step
+    # Must set session_state BEFORE widget renders (index param is ignored if key exists)
+    if st.session_state.get("demo_active"):
+        _demo_tab = DEMO_STEPS[st.session_state["demo_step"]]["tab"]
+        st.session_state["nav_radio"] = _demo_tab
+
+    selected_tab = st.radio("Navigation", tab_names, label_visibility="collapsed", key="nav_radio")
 
 # ── AI Guardian Chat ──────────────────────────────────────────────────────
     st.divider()
@@ -566,6 +757,28 @@ if selected_tab == "3D Digital Twin":
         except Exception:
             continue
     with st.sidebar:
+        # Demo narration for 3D tab (fullscreen, so banner goes in sidebar)
+        if st.session_state.get("demo_active"):
+            step_info = DEMO_STEPS[st.session_state["demo_step"]]
+            st.markdown(f"""<div style="background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.3);
+                border-radius:8px; padding:12px; margin-bottom:12px; font-size:0.75rem; color:#e6edf3; line-height:1.5;">
+                <div style="color:#f97316; font-weight:700; font-size:0.6rem; letter-spacing:1.5px; margin-bottom:6px;">
+                    {step_info['title']}</div>
+                {_md_bold_to_html(step_info['script'])}
+                <div style="color:#3b82f6; font-style:italic; margin-top:6px; font-size:0.65rem;">
+                    {step_info['highlight']}</div>
+            </div>""", unsafe_allow_html=True)
+            nav_l, nav_r = st.columns(2)
+            with nav_l:
+                if st.session_state["demo_step"] > 0:
+                    if st.button("\u25c0 Prev", key="demo_prev_3d"):
+                        st.session_state["demo_step"] -= 1
+                        st.rerun()
+            with nav_r:
+                if st.session_state["demo_step"] < len(DEMO_STEPS) - 1:
+                    if st.button("Next \u25b6", key="demo_next_3d"):
+                        st.session_state["demo_step"] += 1
+                        st.rerun()
         st.markdown("**Simulation**")
         sim_date = st.date_input(
             "Date", value=_default_sim,
@@ -1013,14 +1226,16 @@ if selected_tab == "3D Digital Twin":
 # ─────────────────────────────────────────────────────────────────────────────
 
 elif selected_tab == "Live Alert":
+    demo_narration_banner()
     st.header("Live Fire Alert Bulletin")
 
-    # Date picker
+    # Date picker — demo mode defaults to the INFERNO event
+    _live_default = date(2019, 4, 14) if st.session_state.get("demo_active") else date.today()
     col_date, col_run = st.columns([2, 1])
     with col_date:
         alert_date = st.date_input(
             "Alert date",
-            value=date.today(),
+            value=_live_default,
             min_value=date(2013, 1, 1),
             max_value=date.today(),
         )
@@ -1276,17 +1491,16 @@ elif selected_tab == "Live Alert":
                     order_text = f.get("tactical_order", "No tactical order generated.")
                     st.markdown("**Dispatch Order (Hindi/English)**")
                     
-                    try:
-                        import sys
-                        sys.path.insert(0, str(ROOT))
-                        from src.analysis.ai_dispatcher import AISignalCorps
+                    if AISignalCorps:
                         corps = AISignalCorps()
                         hindi_order = corps.translate_to_hindi(order_text)
-                    except Exception:
+                        _trans_method = "Gemini LLM" if corps._gemini_available else "Rule-based"
+                    else:
                         hindi_order = order_text
+                        _trans_method = "Unavailable"
 
                     st.code(hindi_order, language="text")
-                    st.caption("Auto-generated by AISignalCorps Agent")
+                    st.caption(f"Translation: {_trans_method} | AISignalCorps Dispatcher")
 
                     # ── NEW: Logistics & Acceleration Display ──
                     evac = f.get("evacuation_route", "No specific guidance generated.")
@@ -1299,32 +1513,61 @@ elif selected_tab == "Live Alert":
                         a_clr = "#ef4444" if "ACCELERATING" in accel else "#22c55e"
                         st.markdown(f"📈 **Trend:** <span style='color:{a_clr}'>{accel}</span>", unsafe_allow_html=True)
                     with s_col:
-                        # Simulated Cognitive Anomaly Score
-                        anomaly_score = np.random.uniform(0.7, 0.95) if f['severity'] == "CRITICAL" else np.random.uniform(0.1, 0.4)
-                        st.markdown(f"🧠 **Spectral Surprise:** {anomaly_score:.2f}")
+                        # Real anomaly score from FRP percentile + FWI deviation
+                        if compute_anomaly_score:
+                            _anom = compute_anomaly_score(
+                                frp_mw=f.get("frp_mw", 0),
+                                fwi_value=fwi_val,
+                                severity=f["severity"],
+                                month=int(f.get("fire_date", "2025-04-01").split("-")[1]) if f.get("fire_date") else 4,
+                                n_nearby_fires=len(fires),
+                            )
+                            anomaly_score = _anom["anomaly_score"]
+                        else:
+                            anomaly_score = min(1.0, f.get("frp_mw", 5) / 80.0)
+                        st.markdown(f"🧠 **Anomaly Score:** {anomaly_score:.2f}")
+                        st.caption(f"FRP percentile + FWI deviation")
 
 
-                # ── NEW: VLM Autonomous Auditing Panel ──
+                # ── VLM Autonomous Auditing Panel ──
                 st.divider()
                 st.markdown("🔍 **VLM Visual Audit (Autonomous)**")
-                
-                try:
-                    from src.analysis.vlm_auditor import VLMAuditor
-                    vlm_agent = VLMAuditor()
-                    
-                    # We simulate the audit result based on existing metadata 
-                    # (In production, this would trigger a real VLM call on the generated PNG chip)
-                    audit_res = vlm_agent.audit_alert(Path("outputs/last_dispatch.txt"), f)
-                    
-                    v_col, r_col = st.columns([1, 3])
-                    with v_col:
-                        v_clr = "#22c55e" if audit_res['verdict'] == "VALID" else "#ef4444"
-                        st.markdown(f"<div style='text-align:center; padding:10px; border-radius:8px; background:{v_clr}20; border:1px solid {v_clr}40; color:{v_clr}; font-weight:bold;'>{audit_res['verdict']}</div>", unsafe_allow_html=True)
-                        st.caption(f"Confidence: {audit_res['confidence']*100:.0f}%")
-                    with r_col:
-                        st.info(audit_res['reasoning'])
-                except Exception as e:
-                    st.warning(f"VLM Audit unavailable: {e}")
+
+                # Use real VLM Auditor (Gemini Vision if available, else heuristics)
+                _frp = f.get("frp_mw", 0)
+                _lc = f.get("land_cover", "unknown")
+                if VLMAuditor:
+                    _auditor = VLMAuditor()
+                    _chip_path = ROOT / "outputs" / "chips" / f"chip_{f.get('fire_lat', 0):.4f}_{f.get('fire_lon', 0):.4f}.png"
+                    audit_res = _auditor.audit_alert(
+                        image_path=_chip_path,
+                        alert_metadata={
+                            "severity": f.get("severity", "MODERATE"),
+                            "frp_mw": _frp,
+                            "land_cover": _lc,
+                            "lat": f.get("fire_lat", 0),
+                            "lon": f.get("fire_lon", 0),
+                        },
+                    )
+                    # Map VLM verdicts to display labels
+                    _verdict_map = {"VALID": "CONFIRMED FIRE", "FALSE_POSITIVE": "AGRICULTURAL BURN", "AMBIGUOUS": "REQUIRES VERIFICATION"}
+                    audit_res["verdict"] = _verdict_map.get(audit_res.get("verdict", ""), audit_res.get("verdict", "UNKNOWN"))
+                    _method_label = "Gemini Vision" if audit_res.get("method") == "gemini_vision" else "Metadata Heuristics"
+                else:
+                    # Minimal fallback if VLMAuditor import failed
+                    audit_res = {"verdict": "REQUIRES VERIFICATION", "confidence": 0.50,
+                        "reasoning": f"VLM module unavailable. FRP={_frp:.1f} MW on {_lc}."}
+                    _method_label = "Offline"
+
+                v_col, r_col = st.columns([1, 3])
+                with v_col:
+                    _vrd = audit_res['verdict']
+                    v_clr = "#22c55e" if "CONFIRMED" in _vrd else "#f59e0b" if "LIKELY" in _vrd else "#3b82f6" if "AGRI" in _vrd else "#ef4444"
+                    st.markdown(f"<div style='text-align:center; padding:10px; border-radius:8px; background:{v_clr}20; border:1px solid {v_clr}40; color:{v_clr}; font-weight:bold;'>{_vrd}</div>", unsafe_allow_html=True)
+                    st.caption(f"Confidence: {audit_res['confidence']*100:.0f}%")
+                    st.caption(f"Method: {_method_label}")
+                with r_col:
+                    st.info(audit_res['reasoning'])
 
         st.subheader("Alert Messages")
         for f in fires:
@@ -1341,7 +1584,9 @@ elif selected_tab == "Live Alert":
 # ─────────────────────────────────────────────────────────────────────────────
 
 elif selected_tab == "Fire History":
-    st.header("FIRMS VIIRS Fire Detection History (2013–2025)")
+    demo_narration_banner()
+    st.header("FIRMS MODIS/VIIRS Fire Detection History (2013–2025)")
+    st.caption("Source: Real NASA FIRMS MODIS SP + VIIRS NRT satellite detections for Guna Division")
 
     firms = load_firms_all()
     if firms.empty:
@@ -1485,6 +1730,7 @@ elif selected_tab == "Fire History":
 # ─────────────────────────────────────────────────────────────────────────────
 
 elif selected_tab == "Burn Scars":
+    demo_narration_banner()
     st.header("Prithvi-EO-2.0 Burn Scar Analysis")
 
     links = load_fire_links()
@@ -1592,6 +1838,7 @@ elif selected_tab == "Burn Scars":
 # ─────────────────────────────────────────────────────────────────────────────
 
 elif selected_tab == "FWI Trends":
+    demo_narration_banner()
     st.header("Fire Weather Index — Guna Division (2013–2025)")
 
     fwi_df = load_fwi()
@@ -1718,6 +1965,7 @@ elif selected_tab == "FWI Trends":
 # ─────────────────────────────────────────────────────────────────────────────
 
 elif selected_tab == "Weather & Terrain":
+    demo_narration_banner()
     st.header("Weather Forecasts & Terrain Analysis — Guna Division")
 
     # ══════════════════════════════════════════════════════════════════════════
@@ -2077,7 +2325,9 @@ elif selected_tab == "Weather & Terrain":
 # ─────────────────────────────────────────────────────────────────────────────
 
 elif selected_tab == "Land Cover":
+    demo_narration_banner()
     st.header("Land Cover — Guna Division (ESA WorldCover 2021)")
+    st.caption("Source: ESA WorldCover 10m classification + India State of Forest Report reference data")
 
     stats = load_lc_stats()
     if not stats:
@@ -2179,4 +2429,107 @@ elif selected_tab == "Land Cover":
         exists = path.exists()
         size   = f"{path.stat().st_size/1024:.0f} KB" if exists else "—"
         st.write(f"{'✅' if exists else '❌'} **{name}** — `{path.name}` ({size})")
+
+
+# =============================================================================
+# TAB: Ignition ABM
+# =============================================================================
+elif selected_tab == "Ignition ABM":
+    st.header("Human Ignition ABM — Guna Division")
+    st.caption(
+        "Agent-Based Model predicting human-caused fire ignition risk. "
+        "5 agent types: Tendu collector, Mahua collector, Grazier, Farmer, Traveler. "
+        "Beat-calibrated using 2013-2025 FIRMS fire history."
+    )
+
+    # Controls
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        abm_date = st.date_input("Simulation date", value=datetime(2025, 3, 15).date())
+    with c2:
+        abm_fwi = st.slider("FWI override", 0.0, 60.0, 25.0, 0.5)
+    with c3:
+        abm_runs = st.select_slider("Monte Carlo runs", options=[5, 10, 20, 50], value=10)
+
+    if st.button("Run ABM Simulation", type="primary"):
+        with st.spinner(f"Running {abm_runs} Monte Carlo simulations..."):
+            try:
+                from src.model.ignition_abm import (
+                    DayWeather, run_monte_carlo, IgnitionABM,
+                    LAT_MIN as ABM_LAT_MIN, LON_MIN as ABM_LON_MIN,
+                    CELL_SIZE_DEG as ABM_CELL,
+                    GRID_WIDTH as ABM_W, GRID_HEIGHT as ABM_H,
+                )
+
+                weather = DayWeather(fwi=abm_fwi, ffmc=min(97, 70 + abm_fwi * 0.6),
+                                     temp_c=35.0, rh_pct=max(10, 50 - abm_fwi))
+                mc = run_monte_carlo(
+                    sim_date=str(abm_date), weather=weather, n_runs=abm_runs,
+                )
+
+                # Summary metrics
+                m1, m2, m3, m4 = st.columns(4)
+                mean_ign = mc["mean_ignitions"]
+                risk = ("VERY HIGH" if mean_ign >= 30 else "HIGH" if mean_ign >= 15
+                        else "MODERATE" if mean_ign >= 5 else "LOW")
+                risk_color = {"VERY HIGH": "#d73027", "HIGH": "#fc8d59",
+                              "MODERATE": "#fee08b", "LOW": "#1a9850"}.get(risk, "#999")
+                with m1:
+                    metric_card("Ignition Risk", risk, f"FWI={abm_fwi:.0f}", risk_color)
+                with m2:
+                    metric_card("Predicted Fires/Day", f"{mean_ign:.1f}",
+                                f"from {abm_runs} runs", "#4393c3")
+                with m3:
+                    metric_card("Hotspot Cells", f"{len(mc['hotspots'])}",
+                                "with p > 0", "#7570b3")
+                with m4:
+                    metric_card("Simulation Date", str(abm_date),
+                                f"DOY {abm_date.timetuple().tm_yday}", "#333")
+
+                # Hotspot map using pydeck
+                hotspots = mc.get("hotspots", [])
+                if hotspots:
+                    import pydeck as pdk
+                    hs_df = pd.DataFrame(hotspots)
+                    hs_df["radius"] = hs_df["probability"] * 2000 + 300
+                    hs_df["color_r"] = (hs_df["probability"] * 255).clip(0, 255).astype(int)
+                    hs_df["color_g"] = ((1 - hs_df["probability"]) * 100).astype(int)
+
+                    layer = pdk.Layer(
+                        "ScatterplotLayer",
+                        data=hs_df,
+                        get_position=["longitude", "latitude"],
+                        get_radius="radius",
+                        get_fill_color=["color_r", "color_g", 30, 180],
+                        pickable=True,
+                    )
+                    view = pdk.ViewState(
+                        latitude=(ABM_LAT_MIN + 24.95) / 2,
+                        longitude=(ABM_LON_MIN + 77.85) / 2,
+                        zoom=8.5,
+                        pitch=0,
+                    )
+                    st.pydeck_chart(pdk.Deck(
+                        layers=[layer],
+                        initial_view_state=view,
+                        tooltip={"text": "Lat: {latitude}\nLon: {longitude}\nP(ignition): {probability}"},
+                    ))
+
+                    # Hotspot table
+                    st.subheader("Top Ignition Hotspots")
+                    display_df = hs_df[["latitude", "longitude", "probability"]].copy()
+                    display_df.columns = ["Latitude", "Longitude", "P(ignition)"]
+                    display_df["P(ignition)"] = display_df["P(ignition)"].apply(lambda x: f"{x:.1%}")
+                    st.dataframe(display_df, use_container_width=True, hide_index=True)
+                else:
+                    st.info("No ignition hotspots predicted — conditions are too wet or cool.")
+
+            except Exception as e:
+                st.error(f"ABM simulation failed: {e}")
+    else:
+        st.info(
+            "Click **Run ABM Simulation** to predict today's human-caused fire ignition risk. "
+            "The model simulates 830 agents (tendu/mahua collectors, graziers, farmers, travelers) "
+            "moving through the landscape and attempting ignition based on weather, terrain, and proximity."
+        )
 

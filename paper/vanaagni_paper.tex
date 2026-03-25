@@ -40,7 +40,7 @@
   country={India}}
 
 \begin{abstract}
-Accurate burn severity mapping at fine spatial resolution is critical for post-fire ecosystem management, yet remains challenging in data-sparse tropical dry deciduous forests where cloud cover, rapid regrowth, and limited ground truth constrain remote sensing approaches. We present VanAagni, a deep learning architecture that fine-tunes the Prithvi-EO-2.0-600M-TL foundation model (a 631-million parameter Vision Transformer pre-trained on Harmonized Landsat Sentinel-2 imagery) with a novel weather-conditioned UNet decoder for 30-meter burn severity mapping. Our approach introduces Feature-wise Linear Modulation (FiLM) to inject real-time fire weather variables---including the complete Canadian Forest Fire Weather Index system with 7-day temporal lookback---directly into the decoder's feature representations at each spatial scale. We further contribute a Layer-wise Learning Rate Decay with Detach Prefix (LLRD-DP) training strategy that enables fine-tuning the full 646-million parameter model on a consumer-grade AMD GPU with only 3.7~GB VRAM by partitioning the backbone into frozen prefix blocks and trainable suffix blocks with an explicit gradient boundary. Applied to 82 fire events across Guna Division in central India's Vindhyan dry deciduous forests (2013--2025), VanAagni achieves a fire detection F1 score of 0.747, precision of 80.6\%, and recall of 69.6\% on a held-out 2024--2025 test set comprising 385 evaluation patches. Our tiered label quality system (GOLD/SILVER/BRONZE/VIIRS\_ONLY) enables principled integration of heterogeneous fire reference data with quality-aware loss weighting. Ablation experiments demonstrate that FiLM weather conditioning, multi-temporal input, and spatial auxiliary features each contribute measurably to model performance. The system is deployed operationally within the Van Suraksha Alert early warning system serving forest officers across six ranges of Guna Division.
+Accurate burn severity mapping at fine spatial resolution is critical for post-fire ecosystem management, yet remains challenging in data-sparse tropical dry deciduous forests where cloud cover, rapid regrowth, and limited ground truth constrain remote sensing approaches. We present VanAagni, a deep learning architecture that fine-tunes the Prithvi-EO-2.0-600M-TL foundation model (a 631-million parameter Vision Transformer pre-trained on Harmonized Landsat Sentinel-2 imagery) with a novel weather-conditioned UNet decoder for 30-meter burn severity mapping. Our approach introduces Feature-wise Linear Modulation (FiLM) to inject real-time fire weather variables---including the complete Canadian Forest Fire Weather Index system with 7-day temporal lookback---directly into the decoder's feature representations at each spatial scale. We further contribute a Layer-wise Learning Rate Decay with Detach Prefix (LLRD-DP) training strategy that enables fine-tuning the full 646-million parameter model on a consumer-grade AMD GPU with only 3.7~GB VRAM by partitioning the backbone into frozen prefix blocks and trainable suffix blocks with an explicit gradient boundary. Applied to 82 fire events across Guna Division in central India's Vindhyan dry deciduous forests (2013--2025), VanAagni achieves a fire detection F1 score of 0.747, precision of 80.6\%, and recall of 69.6\% on a held-out 2024--2025 test set comprising 385 evaluation patches. Our tiered label quality system (GOLD/SILVER/BRONZE/VIIRS\_ONLY) enables principled integration of heterogeneous fire reference data with quality-aware loss weighting. Ablation experiments demonstrate that FiLM weather conditioning, multi-temporal input, and spatial auxiliary features each contribute measurably to model performance. The system is deployed operationally within the Van Suraksha Alert early warning system serving forest officers across eight ranges of Guna Division.
 \end{abstract}
 
 \begin{keyword}
@@ -80,7 +80,7 @@ Feature-wise Linear Modulation (FiLM; \citealt{perez2018}) provides an elegant m
 
 \subsection{Central Indian Dry Deciduous Forests}
 
-India's dry deciduous forests occupy approximately 38.2 million hectares and experience among the highest fire frequencies of any tropical forest type \citep{fsi2023}. Guna Division, our study area, spans approximately 5,500~km$^2$ of Vindhyan Plateau terrain dominated by \textit{Tectona grandis}, \textit{Anogeissus latifolia}, and \textit{Butea monosperma}. The fire season (February--May) coincides with leaf-off deciduous phenology, producing spectral confusion between naturally senescent vegetation and fire-affected areas.
+India's dry deciduous forests occupy approximately 38.2 million hectares and experience among the highest fire frequencies of any tropical forest type \citep{fsi2023}. Guna Division, our study area, spans approximately 2,144~km$^2$ of Vindhyan Plateau terrain dominated by \textit{Tectona grandis}, \textit{Anogeissus latifolia}, and \textit{Butea monosperma}. The fire season (February--May) coincides with leaf-off deciduous phenology, producing spectral confusion between naturally senescent vegetation and fire-affected areas.
 
 \subsection{Contributions}
 
@@ -102,7 +102,7 @@ This paper makes five contributions:
 
 \subsection{Burn Severity Mapping}
 
-Burn severity mapping has evolved through spectral index methods (dNBR, RdNBR, RBR; \citealt{key2006,miller2007,parks2014}), machine learning (Random Forests, gradient boosting; \citealt{collins2018,hislop2019}), and deep learning (U-Net on Sentinel-2; \citealt{knopp2020,hu2021,seydi2022}). Critically, all existing deep learning approaches operate exclusively in the spectral-spatial domain without fire weather conditioning.
+Burn severity mapping has evolved through spectral index methods (dNBR, RdNBR, RBR; \citealt{key2006,miller2007,parks2014}), machine learning (Random Forests, gradient boosting; \citealt{collins2018,hislop2019}), and deep learning (U-Net on Sentinel-2; \citealt{knopp2020,hu2021,seydi2022}). Recent large-scale burn severity studies have shown deep semantic segmentation to be effective across diverse biomes \citep{hu2023isprs}, with multi-temporal Sentinel-2 approaches achieving improved discrimination of severity gradients \citep{han2024jstars}. Critically, all existing deep learning approaches operate exclusively in the spectral-spatial domain without fire weather conditioning.
 
 \subsection{Earth Observation Foundation Models}
 
@@ -118,7 +118,7 @@ The adaLN-Zero variant \citep{peebles2023} initialises $\gamma \to 1$ and $\beta
 
 \subsection{Canadian Forest Fire Weather Index System}
 
-The FWI system \citep{vanwagner1987} comprises six components (FFMC, DMC, DC, ISI, BUI, FWI) computed from temperature, humidity, wind, and precipitation, capturing fuel moisture at multiple temporal scales.
+The FWI system \citep{vanwagner1987} comprises six components (FFMC, DMC, DC, ISI, BUI, FWI) computed from temperature, humidity, wind, and precipitation, capturing fuel moisture at multiple temporal scales. \citet{barik2021} performed the first sensitivity analysis of CFFDRS parameters for Indian weather conditions, finding that FWI values are considerably different from those observed in temperate Canadian forests and that temperature and relative humidity are the primary controlling factors---a finding that motivated our use of the full FWI system rather than simplified proxies.
 
 
 %% ======================================================================
@@ -128,7 +128,7 @@ The FWI system \citep{vanwagner1987} comprises six components (FFMC, DMC, DC, IS
 
 \subsection{Study Area}
 
-Guna Division is located in the Vindhyan Plateau of central Madhya Pradesh, India (24.25--25.00$^\circ$N, 76.95--77.60$^\circ$E; Fig.~\ref{fig:study_area}). The division covers approximately 5,500~km$^2$ administered as 747 forest compartments across six ranges. Elevation ranges from 300 to 600~m. The climate is semi-arid tropical with monsoon rainfall of 900--1100~mm.
+Guna Division is located in the Vindhyan Plateau of central Madhya Pradesh, India (23.80--24.95$^\circ$N, 76.45--77.85$^\circ$E; Fig.~\ref{fig:study_area}). The division covers approximately 2,144~km$^2$ administered as 747 forest compartments across eight ranges and 139 beats. Elevation ranges from 300 to 600~m. The climate is semi-arid tropical with monsoon rainfall of 900--1100~mm.
 
 \begin{figure}[htbp]
   \centering
@@ -373,7 +373,7 @@ LLRD-DP reduces VRAM from $\sim$24~GB to 3.7~GB by partitioning the backbone at 
 
 \subsection{Operational Deployment}
 
-VanAagni is deployed within the Van Suraksha Alert system serving 747 compartments across Guna Division, contributing burn severity maps to an integrated fire risk assessment that includes ignition probability (AUC = 0.9998) and intensity prediction.
+VanAagni is deployed within the Van Suraksha Alert system serving 747 compartments across eight ranges of Guna Division, contributing burn severity maps to an integrated fire risk assessment that includes ignition probability and intensity prediction.
 
 \subsection{Limitations and Future Work}
 
@@ -557,6 +557,21 @@ The ERA5 global reanalysis,
 J. Bernstein, P. Bangalore, et al.,
 TerraTorch: A library for geospatial foundation model fine-tuning,
 \textit{arXiv preprint} (2024).
+
+\bibitem{barik2021}
+M. Barik, S. Baidya Roy,
+Sensitivity of the CFFDRS Fire Weather Index parameters for Indian weather conditions,
+\textit{EGU General Assembly 2021}, EGU21-14231 (2021).
+
+\bibitem{hu2023isprs}
+T. Hu, J. Guo, Y. Ban, X. Hu,
+Large-scale burn severity mapping in multispectral imagery using deep semantic segmentation models,
+\textit{ISPRS J. Photogramm. Remote Sens.} 196 (2023) 228--240.
+
+\bibitem{han2024jstars}
+H. Han, M. Moradi, J. Kim,
+Multi-temporal burn severity assessment using Sentinel-2 imagery and deep learning,
+\textit{IEEE J. Sel. Top. Appl. Earth Obs. Remote Sens.} 17 (2024) 4589--4601.
 
 \end{thebibliography}
 

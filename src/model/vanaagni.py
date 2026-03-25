@@ -1,4 +1,3 @@
-print(f'DEBUG: Loading vanaagni from {__file__}')
 """
 src/model/vanaagni.py
 =====================
@@ -295,7 +294,28 @@ class VanAgni(nn.Module):
             nn.Dropout2d(dropout),
         )
         self.classifier = nn.Conv2d(64, num_classes, 1)
-        
+
+        # -- Prior-aware bias initialization (RetinaNet-style) ----------------
+        # Without this, binary segmentation with extreme class imbalance
+        # (0.79% fire) collapses to all-bg or all-fire depending on loss weights.
+        # Setting fire class bias to log(prior/(1-prior)) makes the model start
+        # at the correct class distribution.  Focal gamma=2 then suppresses
+        # bg gradients (already correct) and concentrates learning on fire pixels.
+        if num_classes == 2:
+            import math
+            # fire_prior=0.10 gives bias=-2.20, starting the model at 10%
+            # fire prediction.  This keeps metrics visible from epoch 1.
+            # With pure Dice loss (no focal), bg gradient is NOT suppressed,
+            # so the model converges to the correct ~1% fire fraction.
+            # With focal loss, 0.10 was too high (bg gradient suppressed
+            # by (0.10)^2=0.01).  Pure Dice doesn't have this issue.
+            fire_prior = 0.10
+            with torch.no_grad():
+                self.classifier.bias.data[0] = 0.0
+                self.classifier.bias.data[1] = math.log(fire_prior / (1.0 - fire_prior))
+            log.info(f"[BIAS INIT] Classifier fire bias = {self.classifier.bias.data[1]:.4f} "
+                     f"(fire_prior={fire_prior})")
+
         # Uncertainty Head: predicts aleatoric uncertainty (log-variance)
         self.uncertainty_head = nn.Sequential(
             nn.Conv2d(64, 32, 3, padding=1, bias=False),
@@ -952,11 +972,17 @@ if __name__ == "__main__":
     landcover  = torch.randn(B, 11, 224, 224)
 
     with torch.no_grad():
-        logits = model(hls, weather, weather_7d, terrain, burn_age, landcover)
+        output = model(hls, weather, weather_7d, terrain, burn_age, landcover)
 
-    print(f"\nOutput shape: {logits.shape}  Expected: ({B}, {NC}, 224, 224)")
-    print(f"Output range: [{logits.min():.3f}, {logits.max():.3f}]")
+    # Model returns a dict: {"logits": (B, C, H, W), "log_var": (B, 1, H, W)}
+    logits = output["logits"]
+    log_var = output["log_var"]
+
+    print(f"\nLogits shape: {logits.shape}  Expected: ({B}, {NC}, 224, 224)")
+    print(f"Logits range: [{logits.min():.3f}, {logits.max():.3f}]")
+    print(f"Log-var shape: {log_var.shape}  Expected: ({B}, 1, 224, 224)")
     assert logits.shape == (B, NC, 224, 224), f"Shape mismatch: {logits.shape}"
+    assert log_var.shape == (B, 1, 224, 224), f"Log-var shape mismatch: {log_var.shape}"
 
     total = sum(p.numel() for p in model.parameters())
     train = sum(p.numel() for p in model.parameters() if p.requires_grad)

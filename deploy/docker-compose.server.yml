@@ -1,0 +1,33 @@
+# Van Suraksha — Production Deployment
+# Usage: docker compose -f deploy/docker-compose.server.yml up -d
+
+services:
+  vansuraksha:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.server
+    container_name: vansuraksha
+    restart: unless-stopped
+    ports:
+      - "80:8787"      # Portal dashboard (main)
+      - "8501:8501"    # Streamlit dashboard
+      - "8000:8000"    # API (future)
+    volumes:
+      - alerts:/app/data_lake/alerts
+      - logs:/app/logs
+      - firms:/app/data_lake/fire_detections/firms_viirs_nrt
+      - fwi:/app/data_lake/fire_weather
+    environment:
+      - FIRMS_MAP_KEY=${FIRMS_MAP_KEY}
+      - GEE_PROJECT=${GEE_PROJECT:-van-suraksha-alert}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8787/"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  alerts:
+  logs:
+  firms:
+  fwi:

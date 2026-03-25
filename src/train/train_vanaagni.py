@@ -357,27 +357,77 @@ def build_loss(cfg: dict, device: torch.device) -> nn.Module:
     loss_weights    = t_cfg.get("loss_weights", [1.0, 8.0])
     gamma           = t_cfg.get("focal_gamma", 2.0)
     dice_weight     = t_cfg.get("dice_weight", 0.5)
-    label_smoothing = float(t_cfg.get("label_smoothing", 0.0))
-
     class_w = torch.tensor(loss_weights, dtype=torch.float32).to(device)
     log.info(
         f"Loss: FocalDice  class_w={class_w.tolist()}  gamma={gamma}  "
-        f"dice_w={dice_weight}  label_smoothing={label_smoothing}"
+        f"dice_w={dice_weight}"
     )
 
-    return FocalDiceLoss(class_weights=class_w, gamma=gamma, dice_weight=dice_weight,
-                         label_smoothing=label_smoothing)
+    return FocalDiceLoss(class_weights=class_w, gamma=gamma, dice_weight=dice_weight)
 
 
 # =============================================================================
 # Training Epoch
 # =============================================================================
 
+def _cutmix_batch(
+    hls: torch.Tensor,        # (B, 6, T, H, W)
+    label: torch.Tensor,      # (B, H, W)
+    weight: torch.Tensor,     # (B, H, W)
+    terrain: torch.Tensor,    # (B, 4, H, W)
+    burn_age: torch.Tensor,   # (B, 3, H, W)
+    landcover: torch.Tensor,  # (B, 11, H, W)
+    alpha: float = 1.0,
+) -> tuple:
+    """Apply CutMix: swap random rectangular regions between paired samples.
+
+    For segmentation, labels are swapped directly (no soft mixing).
+    Pairs sample i with sample (B-1-i).
+    """
+    B = hls.shape[0]
+    if B < 2:
+        return hls, label, weight, terrain, burn_age, landcover
+
+    H, W = label.shape[-2:]
+    lam = np.random.beta(alpha, alpha)
+
+    # Random box proportional to (1-lam) area
+    cut_ratio = np.sqrt(1.0 - lam)
+    cut_h = int(H * cut_ratio)
+    cut_w = int(W * cut_ratio)
+
+    cy = np.random.randint(0, H)
+    cx = np.random.randint(0, W)
+    y1 = max(cy - cut_h // 2, 0)
+    y2 = min(cy + cut_h // 2, H)
+    x1 = max(cx - cut_w // 2, 0)
+    x2 = min(cx + cut_w // 2, W)
+
+    # Reverse pairing: swap (i) with (B-1-i)
+    idx = torch.arange(B - 1, -1, -1, device=hls.device)
+
+    hls_new = hls.clone()
+    label_new = label.clone()
+    weight_new = weight.clone()
+    terrain_new = terrain.clone()
+    burn_age_new = burn_age.clone()
+    landcover_new = landcover.clone()
+
+    hls_new[:, :, :, y1:y2, x1:x2] = hls[idx, :, :, y1:y2, x1:x2]
+    label_new[:, y1:y2, x1:x2] = label[idx, y1:y2, x1:x2]
+    weight_new[:, y1:y2, x1:x2] = weight[idx, y1:y2, x1:x2]
+    terrain_new[:, :, y1:y2, x1:x2] = terrain[idx, :, y1:y2, x1:x2]
+    burn_age_new[:, :, y1:y2, x1:x2] = burn_age[idx, :, y1:y2, x1:x2]
+    landcover_new[:, :, y1:y2, x1:x2] = landcover[idx, :, y1:y2, x1:x2]
+
+    return hls_new, label_new, weight_new, terrain_new, burn_age_new, landcover_new
+
+
 def train_one_epoch(
     model, loader, optimizer, scheduler, scaler, loss_fn,
     device, metrics, epoch, cfg, use_amp=False,
     overfit_batches: int = 0, grad_accum: int = 1,
-    regression: bool = False,
+    regression: bool = False, cached_batches: list = None,
 ):
     """
     One training epoch.
@@ -388,6 +438,8 @@ def train_one_epoch(
       - Gradient accumulation
       - AMP mixed precision
       - Regression mode (continuous dNBR) or classification mode
+      - Overfit mode: if cached_batches is provided, replays those instead of
+        drawing new random samples from loader (ensures same data every epoch)
     """
     model.train()
     metrics.reset()
@@ -397,8 +449,11 @@ def train_one_epoch(
 
     optimizer.zero_grad()
 
-    for step, batch in enumerate(loader):
-        if overfit_batches > 0 and step >= overfit_batches:
+    # In overfit mode with cached batches, iterate over the cached list
+    batch_iter = cached_batches if cached_batches is not None else loader
+
+    for step, batch in enumerate(batch_iter):
+        if overfit_batches > 0 and cached_batches is None and step >= overfit_batches:
             break
 
         # -- Move tensors to device ----------------------------------------
@@ -412,6 +467,15 @@ def train_one_epoch(
         weight     = batch["weight"].to(device, non_blocking=True)
 
         use_cached = "cached_feat" in batch
+
+        # -- CutMix augmentation (30% probability, classification only) ----
+        if (not regression and not use_cached
+                and cfg["training"].get("cutmix_prob", 0.3) > 0
+                and np.random.random() < cfg["training"].get("cutmix_prob", 0.3)):
+            hls, label, weight, terrain, burn_age, landcover = _cutmix_batch(
+                hls, label, weight, terrain, burn_age, landcover,
+                alpha=cfg["training"].get("cutmix_alpha", 1.0),
+            )
 
         # -- Forward pass --------------------------------------------------
         with amp_context(device.type, use_amp):
@@ -449,14 +513,15 @@ def train_one_epoch(
                 else:
                     loss = loss_raw
             else:
-                # output is (B, C, H, W) -- class logits
-                if output.shape[-2:] != label.shape[-2:]:
-                    output = nn.functional.interpolate(
-                        output, size=label.shape[-2:],
+                # output is dict {"logits": (B,C,H,W), "log_var": ...}
+                logits = output["logits"] if isinstance(output, dict) else output
+                if logits.shape[-2:] != label.shape[-2:]:
+                    logits = nn.functional.interpolate(
+                        logits, size=label.shape[-2:],
                         mode="bilinear", align_corners=False,
                     )
 
-                loss_raw = loss_fn(output, label)
+                loss_raw = loss_fn(logits, label)
                 valid_mask = (label >= 0)
                 if valid_mask.any():
                     mean_w = weight[valid_mask].mean()
@@ -480,7 +545,11 @@ def train_one_epoch(
                 continue
             raise  # re-raise non-TDR errors
 
-        if (step + 1) % grad_accum == 0 or (step + 1) == len(loader):
+        # Determine effective epoch length (overfit mode shortens it)
+        effective_len = overfit_batches if overfit_batches > 0 else len(loader)
+        is_accum_boundary = (step + 1) % grad_accum == 0
+        is_last_step = (step + 1) >= effective_len
+        if is_accum_boundary or is_last_step:
             scaler.unscale_(optimizer)
             nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             scaler.step(optimizer)
@@ -495,7 +564,7 @@ def train_one_epoch(
         if regression:
             metrics.update(dnbr.detach(), label)
         else:
-            preds = output.detach().argmax(dim=1)
+            preds = logits.detach().argmax(dim=1)
             metrics.update(preds, label)
 
         # -- Logging -------------------------------------------------------
@@ -586,12 +655,13 @@ def validate(
                     ).squeeze(1)
                 loss = loss_fn({"dnbr": dnbr, "fire_logit": fire_logit}, label)
             else:
-                if output.shape[-2:] != label.shape[-2:]:
-                    output = nn.functional.interpolate(
-                        output, size=label.shape[-2:],
+                logits = output["logits"] if isinstance(output, dict) else output
+                if logits.shape[-2:] != label.shape[-2:]:
+                    logits = nn.functional.interpolate(
+                        logits, size=label.shape[-2:],
                         mode="bilinear", align_corners=False,
                     )
-                loss = loss_fn(output, label)
+                loss = loss_fn(logits, label)
 
         total_loss += loss.item()
         n_batches  += 1
@@ -604,8 +674,8 @@ def validate(
                     p = dnbr.detach().cpu().numpy().flatten()
                     pred_vals.append(p[::100])  # subsample 1/100
         else:
-            probs = torch.softmax(output, dim=1)
-            preds = output.argmax(dim=1)
+            probs = torch.softmax(logits, dim=1)
+            preds = logits.argmax(dim=1)
             metrics.update(preds, label, probs=probs, threshold=threshold)
 
     avg_loss = total_loss / max(n_batches, 1)
@@ -669,6 +739,13 @@ def save_checkpoint(model, optimizer, epoch, best_iou, cfg, path: Path,
         for n, p in model.named_parameters():
             if p.requires_grad:
                 trainable_state[n] = p.detach().cpu()
+        # Also save BatchNorm buffers (running_mean, running_var, num_batches_tracked)
+        # These are NOT parameters (requires_grad=False) but are essential for
+        # eval-mode inference. Without them, BN layers reset to N(0,1) defaults
+        # on resume, corrupting decoder normalization.
+        for n, buf in model.named_buffers():
+            if "running_" in n or "num_batches_tracked" in n:
+                trainable_state[n] = buf.detach().cpu()
         state = {
             "epoch":           epoch,
             "model_state":     trainable_state,
@@ -816,6 +893,71 @@ def main():
     if cache_dir:
         log.info(f"[Cache] Backbone feature cache: {cache_dir}")
 
+    # ── DATA INTEGRITY CHECK ─────────────────────────────────────────────
+    # Prevent training on empty or corrupt manifest
+    import pandas as _pd
+    manifest_path = d_cfg["manifest_path"]
+    if not Path(manifest_path).exists():
+        raise FileNotFoundError(
+            f"Training manifest not found: {manifest_path}\n"
+            f"Run: python scripts/build_training_dataset.py  to generate it."
+        )
+    _manifest_df = _pd.read_csv(manifest_path)
+    if len(_manifest_df) == 0:
+        raise ValueError(
+            f"Training manifest is EMPTY: {manifest_path}\n"
+            f"The model CANNOT train on zero samples.\n"
+            f"Run: python scripts/build_training_dataset.py  to populate it."
+        )
+    n_train = int((_manifest_df["split"] == "train").sum())
+    n_val   = int((_manifest_df["split"] == "val").sum())
+    n_fire  = int(_manifest_df.get("is_fire", _pd.Series()).sum())
+    log.info(f"[DATA CHECK] Manifest: {len(_manifest_df)} patches "
+             f"(train={n_train}, val={n_val}, fire={n_fire})")
+    if n_train < 50:
+        log.warning(f"[DATA CHECK] Only {n_train} training samples — model likely to overfit!")
+    if n_fire == 0:
+        raise ValueError(
+            f"No fire-positive patches in manifest! Cannot train fire detection model.\n"
+            f"Ensure build_training_dataset.py found fire events in fire_links.csv."
+        )
+
+    # Spot-check: verify auxiliary data is NOT all zeros in a random sample
+    _sample_row = _manifest_df[_manifest_df["split"] == "train"].iloc[0]
+    _sample_path = Path(manifest_path).parent.parent.parent / _sample_row["path"]
+    if _sample_path.exists():
+        _spot = np.load(str(_sample_path), allow_pickle=True)
+        if "weather" in _spot and np.all(_spot["weather"] == 0):
+            log.warning(
+                "[DATA CHECK] WARNING: Weather data is ALL ZEROS in training sample. "
+                "FiLM weather conditioning will receive no signal. "
+                "Re-run build_training_dataset.py to fetch real weather data."
+            )
+        if "terrain" in _spot and np.all(_spot["terrain"] == 0):
+            log.warning(
+                "[DATA CHECK] WARNING: Terrain data is ALL ZEROS in training sample. "
+                "Re-run build_training_dataset.py with terrain rasters available."
+            )
+    del _manifest_df
+    # ── END DATA INTEGRITY CHECK ─────────────────────────────────────────
+
+    # Label handling for sparse fire pixels:
+    #   boundary_ignore_radius > 0 → ignore zone around fire (preferred)
+    #   dilate_fire → expand fire labels (legacy, creates distribution mismatch)
+    boundary_ignore_radius = int(t_cfg.get("boundary_ignore_radius", 0))
+    dilate_fire = bool(t_cfg.get("dilate_fire", False))
+    dilation_radius = int(t_cfg.get("dilation_radius", 8))
+
+    if boundary_ignore_radius > 0:
+        log.info(f"[BOUNDARY IGNORE] radius={boundary_ignore_radius}px "
+                 f"(kernel={2*boundary_ignore_radius+1}x{2*boundary_ignore_radius+1}): "
+                 f"bg near fire → ignore (-1), same for all splits")
+        dilate_fire = False  # boundary-ignore supersedes dilation
+    elif dilate_fire:
+        log.info(f"[DILATION] Fire label dilation enabled: radius={dilation_radius}px "
+                 f"(kernel={2*dilation_radius+1}x{2*dilation_radius+1}), "
+                 f"applied to train+val, NOT test")
+
     train_dl, val_dl, test_dl = get_dataloaders(
         manifest_path   = d_cfg["manifest_path"],
         batch_size      = int(t_cfg["batch_size"]),
@@ -827,6 +969,11 @@ def main():
         binary_mode     = binary_mode,
         regression      = regression,
         cache_dir       = cache_dir,
+        spectral_only   = bool(d_cfg.get("spectral_only", False)),
+        num_classes     = num_classes,
+        dilate_fire     = dilate_fire,
+        dilation_radius = dilation_radius,
+        boundary_ignore_radius = boundary_ignore_radius,
     )
 
     log.info(f"Train batches: {len(train_dl)}  |  Val batches: {len(val_dl)}")
@@ -904,6 +1051,9 @@ def main():
     save_every           = int(t_cfg.get("save_every_epochs", 10))
     patience             = int(t_cfg.get("early_stop_patience", 30))
 
+    # Use fire_f1 for checkpoint selection — more stable than mean_iou
+    # for extremely imbalanced fire detection (fire pixels < 1%)
+    best_metric_name = t_cfg.get("best_metric", "fire_f1")
     best_iou   = -1.0  # -1 so even fire_f1=0 triggers first save
     best_epoch = 0
     start_epoch = 1
@@ -977,10 +1127,22 @@ def main():
         run_epochs = total_epochs - start_epoch + 1
         optimizer = build_optimizer(model, cfg, phase=2, llrd_decay=llrd_decay)
         # scheduler steps once per grad_accum, not per batch
-        sched_steps_per_epoch = max(1, len(train_dl) // grad_accum)
+        # In overfit mode, effective epoch length is overfit_batches, not full loader
+        effective_epoch_len = args.overfit_batches if args.overfit_batches > 0 else len(train_dl)
+        sched_steps_per_epoch = max(1, effective_epoch_len // grad_accum)
         scheduler = build_scheduler(optimizer, cfg, sched_steps_per_epoch,
                                      total_training_epochs=run_epochs)
         scaler    = make_scaler(device.type, use_amp)
+
+        # Cache overfit batches once so the same data replays every epoch
+        _overfit_cache = None
+        if args.overfit_batches > 0:
+            _overfit_cache = []
+            for i, b in enumerate(train_dl):
+                if i >= args.overfit_batches:
+                    break
+                _overfit_cache.append(b)
+            log.info(f"[OVERFIT] Cached {len(_overfit_cache)} batches for replay")
 
         for epoch in range(start_epoch, total_epochs + 1):
             t0 = time.time()
@@ -989,7 +1151,7 @@ def main():
                 model, train_dl, optimizer, scheduler, scaler, loss_fn,
                 device, train_metrics, epoch, cfg, use_amp,
                 overfit_batches=args.overfit_batches, grad_accum=grad_accum,
-                regression=regression,
+                regression=regression, cached_batches=_overfit_cache,
             )
             # Flush GPU/CPU caches between train and val to avoid OOM
             import gc as _gc
@@ -1005,7 +1167,7 @@ def main():
             elapsed = time.time() - t0
             # mean_iou: for classification = actual mIoU, for regression = -MAE
             # Both conventions: higher = better (used for checkpoint selection)
-            val_miou = val_scores.get("mean_iou", 0)
+            val_miou = val_scores.get(best_metric_name, val_scores.get("mean_iou", 0))
             val_ff1  = val_scores.get("fire_f1", val_scores.get("f1_fg", 0))
 
             # Log with selected LR info (first/last backbone + decoder)
@@ -1110,7 +1272,7 @@ def main():
             )
 
             elapsed = time.time() - t0
-            val_miou = val_scores.get("mean_iou", 0)
+            val_miou = val_scores.get(best_metric_name, val_scores.get("mean_iou", 0))
             val_ff1  = val_scores.get("fire_f1", val_scores.get("f1_fg", 0))
 
             log.info(
@@ -1176,7 +1338,7 @@ def main():
             )
 
             elapsed = time.time() - t0
-            val_miou = val_scores.get("mean_iou", 0)
+            val_miou = val_scores.get(best_metric_name, val_scores.get("mean_iou", 0))
             val_ff1  = val_scores.get("fire_f1", val_scores.get("f1_fg", 0))
 
             # Log with per-group LR info
@@ -1284,12 +1446,43 @@ def main():
         log.info(f"  Prec (fg):  {test_scores.get('precision_fg', 0):.4f}")
         log.info(f"  Rec (fg):   {test_scores.get('recall_fg', 0):.4f}")
 
+    # ── Threshold sweep on test labels ───────────────────────────────────
+    # Find optimal probability threshold for binary fire detection.
+    # Test always uses precise (undilated) labels regardless of training mode.
+    best_thresh_info = {}
+    if not regression and binary_mode:
+        log.info(f"\n  Threshold sweep (test labels):")
+        sweep_thresholds = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+        best_sweep_f1 = -1
+        for thr in sweep_thresholds:
+            sweep_metrics = SegmentationMetrics(num_classes=num_classes)
+            _, sweep_scores = validate(
+                model, test_dl, loss_fn, device, sweep_metrics,
+                use_amp=use_amp, threshold=thr, regression=False,
+            )
+            sw_f1  = sweep_scores.get("f1_fg", 0)
+            sw_iou = sweep_scores.get("iou_fg", 0)
+            sw_p   = sweep_scores.get("precision_fg", 0)
+            sw_r   = sweep_scores.get("recall_fg", 0)
+            log.info(f"    thr={thr:.2f}  IoU={sw_iou:.4f}  F1={sw_f1:.4f}  "
+                     f"P={sw_p:.4f}  R={sw_r:.4f}")
+            if sw_f1 > best_sweep_f1:
+                best_sweep_f1 = sw_f1
+                best_thresh_info = {
+                    "threshold": thr, "iou": sw_iou, "f1": sw_f1,
+                    "precision": sw_p, "recall": sw_r,
+                }
+        log.info(f"  Best threshold: {best_thresh_info.get('threshold', eval_threshold):.2f}  "
+                 f"→ F1={best_thresh_info.get('f1', 0):.4f}  "
+                 f"IoU={best_thresh_info.get('iou', 0):.4f}")
+
     # Save test results
     results = {
         "best_epoch":     best_epoch,
         "best_val_iou":   best_iou,
         "test_loss":      test_loss,
         "test_scores":    test_scores,
+        "threshold_sweep": best_thresh_info,
         "config":         cfg,
     }
     results_path = Path(p_cfg.get("output_dir", "outputs/vanaagni")) / "test_results.json"

@@ -39,6 +39,13 @@ def _make_fake_conn(cursor_results: list):
     """
     mock_cursor  = MagicMock()
     mock_conn    = MagicMock()
+    
+    # Setup context managers to return themselves rather than new MagicMocks
+    mock_conn.__enter__.return_value = mock_conn
+    mock_conn.__exit__.return_value = False
+    mock_cursor.__enter__.return_value = mock_cursor
+    mock_cursor.__exit__.return_value = False
+    
     mock_conn.cursor.return_value = mock_cursor
 
     # fetchone / fetchall alternate from the queue
@@ -87,6 +94,8 @@ class TestHealth:
 
     def test_unhealthy_on_db_error(self):
         conn = MagicMock()
+        conn.__enter__.return_value = conn
+        conn.__exit__.return_value = False
         conn.cursor.side_effect = Exception("DB down")
         with patch("src.api.api.get_conn", return_value=conn):
             from src.api.api import app

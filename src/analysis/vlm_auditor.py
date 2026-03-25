@@ -1,104 +1,192 @@
 """
 VanAagni VLM Automated Auditor
 ==============================
-Large Vision-Language Model (VLM) agent for autonomous auditing of fire alerts.
+Vision-Language Model agent for autonomous auditing of fire alerts.
 Analyzes satellite chips (RGB/Delta) to distinguish between real forest fires
 and false positives (agricultural burns, cloud artifacts, phenological noise).
 
-Supports: GPT-4o Vision, LLaVA, and local Ollama-based models.
+Uses Google Gemini Vision API for actual image analysis.
+Falls back to metadata-based heuristics when API key is unavailable.
 """
 
-import os
 import json
 import logging
-import base64
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any
+
+from src.analysis import gemini_service
 
 log = logging.getLogger(__name__)
 
+
 class VLMAuditor:
-    def __init__(self, model_provider: str = "openai"):
-        self.provider = model_provider
-        self.api_key = os.environ.get("OPENAI_API_KEY") if model_provider == "openai" else None
-        
-    def _encode_image(self, image_path: Path) -> str:
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode('utf-8')
+    def __init__(self):
+        self._gemini_available = gemini_service.is_available()
+        if self._gemini_available:
+            log.info("VLM Auditor: Gemini Vision API active")
+        else:
+            log.warning("VLM Auditor: Gemini unavailable, using metadata heuristics")
 
     def audit_alert(
-        self, 
-        image_path: Path, 
-        alert_metadata: Dict[str, Any]
+        self,
+        image_path: Path,
+        alert_metadata: Dict[str, Any],
     ) -> Dict[str, Any]:
         """
-        Sends the alert chip to the VLM for visual verification.
+        Analyzes alert chip image + metadata to determine fire validity.
+        Returns: {"verdict": str, "confidence": float, "reasoning": str, "method": str}
         """
-        if not image_path.exists():
-            return {"verdict": "ERROR", "reason": "Alert chip image not found."}
+        frp = alert_metadata.get("frp_mw", 0)
+        severity = alert_metadata.get("severity", "MODERATE")
+        land_cover = alert_metadata.get("land_cover", "unknown")
 
-        log.info(f"Auditing alert {alert_metadata.get('alert_id')} using VLM ({self.provider})...")
+        # Try Gemini Vision if image exists and API is available
+        if self._gemini_available and image_path.exists():
+            result = self._audit_with_gemini(image_path, alert_metadata)
+            if result:
+                result["method"] = "gemini_vision"
+                return result
 
-        # ── System Prompt ──
-        prompt = f"""
-        You are a Senior Forest Forensic Officer specializing in satellite remote sensing.
-        Analyze this multi-panel satellite chip of a fire alert in Madhya Pradesh, India.
-        
-        Alert Metadata:
-        - Severity: {alert_metadata.get('severity')}
-        - Estimated FRP: {alert_metadata.get('frp_mw')} MW
-        - Land Cover: {alert_metadata.get('land_cover')}
-        
-        Task:
-        1. Look at the spectral delta panels (Trees, Bare, Crops).
-        2. Determine if this is a valid forest fire, or a false positive caused by:
-           - Controlled agricultural burning (stubble fires).
-           - Cloud/shadow artifacts.
-           - Seasonal leaf-drop (phenology).
-        
-        Return a JSON object:
-        {{
-            "verdict": "VALID" | "FALSE_POSITIVE" | "AMBIGUOUS",
-            "confidence": 0.0 to 1.0,
-            "reasoning": "Brief explanation of your visual findings."
-        }}
+        # Fallback: metadata-based heuristic (transparent about being rule-based)
+        return self._audit_with_heuristics(frp, land_cover, severity)
+
+    def _audit_with_gemini(
+        self, image_path: Path, meta: Dict[str, Any]
+    ) -> Dict[str, Any] | None:
+        """Real VLM analysis using Gemini Vision API."""
+        prompt = f"""You are a Senior Forest Forensic Officer specializing in satellite remote sensing.
+Analyze this satellite image of a fire alert in Guna Division, Madhya Pradesh, India.
+
+Alert Metadata:
+- Severity: {meta.get('severity', 'UNKNOWN')}
+- FRP (Fire Radiative Power): {meta.get('frp_mw', 0)} MW
+- Land Cover: {meta.get('land_cover', 'unknown')}
+- Coordinates: {meta.get('lat', 0):.4f}N, {meta.get('lon', 0):.4f}E
+
+Determine if this is:
+1. VALID forest fire — genuine wildfire in forested/vegetated area
+2. FALSE_POSITIVE — agricultural stubble burn, cloud/shadow artifact, or sensor noise
+3. AMBIGUOUS — cannot determine with confidence
+
+Return a JSON object:
+{{
+    "verdict": "VALID" or "FALSE_POSITIVE" or "AMBIGUOUS",
+    "confidence": 0.0 to 1.0,
+    "reasoning": "2-3 sentence explanation of visual evidence"
+}}"""
+
+        result = gemini_service.analyze_image_json(image_path, prompt)
+        if result and "verdict" in result:
+            return result
+        return None
+
+    def _audit_with_heuristics(
+        self, frp: float, land_cover: str, severity: str
+    ) -> Dict[str, Any]:
         """
+        Rule-based fallback using fire science thresholds.
+        Transparently labeled as heuristic, not AI.
 
-        # ── Real VLM Call (Stubbed for portability) ──
-        # In production, this would use `requests` to call the OpenAI or Anthropic API.
-        if self.api_key and self.provider == "openai":
-            # (Actual API call code would go here)
-            pass
-        
-        # ── Simulated Response (The AI Reasoning) ──
-        # We simulate high-quality VLM logic based on the metadata.
-        frp = alert_metadata.get('frp_mw', 0)
-        lc = alert_metadata.get('land_cover', 'unknown').lower()
-        
-        if "crop" in lc and frp < 10:
-            return {
-                "verdict": "FALSE_POSITIVE",
-                "confidence": 0.92,
-                "reasoning": "Visual analysis of the 'Δ Crops' and 'Δ Bare' panels confirms this change is localized within a pre-existing agricultural field boundary. Low intensity suggests controlled stubble burning rather than a natural forest fire."
-            }
-        elif "forest" in lc or "tree" in lc:
+        Decision tree:
+          1. FRP >= 30 MW → VALID regardless of land cover (wildfire-level energy)
+          2. Cropland + FRP < 10 → FALSE_POSITIVE (agricultural burn)
+          3. Forest/tree + FRP >= 10 → VALID
+          4. Forest/tree + FRP < 10 → AMBIGUOUS
+          5. Unknown land cover + FRP 10-30 → severity-informed decision
+          6. Default → AMBIGUOUS
+        """
+        lc = land_cover.lower() if land_cover else "unknown"
+
+        # Rule 1: Very high FRP is a wildfire regardless of land cover.
+        # FRP >= 30 MW far exceeds any agricultural or controlled burn.
+        # In Guna Division, typical stubble burns produce < 10 MW.
+        if frp >= 30:
+            confidence = min(0.95, 0.80 + frp * 0.002)
             return {
                 "verdict": "VALID",
-                "confidence": 0.95,
-                "reasoning": "Massive drop in NIR/Trees reflectance observed deep within the protected forest boundary. Pattern shows unconstrained radial spread typical of an extreme surface fire event."
+                "confidence": round(confidence, 2),
+                "reasoning": (
+                    f"FRP of {frp:.1f} MW far exceeds agricultural burn thresholds (<10 MW). "
+                    f"Energy output at this level indicates active wildfire regardless of "
+                    f"land cover classification ('{land_cover}')."
+                ),
+                "method": "heuristic",
             }
-        else:
+
+        # Rule 2: Agricultural fire signature — cropland + low FRP
+        if ("crop" in lc or "agri" in lc) and frp < 10:
+            confidence = min(0.85, 0.60 + (10 - frp) * 0.03)
+            return {
+                "verdict": "FALSE_POSITIVE",
+                "confidence": round(confidence, 2),
+                "reasoning": (
+                    f"Low FRP ({frp:.1f} MW) on cropland suggests controlled agricultural burn. "
+                    f"Typical stubble fires in MP produce FRP < 10 MW."
+                ),
+                "method": "heuristic",
+            }
+
+        # Rule 3: Forest fire signature — forest/tree cover + moderate-high FRP
+        if ("forest" in lc or "tree" in lc) and frp >= 10:
+            confidence = min(0.92, 0.70 + frp * 0.003)
+            return {
+                "verdict": "VALID",
+                "confidence": round(confidence, 2),
+                "reasoning": (
+                    f"FRP of {frp:.1f} MW in forested area indicates active wildfire. "
+                    f"FRP > 10 MW exceeds typical agricultural burn intensity for this region."
+                ),
+                "method": "heuristic",
+            }
+
+        # Rule 4: Forest + low FRP — could be either
+        if "forest" in lc or "tree" in lc:
             return {
                 "verdict": "AMBIGUOUS",
                 "confidence": 0.50,
-                "reasoning": "Mixed pixels detected on the forest fringe. Insufficient spectral contrast to distinguish between a small escape fire and legal land clearance."
+                "reasoning": (
+                    f"FRP of {frp:.1f} MW in forest-adjacent area. Low intensity could indicate "
+                    f"small ground fire or edge-of-forest agricultural burn. Field verification needed."
+                ),
+                "method": "heuristic",
             }
 
+        # Rule 5: Unknown land cover + moderate FRP — use severity as tiebreaker
+        if frp >= 10 and severity in ("CRITICAL", "HIGH", "INFERNO"):
+            confidence = min(0.85, 0.65 + frp * 0.004)
+            return {
+                "verdict": "VALID",
+                "confidence": round(confidence, 2),
+                "reasoning": (
+                    f"FRP of {frp:.1f} MW with {severity} severity classification. "
+                    f"Land cover '{land_cover}' unresolved, but energy output and severity "
+                    f"indicate likely wildfire. Field verification recommended."
+                ),
+                "method": "heuristic",
+            }
+
+        # Rule 6: Default — insufficient signal
+        return {
+            "verdict": "AMBIGUOUS",
+            "confidence": 0.40,
+            "reasoning": (
+                f"Land cover '{land_cover}' with FRP {frp:.1f} MW — insufficient spectral "
+                f"context to classify. Recommend satellite chip review."
+            ),
+            "method": "heuristic",
+        }
+
+
 if __name__ == "__main__":
-    # Test Scenario
     auditor = VLMAuditor()
-    mock_meta = {"alert_id": "GUNA-TEST-001", "severity": "CRITICAL", "frp_mw": 85.0, "land_cover": "Tree cover"}
-    # Using a dummy path for the test
+    mock_meta = {
+        "alert_id": "GUNA-TEST-001",
+        "severity": "CRITICAL",
+        "frp_mw": 85.0,
+        "land_cover": "Tree cover",
+        "lat": 24.156,
+        "lon": 77.717,
+    }
     res = auditor.audit_alert(Path("outputs/last_dispatch.txt"), mock_meta)
     print(f"\nVLM AUDIT REPORT:")
     print(json.dumps(res, indent=4))
