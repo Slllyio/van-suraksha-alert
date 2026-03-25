@@ -1,0 +1,162 @@
+{
+  "alert_id": "GUNA-2025-05-23-002fires",
+  "generated_at": "2026-03-25T11:16:02.220794+05:30",
+  "target_date": "2025-05-23",
+  "bulletin_severity": "HIGH",
+  "fires_detected": 2,
+  "n_critical": 0,
+  "n_high": 2,
+  "n_forest_fires": 0,
+  "n_agri_fires": 2,
+  "forest_mask_used": true,
+  "peak_frp_mw": 15.9,
+  "fwi": {
+    "value": 31.3,
+    "danger_class": "Very High",
+    "ffmc": 90.0,
+    "dmc": 120.4,
+    "dc": 700.7,
+    "isi": 7.5,
+    "bui": 168.4,
+    "temp_c": 35.5,
+    "rh_pct": 41.3,
+    "wind_kmh": 11.2
+  },
+  "fires": [
+    {
+      "severity": "HIGH",
+      "fire_lat": 24.9369,
+      "fire_lon": 77.0901,
+      "fire_date": "2025-05-23",
+      "fire_time_ist": "09:49",
+      "frp_mw": 15.9,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "high",
+      "daynight": "daytime",
+      "fwi": 31.3,
+      "fwi_danger": "Very High",
+      "land_cover": "Cropland",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": true,
+      "message": "HIGH [AGRICULTURAL]: daytime fire at 24.937N 77.090E \u2014 FRP=15.9 MW, FWI=31.3 (Very High). Non-forest \u2014 monitor for spread to nearby vegetation.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: CROPLAND BEAT \ud83d\udea8\nLocation: 24.9369N, 77.0901E\nFire Behavior: Intensity 7950.0 kW/m, Spread 26.5 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 7950.0,
+        "ros_m_min": 26.5,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.",
+        "evacuation_trigger": true
+      }
+    },
+    {
+      "severity": "HIGH",
+      "fire_lat": 24.9383,
+      "fire_lon": 77.0786,
+      "fire_date": "2025-05-23",
+      "fire_time_ist": "09:49",
+      "frp_mw": 10.0,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "nominal",
+      "daynight": "daytime",
+      "fwi": 31.3,
+      "fwi_danger": "Very High",
+      "land_cover": "Cropland",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": true,
+      "message": "HIGH [AGRICULTURAL]: daytime fire at 24.938N 77.079E \u2014 FRP=10.0 MW, FWI=31.3 (Very High). Non-forest \u2014 monitor for spread to nearby vegetation.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: CROPLAND BEAT \ud83d\udea8\nLocation: 24.9383N, 77.0786E\nFire Behavior: Intensity 5000.0 kW/m, Spread 16.67 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 5000.0,
+        "ros_m_min": 16.67,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.",
+        "evacuation_trigger": true
+      }
+    }
+  ],
+  "area": {
+    "name": "Guna Division, Madhya Pradesh",
+    "bbox": {
+      "lon_min": 76.45,
+      "lat_min": 23.8,
+      "lon_max": 77.85,
+      "lat_max": 24.95
+    }
+  },
+  "data_sources": [
+    "FIRMS VIIRS SNPP",
+    "NASA POWER / GFS FWI"
+  ],
+  "abm_ignition_risk": {
+    "risk_level": "LOW",
+    "mean_ignitions_per_day": 0.7,
+    "hotspots": [
+      {
+        "latitude": 24.235,
+        "longitude": 77.205,
+        "probability": 0.1,
+        "grid_x": 75,
+        "grid_y": 43
+      },
+      {
+        "latitude": 24.025000000000002,
+        "longitude": 77.265,
+        "probability": 0.1,
+        "grid_x": 81,
+        "grid_y": 22
+      },
+      {
+        "latitude": 24.865000000000002,
+        "longitude": 77.155,
+        "probability": 0.1,
+        "grid_x": 70,
+        "grid_y": 106
+      },
+      {
+        "latitude": 24.835,
+        "longitude": 77.165,
+        "probability": 0.1,
+        "grid_x": 71,
+        "grid_y": 103
+      },
+      {
+        "latitude": 24.885,
+        "longitude": 77.065,
+        "probability": 0.1,
+        "grid_x": 61,
+        "grid_y": 108
+      },
+      {
+        "latitude": 24.545,
+        "longitude": 76.635,
+        "probability": 0.1,
+        "grid_x": 18,
+        "grid_y": 74
+      },
+      {
+        "latitude": 23.945,
+        "longitude": 76.50500000000001,
+        "probability": 0.1,
+        "grid_x": 5,
+        "grid_y": 14
+      }
+    ],
+    "model": "Mesa ABM v1 (5 agent types, beat-calibrated)"
+  }
+}

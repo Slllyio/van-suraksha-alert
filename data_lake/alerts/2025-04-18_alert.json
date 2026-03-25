@@ -1,0 +1,116 @@
+{
+  "alert_id": "GUNA-2025-04-18-000fires",
+  "generated_at": "2026-03-25T11:14:29.087344+05:30",
+  "target_date": "2025-04-18",
+  "bulletin_severity": "WATCH",
+  "fires_detected": 0,
+  "n_critical": 0,
+  "n_high": 0,
+  "n_forest_fires": 0,
+  "n_agri_fires": 0,
+  "forest_mask_used": true,
+  "peak_frp_mw": 0.0,
+  "fwi": {
+    "value": 62.8,
+    "danger_class": "Extreme",
+    "ffmc": 96.9,
+    "dmc": 227.3,
+    "dc": 439.4,
+    "isi": 21.1,
+    "bui": 226.5,
+    "temp_c": 36.2,
+    "rh_pct": 15.7,
+    "wind_kmh": 12.5
+  },
+  "fires": [],
+  "area": {
+    "name": "Guna Division, Madhya Pradesh",
+    "bbox": {
+      "lon_min": 76.45,
+      "lat_min": 23.8,
+      "lon_max": 77.85,
+      "lat_max": 24.95
+    }
+  },
+  "data_sources": [
+    "FIRMS VIIRS SNPP",
+    "NASA POWER / GFS FWI"
+  ],
+  "abm_ignition_risk": {
+    "risk_level": "VERY HIGH",
+    "mean_ignitions_per_day": 54.2,
+    "hotspots": [
+      {
+        "latitude": 24.615000000000002,
+        "longitude": 77.22500000000001,
+        "probability": 0.3,
+        "grid_x": 77,
+        "grid_y": 81
+      },
+      {
+        "latitude": 24.315,
+        "longitude": 77.25500000000001,
+        "probability": 0.3,
+        "grid_x": 80,
+        "grid_y": 51
+      },
+      {
+        "latitude": 23.915,
+        "longitude": 77.305,
+        "probability": 0.3,
+        "grid_x": 85,
+        "grid_y": 11
+      },
+      {
+        "latitude": 24.325,
+        "longitude": 77.185,
+        "probability": 0.3,
+        "grid_x": 73,
+        "grid_y": 52
+      },
+      {
+        "latitude": 24.545,
+        "longitude": 77.22500000000001,
+        "probability": 0.3,
+        "grid_x": 77,
+        "grid_y": 74
+      },
+      {
+        "latitude": 24.235,
+        "longitude": 77.205,
+        "probability": 0.3,
+        "grid_x": 75,
+        "grid_y": 43
+      },
+      {
+        "latitude": 24.595000000000002,
+        "longitude": 77.185,
+        "probability": 0.3,
+        "grid_x": 73,
+        "grid_y": 79
+      },
+      {
+        "latitude": 24.835,
+        "longitude": 77.165,
+        "probability": 0.3,
+        "grid_x": 71,
+        "grid_y": 103
+      },
+      {
+        "latitude": 24.405,
+        "longitude": 77.265,
+        "probability": 0.2,
+        "grid_x": 81,
+        "grid_y": 60
+      },
+      {
+        "latitude": 24.185000000000002,
+        "longitude": 77.165,
+        "probability": 0.2,
+        "grid_x": 71,
+        "grid_y": 38
+      }
+    ],
+    "model": "Mesa ABM v1 (5 agent types, beat-calibrated)"
+  }
+}

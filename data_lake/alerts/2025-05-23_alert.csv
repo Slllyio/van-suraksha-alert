@@ -1,0 +1,19 @@
+severity,fire_lat,fire_lon,fire_date,fire_time_ist,frp_mw,frp_category,viirs_confidence,daynight,fwi,fwi_danger,land_cover,in_forest,near_forest,is_agricultural,message,tactical_order,prescriptive_metrics
+HIGH,24.9369,77.0901,2025-05-23,09:49,15.9,ACTIVE,high,daytime,31.3,Very High,Cropland,False,False,True,"HIGH [AGRICULTURAL]: daytime fire at 24.937N 77.090E — FRP=15.9 MW, FWI=31.3 (Very High). Non-forest — monitor for spread to nearby vegetation.","🚨 TACTICAL DISPATCH ORDER: CROPLAND BEAT 🚨
+Location: 24.9369N, 77.0901E
+Fire Behavior: Intensity 7950.0 kW/m, Spread 26.5 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 7950.0, 'ros_m_min': 26.5, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.', 'evacuation_trigger': True}"
+HIGH,24.9383,77.0786,2025-05-23,09:49,10.0,ACTIVE,nominal,daytime,31.3,Very High,Cropland,False,False,True,"HIGH [AGRICULTURAL]: daytime fire at 24.938N 77.079E — FRP=10.0 MW, FWI=31.3 (Very High). Non-forest — monitor for spread to nearby vegetation.","🚨 TACTICAL DISPATCH ORDER: CROPLAND BEAT 🚨
+Location: 24.9383N, 77.0786E
+Fire Behavior: Intensity 5000.0 kW/m, Spread 16.67 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 5000.0, 'ros_m_min': 16.67, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.', 'evacuation_trigger': True}"

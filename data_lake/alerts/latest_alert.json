@@ -1,62 +1,28 @@
 {
-  "alert_id": "GUNA-2025-05-24-001fires",
-  "generated_at": "2026-03-25T11:16:15.086765+05:30",
-  "target_date": "2025-05-24",
-  "bulletin_severity": "HIGH",
-  "fires_detected": 1,
+  "alert_id": "GUNA-2026-03-26-000fires",
+  "generated_at": "2026-03-26T03:26:33.610363+05:30",
+  "target_date": "2026-03-26",
+  "bulletin_severity": "CLEAR",
+  "fires_detected": 0,
   "n_critical": 0,
-  "n_high": 1,
+  "n_high": 0,
   "n_forest_fires": 0,
   "n_agri_fires": 0,
   "forest_mask_used": true,
-  "peak_frp_mw": 23.8,
+  "peak_frp_mw": 0.0,
   "fwi": {
-    "value": 40.9,
-    "danger_class": "Extreme",
-    "ffmc": 92.4,
-    "dmc": 125.5,
-    "dc": 709.6,
-    "isi": 11.2,
-    "bui": 174.0,
-    "temp_c": 36.2,
-    "rh_pct": 36.8,
-    "wind_kmh": 12.2
+    "value": 20.8,
+    "danger_class": "High",
+    "ffmc": 90.2,
+    "dmc": 109.2,
+    "dc": 533.3,
+    "isi": 4.4,
+    "bui": 144.5,
+    "temp_c": 24.4,
+    "rh_pct": 38.2,
+    "wind_kmh": 0.0
   },
-  "fires": [
-    {
-      "severity": "HIGH",
-      "fire_lat": 24.8457,
-      "fire_lon": 76.8693,
-      "fire_date": "2025-05-24",
-      "fire_time_ist": "10:28",
-      "frp_mw": 23.8,
-      "frp_category": "INTENSE",
-      "viirs_confidence": "nominal",
-      "daynight": "daytime",
-      "fwi": 40.9,
-      "fwi_danger": "Extreme",
-      "land_cover": "outside_district",
-      "in_forest": false,
-      "near_forest": false,
-      "is_agricultural": false,
-      "message": "HIGH [OUTSIDE_DISTRICT]: daytime fire at 24.846N 76.869E \u2014 FRP=23.8 MW, FWI=40.9 (Extreme). Non-forest \u2014 monitor for spread to nearby vegetation.",
-      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: OUTSIDE_DISTRICT BEAT \ud83d\udea8\nLocation: 24.8457N, 76.8693E\nFire Behavior: Intensity 11900.0 kW/m, Spread 39.67 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: CROWN FIRE (ACTIVE CROWN). Intensity 11900 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy. EXTREME ATMOSPHERIC INSTABILITY (High FWI). Expect sudden wind shifts.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
-      "prescriptive_metrics": {
-        "intensity_kw_m": 11900.0,
-        "ros_m_min": 39.67,
-        "fire_type": "ACTIVE_CROWN",
-        "crown_fraction": 1.0,
-        "critical_intensity_kw_m": 1883.2,
-        "attack_mode": "Defensive / Evacuation",
-        "required_equipment": [
-          "Aerial support (if available)",
-          "Backfiring equipment"
-        ],
-        "safety_warning": "CROWN FIRE (ACTIVE CROWN). Intensity 11900 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy. EXTREME ATMOSPHERIC INSTABILITY (High FWI). Expect sudden wind shifts.",
-        "evacuation_trigger": true
-      }
-    }
-  ],
+  "fires": [],
   "area": {
     "name": "Guna Division, Madhya Pradesh",
     "bbox": {
@@ -71,57 +37,78 @@
     "NASA POWER / GFS FWI"
   ],
   "abm_ignition_risk": {
-    "risk_level": "LOW",
-    "mean_ignitions_per_day": 0.7,
+    "risk_level": "HIGH",
+    "mean_ignitions_per_day": 20.6,
     "hotspots": [
       {
-        "latitude": 24.235,
-        "longitude": 77.205,
-        "probability": 0.1,
-        "grid_x": 75,
-        "grid_y": 43
+        "latitude": 24.325,
+        "longitude": 77.295,
+        "probability": 0.2,
+        "grid_x": 84,
+        "grid_y": 52
       },
       {
-        "latitude": 24.025000000000002,
-        "longitude": 77.265,
-        "probability": 0.1,
-        "grid_x": 81,
-        "grid_y": 22
+        "latitude": 23.905,
+        "longitude": 77.295,
+        "probability": 0.2,
+        "grid_x": 84,
+        "grid_y": 10
       },
       {
-        "latitude": 24.865000000000002,
-        "longitude": 77.155,
-        "probability": 0.1,
-        "grid_x": 70,
-        "grid_y": 106
+        "latitude": 23.905,
+        "longitude": 77.315,
+        "probability": 0.2,
+        "grid_x": 86,
+        "grid_y": 10
       },
       {
-        "latitude": 24.835,
-        "longitude": 77.165,
-        "probability": 0.1,
-        "grid_x": 71,
-        "grid_y": 103
+        "latitude": 24.405,
+        "longitude": 77.285,
+        "probability": 0.2,
+        "grid_x": 83,
+        "grid_y": 60
       },
       {
-        "latitude": 24.885,
+        "latitude": 24.345000000000002,
+        "longitude": 77.325,
+        "probability": 0.2,
+        "grid_x": 87,
+        "grid_y": 54
+      },
+      {
+        "latitude": 24.345000000000002,
         "longitude": 77.065,
-        "probability": 0.1,
+        "probability": 0.2,
         "grid_x": 61,
-        "grid_y": 108
+        "grid_y": 54
+      },
+      {
+        "latitude": 24.135,
+        "longitude": 77.055,
+        "probability": 0.2,
+        "grid_x": 60,
+        "grid_y": 33
+      },
+      {
+        "latitude": 24.325,
+        "longitude": 76.97500000000001,
+        "probability": 0.2,
+        "grid_x": 52,
+        "grid_y": 52
       },
       {
         "latitude": 24.545,
-        "longitude": 76.635,
+        "longitude": 77.22500000000001,
         "probability": 0.1,
-        "grid_x": 18,
+        "grid_x": 77,
         "grid_y": 74
       },
       {
-        "latitude": 23.945,
-        "longitude": 76.50500000000001,
+        "latitude": 24.725,
+        "longitude": 77.185,
         "probability": 0.1,
-        "grid_x": 5,
-        "grid_y": 14
+        "grid_x": 73,
+        "grid_y": 92
       }
     ],
     "model": "Mesa ABM v1 (5 agent types, beat-calibrated)"

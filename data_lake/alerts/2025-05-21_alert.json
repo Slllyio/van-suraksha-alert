@@ -1,0 +1,129 @@
+{
+  "alert_id": "GUNA-2025-05-21-001fires",
+  "generated_at": "2026-03-25T11:15:48.818332+05:30",
+  "target_date": "2025-05-21",
+  "bulletin_severity": "HIGH",
+  "fires_detected": 1,
+  "n_critical": 0,
+  "n_high": 1,
+  "n_forest_fires": 0,
+  "n_agri_fires": 0,
+  "forest_mask_used": true,
+  "peak_frp_mw": 18.2,
+  "fwi": {
+    "value": 42.2,
+    "danger_class": "Extreme",
+    "ffmc": 93.4,
+    "dmc": 110.6,
+    "dc": 682.9,
+    "isi": 12.1,
+    "bui": 157.5,
+    "temp_c": 37.4,
+    "rh_pct": 33.3,
+    "wind_kmh": 11.2
+  },
+  "fires": [
+    {
+      "severity": "HIGH",
+      "fire_lat": 24.9637,
+      "fire_lon": 77.0933,
+      "fire_date": "2025-05-21",
+      "fire_time_ist": "21:03",
+      "frp_mw": 18.2,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "high",
+      "daynight": "nighttime",
+      "fwi": 42.2,
+      "fwi_danger": "Extreme",
+      "land_cover": "out_of_bounds",
+      "in_forest": null,
+      "near_forest": null,
+      "is_agricultural": null,
+      "message": "HIGH [OUT_OF_BOUNDS]: nighttime fire at 24.964N 77.093E \u2014 FRP=18.2 MW, FWI=42.2 (Extreme). Non-forest \u2014 monitor for spread to nearby vegetation.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: OUT_OF_BOUNDS BEAT \ud83d\udea8\nLocation: 24.9637N, 77.0933E\nFire Behavior: Intensity 9100.0 kW/m, Spread 30.33 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: CROWN FIRE (ACTIVE CROWN). Intensity 9100 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy. EXTREME ATMOSPHERIC INSTABILITY (High FWI). Expect sudden wind shifts.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 9100.0,
+        "ros_m_min": 30.33,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "CROWN FIRE (ACTIVE CROWN). Intensity 9100 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy. EXTREME ATMOSPHERIC INSTABILITY (High FWI). Expect sudden wind shifts.",
+        "evacuation_trigger": true
+      }
+    }
+  ],
+  "area": {
+    "name": "Guna Division, Madhya Pradesh",
+    "bbox": {
+      "lon_min": 76.45,
+      "lat_min": 23.8,
+      "lon_max": 77.85,
+      "lat_max": 24.95
+    }
+  },
+  "data_sources": [
+    "FIRMS VIIRS SNPP",
+    "NASA POWER / GFS FWI"
+  ],
+  "abm_ignition_risk": {
+    "risk_level": "LOW",
+    "mean_ignitions_per_day": 0.7,
+    "hotspots": [
+      {
+        "latitude": 24.235,
+        "longitude": 77.205,
+        "probability": 0.1,
+        "grid_x": 75,
+        "grid_y": 43
+      },
+      {
+        "latitude": 24.025000000000002,
+        "longitude": 77.265,
+        "probability": 0.1,
+        "grid_x": 81,
+        "grid_y": 22
+      },
+      {
+        "latitude": 24.865000000000002,
+        "longitude": 77.155,
+        "probability": 0.1,
+        "grid_x": 70,
+        "grid_y": 106
+      },
+      {
+        "latitude": 24.835,
+        "longitude": 77.165,
+        "probability": 0.1,
+        "grid_x": 71,
+        "grid_y": 103
+      },
+      {
+        "latitude": 24.885,
+        "longitude": 77.065,
+        "probability": 0.1,
+        "grid_x": 61,
+        "grid_y": 108
+      },
+      {
+        "latitude": 24.545,
+        "longitude": 76.635,
+        "probability": 0.1,
+        "grid_x": 18,
+        "grid_y": 74
+      },
+      {
+        "latitude": 23.945,
+        "longitude": 76.50500000000001,
+        "probability": 0.1,
+        "grid_x": 5,
+        "grid_y": 14
+      }
+    ],
+    "model": "Mesa ABM v1 (5 agent types, beat-calibrated)"
+  }
+}

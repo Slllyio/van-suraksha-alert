@@ -1,0 +1,145 @@
+{
+  "alert_id": "GUNA-2025-01-21-003fires",
+  "generated_at": "2026-03-25T11:12:59.280497+05:30",
+  "target_date": "2025-01-21",
+  "bulletin_severity": "HIGH",
+  "fires_detected": 3,
+  "n_critical": 0,
+  "n_high": 1,
+  "n_forest_fires": 0,
+  "n_agri_fires": 1,
+  "forest_mask_used": true,
+  "peak_frp_mw": 61.4,
+  "fwi": {
+    "value": 4.0,
+    "danger_class": "Low",
+    "ffmc": 85.2,
+    "dmc": 16.9,
+    "dc": 43.9,
+    "isi": 2.7,
+    "bui": 17.2,
+    "temp_c": 19.5,
+    "rh_pct": 62.2,
+    "wind_kmh": 4.5
+  },
+  "fires": [
+    {
+      "severity": "HIGH",
+      "fire_lat": 24.0229,
+      "fire_lon": 77.4139,
+      "fire_date": "2025-01-21",
+      "fire_time_ist": "14:22",
+      "frp_mw": 61.4,
+      "frp_category": "INFERNO",
+      "viirs_confidence": "high",
+      "daynight": "daytime",
+      "fwi": 4.0,
+      "fwi_danger": "Low",
+      "land_cover": "outside_district",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": false,
+      "message": "HIGH [OUTSIDE_DISTRICT]: daytime fire at 24.023N 77.414E \u2014 FRP=61.4 MW, FWI=4.0 (Low). Non-forest \u2014 monitor for spread to nearby vegetation.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: OUTSIDE_DISTRICT BEAT \ud83d\udea8\nLocation: 24.0229N, 77.4139E\nFire Behavior: Intensity 30700.0 kW/m, Spread 102.33 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: CROWN FIRE (ACTIVE CROWN). Intensity 30700 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy. FAST MOVING FRONT! Establish escape routes.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 30700.0,
+        "ros_m_min": 102.33,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "CROWN FIRE (ACTIVE CROWN). Intensity 30700 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy. FAST MOVING FRONT! Establish escape routes.",
+        "evacuation_trigger": true
+      }
+    },
+    {
+      "severity": "MODERATE",
+      "fire_lat": 24.5206,
+      "fire_lon": 77.1216,
+      "fire_date": "2025-01-21",
+      "fire_time_ist": "14:22",
+      "frp_mw": 16.8,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "high",
+      "daynight": "daytime",
+      "fwi": 4.0,
+      "fwi_danger": "Low",
+      "land_cover": "Cropland",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": true,
+      "message": "MODERATE [AGRICULTURAL]: daytime fire at 24.521N 77.122E \u2014 FRP=16.8 MW (Cropland). Monitor closely.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: CROPLAND BEAT \ud83d\udea8\nLocation: 24.5206N, 77.1216E\nFire Behavior: Intensity 8400.0 kW/m, Spread 28.0 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 8400.0,
+        "ros_m_min": 28.0,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.",
+        "evacuation_trigger": true
+      }
+    },
+    {
+      "severity": "MODERATE",
+      "fire_lat": 24.021,
+      "fire_lon": 77.4024,
+      "fire_date": "2025-01-21",
+      "fire_time_ist": "14:22",
+      "frp_mw": 6.7,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "nominal",
+      "daynight": "daytime",
+      "fwi": 4.0,
+      "fwi_danger": "Low",
+      "land_cover": "outside_district",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": false,
+      "message": "MODERATE [OUTSIDE_DISTRICT]: daytime fire at 24.021N 77.402E \u2014 FRP=6.7 MW (outside_district). Monitor closely.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: OUTSIDE_DISTRICT BEAT \ud83d\udea8\nLocation: 24.0210N, 77.4024E\nFire Behavior: Intensity 3350.0 kW/m, Spread 11.17 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: CROWN FIRE (ACTIVE CROWN). Intensity 3350 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 3350.0,
+        "ros_m_min": 11.17,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "CROWN FIRE (ACTIVE CROWN). Intensity 3350 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.",
+        "evacuation_trigger": true
+      }
+    }
+  ],
+  "area": {
+    "name": "Guna Division, Madhya Pradesh",
+    "bbox": {
+      "lon_min": 76.45,
+      "lat_min": 23.8,
+      "lon_max": 77.85,
+      "lat_max": 24.95
+    }
+  },
+  "data_sources": [
+    "FIRMS VIIRS SNPP",
+    "NASA POWER / GFS FWI"
+  ],
+  "abm_ignition_risk": {
+    "risk_level": "LOW",
+    "mean_ignitions_per_day": 0.0,
+    "hotspots": [],
+    "model": "Mesa ABM v1 (5 agent types, beat-calibrated)"
+  }
+}

@@ -1,0 +1,98 @@
+# ==========================================================================
+# VanAgni Stage 2: Binary Fire Detection (spectral-only patches)
+# ==========================================================================
+# Binary fire/no-fire classification — intensity comes from FIRMS FRP,
+# not from model severity classes (which have zero downstream consumers).
+#
+# Uses spectral-only patches from v5 manifest with real RBR labels.
+# Any pixel with RBR > 0 = fire (class 1), rest = no-fire (class 0).
+#
+# Initialized from Stage 1 binary checkpoint (transfer learning).
+#
+# Fixes applied (2026-03-22):
+#   - Binary (2-class) instead of 4-class: simpler target, better learning
+#   - fire_f1 for checkpoint selection: stable metric for imbalanced data
+#   - No early stopping: train all 60 epochs for full convergence
+#   - Higher LR floor (0.10): keeps decoder active through full training
+#   - BatchNorm buffers saved in checkpoints (code fix in train_vanaagni.py)
+#
+# Usage:
+#   python src/train/train_vanaagni.py \
+#     --config models/vanaagni/stage2_severity.yaml \
+#     --resume outputs/vanaagni_stage1/checkpoints/best_vanaagni.pth \
+#     --tag stage2_binary
+# ==========================================================================
+
+# --------------------------------------------------------------------------
+# Model Architecture
+# --------------------------------------------------------------------------
+model:
+  eo2_variant:        "600M-TL"
+  num_frames:         3
+  in_chans:           6
+  img_size:           224
+  backbone_init_from: null
+  freeze_backbone:    false
+  decoder_channels:   [256, 128, 64, 32]   # Match Stage 1 for transfer learning (5.2M vs 16M params)
+  weather_input_dim:  10
+  weather_cond_dim:   128
+  num_classes:        2                    # Binary: fire / no-fire
+  dropout:            0.2                  # Higher dropout — smaller dataset
+
+# --------------------------------------------------------------------------
+# Data
+# --------------------------------------------------------------------------
+data:
+  manifest_path:      "data_lake/training_patches_v5/manifest.csv"
+  num_workers:        0
+  fire_oversample:    10.0                 # Higher oversample — extreme pixel imbalance
+  min_fire_pixels:    10                   # Lower threshold — spectral patches have finer detail
+  exclude_tiers:      ["VIIRS_ONLY"]       # Exclude noisy VIIRS-only tier
+  spectral_only:      true                 # ONLY spectral patches (v5: 350/355 = 98.6%)
+  burn_intensity_dir: "data_lake/burn_intensity"
+
+# --------------------------------------------------------------------------
+# LLRD
+# --------------------------------------------------------------------------
+llrd:
+  enabled:          true
+  decay:            0.65
+  detach_prefix:    28
+
+lora:
+  enabled:          false
+
+# --------------------------------------------------------------------------
+# Training Schedule
+# --------------------------------------------------------------------------
+training:
+  epochs:                   60             # Train all 60 — no early stopping
+  freeze_backbone_epochs:   10
+  batch_size:               2
+  grad_accum_steps:         4              # Effective batch = 8 (smaller dataset)
+  lr:                       2.0e-5         # Lower LR — fine-tuning from Stage 1
+  warmup_epochs:            8              # Longer warmup — prevents early memorization
+  min_lr_fraction:          0.10           # 10% floor (was 1%): keep decoder learning
+  weight_decay:             0.03           # More regularization — risk of overfitting
+
+  # Binary loss: heavily upweight fire class (fire < 1% of pixels)
+  loss_weights:             [0.1, 8.0]
+  focal_gamma:              2.5            # Higher gamma for extreme imbalance
+  dice_weight:              0.5
+
+  # Checkpoint selection: fire_f1 is more stable than mean_iou for
+  # extremely imbalanced binary tasks where per-class IoU is noisy
+  best_metric:              "fire_f1"
+  eval_threshold:           0.35
+  log_interval:             10             # More frequent logging (fewer batches)
+  save_every_epochs:        10
+  early_stop_patience:      0              # 0 = disabled, train all epochs
+  cutmix_prob:              0.3            # CutMix augmentation probability
+  cutmix_alpha:             1.0            # Beta distribution alpha for box size
+
+# --------------------------------------------------------------------------
+# Paths
+# --------------------------------------------------------------------------
+paths:
+  output_dir:         "outputs/vanaagni_stage2"
+  checkpoint_dir:     "outputs/vanaagni_stage2/checkpoints"

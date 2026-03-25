@@ -1,0 +1,53 @@
+{
+  "alert_id": "GUNA-2025-12-29-000fires",
+  "generated_at": "2026-03-25T10:30:32.458874+05:30",
+  "target_date": "2025-12-29",
+  "bulletin_severity": "CLEAR",
+  "fires_detected": 0,
+  "n_critical": 0,
+  "n_high": 0,
+  "n_forest_fires": 0,
+  "n_agri_fires": 0,
+  "forest_mask_used": true,
+  "peak_frp_mw": 0.0,
+  "fwi": {
+    "value": 11.0,
+    "danger_class": "Moderate",
+    "ffmc": 85.6,
+    "dmc": 49.6,
+    "dc": 327.2,
+    "isi": 3.0,
+    "bui": 72.0,
+    "temp_c": 15.5,
+    "rh_pct": 57.3,
+    "wind_kmh": 5.6
+  },
+  "fires": [],
+  "area": {
+    "name": "Guna Division, Madhya Pradesh",
+    "bbox": {
+      "lon_min": 76.45,
+      "lat_min": 23.8,
+      "lon_max": 77.85,
+      "lat_max": 24.95
+    }
+  },
+  "data_sources": [
+    "FIRMS VIIRS SNPP",
+    "NASA POWER / GFS FWI"
+  ],
+  "abm_ignition_risk": {
+    "risk_level": "LOW",
+    "mean_ignitions_per_day": 0.1,
+    "hotspots": [
+      {
+        "latitude": 24.025000000000002,
+        "longitude": 77.265,
+        "probability": 0.1,
+        "grid_x": 81,
+        "grid_y": 22
+      }
+    ],
+    "model": "Mesa ABM v1 (5 agent types, beat-calibrated)"
+  }
+}

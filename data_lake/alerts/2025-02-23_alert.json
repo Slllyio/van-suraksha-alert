@@ -1,0 +1,348 @@
+{
+  "alert_id": "GUNA-2025-02-23-007fires",
+  "generated_at": "2026-03-25T11:13:11.442461+05:30",
+  "target_date": "2025-02-23",
+  "bulletin_severity": "HIGH",
+  "fires_detected": 7,
+  "n_critical": 0,
+  "n_high": 7,
+  "n_forest_fires": 1,
+  "n_agri_fires": 2,
+  "forest_mask_used": true,
+  "peak_frp_mw": 26.1,
+  "fwi": {
+    "value": 24.8,
+    "danger_class": "Very High",
+    "ffmc": 92.7,
+    "dmc": 81.9,
+    "dc": 156.7,
+    "isi": 8.2,
+    "bui": 81.6,
+    "temp_c": 22.1,
+    "rh_pct": 28.8,
+    "wind_kmh": 5.3
+  },
+  "fires": [
+    {
+      "severity": "HIGH",
+      "fire_lat": 24.026,
+      "fire_lon": 77.288,
+      "fire_date": "2025-02-23",
+      "fire_time_ist": "14:44",
+      "frp_mw": 26.1,
+      "frp_category": "INTENSE",
+      "viirs_confidence": "high",
+      "daynight": "daytime",
+      "fwi": 24.8,
+      "fwi_danger": "Very High",
+      "land_cover": "Grassland",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": false,
+      "message": "HIGH [GRASSLAND]: daytime fire at 24.026N 77.288E \u2014 FRP=26.1 MW, FWI=24.8 (Very High). Non-forest \u2014 monitor for spread to nearby vegetation.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: GRASSLAND BEAT \ud83d\udea8\nLocation: 24.0260N, 77.2880E\nFire Behavior: Intensity 13050.0 kW/m, Spread 43.5 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 13050.0,
+        "ros_m_min": 43.5,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.",
+        "evacuation_trigger": true
+      }
+    },
+    {
+      "severity": "HIGH",
+      "fire_lat": 23.9961,
+      "fire_lon": 77.272,
+      "fire_date": "2025-02-23",
+      "fire_time_ist": "14:44",
+      "frp_mw": 19.6,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "nominal",
+      "daynight": "daytime",
+      "fwi": 24.8,
+      "fwi_danger": "Very High",
+      "land_cover": "Grassland",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": false,
+      "message": "HIGH [GRASSLAND]: daytime fire at 23.996N 77.272E \u2014 FRP=19.6 MW, FWI=24.8 (Very High). Non-forest \u2014 monitor for spread to nearby vegetation.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: GRASSLAND BEAT \ud83d\udea8\nLocation: 23.9961N, 77.2720E\nFire Behavior: Intensity 9800.0 kW/m, Spread 32.67 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 9800.0,
+        "ros_m_min": 32.67,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.",
+        "evacuation_trigger": true
+      }
+    },
+    {
+      "severity": "HIGH",
+      "fire_lat": 24.0156,
+      "fire_lon": 77.2792,
+      "fire_date": "2025-02-23",
+      "fire_time_ist": "14:44",
+      "frp_mw": 18.9,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "nominal",
+      "daynight": "daytime",
+      "fwi": 24.8,
+      "fwi_danger": "Very High",
+      "land_cover": "Cropland",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": true,
+      "message": "HIGH [AGRICULTURAL]: daytime fire at 24.016N 77.279E \u2014 FRP=18.9 MW, FWI=24.8 (Very High). Non-forest \u2014 monitor for spread to nearby vegetation.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: CROPLAND BEAT \ud83d\udea8\nLocation: 24.0156N, 77.2792E\nFire Behavior: Intensity 9450.0 kW/m, Spread 31.5 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 9450.0,
+        "ros_m_min": 31.5,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.",
+        "evacuation_trigger": true
+      }
+    },
+    {
+      "severity": "HIGH",
+      "fire_lat": 24.0095,
+      "fire_lon": 77.2936,
+      "fire_date": "2025-02-23",
+      "fire_time_ist": "10:04",
+      "frp_mw": 15.8,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "high",
+      "daynight": "daytime",
+      "fwi": 24.8,
+      "fwi_danger": "Very High",
+      "land_cover": "Cropland",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": true,
+      "message": "HIGH [AGRICULTURAL]: daytime fire at 24.009N 77.294E \u2014 FRP=15.8 MW, FWI=24.8 (Very High). Non-forest \u2014 monitor for spread to nearby vegetation.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: CROPLAND BEAT \ud83d\udea8\nLocation: 24.0095N, 77.2936E\nFire Behavior: Intensity 7900.0 kW/m, Spread 26.33 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 7900.0,
+        "ros_m_min": 26.33,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.",
+        "evacuation_trigger": true
+      }
+    },
+    {
+      "severity": "HIGH",
+      "fire_lat": 24.0246,
+      "fire_lon": 77.2778,
+      "fire_date": "2025-02-23",
+      "fire_time_ist": "14:44",
+      "frp_mw": 12.7,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "nominal",
+      "daynight": "daytime",
+      "fwi": 24.8,
+      "fwi_danger": "Very High",
+      "land_cover": "Grassland",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": false,
+      "message": "HIGH [GRASSLAND]: daytime fire at 24.025N 77.278E \u2014 FRP=12.7 MW, FWI=24.8 (Very High). Non-forest \u2014 monitor for spread to nearby vegetation.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: GRASSLAND BEAT \ud83d\udea8\nLocation: 24.0246N, 77.2778E\nFire Behavior: Intensity 6350.0 kW/m, Spread 21.17 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 6350.0,
+        "ros_m_min": 21.17,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.",
+        "evacuation_trigger": true
+      }
+    },
+    {
+      "severity": "HIGH",
+      "fire_lat": 24.5076,
+      "fire_lon": 77.2316,
+      "fire_date": "2025-02-23",
+      "fire_time_ist": "14:44",
+      "frp_mw": 9.2,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "nominal",
+      "daynight": "daytime",
+      "fwi": 24.8,
+      "fwi_danger": "Very High",
+      "land_cover": "Tree cover",
+      "in_forest": true,
+      "near_forest": true,
+      "is_agricultural": false,
+      "message": "HIGH [FOREST FIRE]: ACTIVE daytime fire at 24.508N 77.232E \u2014 FRP=9.2 MW, FWI=24.8 (Very High). Deploy rapid response team.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: TREE COVER BEAT \ud83d\udea8\nLocation: 24.5076N, 77.2316E\nFire Behavior: Intensity 4600.0 kW/m, Spread 15.33 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: CROWN FIRE (ACTIVE CROWN). Intensity 4600 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 4600.0,
+        "ros_m_min": 15.33,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "CROWN FIRE (ACTIVE CROWN). Intensity 4600 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.",
+        "evacuation_trigger": true
+      }
+    },
+    {
+      "severity": "HIGH",
+      "fire_lat": 24.0081,
+      "fire_lon": 77.3032,
+      "fire_date": "2025-02-23",
+      "fire_time_ist": "10:04",
+      "frp_mw": 7.5,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "nominal",
+      "daynight": "daytime",
+      "fwi": 24.8,
+      "fwi_danger": "Very High",
+      "land_cover": "outside_district",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": false,
+      "message": "HIGH [OUTSIDE_DISTRICT]: daytime fire at 24.008N 77.303E \u2014 FRP=7.5 MW, FWI=24.8 (Very High). Non-forest \u2014 monitor for spread to nearby vegetation.",
+      "tactical_order": "\ud83d\udea8 TACTICAL DISPATCH ORDER: OUTSIDE_DISTRICT BEAT \ud83d\udea8\nLocation: 24.0081N, 77.3032E\nFire Behavior: Intensity 3750.0 kW/m, Spread 12.5 m/min\n--------------------------------------------------\nACTION REQUIRED: Defensive / Evacuation\nEQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment\nSAFETY DIRECTIVE: CROWN FIRE (ACTIVE CROWN). Intensity 3750 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.\n\u26a0\ufe0f CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.\n",
+      "prescriptive_metrics": {
+        "intensity_kw_m": 3750.0,
+        "ros_m_min": 12.5,
+        "fire_type": "ACTIVE_CROWN",
+        "crown_fraction": 1.0,
+        "critical_intensity_kw_m": 1883.2,
+        "attack_mode": "Defensive / Evacuation",
+        "required_equipment": [
+          "Aerial support (if available)",
+          "Backfiring equipment"
+        ],
+        "safety_warning": "CROWN FIRE (ACTIVE CROWN). Intensity 3750 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.",
+        "evacuation_trigger": true
+      }
+    }
+  ],
+  "area": {
+    "name": "Guna Division, Madhya Pradesh",
+    "bbox": {
+      "lon_min": 76.45,
+      "lat_min": 23.8,
+      "lon_max": 77.85,
+      "lat_max": 24.95
+    }
+  },
+  "data_sources": [
+    "FIRMS VIIRS SNPP",
+    "NASA POWER / GFS FWI"
+  ],
+  "abm_ignition_risk": {
+    "risk_level": "HIGH",
+    "mean_ignitions_per_day": 16.4,
+    "hotspots": [
+      {
+        "latitude": 24.125,
+        "longitude": 77.095,
+        "probability": 0.2,
+        "grid_x": 64,
+        "grid_y": 32
+      },
+      {
+        "latitude": 24.715,
+        "longitude": 76.735,
+        "probability": 0.2,
+        "grid_x": 28,
+        "grid_y": 91
+      },
+      {
+        "latitude": 24.355,
+        "longitude": 77.395,
+        "probability": 0.1,
+        "grid_x": 94,
+        "grid_y": 55
+      },
+      {
+        "latitude": 24.415,
+        "longitude": 77.245,
+        "probability": 0.1,
+        "grid_x": 79,
+        "grid_y": 61
+      },
+      {
+        "latitude": 23.875,
+        "longitude": 77.485,
+        "probability": 0.1,
+        "grid_x": 103,
+        "grid_y": 7
+      },
+      {
+        "latitude": 24.595000000000002,
+        "longitude": 77.175,
+        "probability": 0.1,
+        "grid_x": 72,
+        "grid_y": 79
+      },
+      {
+        "latitude": 24.225,
+        "longitude": 77.465,
+        "probability": 0.1,
+        "grid_x": 101,
+        "grid_y": 42
+      },
+      {
+        "latitude": 24.585,
+        "longitude": 77.175,
+        "probability": 0.1,
+        "grid_x": 72,
+        "grid_y": 78
+      },
+      {
+        "latitude": 23.815,
+        "longitude": 77.175,
+        "probability": 0.1,
+        "grid_x": 72,
+        "grid_y": 1
+      },
+      {
+        "latitude": 23.825,
+        "longitude": 77.315,
+        "probability": 0.1,
+        "grid_x": 86,
+        "grid_y": 2
+      }
+    ],
+    "model": "Mesa ABM v1 (5 agent types, beat-calibrated)"
+  }
+}

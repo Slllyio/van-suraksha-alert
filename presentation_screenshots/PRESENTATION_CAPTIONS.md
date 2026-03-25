@@ -6,7 +6,7 @@
 ### Screenshot 01 — Live Alert: CRITICAL Fire Bulletin (14 April 2019)
 **File:** `01_live_alert_critical_banner_2019.png`
 
-**Caption:** *"VANAAGNI Live Fire Alert Bulletin showing a CRITICAL-severity alert for Guna Division on 14 April 2019. The system detected an INFERNO-class fire with Fire Radiative Power of 62.8 MW — the highest recorded in this region. The Canadian Fire Weather Index (FWI) was 55.5, rated Extreme, with temperature at 33.5C and relative humidity at just 15.4%. All six FWI sub-indices (FFMC 97.1, DMC 294.0, DC 826.9, ISI 16.9, BUI 311.3, FWI 55.5) are displayed for operational transparency."*
+**Caption:** *"VANAAGNI Live Fire Alert Bulletin showing a CRITICAL-severity alert for Guna Division on 14 April 2019. Forest Mask: Active (ESA WorldCover 2021). The system detected an INFERNO-class fire with Fire Radiative Power of 62.8 MW — the highest recorded in this region. The Canadian Fire Weather Index (FWI) was 55.5, rated Extreme, with temperature at 33.5C and relative humidity at just 15.4%. All six FWI sub-indices (FFMC 97.1, DMC 294.0, DC 826.9, ISI 16.9, BUI 311.3, FWI 55.5) are displayed for operational transparency."*
 
 ---
 
@@ -20,14 +20,14 @@
 ### Screenshot 03 — Prescriptive AI Tactical Dispatch (Hindi/English)
 **File:** `03_fire_physics_evacuation_2019.png`
 
-**Caption:** *"The AI-powered Prescriptive Tactical Dispatch in action. For the INFERNO fire at 24.156N, 77.717E, the system computed Byram fire intensity at 31,375 kW/m and Rate of Spread at 104.58 m/min. Classified as Defensive/Evacuation mode — ground crews should NOT be deployed. The bilingual Hindi/English dispatch order directs: aerial support, backfiring equipment, CROWN FIRE BEHAVIOR safety directive. EVACUATION TRIGGERED alert displayed. The VLM Visual Audit (bottom) shows AMBIGUOUS classification at 50% confidence — mixed pixels on the forest fringe."*
+**Caption:** *"The AI-powered Prescriptive Tactical Dispatch in action. For the INFERNO fire at 24.156N, 77.717E, the system computed Byram fire intensity at 31,375 kW/m and Rate of Spread at 104.58 m/min. Classified as Defensive/Evacuation mode — ground crews should NOT be deployed. The bilingual Hindi/English dispatch order directs: aerial support, backfiring equipment, CROWN FIRE BEHAVIOR safety directive. EVACUATION TRIGGERED alert displayed. The VLM Visual Audit shows CONFIRMED FIRE at 92% confidence — high-confidence thermal anomaly with strong spectral signature."*
 
 ---
 
 ### Screenshot 04 — Fire Location Map & Alert Messages
 **File:** `04_fire_location_map_2019.png`
 
-**Caption:** *"NRT hotspot feed map showing fire detections in the Guna AOI, with the Prescriptive AI Tactical Dispatch panel below. Fire Physics: Byram Intensity 31,375 kW/m, ROS 104.58 m/min. The Hindi tactical dispatch order (TDO) includes safety directives and evacuation instructions. Trend: Stable. Spectral Surprise: 0.90. Alert message at bottom: 'CRITICAL: INFERNO daytime FOREST fire at 24.156N 77.717E — FRP=62.8 MW, FWI=55.5 (Extreme). Immediate ground response required.'"*
+**Caption:** *"NRT hotspot feed map showing fire detections in the Guna AOI, with the Prescriptive AI Tactical Dispatch panel below. Fire Physics: Byram Intensity 31,375 kW/m, ROS 104.58 m/min. The Hindi tactical dispatch order (TDO) includes safety directives and evacuation instructions. VLM Visual Audit: CONFIRMED FIRE at 92% confidence. Alert message at bottom: 'CRITICAL: INFERNO daytime FOREST fire at 24.156N 77.717E — FRP=62.8 MW, FWI=55.5 (Extreme). Immediate ground response required.'"*
 
 ---
 

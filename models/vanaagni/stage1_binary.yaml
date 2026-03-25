@@ -1,0 +1,96 @@
+# ==========================================================================
+# VanAgni Stage 1: Binary Fire Detection (fire / no-fire)
+# ==========================================================================
+# V5 dataset: 603 patches (98.6% real spectral RBR labels)
+# Fix6: boundary-ignore + pure Dice + smaller decoder
+#
+# Key changes from fix5:
+#   1. boundary_ignore_radius=8 replaces dilation (no label mismatch)
+#   2. dice_weight=1.0 (pure Dice, no focal → no bg gradient suppression)
+#   3. decoder_channels [256,128,64,32] (4M params vs 15.8M — fits 363 samples)
+#   4. DiceLoss ignore bug fixed (was counting -1 pixels as bg)
+#
+# Usage:
+#   python src/train/train_vanaagni.py \
+#     --config models/vanaagni/stage1_binary.yaml --tag stage1_v5_fix6
+# ==========================================================================
+
+# --------------------------------------------------------------------------
+# Model Architecture
+# --------------------------------------------------------------------------
+model:
+  eo2_variant:        "600M-TL"
+  num_frames:         3
+  in_chans:           6
+  img_size:           224
+  backbone_init_from: null
+  freeze_backbone:    false
+  decoder_channels:   [256, 128, 64, 32]   # 4× smaller decoder (4M vs 15.8M params)
+  weather_input_dim:  10
+  weather_cond_dim:   128
+  num_classes:        2                      # Binary: no_fire / fire
+  dropout:            0.25                   # 363 train samples needs strong regularization
+
+# --------------------------------------------------------------------------
+# Data
+# --------------------------------------------------------------------------
+data:
+  manifest_path:      "data_lake/training_patches_v5/manifest.csv"
+  num_workers:        0
+  fire_oversample:    6.0                    # Oversample fire patches in training
+  min_fire_pixels:    25
+  exclude_tiers:      null
+  spectral_only:      false                  # Use ALL 603 patches
+  burn_intensity_dir: "data_lake/burn_intensity"
+
+# --------------------------------------------------------------------------
+# LLRD (same as before — proven to work on DirectML)
+# --------------------------------------------------------------------------
+llrd:
+  enabled:          true
+  decay:            0.65
+  detach_prefix:    28
+
+lora:
+  enabled:          false
+
+# --------------------------------------------------------------------------
+# Training Schedule
+# --------------------------------------------------------------------------
+training:
+  epochs:                   40
+  freeze_backbone_epochs:   10
+  batch_size:               2
+  grad_accum_steps:         8                # Effective batch = 16
+  lr:                       5.0e-5
+  warmup_epochs:            5
+  min_lr_fraction:          0.01
+  weight_decay:             0.02
+
+  # Loss: pure Dice (self-balancing, no class weight instability)
+  # Focal loss with gamma=2 suppressed bg gradients at fire_prior=0.10,
+  # preventing the model from reducing false positives.  Pure Dice
+  # provides balanced gradients for both increasing fire at fire pixels
+  # AND decreasing fire at bg pixels.
+  loss_weights:             [1.0, 1.0]       # Irrelevant for pure Dice
+  focal_gamma:              2.0              # Only used if dice_weight < 1.0
+  dice_weight:              1.0              # PURE DICE — no focal component
+
+  # Boundary-ignore: create ignore zone around fire boundaries.
+  # Fire pixels stay labeled, bg far from fire stays labeled,
+  # boundary ring → -1 (ignored).  Same for ALL splits (no mismatch).
+  # Model isn't penalized for ViT-scale spatial imprecision.
+  boundary_ignore_radius:   8                # 8px → 17×17 ignore ring
+  dilate_fire:              false            # Disabled — boundary-ignore preferred
+
+  eval_threshold:           0.3              # Lower threshold — fire is sparse
+  log_interval:             20
+  save_every_epochs:        10
+  early_stop_patience:      15
+
+# --------------------------------------------------------------------------
+# Paths
+# --------------------------------------------------------------------------
+paths:
+  output_dir:         "outputs/vanaagni_stage1"
+  checkpoint_dir:     "outputs/vanaagni_stage1/checkpoints"

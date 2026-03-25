@@ -1,0 +1,64 @@
+severity,fire_lat,fire_lon,fire_date,fire_time_ist,frp_mw,frp_category,viirs_confidence,daynight,fwi,fwi_danger,land_cover,in_forest,near_forest,is_agricultural,message,tactical_order,prescriptive_metrics
+HIGH,24.026,77.288,2025-02-23,14:44,26.1,INTENSE,high,daytime,24.8,Very High,Grassland,False,False,False,"HIGH [GRASSLAND]: daytime fire at 24.026N 77.288E — FRP=26.1 MW, FWI=24.8 (Very High). Non-forest — monitor for spread to nearby vegetation.","🚨 TACTICAL DISPATCH ORDER: GRASSLAND BEAT 🚨
+Location: 24.0260N, 77.2880E
+Fire Behavior: Intensity 13050.0 kW/m, Spread 43.5 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 13050.0, 'ros_m_min': 43.5, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.', 'evacuation_trigger': True}"
+HIGH,23.9961,77.272,2025-02-23,14:44,19.6,ACTIVE,nominal,daytime,24.8,Very High,Grassland,False,False,False,"HIGH [GRASSLAND]: daytime fire at 23.996N 77.272E — FRP=19.6 MW, FWI=24.8 (Very High). Non-forest — monitor for spread to nearby vegetation.","🚨 TACTICAL DISPATCH ORDER: GRASSLAND BEAT 🚨
+Location: 23.9961N, 77.2720E
+Fire Behavior: Intensity 9800.0 kW/m, Spread 32.67 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 9800.0, 'ros_m_min': 32.67, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.', 'evacuation_trigger': True}"
+HIGH,24.0156,77.2792,2025-02-23,14:44,18.9,ACTIVE,nominal,daytime,24.8,Very High,Cropland,False,False,True,"HIGH [AGRICULTURAL]: daytime fire at 24.016N 77.279E — FRP=18.9 MW, FWI=24.8 (Very High). Non-forest — monitor for spread to nearby vegetation.","🚨 TACTICAL DISPATCH ORDER: CROPLAND BEAT 🚨
+Location: 24.0156N, 77.2792E
+Fire Behavior: Intensity 9450.0 kW/m, Spread 31.5 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 9450.0, 'ros_m_min': 31.5, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.', 'evacuation_trigger': True}"
+HIGH,24.0095,77.2936,2025-02-23,10:04,15.8,ACTIVE,high,daytime,24.8,Very High,Cropland,False,False,True,"HIGH [AGRICULTURAL]: daytime fire at 24.009N 77.294E — FRP=15.8 MW, FWI=24.8 (Very High). Non-forest — monitor for spread to nearby vegetation.","🚨 TACTICAL DISPATCH ORDER: CROPLAND BEAT 🚨
+Location: 24.0095N, 77.2936E
+Fire Behavior: Intensity 7900.0 kW/m, Spread 26.33 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 7900.0, 'ros_m_min': 26.33, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.', 'evacuation_trigger': True}"
+HIGH,24.0246,77.2778,2025-02-23,14:44,12.7,ACTIVE,nominal,daytime,24.8,Very High,Grassland,False,False,False,"HIGH [GRASSLAND]: daytime fire at 24.025N 77.278E — FRP=12.7 MW, FWI=24.8 (Very High). Non-forest — monitor for spread to nearby vegetation.","🚨 TACTICAL DISPATCH ORDER: GRASSLAND BEAT 🚨
+Location: 24.0246N, 77.2778E
+Fire Behavior: Intensity 6350.0 kW/m, Spread 21.17 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 6350.0, 'ros_m_min': 21.17, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.', 'evacuation_trigger': True}"
+HIGH,24.5076,77.2316,2025-02-23,14:44,9.2,ACTIVE,nominal,daytime,24.8,Very High,Tree cover,True,True,False,"HIGH [FOREST FIRE]: ACTIVE daytime fire at 24.508N 77.232E — FRP=9.2 MW, FWI=24.8 (Very High). Deploy rapid response team.","🚨 TACTICAL DISPATCH ORDER: TREE COVER BEAT 🚨
+Location: 24.5076N, 77.2316E
+Fire Behavior: Intensity 4600.0 kW/m, Spread 15.33 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: CROWN FIRE (ACTIVE CROWN). Intensity 4600 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 4600.0, 'ros_m_min': 15.33, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'CROWN FIRE (ACTIVE CROWN). Intensity 4600 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.', 'evacuation_trigger': True}"
+HIGH,24.0081,77.3032,2025-02-23,10:04,7.5,ACTIVE,nominal,daytime,24.8,Very High,outside_district,False,False,False,"HIGH [OUTSIDE_DISTRICT]: daytime fire at 24.008N 77.303E — FRP=7.5 MW, FWI=24.8 (Very High). Non-forest — monitor for spread to nearby vegetation.","🚨 TACTICAL DISPATCH ORDER: OUTSIDE_DISTRICT BEAT 🚨
+Location: 24.0081N, 77.3032E
+Fire Behavior: Intensity 3750.0 kW/m, Spread 12.5 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: CROWN FIRE (ACTIVE CROWN). Intensity 3750 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 3750.0, 'ros_m_min': 12.5, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'CROWN FIRE (ACTIVE CROWN). Intensity 3750 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.', 'evacuation_trigger': True}"

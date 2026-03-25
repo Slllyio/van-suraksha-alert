@@ -1,0 +1,112 @@
+{
+  "alert_id": "GUNA-2017-03-22-004fires",
+  "generated_at": "2026-03-01T18:54:21.539881+05:30",
+  "target_date": "2017-03-22",
+  "bulletin_severity": "HIGH",
+  "fires_detected": 4,
+  "n_critical": 0,
+  "n_high": 4,
+  "n_forest_fires": 0,
+  "n_agri_fires": 0,
+  "forest_mask_used": true,
+  "peak_frp_mw": 18.92,
+  "fwi": {
+    "value": 38.9,
+    "danger_class": "Extreme",
+    "ffmc": 94.6,
+    "dmc": 118.7,
+    "dc": 718.2,
+    "isi": 10.5,
+    "bui": 168.0,
+    "temp_c": 29.6,
+    "rh_pct": 21.1,
+    "wind_kmh": 4.9
+  },
+  "fires": [
+    {
+      "severity": "HIGH",
+      "fire_lat": 23.9323,
+      "fire_lon": 77.4519,
+      "fire_date": "2017-03-22",
+      "fire_time_ist": "12:58",
+      "frp_mw": 18.92,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "high",
+      "daynight": "daytime",
+      "fwi": 38.9,
+      "fwi_danger": "Extreme",
+      "land_cover": "class_0",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": false,
+      "message": "HIGH [CLASS_0]: daytime fire at 23.932N 77.452E \u2014 FRP=18.9 MW, FWI=38.9 (Extreme). Non-forest \u2014 monitor for spread to nearby vegetation."
+    },
+    {
+      "severity": "HIGH",
+      "fire_lat": 23.9344,
+      "fire_lon": 77.4484,
+      "fire_date": "2017-03-22",
+      "fire_time_ist": "12:58",
+      "frp_mw": 10.34,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "nominal",
+      "daynight": "daytime",
+      "fwi": 38.9,
+      "fwi_danger": "Extreme",
+      "land_cover": "class_0",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": false,
+      "message": "HIGH [CLASS_0]: daytime fire at 23.934N 77.448E \u2014 FRP=10.3 MW, FWI=38.9 (Extreme). Non-forest \u2014 monitor for spread to nearby vegetation."
+    },
+    {
+      "severity": "HIGH",
+      "fire_lat": 23.9355,
+      "fire_lon": 77.4536,
+      "fire_date": "2017-03-22",
+      "fire_time_ist": "12:58",
+      "frp_mw": 10.34,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "nominal",
+      "daynight": "daytime",
+      "fwi": 38.9,
+      "fwi_danger": "Extreme",
+      "land_cover": "class_0",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": false,
+      "message": "HIGH [CLASS_0]: daytime fire at 23.935N 77.454E \u2014 FRP=10.3 MW, FWI=38.9 (Extreme). Non-forest \u2014 monitor for spread to nearby vegetation."
+    },
+    {
+      "severity": "HIGH",
+      "fire_lat": 23.9257,
+      "fire_lon": 77.4427,
+      "fire_date": "2017-03-22",
+      "fire_time_ist": "12:58",
+      "frp_mw": 8.49,
+      "frp_category": "ACTIVE",
+      "viirs_confidence": "nominal",
+      "daynight": "daytime",
+      "fwi": 38.9,
+      "fwi_danger": "Extreme",
+      "land_cover": "class_0",
+      "in_forest": false,
+      "near_forest": false,
+      "is_agricultural": false,
+      "message": "HIGH [CLASS_0]: daytime fire at 23.926N 77.443E \u2014 FRP=8.5 MW, FWI=38.9 (Extreme). Non-forest \u2014 monitor for spread to nearby vegetation."
+    }
+  ],
+  "area": {
+    "name": "Guna Division, Madhya Pradesh",
+    "bbox": {
+      "lon_min": 76.45,
+      "lat_min": 23.8,
+      "lon_max": 77.85,
+      "lat_max": 24.95
+    }
+  },
+  "data_sources": [
+    "FIRMS VIIRS SNPP",
+    "NASA POWER / GFS FWI"
+  ]
+}

@@ -1,0 +1,28 @@
+severity,fire_lat,fire_lon,fire_date,fire_time_ist,frp_mw,frp_category,viirs_confidence,daynight,fwi,fwi_danger,land_cover,in_forest,near_forest,is_agricultural,message,tactical_order,prescriptive_metrics
+HIGH,24.0229,77.4139,2025-01-21,14:22,61.4,INFERNO,high,daytime,4.0,Low,outside_district,False,False,False,"HIGH [OUTSIDE_DISTRICT]: daytime fire at 24.023N 77.414E — FRP=61.4 MW, FWI=4.0 (Low). Non-forest — monitor for spread to nearby vegetation.","🚨 TACTICAL DISPATCH ORDER: OUTSIDE_DISTRICT BEAT 🚨
+Location: 24.0229N, 77.4139E
+Fire Behavior: Intensity 30700.0 kW/m, Spread 102.33 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: CROWN FIRE (ACTIVE CROWN). Intensity 30700 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy. FAST MOVING FRONT! Establish escape routes.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 30700.0, 'ros_m_min': 102.33, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'CROWN FIRE (ACTIVE CROWN). Intensity 30700 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy. FAST MOVING FRONT! Establish escape routes.', 'evacuation_trigger': True}"
+MODERATE,24.5206,77.1216,2025-01-21,14:22,16.8,ACTIVE,high,daytime,4.0,Low,Cropland,False,False,True,MODERATE [AGRICULTURAL]: daytime fire at 24.521N 77.122E — FRP=16.8 MW (Cropland). Monitor closely.,"🚨 TACTICAL DISPATCH ORDER: CROPLAND BEAT 🚨
+Location: 24.5206N, 77.1216E
+Fire Behavior: Intensity 8400.0 kW/m, Spread 28.0 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 8400.0, 'ros_m_min': 28.0, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'EXTREME FIRE. High heat radiation prevents direct approach. Fall back to natural barriers.', 'evacuation_trigger': True}"
+MODERATE,24.021,77.4024,2025-01-21,14:22,6.7,ACTIVE,nominal,daytime,4.0,Low,outside_district,False,False,False,MODERATE [OUTSIDE_DISTRICT]: daytime fire at 24.021N 77.402E — FRP=6.7 MW (outside_district). Monitor closely.,"🚨 TACTICAL DISPATCH ORDER: OUTSIDE_DISTRICT BEAT 🚨
+Location: 24.0210N, 77.4024E
+Fire Behavior: Intensity 3350.0 kW/m, Spread 11.17 m/min
+--------------------------------------------------
+ACTION REQUIRED: Defensive / Evacuation
+EQUIPMENT TO MOBILIZE: Aerial support (if available), Backfiring equipment
+SAFETY DIRECTIVE: CROWN FIRE (ACTIVE CROWN). Intensity 3350 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.
+⚠️ CRITICAL: INITIATE CLEARANCE OF FORWARD AREAS IMMEDIATELY.
+","{'intensity_kw_m': 3350.0, 'ros_m_min': 11.17, 'fire_type': 'ACTIVE_CROWN', 'crown_fraction': 1.0, 'critical_intensity_kw_m': 1883.2, 'attack_mode': 'Defensive / Evacuation', 'required_equipment': ['Aerial support (if available)', 'Backfiring equipment'], 'safety_warning': 'CROWN FIRE (ACTIVE CROWN). Intensity 3350 kW/m exceeds Van Wagner threshold (1883 kW/m). DO NOT DEPLOY GROUND CREWS under the canopy.', 'evacuation_trigger': True}"

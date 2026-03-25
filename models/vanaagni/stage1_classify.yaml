@@ -1,0 +1,63 @@
+# ==========================================================================
+# VanAgni Stage 1: Patch-Level Fire Classification
+# ==========================================================================
+# Replaces pixel segmentation (which fails with ViT's 16×16 resolution)
+# with patch-level binary classification using the CLS token.
+#
+# Key advantages:
+#   1. ViT CLS token is designed for classification — no spatial upsampling
+#   2. ~59% fire patches → nearly balanced (vs 0.65% fire pixels in segmentation)
+#   3. BCE loss gives strong gradient on every sample
+#   4. Frozen backbone → only ~2M trainable params → no overfitting risk
+#   5. Fast training: ~30s/epoch vs ~5min/epoch for segmentation
+#
+# Usage:
+#   python src/train/train_vanaagni_cls.py \
+#     --config models/vanaagni/stage1_classify.yaml --tag cls_v1
+# ==========================================================================
+
+# --------------------------------------------------------------------------
+# Model
+# --------------------------------------------------------------------------
+model:
+  eo2_variant:        "600M-TL"
+  num_frames:         3
+  in_chans:           6
+  img_size:           224
+  freeze_backbone:    true          # FROZEN — only head trains (~2M params)
+  weather_input_dim:  10
+  weather_cond_dim:   128
+  head_hidden:        256           # MLP hidden dim
+  dropout:            0.3           # Strong dropout for small dataset
+
+# --------------------------------------------------------------------------
+# Data
+# --------------------------------------------------------------------------
+data:
+  manifest_path:      "data_lake/training_patches_v5/manifest.csv"
+  num_workers:        0             # 0 for Windows/DirectML compatibility
+  min_fire_pixels:    25            # Skip fire patches with <25 fire pixels
+  exclude_tiers:      null
+  spectral_only:      false
+
+# --------------------------------------------------------------------------
+# Training
+# --------------------------------------------------------------------------
+training:
+  epochs:             50
+  batch_size:         8             # Larger batch OK — no decoder VRAM
+  grad_accum_steps:   2             # Effective batch = 16
+  lr:                 1.0e-3        # Higher LR OK — only head trains
+  warmup_epochs:      3
+  weight_decay:       0.01
+  pos_weight:         1.0           # ~balanced, no reweighting needed
+  eval_threshold:     0.5           # Standard threshold for binary
+  log_interval:       10
+  early_stop_patience: 12
+
+# --------------------------------------------------------------------------
+# Paths
+# --------------------------------------------------------------------------
+paths:
+  output_dir:         "outputs/vanaagni_cls"
+  checkpoint_dir:     "outputs/vanaagni_cls/checkpoints"

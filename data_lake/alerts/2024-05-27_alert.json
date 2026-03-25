@@ -1,0 +1,36 @@
+{
+  "alert_id": "GUNA-2024-05-27-000fires",
+  "generated_at": "2026-03-01T16:32:55.284871+05:30",
+  "target_date": "2024-05-27",
+  "bulletin_severity": "WATCH",
+  "fires_detected": 0,
+  "n_critical": 0,
+  "n_high": 0,
+  "peak_frp_mw": 0.0,
+  "fwi": {
+    "value": 74.3,
+    "danger_class": "Extreme",
+    "ffmc": 97.6,
+    "dmc": 219.5,
+    "dc": 1119.8,
+    "isi": 27.4,
+    "bui": 294.6,
+    "temp_c": 40.1,
+    "rh_pct": 15.7,
+    "wind_kmh": 15.9
+  },
+  "fires": [],
+  "area": {
+    "name": "Guna Division, Madhya Pradesh",
+    "bbox": {
+      "lon_min": 76.45,
+      "lat_min": 23.8,
+      "lon_max": 77.85,
+      "lat_max": 24.95
+    }
+  },
+  "data_sources": [
+    "FIRMS VIIRS SNPP",
+    "NASA POWER / GFS FWI"
+  ]
+}

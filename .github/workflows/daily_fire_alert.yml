@@ -12,7 +12,7 @@ permissions:
 jobs:
   fire-alert:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
@@ -29,20 +29,16 @@ jobs:
           pip install numpy pandas pyarrow requests scipy lightgbm scikit-learn \
                       geopandas shapely pyproj rasterio fiona pyyaml joblib
 
-      - name: Update FWI
-        run: python scripts/compute_fwi.py --start 2025 --end 2026
+      - name: Run Daily Fire Alert Pipeline
+        run: python scripts/daily_fire_alert.py
         env:
           PYTHONPATH: .
-
-      - name: Run NRT Alert Pipeline
-        run: python scripts/nrt_alert_pipeline.py --fetch-nrt --api-key ${{ secrets.FIRMS_MAP_KEY }}
-        env:
-          PYTHONPATH: .
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
 
       - name: Commit updated alerts
         run: |
           git config user.name "Van Suraksha Bot"
           git config user.email "vansuraksha-bot@users.noreply.github.com"
-          git add data_lake/alerts/ data_lake/fire_weather/fwi_daily.csv data_lake/fire_weather/fwi_daily.parquet
+          git add data_lake/alerts/ data_lake/fire_weather/ outputs/dashboard_feed/ outputs/predictive_fire_risk/risk_map_*.csv
           git diff --staged --quiet || git commit -m "alert: $(date -u +%Y-%m-%d) daily fire alert update"
           git push

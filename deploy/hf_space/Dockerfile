@@ -11,13 +11,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Python dependencies
+# Python dependencies (all packages the dashboard needs)
 RUN pip install --no-cache-dir \
     numpy pandas pyarrow requests scipy joblib \
     lightgbm scikit-learn \
     geopandas shapely pyproj rasterio fiona \
     pyyaml plotly matplotlib folium seaborn \
-    streamlit pydeck Pillow
+    streamlit pydeck Pillow \
+    xarray netcdf4 mesa
 
 # Application code
 COPY src/ ./src/
@@ -25,15 +26,18 @@ COPY scripts/ ./scripts/
 COPY dashboard/ ./dashboard/
 COPY config.yaml ./
 
-# Data
+# Data — ALL directories the dashboard tabs need
 COPY models/ignition/ ./models/ignition/
 COPY data/aoi/ ./data/aoi/
 COPY data_lake/fire_detections/ ./data_lake/fire_detections/
 COPY data_lake/fire_weather/ ./data_lake/fire_weather/
 COPY data_lake/alerts/ ./data_lake/alerts/
 COPY data_lake/land_cover/ ./data_lake/land_cover/
+COPY data_lake/burn_scars/ ./data_lake/burn_scars/
+COPY data_lake/terrain/ ./data_lake/terrain/
+COPY data_lake/boundaries/ ./data_lake/boundaries/
 
-RUN mkdir -p outputs/dashboard_feed logs
+RUN mkdir -p outputs/dashboard_feed logs data_lake/weather_forecasts/gfs
 
 EXPOSE 7860
 

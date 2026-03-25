@@ -1,0 +1,73 @@
+{
+  "aoi": {
+    "divisions": [
+      "Guna",
+      "Ashok_Nagar",
+      "Shivpuri"
+    ],
+    "bbox_wgs84": {
+      "west": 76.8,
+      "south": 23.89,
+      "east": 78.31,
+      "north": 25.91
+    },
+    "area_km2": 6213
+  },
+  "mgrs_tiles": {
+    "current": [
+      "T43QFG",
+      "T43QGG"
+    ],
+    "new_required": {
+      "T43RGH": {
+        "priority": 1,
+        "desc": "North Guna + south Shivpuri (highest overlap)"
+      },
+      "T43RHH": {
+        "priority": 2,
+        "desc": "Ashoknagar + east Shivpuri"
+      },
+      "T43RFH": {
+        "priority": 3,
+        "desc": "West Shivpuri / west Guna north"
+      },
+      "T43RGJ": {
+        "priority": 4,
+        "desc": "North Shivpuri (partial)"
+      }
+    }
+  },
+  "data_to_acquire": {
+    "viirs_firms": {
+      "expanded_bbox": "76.80,23.89,78.31,25.91",
+      "years": "2012-2025",
+      "source": "VIIRS_SNPP_SP",
+      "api": "https://firms.modaps.eosdis.nasa.gov/api/area/csv",
+      "requires_api_key": true,
+      "estimated_detections": "1500-2500"
+    },
+    "hls_imagery": {
+      "tiles": [
+        "T43RGH",
+        "T43RHH",
+        "T43RFH",
+        "T43RGJ"
+      ],
+      "years": "2016-2025",
+      "fire_season_months": "Feb-May",
+      "source": "NASA Earthdata (LP DAAC)",
+      "requires_auth": true,
+      "estimated_scenes_per_tile": "~100-200"
+    },
+    "terrain_dem": {
+      "source": "Copernicus DEM GLO-30",
+      "tiles_needed": "N23E076, N23E077, N23E078, N24E076, N24E077, N24E078, N25E077, N25E078",
+      "resolution": "30m"
+    },
+    "landcover": {
+      "source": "ESA WorldCover v200",
+      "resolution": "10m",
+      "bbox": "76.80,23.89,78.31,25.91"
+    }
+  }
+}

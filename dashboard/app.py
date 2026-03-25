@@ -69,7 +69,7 @@ if "cache_cleared" not in st.session_state:
 # ── Live Demo Mode — Guided Presenter Walkthrough ───────────────────────────
 DEMO_STEPS = [
     {
-        "tab": "Live Alert",
+        "tab": "\U0001f6a8 Live Alert",
         "title": "STEP 1 — Fire Detection & Alert",
         "script": (
             "On 14 April 2019, VANAAGNI detected a **CRITICAL-severity** fire in Guna Division. "
@@ -81,7 +81,7 @@ DEMO_STEPS = [
         "highlight": "Observe the CRITICAL banner, FWI gauge, and all weather metrics.",
     },
     {
-        "tab": "Live Alert",
+        "tab": "\U0001f6a8 Live Alert",
         "title": "STEP 2 — AI Tactical Dispatch",
         "script": (
             "The AI computed Byram fire intensity at **31,375 kW/m** and Rate of Spread at "
@@ -93,7 +93,7 @@ DEMO_STEPS = [
         "highlight": "Scroll to the Prescriptive AI Tactical Dispatch section.",
     },
     {
-        "tab": "Live Alert",
+        "tab": "\U0001f6a8 Live Alert",
         "title": "STEP 3 — Autonomous Fire Verification",
         "script": (
             "The VLM Autonomous Auditor cross-verified the detection using spectral analysis "
@@ -104,7 +104,7 @@ DEMO_STEPS = [
         "highlight": "See the VLM Visual Audit panel with verdict, confidence, and reasoning.",
     },
     {
-        "tab": "3D Digital Twin",
+        "tab": "\U0001f310 3D Digital Twin",
         "title": "STEP 4 — 3D Fire Spread Simulation",
         "script": (
             "The Command Horizon visualizes the fire on **satellite terrain** using CesiumJS. "
@@ -116,7 +116,7 @@ DEMO_STEPS = [
         "highlight": "Click START SIM to run the fire spread simulation on the 3D globe.",
     },
     {
-        "tab": "Fire History",
+        "tab": "\U0001f4ca Fire History",
         "title": "STEP 5 — Historical Fire Intelligence",
         "script": (
             "VIIRS satellite data reveals **164 fire detections** across Guna Division. "
@@ -128,7 +128,7 @@ DEMO_STEPS = [
         "highlight": "Note the seasonal patterns and geographic clustering of hotspots.",
     },
     {
-        "tab": "Burn Scars",
+        "tab": "\U0001f6f0\ufe0f Burn Scars",
         "title": "STEP 6 — Burn Scar Damage Assessment",
         "script": (
             "IBM-NASA\u2019s **Prithvi-EO-2.0** foundation model processed **484 satellite scenes** "
@@ -139,7 +139,7 @@ DEMO_STEPS = [
         "highlight": "Review the Causal Link Confidence chart and HIGH-confidence fire events.",
     },
     {
-        "tab": "FWI Trends",
+        "tab": "\U0001f321\ufe0f FWI Trends",
         "title": "STEP 7 — 13-Year Climate Intelligence",
         "script": (
             "Fire Weather Index analysis spanning **2013\u20132025** reveals a dangerous trend. "
@@ -150,7 +150,7 @@ DEMO_STEPS = [
         "highlight": "The annual peak bar chart and Year x Month heatmap tell the climate story.",
     },
     {
-        "tab": "Weather & Terrain",
+        "tab": "\u26f0\ufe0f Weather & Terrain",
         "title": "STEP 8 — Weather Forecasts & Terrain Risk",
         "script": (
             "GFS weather forecasts enable **24/48/72-hour** fire weather prediction via Herbie. "
@@ -161,7 +161,7 @@ DEMO_STEPS = [
         "highlight": "Weather-terrain fusion powers the next-day fire danger forecast.",
     },
     {
-        "tab": "Land Cover",
+        "tab": "\U0001f333 Land Cover",
         "title": "STEP 9 — Forest Mask & Land Classification",
         "script": (
             "ESA WorldCover 2021 maps **6,500 km\u00b2** of Guna Division. "
@@ -615,10 +615,11 @@ def fwi_color(val: float) -> str:
     return "#1a9641"
 
 
-def metric_card(label: str, value, sub: str = "", color: str = "#3b82f6"):
+def metric_card(label: str, value, sub: str = "", color: str = "#3b82f6", icon: str = ""):
+    icon_html = f'<span style="font-size:18px;margin-right:4px">{icon}</span>' if icon else ""
     st.markdown(
         f"""<div class="metric-card" style="--accent:{color}">
-            <div class="label">{label}</div>
+            <div class="label">{icon_html}{label}</div>
             <div class="value">{value}</div>
             <div class="sub">{sub}</div>
             </div>""",
@@ -637,6 +638,21 @@ def empty_state(icon: str, title: str, description: str):
     )
 
 
+def fullscreen_map_button(deck: "pdk.Deck", map_id: str):
+    """Offer a download button for a standalone HTML version of a pydeck map."""
+    try:
+        html_str = deck.to_html(as_string=True)
+        st.download_button(
+            "\U0001f5fa\ufe0f Open Map Fullscreen",
+            data=html_str,
+            file_name=f"van_suraksha_{map_id}.html",
+            mime="text/html",
+            key=f"dl_map_{map_id}",
+        )
+    except Exception:
+        pass
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Sidebar
 # ─────────────────────────────────────────────────────────────────────────────
@@ -653,7 +669,7 @@ with st.sidebar:
         <h1 style="margin:0;font-size:22px;font-weight:700;letter-spacing:1px;
             color:#e6edf3;text-transform:uppercase">Van Suraksha</h1>
         <p style="font-size:10px;color:#8b949e;margin:4px 0 0;letter-spacing:1.5px;
-            text-transform:uppercase">Command Horizon &bull; Guna Division</p>
+            text-transform:uppercase">\U0001f6e1\ufe0f Command Horizon &bull; Guna Division \U0001f30d</p>
         </div>""",
         unsafe_allow_html=True,
     )
@@ -677,14 +693,14 @@ with st.sidebar:
             st.caption(f"Step {step_i + 1}/{len(DEMO_STEPS)}")
 
     tab_names = [
-        "Live Alert",
-        "3D Digital Twin",
-        "Fire History",
-        "Burn Scars",
-        "FWI Trends",
-        "Weather & Terrain",
-        "Land Cover",
-        "Ignition ABM",
+        "\U0001f6a8 Live Alert",
+        "\U0001f310 3D Digital Twin",
+        "\U0001f4ca Fire History",
+        "\U0001f6f0\ufe0f Burn Scars",
+        "\U0001f321\ufe0f FWI Trends",
+        "\u26f0\ufe0f Weather & Terrain",
+        "\U0001f333 Land Cover",
+        "\U0001f9ea Ignition ABM",
     ]
 
     # If demo is active, force-select the tab for the current demo step
@@ -736,7 +752,7 @@ with st.sidebar:
 # TAB 2: 3D Digital Twin
 # ─────────────────────────────────────────────────────────────────────────────
 
-if selected_tab == "3D Digital Twin":
+if selected_tab == "\U0001f310 3D Digital Twin":
     # Fullscreen CSS — hide Streamlit padding, make map fill viewport
     st.markdown("""<style>
     .block-container { padding: 0 !important; max-width: 100% !important; }
@@ -841,59 +857,289 @@ if selected_tab == "3D Digital Twin":
         sim_isi = fwi_d.get("isi", 0)
         sim_bui = fwi_d.get("bui", 0)
 
+    # ── 3D Forest Canopy — load 747 compartment polygons ──
+    _comp_path = ROOT / "data" / "aoi" / "gunafinal.geojson"
+    compartments_js = "[]"
+    _n_compartments = 0
+    if _comp_path.exists():
+        _gj = json.loads(_comp_path.read_text(encoding="utf-8"))
+        _comp_list = []
+        for feat in _gj.get("features", []):
+            props = feat.get("properties", {})
+            geom = feat.get("geometry", {})
+            if geom.get("type") not in ("Polygon", "MultiPolygon"):
+                continue
+            coords_raw = geom["coordinates"]
+            if geom["type"] == "MultiPolygon":
+                coords_raw = coords_raw[0]
+            ring = coords_raw[0]
+            # Downsample large rings (keep every Nth point) + round to 4 decimals
+            step = max(1, len(ring) // 30)
+            sampled = ring[::step]
+            if sampled[-1] != ring[-1]:
+                sampled.append(ring[-1])  # close ring
+            flat = []
+            for pt in sampled:
+                flat.extend([round(pt[0], 4), round(pt[1], 4)])
+            area2015 = float(props.get("area2015", 0) or 0)
+            area_orig = float(props.get("areaOrigin", 0) or 0)
+            health = (area2015 / area_orig) if area_orig > 0 else 1.0
+            if health >= 0.8:
+                color = "#22c55e"
+            elif health >= 0.6:
+                color = "#eab308"
+            elif health >= 0.4:
+                color = "#f97316"
+            else:
+                color = "#ef4444"
+            # Compute centroid for tree placement
+            lons = [pt[0] for pt in sampled]
+            lats = [pt[1] for pt in sampled]
+            cx = round(sum(lons) / len(lons), 4)
+            cy = round(sum(lats) / len(lats), 4)
+            _comp_list.append({
+                "c": flat,
+                "h": max(area2015 * 0.5, 50),
+                "cl": color,
+                "b": props.get("BEAT", ""),
+                "r": props.get("RANGE", ""),
+                "a": area2015,
+                "ao": area_orig,
+                "hl": round(health, 3),
+                "f": 0,
+                "cx": cx, "cy": cy,
+                "sl": 0.0, "asp": 0.0, "el": 0.0,
+                "lt": 0, "ls": 0, "lg": 0, "lc": 0, "lb": 0, "lw": 0,
+            })
+        # Count FIRMS fires per compartment (bbox approximation)
+        try:
+            _firms_df = load_firms_all()
+            if not _firms_df.empty:
+                _flons = _firms_df["longitude"].values
+                _flats = _firms_df["latitude"].values
+                for comp in _comp_list:
+                    _rlons = comp["c"][0::2]
+                    _rlats = comp["c"][1::2]
+                    lo0, lo1 = min(_rlons), max(_rlons)
+                    la0, la1 = min(_rlats), max(_rlats)
+                    comp["f"] = int((
+                        (_flons >= lo0) & (_flons <= lo1) &
+                        (_flats >= la0) & (_flats <= la1)
+                    ).sum())
+        except Exception:
+            pass
+        # Load precomputed terrain stats (slope, aspect, elevation)
+        _terrain_path = ROOT / "data" / "aoi" / "compartment_terrain.json"
+        if _terrain_path.exists():
+            _terr = json.loads(_terrain_path.read_text(encoding="utf-8"))
+            for i, comp in enumerate(_comp_list):
+                t = _terr.get(str(i), {})
+                comp["sl"] = t.get("slope", 0.0)
+                comp["asp"] = t.get("aspect", 0.0)
+                comp["el"] = t.get("elev", 0.0)
+        # Load precomputed LULC breakdown per compartment
+        _lulc_path = ROOT / "data" / "aoi" / "compartment_lulc.json"
+        if _lulc_path.exists():
+            _lulc = json.loads(_lulc_path.read_text(encoding="utf-8"))
+            for i, comp in enumerate(_comp_list):
+                lc = _lulc.get(str(i), {})
+                comp["lt"] = lc.get("tree", 0)    # % tree
+                comp["ls"] = lc.get("shrub", 0)   # % shrub
+                comp["lg"] = lc.get("grass", 0)   # % grass
+                comp["lc"] = lc.get("crop", 0)    # % crop
+                comp["lb"] = lc.get("built", 0)   # % built
+                comp["lw"] = lc.get("water", 0)   # % water
+        _n_compartments = len(_comp_list)
+        compartments_js = json.dumps(_comp_list, separators=(",", ":"))
+
+    # ── FIRMS Fire History (date-filtered, max 2000 by FRP) ──
+    firms_js = "[]"
+    try:
+        _firms_all = load_firms_all()
+        if not _firms_all.empty:
+            _yr_ago = str(sim_date - timedelta(days=365))
+            _today_s = str(sim_date)
+            _firms_rng = _firms_all[
+                (_firms_all["acq_date"].astype(str) >= _yr_ago)
+                & (_firms_all["acq_date"].astype(str) <= _today_s)
+            ]
+            if len(_firms_rng) > 2000:
+                _firms_rng = _firms_rng.nlargest(2000, "frp")
+            firms_js = json.dumps([
+                {"la": round(float(r.latitude), 4), "lo": round(float(r.longitude), 4),
+                 "f": round(float(r.frp), 1) if pd.notna(r.frp) else 0,
+                 "d": str(r.acq_date)[:10],
+                 "c": str(getattr(r, 'confidence', 'nominal')).lower()}
+                for r in _firms_rng.itertuples()
+            ], separators=(',', ':'))
+    except Exception:
+        pass
+
+    # ── Burn Scars ──
+    burns_js = "[]"
+    try:
+        _burns_df = load_fire_links()
+        if not _burns_df.empty:
+            burns_js = json.dumps([
+                {"la": round(float(r.fire_lat), 4), "lo": round(float(r.fire_lon), 4),
+                 "a": round(float(r.burn_area_ha), 1),
+                 "c": str(r.confidence),
+                 "sd": str(r.scene_date)[:10], "fd": str(r.fire_date)[:10]}
+                for r in _burns_df.itertuples() if pd.notna(r.fire_lat)
+            ], separators=(',', ':'))
+    except Exception:
+        pass
+
+    # ── Predictive Risk Grid (601 cells → small rectangles from centroids) ──
+    pred_js = "[]"
+    _pred_path = ROOT / "outputs" / "dashboard_feed" / "unified_alert.geojson"
+    if _pred_path.exists():
+        try:
+            with open(_pred_path, encoding="utf-8") as _pf:
+                _pred_gj = json.load(_pf)
+            _pred_cells = []
+            _cell_half = 0.015  # ~1.5 km half-width
+            for feat in _pred_gj.get("features", []):
+                props = feat.get("properties", {})
+                coords = feat["geometry"]["coordinates"]
+                clon, clat = coords[0], coords[1]
+                # Build rectangle corners [lon,lat, lon,lat, ...]
+                _rect = [
+                    round(clon - _cell_half, 4), round(clat - _cell_half, 4),
+                    round(clon + _cell_half, 4), round(clat - _cell_half, 4),
+                    round(clon + _cell_half, 4), round(clat + _cell_half, 4),
+                    round(clon - _cell_half, 4), round(clat + _cell_half, 4),
+                ]
+                _pred_cells.append({
+                    "c": _rect,
+                    "s": round(props.get("risk_score", 0), 2),
+                    "l": props.get("risk_level", "LOW"),
+                    "b": props.get("beat", ""),
+                    "r": props.get("range", ""),
+                })
+            pred_js = json.dumps(_pred_cells, separators=(',', ':'))
+        except Exception:
+            pass
+
+    _n_firms = firms_js.count('"la"')
+    _n_burns = burns_js.count('"la"')
+    _n_pred = pred_js.count('"c"')
+
+    # Serve overlay PNGs via HTTP (start once)
+    if "overlay_server" not in st.session_state:
+        import threading, http.server, functools
+        _static_dir = str(ROOT / "dashboard" / "static")
+        handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=_static_dir)
+        _srv = http.server.HTTPServer(("127.0.0.1", 8777), handler)
+        _srv.timeout = 0.1
+        _t = threading.Thread(target=_srv.serve_forever, daemon=True)
+        _t.start()
+        st.session_state["overlay_server"] = True
+    _overlay_base = "http://127.0.0.1:8777"
+    # Load overlay bounds
+    _ov_bounds_path = ROOT / "dashboard" / "static" / "overlay_bounds.json"
+    _ov_bounds = json.loads(_ov_bounds_path.read_text(encoding="utf-8")) if _ov_bounds_path.exists() else {}
+
     # Define the Cesium HTML component with built-in fire spread simulation
     cesium_html = f"""
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="utf-8">
-        <script src="https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js"></script>
-        <link href="https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+        <script src="https://unpkg.com/cesium@1.95.0/Build/Cesium/Cesium.js"></script>
+        <link href="https://unpkg.com/cesium@1.95.0/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
         <style>
             body {{ margin: 0; padding: 0; overflow: hidden; background: #0a0a0a; font-family: 'Segoe UI', system-ui, sans-serif; }}
             #cesiumContainer {{ width: 100%; height: 100%; position: absolute; top: 0; left: 0; }}
-            #hud {{
-                position: absolute; top: 60px; left: 16px;
-                background: rgba(10, 10, 15, 0.92); border: 1px solid rgba(249,115,22,0.3);
-                border-radius: 10px; padding: 16px; color: #e6edf3;
-                width: 270px; z-index: 1000; backdrop-filter: blur(12px);
-                box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+
+            /* ── Animations ── */
+            @keyframes pls {{ 0%,100%{{ opacity:1; }} 50%{{ opacity:0.7; }} }}
+            @keyframes pulse-ring {{ 0%{{ transform:scale(1); opacity:0.8; }} 100%{{ transform:scale(2.5); opacity:0; }} }}
+            @keyframes glow {{ 0%,100%{{ box-shadow: 0 0 8px rgba(239,68,68,0.4); }} 50%{{ box-shadow: 0 0 20px rgba(239,68,68,0.8); }} }}
+
+            /* ── Glassmorphism base ── */
+            .glass {{
+                background: rgba(15,23,42,0.85); backdrop-filter: blur(12px);
+                border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.4); color: #e6edf3;
             }}
-            #hud h3 {{ margin: 0 0 10px; font-size: 0.8rem; color: #f97316; letter-spacing: 1.5px; text-transform: uppercase; }}
+
+            /* ── Layer Control Panel (left) ── */
+            #layerPanel {{
+                position: absolute; top: 60px; left: 16px; z-index: 1000;
+                width: 240px; padding: 14px; max-height: calc(100vh - 120px); overflow-y: auto;
+            }}
+            #layerPanel::-webkit-scrollbar {{ width: 4px; }}
+            #layerPanel::-webkit-scrollbar-thumb {{ background: rgba(255,255,255,0.15); border-radius: 2px; }}
+            .panel-title {{
+                font-size: 0.6rem; font-weight: 800; color: #f97316;
+                letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;
+            }}
+            .layer-row {{
+                display: flex; align-items: center; gap: 8px; padding: 5px 6px;
+                border-radius: 6px; cursor: pointer; transition: background 0.15s;
+                font-size: 0.68rem; margin-bottom: 2px;
+            }}
+            .layer-row:hover {{ background: rgba(255,255,255,0.06); }}
+            .layer-row input[type="checkbox"] {{
+                accent-color: #f97316; width: 14px; height: 14px; cursor: pointer; flex-shrink: 0;
+            }}
+            .layer-icon {{ font-size: 0.85rem; flex-shrink: 0; }}
+            .layer-label {{ flex: 1; }}
+            .layer-count {{
+                font-size: 0.55rem; background: rgba(255,255,255,0.08); padding: 1px 6px;
+                border-radius: 10px; color: #8b949e;
+            }}
+            .panel-sep {{ border: 0; border-top: 1px solid rgba(255,255,255,0.08); margin: 8px 0; }}
+
+            /* FWI badge in layer panel */
+            .fwi-badge {{
+                display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+                border-radius: 8px; margin-bottom: 6px;
+            }}
+            .fwi-badge-val {{ font-size: 1.2rem; font-weight: 800; }}
+            .fwi-badge-label {{ font-size: 0.55rem; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; }}
+            .wx-row {{ display: flex; justify-content: space-between; font-size: 0.65rem; margin-bottom: 3px; }}
+            .wx-lbl {{ color: #8b949e; }}
+            .wx-val {{ font-weight: 600; }}
+
+            /* Simulation buttons */
+            .sim-section {{ margin-top: 4px; }}
+            .b {{
+                display: block; width: 100%; background: rgba(255,255,255,0.06); color: #c9d1d9;
+                border: 1px solid rgba(255,255,255,0.1); padding: 7px 4px;
+                border-radius: 6px; cursor: pointer; font-size: 0.62rem;
+                font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+                transition: all 0.2s; text-align: center; margin-bottom: 3px;
+            }}
+            .brow {{ display: flex; gap: 4px; }}
+            .brow .b {{ margin-bottom: 0; }}
+            .b:hover {{ background: rgba(255,255,255,0.12); }}
+            .b.active {{ background: rgba(239,68,68,0.3); border-color: #ef4444; color: #ef4444; }}
+            .b.running {{ background: rgba(239,68,68,0.8); border-color: #ef4444; color: #fff; animation: pls 1.5s infinite; }}
+
+            /* ── Fire Metrics (right) ── */
+            #fmet {{
+                position: absolute; top: 60px; right: 16px;
+                padding: 14px; width: 200px; z-index: 1000; display: none;
+                border-color: rgba(239,68,68,0.3);
+            }}
+            #fmet h4 {{ margin: 0 0 8px; font-size: 0.65rem; color: #ef4444; letter-spacing: 1.5px; text-transform: uppercase; }}
+            .mv {{ text-align: center; margin-bottom: 5px; }}
+            .mvn {{ font-size: 1.3rem; font-weight: 800; color: #f97316; }}
+            .mvl {{ font-size: 0.55rem; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; }}
             .hr {{ display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.72rem; }}
             .hl {{ color: #8b949e; }}
             .hv {{ font-weight: 600; color: #3b82f6; }}
             .hv.red {{ color: #ef4444; }}
             .hv.amber {{ color: #f59e0b; }}
             .hv.green {{ color: #22c55e; }}
-            .sep {{ border: 0; border-top: 1px solid rgba(255,255,255,0.08); margin: 7px 0; }}
-            .brow {{ display: flex; gap: 4px; margin-top: 8px; }}
-            .b {{
-                flex: 1; background: rgba(255,255,255,0.06); color: #c9d1d9;
-                border: 1px solid rgba(255,255,255,0.1); padding: 7px 4px;
-                border-radius: 6px; cursor: pointer; font-size: 0.62rem;
-                font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;
-            }}
-            .b:hover {{ background: rgba(255,255,255,0.12); }}
-            .b.active {{ background: rgba(239,68,68,0.3); border-color: #ef4444; color: #ef4444; }}
-            .b.running {{ background: rgba(239,68,68,0.8); border-color: #ef4444; color: #fff; animation: pls 1.5s infinite; }}
-            @keyframes pls {{ 0%,100%{{ opacity:1; }} 50%{{ opacity:0.7; }} }}
-            #fmet {{
-                position: absolute; top: 60px; right: 16px;
-                background: rgba(10,10,15,0.92); border: 1px solid rgba(239,68,68,0.3);
-                border-radius: 10px; padding: 14px; color: #e6edf3;
-                width: 200px; z-index: 1000; backdrop-filter: blur(12px);
-                box-shadow: 0 4px 24px rgba(0,0,0,0.5); display: none;
-            }}
-            #fmet h4 {{ margin: 0 0 8px; font-size: 0.65rem; color: #ef4444; letter-spacing: 1.5px; text-transform: uppercase; }}
-            .mv {{ text-align: center; margin-bottom: 5px; }}
-            .mvn {{ font-size: 1.3rem; font-weight: 800; color: #f97316; }}
-            .mvl {{ font-size: 0.55rem; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; }}
+
+            /* ── Status bar (bottom center) ── */
             #sbar {{
                 position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
-                background: rgba(10,10,15,0.85); border: 1px solid rgba(255,255,255,0.1);
-                border-radius: 20px; padding: 6px 20px; color: #8b949e;
-                font-size: 0.62rem; z-index: 1000; backdrop-filter: blur(8px); white-space: nowrap;
+                padding: 6px 20px; font-size: 0.62rem; z-index: 1000; white-space: nowrap;
+                border-radius: 20px;
             }}
             .sd {{ display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }}
             .sd.g {{ background: #22c55e; }}
@@ -901,7 +1147,7 @@ if selected_tab == "3D Digital Twin":
 
             /* ── Top command bar ── */
             #topbar {{
-                position: absolute; top: 0; left: 0; right: 0; z-index: 1000;
+                position: absolute; top: 0; left: 0; right: 0; z-index: 1001;
                 background: linear-gradient(180deg, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0.6) 80%, transparent 100%);
                 padding: 10px 20px 24px; display: flex; align-items: center; gap: 16px;
             }}
@@ -918,18 +1164,47 @@ if selected_tab == "3D Digital Twin":
             .iv.info {{ color: #3b82f6; }}
             .iv.ok {{ color: #22c55e; }}
 
-            /* ── Bottom-left FWI indices strip ── */
+            /* ── Bottom FWI indices strip ── */
             #fwi-strip {{
-                position: absolute; bottom: 50px; left: 16px; z-index: 1000;
-                display: flex; gap: 4px;
+                position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
+                z-index: 1000; display: flex; gap: 4px;
             }}
             .fi {{
-                background: rgba(10,10,15,0.88); border: 1px solid rgba(255,255,255,0.08);
                 border-radius: 6px; padding: 4px 8px; text-align: center; min-width: 44px;
-                backdrop-filter: blur(8px);
+                backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.08);
             }}
-            .fi .fv {{ font-size: 0.8rem; font-weight: 700; color: #f59e0b; }}
+            .fi .fv {{ font-size: 0.8rem; font-weight: 700; }}
             .fi .fl {{ font-size: 0.45rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; }}
+            .fi-low {{ background: rgba(34,197,94,0.15); }}
+            .fi-low .fv {{ color: #22c55e; }}
+            .fi-mod {{ background: rgba(234,179,8,0.15); }}
+            .fi-mod .fv {{ color: #eab308; }}
+            .fi-high {{ background: rgba(249,115,22,0.15); }}
+            .fi-high .fv {{ color: #f97316; }}
+            .fi-vhigh {{ background: rgba(239,68,68,0.15); }}
+            .fi-vhigh .fv {{ color: #ef4444; }}
+
+            /* ── Legend panel (bottom-right, collapsible) ── */
+            #legend-panel {{
+                position: absolute; bottom: 50px; right: 16px; z-index: 1000;
+                padding: 12px 14px; min-width: 200px; max-height: 340px; overflow-y: auto;
+            }}
+            #legend-panel::-webkit-scrollbar {{ width: 3px; }}
+            #legend-panel::-webkit-scrollbar-thumb {{ background: rgba(255,255,255,0.15); border-radius: 2px; }}
+            .leg-title {{ font-size: 0.58rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 5px; }}
+            .leg-group {{ margin-bottom: 8px; }}
+            .leg-group-label {{ font-size: 0.5rem; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }}
+            .lg-row {{ display: flex; align-items: center; gap: 8px; margin-bottom: 2px; font-size: 0.6rem; }}
+            .lg-swatch {{ width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }}
+            .lg-circle {{ width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.2); }}
+            .lg-diamond {{ width: 10px; height: 10px; transform: rotate(45deg); flex-shrink: 0; }}
+            #legend-toggle {{
+                position: absolute; bottom: 50px; right: 16px; z-index: 999;
+                width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.1);
+                background: rgba(15,23,42,0.85); backdrop-filter: blur(8px); color: #e6edf3;
+            }}
         </style>
     </head>
     <body>
@@ -937,7 +1212,7 @@ if selected_tab == "3D Digital Twin":
 
         <!-- Top command bar with overlapping indices -->
         <div id="topbar">
-            <div class="logo">Van Suraksha Command Horizon</div>
+            <div class="logo">Van Suraksha 3D Command Center</div>
             <div class="sep"></div>
             <div class="idx"><div class="iv crit">{sim_sev}</div><div class="il">Severity</div></div>
             <div class="idx"><div class="iv warn">{sim_frp:.1f}</div><div class="il">FRP (MW)</div></div>
@@ -951,73 +1226,226 @@ if selected_tab == "3D Digital Twin":
             <div style="margin-left:auto;font-size:0.55rem;color:#8b949e;">{sim_date} &bull; Guna Division, MP</div>
         </div>
 
-        <div id="hud">
-            <h3>Muhurta-2D Fire Simulation</h3>
-            <div class="hr"><span class="hl">Date</span><span class="hv">{sim_date}</span></div>
-            <div class="hr"><span class="hl">Severity</span><span class="hv red">{sim_sev}</span></div>
-            <div class="hr"><span class="hl">Peak FRP</span><span class="hv amber">{sim_frp:.1f} MW</span></div>
-            <hr class="sep">
-            <div class="hr"><span class="hl">Sim Time</span><span class="hv" id="stime">00:00</span></div>
-            <div class="hr"><span class="hl">Intensity</span><span class="hv red" id="intensity-val">-- kW/m</span></div>
-            <div class="hr"><span class="hl">Spread</span><span class="hv amber" id="ros-val">-- m/min</span></div>
-            <div class="hr"><span class="hl">Flame</span><span class="hv" id="flame-val" style="color:#4ecdc4;">-- m</span></div>
-            <div class="hr"><span class="hl">Status</span><span class="hv green" id="sstat">Ready</span></div>
-            <div class="hr"><span class="hl">Burned Area</span><span class="hv" id="sarea">0 ha</span></div>
-            <div class="hr"><span class="hl">Fire Class</span><span class="hv" id="sfcls">&mdash;</span></div>
-            <div class="brow">
-                <button class="b" id="simBtn" onclick="toggleSim()">START SIM</button>
-                <button class="b" id="lnBtn" onclick="setM('FIRELINE')">Fireline</button>
-                <button class="b" id="igBtn" onclick="setM('BACKFIRE')">Ignite</button>
+        <!-- ═══ Layer Control Panel (left) ═══ -->
+        <div id="layerPanel" class="glass">
+            <div class="panel-title">Layers</div>
+
+            <label class="layer-row">
+                <input type="checkbox" id="chk-nrt" checked onchange="toggleLayerNrt()">
+                <span class="layer-icon" style="color:#ef4444;">&#x1f525;</span>
+                <span class="layer-label">NRT Fires</span>
+                <span class="layer-count" id="cnt-nrt">{sim_n_fires}</span>
+            </label>
+            <label class="layer-row">
+                <input type="checkbox" id="chk-hist" checked onchange="toggleLayerHist()">
+                <span class="layer-icon" style="color:#f97316;">&#x1f4cd;</span>
+                <span class="layer-label">Fire History</span>
+                <span class="layer-count" id="cnt-hist">{_n_firms}</span>
+            </label>
+            <label class="layer-row">
+                <input type="checkbox" id="chk-burn" checked onchange="toggleLayerBurn()">
+                <span class="layer-icon" style="color:#dc2626;">&#x1f4a0;</span>
+                <span class="layer-label">Burn Scars</span>
+                <span class="layer-count" id="cnt-burn">{_n_burns}</span>
+            </label>
+            <label class="layer-row">
+                <input type="checkbox" id="chk-pred" onchange="toggleLayerPred()">
+                <span class="layer-icon" style="color:#eab308;">&#x26a0;</span>
+                <span class="layer-label">Risk Grid</span>
+                <span class="layer-count" id="cnt-pred">{_n_pred}</span>
+            </label>
+            <label class="layer-row">
+                <input type="checkbox" id="chk-forest" checked onchange="toggleForest2()">
+                <span class="layer-icon" style="color:#22c55e;">&#x1f333;</span>
+                <span class="layer-label">3D Forest</span>
+                <span class="layer-count">{_n_compartments}</span>
+            </label>
+            <label class="layer-row">
+                <input type="checkbox" id="chk-lulc" checked onchange="toggleLulc2()">
+                <span class="layer-icon" style="color:#84cc16;">&#x1f5fa;</span>
+                <span class="layer-label">LULC</span>
+            </label>
+            <label class="layer-row">
+                <input type="checkbox" id="chk-slope" onchange="toggleSlope2()">
+                <span class="layer-icon" style="color:#f97316;">&#x26f0;</span>
+                <span class="layer-label">Slope</span>
+            </label>
+            <label class="layer-row">
+                <input type="checkbox" id="chk-aspect" onchange="toggleAspect2()">
+                <span class="layer-icon" style="color:#3b82f6;">&#x1f9ed;</span>
+                <span class="layer-label">Aspect</span>
+            </label>
+
+            <hr class="panel-sep">
+
+            <!-- FWI badge -->
+            <div class="fwi-badge" style="background:rgba({{"239,68,68" if sim_fwi_val > 30 else "249,115,22" if sim_fwi_val > 15 else "234,179,8" if sim_fwi_val > 5 else "34,197,94"}},0.15);
+                border:1px solid rgba({{"239,68,68" if sim_fwi_val > 30 else "249,115,22" if sim_fwi_val > 15 else "234,179,8" if sim_fwi_val > 5 else "34,197,94"}},0.3);">
+                <div>
+                    <div class="fwi-badge-val" style="color:{{"#ef4444" if sim_fwi_val > 30 else "#f97316" if sim_fwi_val > 15 else "#eab308" if sim_fwi_val > 5 else "#22c55e"}};">{sim_fwi_val:.1f}</div>
+                    <div class="fwi-badge-label">FWI &bull; {sim_danger}</div>
+                </div>
             </div>
-            <button class="b" style="width:100%;margin-top:4px;" onclick="resetSim()">Reset</button>
+            <div class="wx-row"><span class="wx-lbl">&#x1f321; Temp</span><span class="wx-val" style="color:#f97316;">{sim_temp:.1f}&deg;C</span></div>
+            <div class="wx-row"><span class="wx-lbl">&#x1f4a8; Wind</span><span class="wx-val" style="color:#3b82f6;">{sim_wind_speed:.1f} km/h</span></div>
+            <div class="wx-row"><span class="wx-lbl">&#x1f4a7; RH</span><span class="wx-val" style="color:#22c55e;">{sim_rh:.1f}%</span></div>
+
+            <hr class="panel-sep">
+
+            <!-- Simulation controls -->
+            <div class="sim-section">
+                <div style="font-size:0.55rem;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">Muhurta-2D Simulation</div>
+                <div class="hr"><span class="hl">Time</span><span class="hv" id="stime">00:00</span></div>
+                <div class="hr"><span class="hl">Intensity</span><span class="hv red" id="intensity-val">-- kW/m</span></div>
+                <div class="hr"><span class="hl">Spread</span><span class="hv amber" id="ros-val">-- m/min</span></div>
+                <div class="hr"><span class="hl">Flame</span><span class="hv" id="flame-val" style="color:#4ecdc4;">-- m</span></div>
+                <div class="hr"><span class="hl">Status</span><span class="hv green" id="sstat">Ready</span></div>
+                <div class="hr"><span class="hl">Area</span><span class="hv" id="sarea">0 ha</span></div>
+                <div class="hr"><span class="hl">Class</span><span class="hv" id="sfcls">&mdash;</span></div>
+                <div class="brow" style="margin-top:6px;">
+                    <button class="b" id="simBtn" onclick="toggleSim()">&#x25b6; START</button>
+                    <button class="b" id="lnBtn" onclick="setM('FIRELINE')">Fireline</button>
+                    <button class="b" id="igBtn" onclick="setM('BACKFIRE')">Ignite</button>
+                </div>
+                <button class="b" onclick="resetSim()">&#x21ba; Reset</button>
+            </div>
         </div>
 
-        <div id="fmet">
+        <!-- ═══ Fire Behavior Metrics (right, shown during sim) ═══ -->
+        <div id="fmet" class="glass">
             <h4>Fire Behavior</h4>
             <div class="mv"><div class="mvn" id="mRos">{sim_ros:.1f}</div><div class="mvl">Rate of Spread (m/min)</div></div>
             <div class="mv"><div class="mvn" id="mInt">{sim_intensity:.0f}</div><div class="mvl">Byram Intensity (kW/m)</div></div>
             <div class="mv"><div class="mvn" id="mWnd">{sim_wind_speed:.1f}</div><div class="mvl">Wind Speed (km/h)</div></div>
-            <hr class="sep">
+            <hr class="panel-sep">
             <div class="hr"><span class="hl">FWI</span><span class="hv red">{sim_fwi_val:.1f}</span></div>
             <div class="hr"><span class="hl">Mode</span><span class="hv red">Defensive</span></div>
         </div>
 
-        <!-- FWI sub-indices strip overlapping bottom-left -->
+        <!-- ═══ FWI Indices Strip (bottom center) ═══ -->
         <div id="fwi-strip">
-            <div class="fi"><div class="fv">{sim_ffmc:.1f}</div><div class="fl">FFMC</div></div>
-            <div class="fi"><div class="fv">{sim_dmc:.1f}</div><div class="fl">DMC</div></div>
-            <div class="fi"><div class="fv">{sim_dc:.1f}</div><div class="fl">DC</div></div>
-            <div class="fi"><div class="fv">{sim_isi:.1f}</div><div class="fl">ISI</div></div>
-            <div class="fi"><div class="fv">{sim_bui:.1f}</div><div class="fl">BUI</div></div>
-            <div class="fi"><div class="fv" style="color:#ef4444;">{sim_fwi_val:.1f}</div><div class="fl">FWI</div></div>
+            <div class="fi {"fi-vhigh" if sim_ffmc > 90 else "fi-high" if sim_ffmc > 84 else "fi-mod" if sim_ffmc > 70 else "fi-low"}"><div class="fv">{sim_ffmc:.1f}</div><div class="fl">FFMC</div></div>
+            <div class="fi {"fi-vhigh" if sim_dmc > 60 else "fi-high" if sim_dmc > 30 else "fi-mod" if sim_dmc > 15 else "fi-low"}"><div class="fv">{sim_dmc:.1f}</div><div class="fl">DMC</div></div>
+            <div class="fi {"fi-vhigh" if sim_dc > 400 else "fi-high" if sim_dc > 200 else "fi-mod" if sim_dc > 80 else "fi-low"}"><div class="fv">{sim_dc:.1f}</div><div class="fl">DC</div></div>
+            <div class="fi {"fi-vhigh" if sim_isi > 10 else "fi-high" if sim_isi > 5 else "fi-mod" if sim_isi > 2 else "fi-low"}"><div class="fv">{sim_isi:.1f}</div><div class="fl">ISI</div></div>
+            <div class="fi {"fi-vhigh" if sim_bui > 60 else "fi-high" if sim_bui > 30 else "fi-mod" if sim_bui > 15 else "fi-low"}"><div class="fv">{sim_bui:.1f}</div><div class="fl">BUI</div></div>
+            <div class="fi {"fi-vhigh" if sim_fwi_val > 30 else "fi-high" if sim_fwi_val > 15 else "fi-mod" if sim_fwi_val > 5 else "fi-low"}"><div class="fv">{sim_fwi_val:.1f}</div><div class="fl">FWI</div></div>
+        </div>
+
+        <!-- ═══ Unified Legend (bottom-right) ═══ -->
+        <div id="legend-panel" class="glass">
+            <div class="leg-title" style="color:#f97316;">Legend</div>
+
+            <div class="leg-group">
+                <div class="leg-group-label">NRT Fires</div>
+                <div class="lg-row"><div class="lg-circle" style="background:#ef4444;"></div> CRITICAL</div>
+                <div class="lg-row"><div class="lg-circle" style="background:#f97316;"></div> HIGH / Other</div>
+            </div>
+            <div class="leg-group">
+                <div class="leg-group-label">FIRMS History</div>
+                <div class="lg-row"><div class="lg-circle" style="background:#dc2626;"></div> High conf</div>
+                <div class="lg-row"><div class="lg-circle" style="background:#f97316;"></div> Nominal</div>
+                <div class="lg-row"><div class="lg-circle" style="background:#eab308;"></div> Low conf</div>
+            </div>
+            <div class="leg-group">
+                <div class="leg-group-label">Burn Scars</div>
+                <div class="lg-row"><div class="lg-diamond" style="background:#dc2626;"></div> HIGH</div>
+                <div class="lg-row"><div class="lg-diamond" style="background:#f59e0b;"></div> MEDIUM</div>
+                <div class="lg-row"><div class="lg-diamond" style="background:#6b7280;"></div> LOW</div>
+            </div>
+            <div class="leg-group">
+                <div class="leg-group-label">Risk Grid</div>
+                <div class="lg-row"><div class="lg-swatch" style="background:#dc2626;"></div> CRITICAL</div>
+                <div class="lg-row"><div class="lg-swatch" style="background:#f97316;"></div> HIGH</div>
+                <div class="lg-row"><div class="lg-swatch" style="background:#eab308;"></div> MODERATE</div>
+                <div class="lg-row"><div class="lg-swatch" style="background:#22c55e;"></div> LOW</div>
+            </div>
+            <div class="leg-group">
+                <div class="leg-group-label">Forest Health</div>
+                <div class="lg-row"><div class="lg-swatch" style="background:#22c55e;"></div> Healthy (&ge;80%)</div>
+                <div class="lg-row"><div class="lg-swatch" style="background:#eab308;"></div> Moderate (60-80%)</div>
+                <div class="lg-row"><div class="lg-swatch" style="background:#f97316;"></div> Stressed (40-60%)</div>
+                <div class="lg-row"><div class="lg-swatch" style="background:#ef4444;"></div> Degraded (&lt;40%)</div>
+            </div>
         </div>
 
         <div id="sbar">
             <span class="sd g" id="sdot"></span>
-            <span id="stxt">Muhurta-2D PDE Engine Ready &mdash; {sim_n_fires} fire point(s) loaded</span>
+            <span id="stxt">3D Command Center &mdash; {sim_n_fires} NRT fires &bull; {_n_firms} FIRMS &bull; {_n_burns} burn scars &bull; {_n_compartments} compartments &bull; {_n_pred} risk cells</span>
         </div>
 
         <script>
-            // ── Viewer ──
+            // ── All data layers (declare first) ──
+            const FIRES = {fire_points_js};
+            const CMP = {compartments_js};
+            const HIST = {firms_js};
+            const BURNS = {burns_js};
+            const PRED = {pred_js};
+
+            // ── Viewer with real 3D terrain ──
             const viewer = new Cesium.Viewer('cesiumContainer', {{
                 imageryProvider: new Cesium.ArcGisMapServerImageryProvider({{
                     url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
                 }}),
-                terrainProvider: new Cesium.EllipsoidTerrainProvider(),
-                baseLayerPicker: false, infoBox: false, animation: false, timeline: false,
+                terrainProvider: Cesium.createWorldTerrain({{ requestVertexNormals: true }}),
+                baseLayerPicker: false, infoBox: true, animation: false, timeline: false,
                 geocoder: false, homeButton: false, sceneModePicker: false,
                 navigationHelpButton: false, fullscreenButton: false
             }});
-            viewer.scene.globe.depthTestAgainstTerrain = false;
+            viewer.scene.globe.depthTestAgainstTerrain = true;
+            viewer.scene.globe.enableLighting = true;
 
+            // ── LULC overlay (ESA WorldCover 10m) ──
+            var lulcBounds = {json.dumps(_ov_bounds.get("lulc", {{}}))};
+            var lulcLayer = null;
+            if (lulcBounds.w) {{
+                lulcLayer = viewer.imageryLayers.addImageryProvider(
+                    new Cesium.SingleTileImageryProvider({{
+                        url: '{_overlay_base}/lulc.png',
+                        rectangle: Cesium.Rectangle.fromDegrees(lulcBounds.w, lulcBounds.s, lulcBounds.e, lulcBounds.n)
+                    }})
+                );
+                lulcLayer.alpha = 0.7;
+                lulcLayer.show = true;
+            }}
+
+            // ── Slope overlay ──
+            var slopeBounds = {json.dumps(_ov_bounds.get("slope", {{}}))};
+            var slopeLayer = null;
+            if (slopeBounds.w) {{
+                slopeLayer = viewer.imageryLayers.addImageryProvider(
+                    new Cesium.SingleTileImageryProvider({{
+                        url: '{_overlay_base}/slope.png',
+                        rectangle: Cesium.Rectangle.fromDegrees(slopeBounds.w, slopeBounds.s, slopeBounds.e, slopeBounds.n)
+                    }})
+                );
+                slopeLayer.alpha = 0.6;
+                slopeLayer.show = false;
+            }}
+
+            // ── Aspect overlay ──
+            var aspectBounds = {json.dumps(_ov_bounds.get("aspect", {{}}))};
+            var aspectLayer = null;
+            if (aspectBounds.w) {{
+                aspectLayer = viewer.imageryLayers.addImageryProvider(
+                    new Cesium.SingleTileImageryProvider({{
+                        url: '{_overlay_base}/aspect.png',
+                        rectangle: Cesium.Rectangle.fromDegrees(aspectBounds.w, aspectBounds.s, aspectBounds.e, aspectBounds.n)
+                    }})
+                );
+                aspectLayer.alpha = 0.6;
+                aspectLayer.show = false;
+            }}
+
+            // Camera: if fires → zoom to fire, else overview all compartments
+            const _hasFires = FIRES.length > 0;
             viewer.camera.flyTo({{
-                destination: Cesium.Cartesian3.fromDegrees({sim_center_lon}, {sim_center_lat} - 0.015, 6000),
-                orientation: {{ pitch: Cesium.Math.toRadians(-40), heading: Cesium.Math.toRadians(15) }},
+                destination: _hasFires
+                    ? Cesium.Cartesian3.fromDegrees({sim_center_lon}, {sim_center_lat} - 0.015, 6000)
+                    : Cesium.Cartesian3.fromDegrees(77.15, 24.30, 55000),
+                orientation: {{ pitch: Cesium.Math.toRadians(-35), heading: Cesium.Math.toRadians(15) }},
                 duration: 2.0
             }});
-
-            // ── Fire data injected from alert ──
-            const FIRES = {fire_points_js};
             const MLAT = 111320;
             const MLON = MLAT * Math.cos({sim_center_lat} * Math.PI / 180);
             const WRAD = ({sim_wind_dir} + 180) * Math.PI / 180;
@@ -1055,12 +1483,145 @@ if selected_tab == "3D Digital Twin":
                 }}
             }});
 
-            // ── Fire detection point markers ──
+            // ── 3D Forest Digital Twin — LULC-aware compartments + billboards ──
+            const forestEntities = [];
+            const bbEntities = [];
+            let forestVisible = true;
+
+            function aspDir(a) {{
+                if (a < 22.5 || a >= 337.5) return 'N';
+                if (a < 67.5) return 'NE'; if (a < 112.5) return 'E';
+                if (a < 157.5) return 'SE'; if (a < 202.5) return 'S';
+                if (a < 247.5) return 'SW'; if (a < 292.5) return 'W'; return 'NW';
+            }}
+            function sRand(s) {{ var x = Math.sin(s) * 10000; return x - Math.floor(x); }}
+
+            // SVG billboards for each LULC type
+            var svgTree = 'data:image/svg+xml,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="48"><polygon points="16,2 4,20 12,18 6,32 12,30 8,42 24,42 20,30 26,32 20,18 28,20" fill="#15803d" stroke="#0a5c2a" stroke-width="1"/><rect x="13" y="42" width="6" height="6" fill="#7c3f00"/></svg>');
+            var svgShrub = 'data:image/svg+xml,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><ellipse cx="16" cy="18" rx="13" ry="10" fill="#4d7c0f" stroke="#365314" stroke-width="1"/><ellipse cx="10" cy="14" rx="8" ry="7" fill="#65a30d" opacity="0.7"/><rect x="14" y="26" width="4" height="6" fill="#7c3f00"/></svg>');
+            var svgCrop = 'data:image/svg+xml,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="44"><line x1="14" y1="44" x2="14" y2="12" stroke="#a16207" stroke-width="2"/><line x1="14" y1="20" x2="6" y2="14" stroke="#a16207" stroke-width="1.5"/><line x1="14" y1="20" x2="22" y2="14" stroke="#a16207" stroke-width="1.5"/><ellipse cx="14" cy="8" rx="7" ry="6" fill="#eab308" stroke="#ca8a04" stroke-width="1"/><ellipse cx="8" cy="12" rx="4" ry="3" fill="#facc15" opacity="0.6"/><ellipse cx="20" cy="12" rx="4" ry="3" fill="#facc15" opacity="0.6"/></svg>');
+            var svgGrass = 'data:image/svg+xml,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><path d="M6,28 Q8,12 10,4" stroke="#65a30d" fill="none" stroke-width="2"/><path d="M14,28 Q14,10 14,2" stroke="#4d7c0f" fill="none" stroke-width="2"/><path d="M22,28 Q20,12 18,4" stroke="#65a30d" fill="none" stroke-width="2"/><path d="M10,28 Q12,16 16,8" stroke="#84cc16" fill="none" stroke-width="1.5"/><path d="M18,28 Q16,16 12,8" stroke="#84cc16" fill="none" stroke-width="1.5"/></svg>');
+            var svgBuilt = 'data:image/svg+xml,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="28"><rect x="3" y="10" width="18" height="18" fill="#6b7280" stroke="#4b5563" stroke-width="1"/><polygon points="12,2 1,12 23,12" fill="#9ca3af" stroke="#6b7280" stroke-width="1"/><rect x="9" y="18" width="6" height="10" fill="#fbbf24"/></svg>');
+            var svgWater = 'data:image/svg+xml,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20"><path d="M2,10 Q7,4 14,10 Q21,16 26,10" stroke="#3b82f6" fill="none" stroke-width="2.5"/><path d="M2,16 Q7,10 14,16 Q21,22 26,16" stroke="#60a5fa" fill="none" stroke-width="2"/></svg>');
+
+            var lcIcons = [
+                {{key:'lt', svg:svgTree,  w:24, h:36}},
+                {{key:'ls', svg:svgShrub, w:22, h:22}},
+                {{key:'lg', svg:svgGrass, w:20, h:20}},
+                {{key:'lc', svg:svgCrop,  w:20, h:32}},
+                {{key:'lb', svg:svgBuilt, w:18, h:22}},
+                {{key:'lw', svg:svgWater, w:22, h:16}},
+            ];
+
+            CMP.forEach(function(d, idx) {{
+                try {{
+                    // Extruded compartment polygon
+                    var pos = Cesium.Cartesian3.fromDegreesArray(d.c);
+                    var e = viewer.entities.add({{
+                        name: 'FC',
+                        polygon: {{
+                            hierarchy: new Cesium.PolygonHierarchy(pos),
+                            material: Cesium.Color.fromCssColorString(d.cl).withAlpha(0.55),
+                            extrudedHeight: d.h,
+                            height: 0,
+                            outline: true,
+                            outlineColor: d.f > 0
+                                ? Cesium.Color.RED.withAlpha(0.8)
+                                : Cesium.Color.WHITE.withAlpha(0.2),
+                        }},
+                        description:
+                            '<table style="font-size:13px;border-collapse:collapse;">' +
+                            '<tr><td style="padding:2px 8px;color:#888;">Beat</td><td><b>' + d.b + '</b></td></tr>' +
+                            '<tr><td style="padding:2px 8px;color:#888;">Range</td><td><b>' + d.r + '</b></td></tr>' +
+                            '<tr><td colspan="2" style="border-top:1px solid #333;padding-top:4px;font-size:11px;color:#666;">LAND COVER</td></tr>' +
+                            '<tr><td style="padding:2px 8px;color:#15803d;">&#x1f332; Trees</td><td><b>' + d.lt + '%</b></td></tr>' +
+                            '<tr><td style="padding:2px 8px;color:#4d7c0f;">&#x1fab4; Shrubs</td><td>' + d.ls + '%</td></tr>' +
+                            '<tr><td style="padding:2px 8px;color:#84cc16;">&#x1f33f; Grass</td><td>' + d.lg + '%</td></tr>' +
+                            '<tr><td style="padding:2px 8px;color:#eab308;">&#x1f33e; Crops</td><td>' + d.lc + '%</td></tr>' +
+                            (d.lb > 0 ? '<tr><td style="padding:2px 8px;color:#6b7280;">&#x1f3d8; Built</td><td>' + d.lb + '%</td></tr>' : '') +
+                            (d.lw > 0 ? '<tr><td style="padding:2px 8px;color:#3b82f6;">&#x1f4a7; Water</td><td>' + d.lw + '%</td></tr>' : '') +
+                            '<tr><td colspan="2" style="border-top:1px solid #333;padding-top:4px;font-size:11px;color:#666;">FOREST STATUS</td></tr>' +
+                            '<tr><td style="padding:2px 8px;color:#888;">Area</td><td>' + d.a + ' ha (was ' + d.ao + ')</td></tr>' +
+                            '<tr><td style="padding:2px 8px;color:#888;">Health</td><td style="color:' + d.cl + ';font-weight:700;">' + (d.hl * 100).toFixed(0) + '%</td></tr>' +
+                            '<tr><td style="padding:2px 8px;color:#888;">Fires</td><td style="color:' + (d.f > 0 ? '#ef4444' : '#22c55e') + ';">' + d.f + '</td></tr>' +
+                            '<tr><td colspan="2" style="border-top:1px solid #333;padding-top:4px;font-size:11px;color:#666;">TERRAIN</td></tr>' +
+                            '<tr><td style="padding:2px 8px;color:#888;">Elevation</td><td>' + d.el + ' m</td></tr>' +
+                            '<tr><td style="padding:2px 8px;color:#888;">Slope</td><td>' + d.sl + '&deg;</td></tr>' +
+                            '<tr><td style="padding:2px 8px;color:#888;">Aspect</td><td>' + d.asp + '&deg; (' + aspDir(d.asp) + ')</td></tr>' +
+                            '</table>',
+                    }});
+                    forestEntities.push(e);
+
+                    // LULC-aware billboard placement — proportional to actual land cover %
+                    var lons = d.c.filter(function(_, i) {{ return i % 2 === 0; }});
+                    var lats = d.c.filter(function(_, i) {{ return i % 2 === 1; }});
+                    var loMin = Math.min.apply(null, lons), loMax = Math.max.apply(null, lons);
+                    var laMin = Math.min.apply(null, lats), laMax = Math.max.apply(null, lats);
+                    var seed = idx * 31;
+
+                    lcIcons.forEach(function(lc) {{
+                        var pct = d[lc.key] || 0;
+                        // Scale: 1 billboard per ~12% coverage, min 0, max 8
+                        var n = Math.min(Math.round(pct / 12), 8);
+                        for (var t = 0; t < n; t++) {{
+                            seed++;
+                            var tlon = loMin + sRand(seed * 7) * (loMax - loMin);
+                            var tlat = laMin + sRand(seed * 11) * (laMax - laMin);
+                            var te = viewer.entities.add({{
+                                name: 'BB',
+                                position: Cesium.Cartesian3.fromDegrees(tlon, tlat, d.h + 3),
+                                billboard: {{
+                                    image: lc.svg,
+                                    width: lc.w,
+                                    height: lc.h,
+                                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                                    scaleByDistance: new Cesium.NearFarScalar(3000, 1.5, 60000, 0.25),
+                                }},
+                            }});
+                            bbEntities.push(te);
+                        }}
+                    }});
+                }} catch(ex) {{ /* skip bad geometry */ }}
+            }});
+
+            // ── Layer toggle functions (wired to checkbox onchange) ──
+            function toggleForest2() {{
+                forestVisible = document.getElementById('chk-forest').checked;
+                forestEntities.forEach(function(e) {{ e.show = forestVisible; }});
+                bbEntities.forEach(function(e) {{ e.show = forestVisible; }});
+            }}
+            function toggleLulc2() {{
+                if (!lulcLayer) return;
+                lulcLayer.show = document.getElementById('chk-lulc').checked;
+            }}
+            function toggleSlope2() {{
+                if (!slopeLayer) return;
+                slopeLayer.show = document.getElementById('chk-slope').checked;
+            }}
+            function toggleAspect2() {{
+                if (!aspectLayer) return;
+                aspectLayer.show = document.getElementById('chk-aspect').checked;
+            }}
+
+            // ── NRT Fire markers (with pulsing effect) ──
+            const nrtEntities = [];
+            let pulsePhase = 0;
             FIRES.forEach((f, i) => {{
-                viewer.entities.add({{
+                const isCrit = f.severity === 'CRITICAL';
+                const baseSize = isCrit ? 16 : 12;
+                const e = viewer.entities.add({{
                     position: Cesium.Cartesian3.fromDegrees(f.lon, f.lat),
                     point: {{
-                        pixelSize: 14, color: f.severity === 'CRITICAL' ? Cesium.Color.RED : Cesium.Color.ORANGE,
+                        pixelSize: new Cesium.CallbackProperty(() => {{
+                            return baseSize + Math.sin(pulsePhase + i) * 4;
+                        }}, false),
+                        color: isCrit ? Cesium.Color.RED.withAlpha(0.9) : Cesium.Color.ORANGE.withAlpha(0.9),
                         outlineColor: Cesium.Color.WHITE, outlineWidth: 2,
                         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
                     }},
@@ -1069,11 +1630,104 @@ if selected_tab == "3D Digital Twin":
                         font: '11px sans-serif bold', fillColor: Cesium.Color.WHITE,
                         style: Cesium.LabelStyle.FILL_AND_OUTLINE, outlineWidth: 3, outlineColor: Cesium.Color.BLACK,
                         verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                        pixelOffset: new Cesium.Cartesian2(0, -18),
+                        pixelOffset: new Cesium.Cartesian2(0, -22),
                         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                    }}
+                    }},
+                    description: '<b>NRT Fire Alert</b><br>Severity: ' + f.severity +
+                        '<br>FRP: ' + f.frp.toFixed(1) + ' MW<br>ROS: ' + f.ros.toFixed(1) +
+                        ' m/min<br>Intensity: ' + f.intensity.toFixed(0) + ' kW/m'
                 }});
+                nrtEntities.push(e);
             }});
+            // Animate NRT pulse
+            viewer.clock.onTick.addEventListener(() => {{ pulsePhase += 0.08; }});
+
+            function toggleLayerNrt() {{
+                const vis = document.getElementById('chk-nrt').checked;
+                nrtEntities.forEach(e => e.show = vis);
+            }}
+
+            // ── FIRMS Fire History layer ──
+            const histEntities = [];
+            HIST.forEach(h => {{
+                const sz = Math.max(4, Math.min(14, h.f / 10));
+                const clr = h.c === 'high' ? '#dc2626' : h.c === 'nominal' ? '#f97316' : '#eab308';
+                histEntities.push(viewer.entities.add({{
+                    position: Cesium.Cartesian3.fromDegrees(h.lo, h.la),
+                    point: {{
+                        pixelSize: sz,
+                        color: Cesium.Color.fromCssColorString(clr).withAlpha(0.7),
+                        outlineColor: Cesium.Color.BLACK.withAlpha(0.3), outlineWidth: 1,
+                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+                    }},
+                    description: '<b>FIRMS Detection</b><br>Date: ' + h.d +
+                        '<br>FRP: ' + h.f + ' MW<br>Confidence: ' + h.c,
+                    show: true
+                }}));
+            }});
+
+            function toggleLayerHist() {{
+                const vis = document.getElementById('chk-hist').checked;
+                histEntities.forEach(e => e.show = vis);
+            }}
+
+            // ── Burn Scars layer (diamond-like markers) ──
+            var svgDiamond = 'data:image/svg+xml,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">' +
+                '<polygon points="10,1 19,10 10,19 1,10" fill="#dc2626" stroke="#fff" stroke-width="1.5"/></svg>');
+            var svgDiamondMed = 'data:image/svg+xml,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">' +
+                '<polygon points="10,1 19,10 10,19 1,10" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/></svg>');
+            var svgDiamondLow = 'data:image/svg+xml,' + encodeURIComponent(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">' +
+                '<polygon points="10,1 19,10 10,19 1,10" fill="#6b7280" stroke="#fff" stroke-width="1.5"/></svg>');
+
+            const burnEntities = [];
+            BURNS.forEach(b => {{
+                const sz = Math.max(14, Math.min(28, b.a / 50));
+                const svg = b.c.includes('HIGH') ? svgDiamond : b.c.includes('MED') ? svgDiamondMed : svgDiamondLow;
+                burnEntities.push(viewer.entities.add({{
+                    position: Cesium.Cartesian3.fromDegrees(b.lo, b.la),
+                    billboard: {{
+                        image: svg, width: sz, height: sz,
+                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+                        scaleByDistance: new Cesium.NearFarScalar(5000, 1.2, 80000, 0.3)
+                    }},
+                    description: '<b>Burn Scar</b><br>Area: ' + b.a + ' ha' +
+                        '<br>Scene: ' + b.sd + '<br>Fire: ' + b.fd + '<br>Confidence: ' + b.c,
+                    show: true
+                }}));
+            }});
+
+            function toggleLayerBurn() {{
+                const vis = document.getElementById('chk-burn').checked;
+                burnEntities.forEach(e => e.show = vis);
+            }}
+
+            // ── Predictive Risk Grid layer ──
+            const predEntities = [];
+            const riskColors = {{ CRITICAL: '#dc2626', HIGH: '#f97316', MODERATE: '#eab308', LOW: '#22c55e' }};
+            PRED.forEach(p => {{
+                const clr = riskColors[p.l] || '#22c55e';
+                predEntities.push(viewer.entities.add({{
+                    polygon: {{
+                        hierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(p.c)),
+                        material: Cesium.Color.fromCssColorString(clr).withAlpha(0.35),
+                        height: 0, outline: true,
+                        outlineColor: Cesium.Color.fromCssColorString(clr).withAlpha(0.8),
+                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+                    }},
+                    description: '<b>Risk Cell</b><br>Beat: ' + p.b +
+                        '<br>Range: ' + p.r + '<br>Score: ' + (p.s * 100).toFixed(0) +
+                        '%<br>Level: ' + p.l,
+                    show: false
+                }}));
+            }});
+
+            function toggleLayerPred() {{
+                const vis = document.getElementById('chk-pred').checked;
+                predEntities.forEach(e => e.show = vis);
+            }}
 
             // ── Elliptical fire spread model ──
             function firePeri(ctr, t, ros, scl) {{
@@ -1151,7 +1805,7 @@ if selected_tab == "3D Digital Twin":
             function toggleSim() {{
                 if (running) {{
                     running = false; if (socket) socket.close();
-                    document.getElementById('simBtn').innerText = 'START SIM';
+                    document.getElementById('simBtn').innerHTML = '&#x25b6; START';
                     document.getElementById('simBtn').classList.remove('running');
                     document.getElementById('sstat').innerText = 'Stopped';
                     document.getElementById('sdot').className = 'sd g';
@@ -1159,7 +1813,7 @@ if selected_tab == "3D Digital Twin":
                 }}
 
                 running = true;
-                document.getElementById('simBtn').innerText = 'STOP';
+                document.getElementById('simBtn').innerHTML = '&#x23f9; STOP';
                 document.getElementById('simBtn').classList.add('running');
                 document.getElementById('sstat').innerText = 'Connecting...';
                 document.getElementById('sdot').className = 'sd r';
@@ -1202,7 +1856,7 @@ if selected_tab == "3D Digital Twin":
                 running = false; clearInterval(timer); st = 0;
                 fCoords = []; cCoords = []; intCount = 0;
                 viewer.entities.values.filter(e => e.name === 'Intervention').forEach(e => viewer.entities.remove(e));
-                document.getElementById('simBtn').innerText = 'START SIM';
+                document.getElementById('simBtn').innerText = '&#x25b6; START';
                 document.getElementById('simBtn').classList.remove('running');
                 document.getElementById('sstat').innerText = 'Ready';
                 document.getElementById('sstat').className = 'hv green';
@@ -1211,7 +1865,9 @@ if selected_tab == "3D Digital Twin":
                 document.getElementById('sfcls').innerText = '\u2014';
                 document.getElementById('fmet').style.display = 'none';
                 document.getElementById('sdot').className = 'sd g';
-                document.getElementById('stxt').innerText = 'Muhurta-2D PDE Engine Ready \u2014 ' + FIRES.length + ' fire point(s) loaded';
+                document.getElementById('stxt').innerText = '3D Command Center \u2014 ' + FIRES.length + ' NRT fires \u2022 ' +
+                    HIST.length + ' FIRMS \u2022 ' + BURNS.length + ' burn scars \u2022 ' +
+                    CMP.length + ' compartments \u2022 ' + PRED.length + ' risk cells';
                 mode = null;
             }}
         </script>
@@ -1225,9 +1881,9 @@ if selected_tab == "3D Digital Twin":
 # TAB 1: Live Alert (includes NRT Hotspot Feed)
 # ─────────────────────────────────────────────────────────────────────────────
 
-elif selected_tab == "Live Alert":
+elif selected_tab == "\U0001f6a8 Live Alert":
     demo_narration_banner()
-    st.header("Live Fire Alert Bulletin")
+    st.header("\U0001f6a8 Live Fire Alert Bulletin")
 
     # Date picker — demo mode defaults to the INFERNO event
     _live_default = date(2019, 4, 14) if st.session_state.get("demo_active") else date.today()
@@ -1297,22 +1953,22 @@ elif selected_tab == "Live Alert":
     with c1:
         metric_card("FWI", f"{fwi_val:.1f}",
                     fwi_data.get("danger_class",""),
-                    fwi_color(fwi_val))
+                    fwi_color(fwi_val), icon="\U0001f321\ufe0f")
     with c2:
         metric_card("Active Fires", alert.get("fires_detected", 0),
-                    "in Guna bbox", "#e34a33")
+                    "in Guna bbox", "#e34a33", icon="\U0001f525")
     with c3:
         metric_card("Forest Fires",
-                    alert.get("n_forest_fires", "—"),
-                    "in/near forest", "#d73027")
+                    alert.get("n_forest_fires", "\u2014"),
+                    "in/near forest", "#d73027", icon="\U0001f332")
     with c4:
         metric_card("Agri Fires",
-                    alert.get("n_agri_fires", "—"),
-                    "cropland burns", "#f46d43")
+                    alert.get("n_agri_fires", "\u2014"),
+                    "cropland burns", "#f46d43", icon="\U0001f33e")
     with c5:
         metric_card("Peak FRP",
                     f"{alert.get('peak_frp_mw', 0):.1f} MW",
-                    "fire radiative power", "#fc8d59")
+                    "fire radiative power", "#fc8d59", icon="\u26a1")
 
     # ── FWI components ────────────────────────────────────────────────────────
     st.subheader("Fire Weather Index Components")
@@ -1330,13 +1986,13 @@ elif selected_tab == "Live Alert":
     if fwi_data.get("temp_c") is not None:
         cc1, cc2, cc3, cc4 = st.columns(4)
         with cc1:
-            metric_card("Temperature", f"{fwi_data['temp_c']}°C", color="#fd8d3c")
+            metric_card("Temperature", f"{fwi_data['temp_c']}\u00b0C", color="#fd8d3c", icon="\U0001f321\ufe0f")
         with cc2:
-            metric_card("Rel. Humidity", f"{fwi_data['rh_pct']}%", color="#6baed6")
+            metric_card("Rel. Humidity", f"{fwi_data['rh_pct']}%", color="#6baed6", icon="\U0001f4a7")
         with cc3:
-            metric_card("Wind Speed", f"{fwi_data['wind_kmh']} km/h", color="#74c476")
+            metric_card("Wind Speed", f"{fwi_data['wind_kmh']} km/h", color="#74c476", icon="\U0001f4a8")
         with cc4:
-            metric_card("Danger Class", fwi_data.get("danger_class",""), color=fwi_color(fwi_val))
+            metric_card("Danger Class", fwi_data.get("danger_class",""), color=fwi_color(fwi_val), icon="\u26a0\ufe0f")
 
     # ── Fire table (with terrain enrichment) ─────────────────────────────────
     if fires:
@@ -1403,12 +2059,14 @@ elif selected_tab == "Live Alert":
                     get_line_color=[249,115,22,100], get_fill_color=[0,0,0,0],
                     line_width_min_pixels=1, pickable=True,
                 ))
-            st.pydeck_chart(pdk.Deck(
+            _deck_alert = pdk.Deck(
                 layers=layers,
                 initial_view_state=pdk.ViewState(latitude=24.4,longitude=77.15,zoom=9,pitch=0),
                 map_style="dark",
-                tooltip={"text": "{severity} — FRP: {frp_mw} MW"},
-            ))
+                tooltip={"text": "{severity} \u2014 FRP: {frp_mw} MW"},
+            )
+            st.pydeck_chart(_deck_alert)
+            fullscreen_map_button(_deck_alert, "live_alert")
     else:
         if sev == "WATCH":
             st.info(f"No active fires detected. FWI={fwi_val:.1f} ({fwi_data.get('danger_class','')}). "
@@ -1416,9 +2074,19 @@ elif selected_tab == "Live Alert":
         else:
             st.success("No fires detected. Conditions are safe.")
 
+    # ── Download Alert ──────────────────────────────────────────────────────
+    st.divider()
+    st.download_button(
+        "\U0001f4e5 Download Alert JSON",
+        data=json.dumps(alert, indent=2, default=str),
+        file_name=f"alert_{alert.get('target_date', 'latest')}.json",
+        mime="application/json",
+        key="dl_alert_json",
+    )
+
     # ── Live NRT Hotspot Feed (Clipped to Guna) ─────────────────────────────
     st.divider()
-    st.subheader("📡 Live NRT Hotspot Feed (Last 48 Hours)")
+    st.subheader("\U0001f4e1 Live NRT Hotspot Feed (Last 48 Hours)")
     with st.spinner("Fetching latest satellite hotspots..."):
         all_firms = load_firms_all()
         if not all_firms.empty:
@@ -1583,9 +2251,9 @@ elif selected_tab == "Live Alert":
 # TAB 3: Fire History
 # ─────────────────────────────────────────────────────────────────────────────
 
-elif selected_tab == "Fire History":
+elif selected_tab == "\U0001f4ca Fire History":
     demo_narration_banner()
-    st.header("FIRMS MODIS/VIIRS Fire Detection History (2013–2025)")
+    st.header("\U0001f4ca FIRMS MODIS/VIIRS Fire Detection History (2013\u20132025)")
     st.caption("Source: Real NASA FIRMS MODIS SP + VIIRS NRT satellite detections for Guna Division")
 
     firms = load_firms_all()
@@ -1655,12 +2323,14 @@ elif selected_tab == "Fire History":
             layers.insert(0, boundary_layer)
 
         view = pdk.ViewState(latitude=24.4, longitude=77.15, zoom=8, pitch=0)
-        st.pydeck_chart(pdk.Deck(
+        _deck_history = pdk.Deck(
             layers=layers,
             initial_view_state=view,
             map_style="dark",
             tooltip={"text": "FRP: {frp} MW"},
-        ))
+        )
+        st.pydeck_chart(_deck_history)
+        fullscreen_map_button(_deck_history, "fire_history")
 
     # ── Monthly heatmap ───────────────────────────────────────────────────────
     st.subheader("Annual Fire Counts by Month")
@@ -1724,14 +2394,75 @@ elif selected_tab == "Fire History":
                 st.dataframe(filt["daynight"].value_counts().rename("count"),
                              use_container_width=True)
 
+    # ── Range Scorecard ────────────────────────────────────────────────────────
+    st.subheader("\U0001f3af Range Scorecard")
+    try:
+        import geopandas as gpd
+        from shapely.geometry import Point
+
+        range_dir = ROOT / "data" / "aoi"
+        range_files = sorted(range_dir.glob("guna_range_*.geojson"))
+        if range_files and not filt.empty:
+            ranges_gdf = pd.concat(
+                [gpd.read_file(f).assign(range_name=f.stem.replace("guna_range_", "").replace("_", " ").title())
+                 for f in range_files],
+                ignore_index=True,
+            )
+            fires_gdf = gpd.GeoDataFrame(
+                filt,
+                geometry=[Point(xy) for xy in zip(filt["longitude"], filt["latitude"])],
+                crs="EPSG:4326",
+            )
+            joined = gpd.sjoin(fires_gdf, ranges_gdf, how="inner", predicate="within")
+
+            scorecard_rows = []
+            for rng in sorted(ranges_gdf["range_name"].unique()):
+                rng_fires = joined[joined["range_name"] == rng]
+                count = len(rng_fires)
+                peak_frp = rng_fires["frp"].max() if not rng_fires.empty and "frp" in rng_fires.columns else 0
+                last_date = rng_fires["acq_date"].max() if not rng_fires.empty else None
+                if count >= 20:
+                    risk = "\U0001f534 High"
+                elif count >= 5:
+                    risk = "\U0001f7e0 Medium"
+                else:
+                    risk = "\U0001f7e2 Low"
+                scorecard_rows.append({
+                    "Range": rng,
+                    "Fire Count": count,
+                    "Peak FRP (MW)": f"{peak_frp:.1f}" if peak_frp and not pd.isna(peak_frp) else "\u2014",
+                    "Last Fire": str(last_date.date()) if last_date and not pd.isna(last_date) else "\u2014",
+                    "Risk Level": risk,
+                })
+            sc_df = pd.DataFrame(scorecard_rows)
+            st.dataframe(sc_df, use_container_width=True, hide_index=True)
+        else:
+            st.info("Range GeoJSON files not found or no fire data in filter.")
+    except ImportError:
+        st.info("Install geopandas for range scorecard: pip install geopandas")
+    except Exception as e:
+        st.warning(f"Range scorecard unavailable: {e}")
+
+    # ── Download Fire History ──────────────────────────────────────────────────
+    st.divider()
+    export_cols = [c for c in ["acq_date","latitude","longitude","frp","confidence","daynight"]
+                   if c in filt.columns]
+    st.download_button(
+        "\U0001f4e5 Download Fire History CSV",
+        data=filt[export_cols].to_csv(index=False),
+        file_name="fire_history_guna.csv",
+        mime="text/csv",
+        key="dl_fire_csv",
+    )
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TAB 4: Burn Scars
 # ─────────────────────────────────────────────────────────────────────────────
 
-elif selected_tab == "Burn Scars":
+elif selected_tab == "\U0001f6f0\ufe0f Burn Scars":
     demo_narration_banner()
-    st.header("Prithvi-EO-2.0 Burn Scar Analysis")
+    st.header("\U0001f6f0\ufe0f Prithvi-EO-2.0 Burn Scar Analysis")
 
     links = load_fire_links()
     if links.empty:
@@ -1751,16 +2482,16 @@ elif selected_tab == "Burn Scars":
 
     m1, m2, m3, m4 = st.columns(4)
     with m1:
-        metric_card("Burn Scar Scenes", total, "processed by Prithvi", "#e34a33")
+        metric_card("Burn Scar Scenes", total, "processed by Prithvi", "#e34a33", icon="\U0001f6f0\ufe0f")
     with m2:
         metric_card("FIRMS Matched", len(matched),
-                    f"{100*len(matched)/max(total,1):.0f}% match rate", "#fc8d59")
+                    f"{100*len(matched)/max(total,1):.0f}% match rate", "#fc8d59", icon="\U0001f525")
     with m3:
         metric_card("Spatial Hits", len(spatial),
-                    f"{100*len(spatial)/max(total,1):.0f}% (fire ON burned pixel)", "#fd8d3c")
+                    f"{100*len(spatial)/max(total,1):.0f}% (fire ON burned pixel)", "#fd8d3c", icon="\U0001f4cd")
     with m4:
         peak = matched["fire_frp_mw"].dropna().max() if not matched.empty else 0
-        metric_card("Peak FRP", f"{peak:.1f} MW", "highest confirmed fire", "#d73027")
+        metric_card("Peak FRP", f"{peak:.1f} MW", "highest confirmed fire", "#d73027", icon="\u26a1")
 
     # ── Confidence breakdown ──────────────────────────────────────────────────
     st.subheader("Causal Link Confidence")
@@ -1837,9 +2568,9 @@ elif selected_tab == "Burn Scars":
 # TAB 5: FWI Trends
 # ─────────────────────────────────────────────────────────────────────────────
 
-elif selected_tab == "FWI Trends":
+elif selected_tab == "\U0001f321\ufe0f FWI Trends":
     demo_narration_banner()
-    st.header("Fire Weather Index — Guna Division (2013–2025)")
+    st.header("\U0001f321\ufe0f Fire Weather Index \u2014 Guna Division (2013\u20132025)")
 
     fwi_df = load_fwi()
     if fwi_df.empty:
@@ -1855,16 +2586,16 @@ elif selected_tab == "FWI Trends":
     with s1:
         metric_card("Peak FWI (all time)", f"{fwi_df['fwi'].max():.1f}",
                     str(fwi_df.loc[fwi_df['fwi'].idxmax(),'date'].date()),
-                    "#d73027")
+                    "#d73027", icon="\U0001f321\ufe0f")
     with s2:
         metric_card("Fire Season Mean", f"{fire_szn['fwi'].mean():.1f}",
-                    "Mar-Jun average", "#f46d43")
+                    "Mar-Jun average", "#f46d43", icon="\U0001f525")
     with s3:
         metric_card("Extreme days", int(extreme),
-                    f"{100*extreme/len(fwi_df):.1f}% of all days", "#d73027")
+                    f"{100*extreme/len(fwi_df):.1f}% of all days", "#d73027", icon="\u26a0\ufe0f")
     with s4:
         metric_card("Very High+ days", int(vh_plus),
-                    f"{100*vh_plus/len(fwi_df):.1f}% of all days", "#f46d43")
+                    f"{100*vh_plus/len(fwi_df):.1f}% of all days", "#f46d43", icon="\U0001f4c8")
 
     try:
         import plotly.graph_objects as go
@@ -1917,6 +2648,48 @@ elif selected_tab == "FWI Trends":
                            height=420, template="plotly_dark")
         st.plotly_chart(fig2, use_container_width=True)
 
+        # ── FWI × Fire Correlation ───────────────────────────────────────
+        st.subheader("\U0001f525 FWI \u00d7 Fire Detection Correlation")
+        firms_all = load_firms_all()
+        if not firms_all.empty:
+            firms_monthly = (firms_all
+                .assign(ym=firms_all["acq_date"].dt.to_period("M"))
+                .groupby("ym").size()
+                .reset_index(name="fire_count"))
+            firms_monthly["date"] = firms_monthly["ym"].dt.to_timestamp()
+
+            fwi_monthly = (fwi_df
+                .assign(ym=fwi_df["date"].dt.to_period("M"))
+                .groupby("ym")["fwi"].mean()
+                .reset_index())
+            fwi_monthly["date"] = fwi_monthly["ym"].dt.to_timestamp()
+
+            merged = pd.merge(fwi_monthly, firms_monthly, on="date", how="outer").fillna(0)
+            merged = merged.sort_values("date")
+
+            from plotly.subplots import make_subplots
+            fig_corr = make_subplots(specs=[[{"secondary_y": True}]])
+            fig_corr.add_trace(
+                go.Scatter(x=merged["date"], y=merged["fwi"],
+                           name="Mean FWI", line=dict(color="#f46d43", width=2)),
+                secondary_y=False,
+            )
+            fig_corr.add_trace(
+                go.Bar(x=merged["date"], y=merged["fire_count"],
+                       name="Fire Detections", marker_color="rgba(231,76,60,0.5)"),
+                secondary_y=True,
+            )
+            fig_corr.update_layout(
+                title="Monthly FWI vs Fire Detections \u2014 Guna Division",
+                height=420, template="plotly_dark",
+                legend=dict(orientation="h", yanchor="bottom", y=1.02),
+            )
+            fig_corr.update_yaxes(title_text="Mean FWI", secondary_y=False)
+            fig_corr.update_yaxes(title_text="Fire Detections", secondary_y=True)
+            st.plotly_chart(fig_corr, use_container_width=True)
+        else:
+            st.info("FIRMS data not available for correlation chart.")
+
         # ── Daily FWI time series (selected year) ─────────────────────────
         st.subheader("Daily FWI Time Series")
         sel_year = st.selectbox("Select year", sorted(fwi_df["date"].dt.year.unique(),
@@ -1959,14 +2732,26 @@ elif selected_tab == "FWI Trends":
         st.info("Install plotly: pip install plotly")
         st.dataframe(fwi_df.tail(30), use_container_width=True)
 
+    # ── Download FWI Data ──────────────────────────────────────────────────────
+    st.divider()
+    fwi_export_cols = [c for c in ["date","temp_c","rh_pct","wind_kmh","precip_mm","fwi","danger_class"]
+                       if c in fwi_df.columns]
+    st.download_button(
+        "\U0001f4e5 Download FWI Data CSV",
+        data=fwi_df[fwi_export_cols].to_csv(index=False),
+        file_name="fwi_guna_division.csv",
+        mime="text/csv",
+        key="dl_fwi_csv",
+    )
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TAB 6: Weather & Terrain
 # ─────────────────────────────────────────────────────────────────────────────
 
-elif selected_tab == "Weather & Terrain":
+elif selected_tab == "\u26f0\ufe0f Weather & Terrain":
     demo_narration_banner()
-    st.header("Weather Forecasts & Terrain Analysis — Guna Division")
+    st.header("\u26f0\ufe0f Weather Forecasts & Terrain Analysis \u2014 Guna Division")
 
     # ══════════════════════════════════════════════════════════════════════════
     # SECTION A: GFS Weather Forecast
@@ -2004,10 +2789,10 @@ elif selected_tab == "Weather & Terrain":
         for col, (_, row) in zip(cols, gfs_df.iterrows()):
             with col:
                 st.markdown(f"**+{int(row['lead_h'])} h forecast**")
-                if "temp_c"    in row: metric_card("Temperature", f"{row['temp_c']:.1f}°C",   color="#fd8d3c")
-                if "rh_pct"    in row: metric_card("Rel. Humidity", f"{row['rh_pct']:.1f}%",  color="#6baed6")
-                if "wind_kmh"  in row: metric_card("Wind", f"{row['wind_kmh']:.1f} km/h",     color="#74c476")
-                if "precip_mm" in row: metric_card("Precip.", f"{row['precip_mm']:.2f} mm",   color="#4393c3")
+                if "temp_c"    in row: metric_card("Temperature", f"{row['temp_c']:.1f}\u00b0C",   color="#fd8d3c", icon="\U0001f321\ufe0f")
+                if "rh_pct"    in row: metric_card("Rel. Humidity", f"{row['rh_pct']:.1f}%",  color="#6baed6", icon="\U0001f4a7")
+                if "wind_kmh"  in row: metric_card("Wind", f"{row['wind_kmh']:.1f} km/h",     color="#74c476", icon="\U0001f4a8")
+                if "precip_mm" in row: metric_card("Precip.", f"{row['precip_mm']:.2f} mm",   color="#4393c3", icon="\U0001f327\ufe0f")
 
         # ── Forecast trend chart ──────────────────────────────────────────────
         try:
@@ -2158,11 +2943,11 @@ elif selected_tab == "Weather & Terrain":
         # ── Elevation summary ─────────────────────────────────────────────────
         tm1, tm2, tm3, tm4 = st.columns(4)
         with tm1:
-            metric_card("Min Elevation",  f"{e.get('min',0):.0f} m",  color="#4393c3")
+            metric_card("Min Elevation",  f"{e.get('min',0):.0f} m",  color="#4393c3", icon="\u26f0\ufe0f")
         with tm2:
-            metric_card("Max Elevation",  f"{e.get('max',0):.0f} m",  color="#4393c3")
+            metric_card("Max Elevation",  f"{e.get('max',0):.0f} m",  color="#4393c3", icon="\u26f0\ufe0f")
         with tm3:
-            metric_card("Mean Elevation", f"{e.get('mean',0):.0f} m", color="#4393c3")
+            metric_card("Mean Elevation", f"{e.get('mean',0):.0f} m", color="#4393c3", icon="\u26f0\ufe0f")
         with tm4:
             metric_card("Steep (>=30°)", f"{s.get('pct_ge_30',0):.1f}%",
                         "of district area", "#f46d43")
@@ -2324,9 +3109,9 @@ elif selected_tab == "Weather & Terrain":
 # TAB 7: Land Cover
 # ─────────────────────────────────────────────────────────────────────────────
 
-elif selected_tab == "Land Cover":
+elif selected_tab == "\U0001f333 Land Cover":
     demo_narration_banner()
-    st.header("Land Cover — Guna Division (ESA WorldCover 2021)")
+    st.header("\U0001f333 Land Cover \u2014 Guna Division (ESA WorldCover 2021)")
     st.caption("Source: ESA WorldCover 10m classification + India State of Forest Report reference data")
 
     stats = load_lc_stats()
@@ -2346,20 +3131,20 @@ elif selected_tab == "Land Cover":
     m1, m2, m3, m4 = st.columns(4)
     with m1:
         metric_card("Total District Area",
-                    f"{summary.get('total_area_ha',0)/100:,.0f} km²",
-                    f"{summary.get('total_area_ha',0):,.0f} ha", "#4393c3")
+                    f"{summary.get('total_area_ha',0)/100:,.0f} km\u00b2",
+                    f"{summary.get('total_area_ha',0):,.0f} ha", "#4393c3", icon="\U0001f4d0")
     with m2:
         metric_card("Forest Cover",
                     f"{summary.get('forest_pct',0):.1f}%",
-                    f"{summary.get('forest_ha',0):,.0f} ha (Tree cover)", "#1a9641")
+                    f"{summary.get('forest_ha',0):,.0f} ha (Tree cover)", "#1a9641", icon="\U0001f333")
     with m3:
         metric_card("Agriculture",
                     f"{100*summary.get('agriculture_ha',0)/max(summary.get('total_area_ha',1),1):.1f}%",
-                    f"{summary.get('agriculture_ha',0):,.0f} ha (Cropland)", "#fc8d59")
+                    f"{summary.get('agriculture_ha',0):,.0f} ha (Cropland)", "#fc8d59", icon="\U0001f33e")
     with m4:
         metric_card("Scrubland",
                     f"{100*summary.get('scrub_ha',0)/max(summary.get('total_area_ha',1),1):.1f}%",
-                    f"{summary.get('scrub_ha',0):,.0f} ha", "#74c476")
+                    f"{summary.get('scrub_ha',0):,.0f} ha", "#74c476", icon="\U0001f33f")
 
     # ── Pie chart ─────────────────────────────────────────────────────────────
     try:
@@ -2406,6 +3191,76 @@ elif selected_tab == "Land Cover":
             if k != "_summary" and v.get("area_ha", 0) > 0:
                 st.write(f"**{v['label']}**: {v['area_ha']:,.0f} ha ({v['pct_of_area']}%)")
 
+    # ── Fire-Land Cover Overlap ────────────────────────────────────────────────
+    st.subheader("\U0001f525 Fire Detections by Land Cover Type")
+    try:
+        import rasterio
+        from rasterio.transform import rowcol
+        import plotly.express as px
+
+        wc_path = ROOT / "data_lake" / "land_cover" / "worldcover_guna_raw.tif"
+        firms_all = load_firms_all()
+        if wc_path.exists() and not firms_all.empty:
+            with rasterio.open(wc_path) as src:
+                wc_data = src.read(1)
+                wc_transform = src.transform
+                wc_bounds = src.bounds
+
+            # Filter fires within raster bounds
+            in_bounds = firms_all[
+                (firms_all["latitude"] >= wc_bounds.bottom) &
+                (firms_all["latitude"] <= wc_bounds.top) &
+                (firms_all["longitude"] >= wc_bounds.left) &
+                (firms_all["longitude"] <= wc_bounds.right)
+            ]
+            if not in_bounds.empty:
+                rows, cols = rowcol(wc_transform, in_bounds["longitude"].values, in_bounds["latitude"].values)
+                rows = np.clip(rows, 0, wc_data.shape[0] - 1)
+                cols = np.clip(cols, 0, wc_data.shape[1] - 1)
+                lc_vals = wc_data[rows, cols]
+
+                esa_labels = {
+                    10: "Tree cover", 20: "Shrubland", 30: "Grassland",
+                    40: "Cropland", 50: "Built-up", 60: "Bare/sparse",
+                    80: "Water", 90: "Wetland", 95: "Mangroves",
+                }
+                lc_names = [esa_labels.get(v, f"Class {v}") for v in lc_vals]
+                overlap_df = pd.Series(lc_names).value_counts().reset_index()
+                overlap_df.columns = ["Land Cover", "Fire Count"]
+
+                lc_colors = {
+                    "Tree cover": "#1a9641", "Shrubland": "#78c679",
+                    "Grassland": "#c2e699", "Cropland": "#f46d43",
+                    "Built-up": "#d7191c", "Bare/sparse": "#d9d9d9",
+                    "Water": "#4393c3", "Wetland": "#abd9e9",
+                }
+                fig_overlap = px.bar(
+                    overlap_df, x="Fire Count", y="Land Cover",
+                    orientation="h", color="Land Cover",
+                    color_discrete_map=lc_colors,
+                    title="Where Do Fires Actually Occur?",
+                    template="plotly_dark",
+                )
+                fig_overlap.update_layout(showlegend=False, height=350)
+                st.plotly_chart(fig_overlap, use_container_width=True)
+
+                forest_fires = sum(1 for n in lc_names if n == "Tree cover")
+                agri_fires = sum(1 for n in lc_names if n == "Cropland")
+                total_fires = len(lc_names)
+                st.caption(
+                    f"Of **{total_fires:,}** fire detections: "
+                    f"**{100*forest_fires/max(total_fires,1):.1f}%** in forest, "
+                    f"**{100*agri_fires/max(total_fires,1):.1f}%** in cropland"
+                )
+            else:
+                st.info("No fire detections fall within the WorldCover raster extent.")
+        else:
+            st.info("WorldCover raster or FIRMS data not available for overlap analysis.")
+    except ImportError:
+        st.info("Install rasterio for fire-land cover overlap: pip install rasterio")
+    except Exception as e:
+        st.warning(f"Fire-land cover overlap unavailable: {e}")
+
     # ── Key insight ───────────────────────────────────────────────────────────
     st.info(
         f"**Key insight for fire alerts:** Guna Division is "
@@ -2434,8 +3289,8 @@ elif selected_tab == "Land Cover":
 # =============================================================================
 # TAB: Ignition ABM
 # =============================================================================
-elif selected_tab == "Ignition ABM":
-    st.header("Human Ignition ABM — Guna Division")
+elif selected_tab == "\U0001f9ea Ignition ABM":
+    st.header("\U0001f9ea Human Ignition ABM \u2014 Guna Division")
     st.caption(
         "Agent-Based Model predicting human-caused fire ignition risk. "
         "5 agent types: Tendu collector, Mahua collector, Grazier, Farmer, Traveler. "
@@ -2509,11 +3364,13 @@ elif selected_tab == "Ignition ABM":
                         zoom=8.5,
                         pitch=0,
                     )
-                    st.pydeck_chart(pdk.Deck(
+                    _deck_abm = pdk.Deck(
                         layers=[layer],
                         initial_view_state=view,
                         tooltip={"text": "Lat: {latitude}\nLon: {longitude}\nP(ignition): {probability}"},
-                    ))
+                    )
+                    st.pydeck_chart(_deck_abm)
+                    fullscreen_map_button(_deck_abm, "ignition_abm")
 
                     # Hotspot table
                     st.subheader("Top Ignition Hotspots")

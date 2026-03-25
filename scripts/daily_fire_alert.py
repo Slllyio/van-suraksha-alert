@@ -80,12 +80,31 @@ def build_unified_feed(target_date: str):
     if alert_file.exists():
         try:
             alert_data = json.loads(alert_file.read_text())
-            det_features = alert_data.get("features", [])
-            for f in det_features:
-                f["properties"]["source"] = "FIRMS_DETECTION"
-                f["properties"]["alert_type"] = "DETECTED"
-            features.extend(det_features)
-            print(f"  Detection alerts: {len(det_features)} features")
+            # NRT pipeline stores fires in "fires" key (not GeoJSON "features")
+            fires = alert_data.get("fires", [])
+            for fire in fires:
+                feat = {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [fire["fire_lon"], fire["fire_lat"]],
+                    },
+                    "properties": {
+                        "severity": fire.get("severity", "LOW"),
+                        "frp_mw": fire.get("frp_mw", 0),
+                        "fire_date": fire.get("fire_date", target_date),
+                        "fire_time_ist": fire.get("fire_time_ist", ""),
+                        "land_cover": fire.get("land_cover", ""),
+                        "in_forest": fire.get("in_forest"),
+                        "fwi": alert_data.get("fwi", {}).get("value"),
+                        "fwi_danger": alert_data.get("fwi", {}).get("danger_class"),
+                        "message": fire.get("message", ""),
+                        "source": "FIRMS_DETECTION",
+                        "alert_type": "DETECTED",
+                    },
+                }
+                features.append(feat)
+            print(f"  Detection alerts: {len(fires)} fires from NRT pipeline")
         except Exception as e:
             print(f"  WARN: Could not load detection alerts: {e}")
 
@@ -144,6 +163,50 @@ def build_unified_feed(target_date: str):
     return geojson
 
 
+def find_best_model(pred_dir: Path) -> tuple[Path, float] | None:
+    """Return (model_path, test_auc) for the compatible model with the highest test AUC.
+
+    Scans every ``predictive_*/results.json`` under *pred_dir*.  Models that
+    lack a ``results.json`` or whose file cannot be parsed are silently skipped
+    so a single corrupt directory never blocks the pipeline.
+
+    Feature-count compatibility: models trained with a different number of
+    features than the newest model are excluded, since ``predict_tomorrow()``
+    always generates the current feature set.
+
+    Returns None when no valid model directory is found.
+    """
+    import lightgbm as lgb
+
+    # First pass: collect all candidates with their feature counts.
+    candidates: list[tuple[Path, float, int]] = []
+    for results_file in pred_dir.glob("predictive_*/results.json"):
+        model_file = results_file.parent / "model.lgbm"
+        if not model_file.exists():
+            continue
+        try:
+            data = json.loads(results_file.read_text())
+            auc = float(data["test"]["auc_roc"])
+            n_feat = lgb.Booster(model_file=str(model_file)).num_feature()
+        except Exception:
+            continue
+        candidates.append((model_file, auc, n_feat))
+
+    if not candidates:
+        return None
+
+    # Use the feature count of the newest model (highest mtime) as the
+    # reference — it was trained with the current feature generation code.
+    ref_n_feat = max(candidates, key=lambda c: c[0].stat().st_mtime)[2]
+    compatible = [(p, auc) for p, auc, nf in candidates if nf == ref_n_feat]
+
+    if not compatible:
+        return None
+
+    best_path, best_auc = max(compatible, key=lambda c: c[1])
+    return best_path, best_auc
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Daily Fire Alert Pipeline")
@@ -151,6 +214,26 @@ def main():
     parser.add_argument("--backfill", type=int, help="Process last N days")
     parser.add_argument("--skip-prediction", action="store_true",
                         help="Skip the predictive model step (faster)")
+    parser.add_argument(
+        "--model-tag",
+        metavar="TAG",
+        default=None,
+        help=(
+            "Use a specific predictive model directory by name "
+            "(e.g. predictive_v3_no_leak).  Defaults to auto-selecting "
+            "the model with the highest test AUC."
+        ),
+    )
+    parser.add_argument(
+        "--ensemble",
+        action="store_true",
+        help=(
+            "Invoke ensemble_predict.py instead of a single model.  "
+            "NOTE: ensemble_predict.py requires --models and --input to be "
+            "configured separately; if the script is not ready this flag "
+            "falls back to the best single model automatically."
+        ),
+    )
     args = parser.parse_args()
 
     started = datetime.now()
@@ -192,15 +275,57 @@ def main():
 
     # Step 4: Run predictive model for tomorrow's risk
     if not args.skip_prediction:
-        model_path = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v2_improved" / "model.lgbm"
-        if model_path.exists():
-            run_step("Predictive Risk Map (Tomorrow)", [
-                PYTHON, "scripts/train_predictive_fire_risk.py",
-                "--predict", target_date,
-            ], timeout=300)
+        pred_dir = ROOT / "outputs" / "predictive_fire_risk"
+
+        # Resolve which model to use before launching the subprocess.
+        if args.model_tag:
+            tag_model = pred_dir / args.model_tag / "model.lgbm"
+            if not tag_model.exists():
+                print(f"\n  SKIP: --model-tag '{args.model_tag}' not found at {tag_model}")
+                print(f"  Available tags: {[p.parent.name for p in pred_dir.glob('predictive_*/model.lgbm')]}")
+                selected_model = None
+            else:
+                selected_model = tag_model
+                print(f"\n  Model (--model-tag): {args.model_tag}")
         else:
-            print(f"\n  SKIP: Predictive model not found at {model_path}")
-            print(f"  Train it first: python scripts/train_predictive_fire_risk.py --tag v2_improved")
+            result = find_best_model(pred_dir)
+            if result is None:
+                selected_model = None
+            else:
+                selected_model, best_auc = result
+                print(f"\n  Model (best AUC={best_auc:.4f}): {selected_model.parent.name}")
+
+        if selected_model is not None:
+            if args.ensemble:
+                ensemble_script = ROOT / "scripts" / "ensemble_predict.py"
+                if ensemble_script.exists():
+                    # ensemble_predict.py requires --models and --input wired
+                    # up externally; attempt it and fall back on failure.
+                    ok = run_step("Ensemble Risk Map (Tomorrow)", [
+                        PYTHON, str(ensemble_script),
+                        "--predict", target_date,
+                    ], timeout=300)
+                    if not ok:
+                        print(f"  FALLBACK: ensemble failed, running single best model")
+                        run_step("Predictive Risk Map (Tomorrow) [fallback]", [
+                            PYTHON, "scripts/train_predictive_fire_risk.py",
+                            "--predict", target_date,
+                        ], timeout=300)
+                else:
+                    print(f"  WARN: --ensemble requested but {ensemble_script} not found")
+                    print(f"  Falling back to single best model: {selected_model.parent.name}")
+                    run_step("Predictive Risk Map (Tomorrow)", [
+                        PYTHON, "scripts/train_predictive_fire_risk.py",
+                        "--predict", target_date,
+                    ], timeout=300)
+            else:
+                run_step("Predictive Risk Map (Tomorrow)", [
+                    PYTHON, "scripts/train_predictive_fire_risk.py",
+                    "--predict", target_date,
+                ], timeout=300)
+        else:
+            print(f"\n  SKIP: No valid predictive model found in {pred_dir}")
+            print(f"  Train one first: python scripts/train_predictive_fire_risk.py --tag v2_improved")
 
     # Step 5: Build unified feed (detection + prediction)
     print(f"\n{'='*60}")

@@ -1,0 +1,39 @@
+{
+  "alert_id": "GUNA-2018-04-19-000fires",
+  "generated_at": "2026-03-01T18:05:51.425465+05:30",
+  "target_date": "2018-04-19",
+  "bulletin_severity": "WATCH",
+  "fires_detected": 0,
+  "n_critical": 0,
+  "n_high": 0,
+  "n_forest_fires": 0,
+  "n_agri_fires": 0,
+  "forest_mask_used": true,
+  "peak_frp_mw": 0.0,
+  "fwi": {
+    "value": 52.4,
+    "danger_class": "Extreme",
+    "ffmc": 96.6,
+    "dmc": 417.8,
+    "dc": 980.4,
+    "isi": 15.3,
+    "bui": 417.3,
+    "temp_c": 33.3,
+    "rh_pct": 16.0,
+    "wind_kmh": 7.1
+  },
+  "fires": [],
+  "area": {
+    "name": "Guna Division, Madhya Pradesh",
+    "bbox": {
+      "lon_min": 76.45,
+      "lat_min": 23.8,
+      "lon_max": 77.85,
+      "lat_max": 24.95
+    }
+  },
+  "data_sources": [
+    "FIRMS VIIRS SNPP",
+    "NASA POWER / GFS FWI"
+  ]
+}
