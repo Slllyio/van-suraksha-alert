@@ -53,7 +53,7 @@ def firms_scatter_layer(
     from lonboard import ScatterplotLayer
 
     if gdf.empty:
-        return ScatterplotLayer.from_geopandas(gdf)
+        return None
 
     # Color by FRP category
     colors = _frp_to_rgba(gdf.get(radius_col, gdf.get("frp")))
@@ -100,16 +100,15 @@ def h3_heatmap_layer(
 
 def boundary_layer(
     gdf: gpd.GeoDataFrame,
-    color: tuple[int, int, int, int] = (50, 130, 200, 180),
-    line_width: float = 2.0,
-) -> "lonboard.PathLayer":
-    """Create an outline layer for forest range/beat boundaries."""
-    from lonboard import PathLayer
+    color: tuple[int, int, int, int] = (50, 130, 200, 80),
+) -> "lonboard.SolidPolygonLayer":
+    """Create a translucent fill layer for forest range/beat boundaries."""
+    from lonboard import SolidPolygonLayer
 
-    return PathLayer.from_geopandas(
+    return SolidPolygonLayer.from_geopandas(
         gdf,
-        get_color=color,
-        width_min_pixels=line_width,
+        get_fill_color=color,
+        opacity=0.3,
     )
 
 

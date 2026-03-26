@@ -2387,6 +2387,48 @@ elif selected_tab == "\U0001f4ca Fire History":
         st.pydeck_chart(_deck_history)
         fullscreen_map_button(_deck_history, "fire_history")
 
+    # ── H3 Hexagonal Fire Density ────────────────────────────────────────────
+    try:
+        from src.utils.h3_index import add_h3_index, aggregate_to_h3
+        import geopandas as _gpd
+        from shapely.geometry import Point as _Point
+
+        if not filt.empty and "latitude" in filt.columns:
+            with st.expander("H3 Fire Density Heatmap", expanded=False):
+                h3_res = st.select_slider(
+                    "H3 Resolution", options=[5, 6, 7, 8, 9],
+                    value=7, help="7=range-level (~5km²), 9=beat-level (~0.1km²)",
+                    key="h3_res_slider",
+                )
+                _filt_gdf = _gpd.GeoDataFrame(
+                    filt,
+                    geometry=[_Point(lon, lat) for lon, lat in zip(filt["longitude"], filt["latitude"])],
+                    crs="EPSG:4326",
+                )
+                h3_agg = aggregate_to_h3(_filt_gdf, resolution=h3_res, agg_col="frp", agg_func="mean")
+                h3_agg["hex_coords"] = h3_agg.geometry.apply(
+                    lambda g: list(g.exterior.coords) if g else []
+                )
+                h3_layer = pdk.Layer(
+                    "PolygonLayer",
+                    data=h3_agg,
+                    get_polygon="hex_coords",
+                    get_fill_color="[255, (1 - value/value.max()) * 255, 0, 140]",
+                    get_line_color=[255, 255, 255, 80],
+                    line_width_min_pixels=1,
+                    pickable=True,
+                    extruded=False,
+                )
+                st.pydeck_chart(pdk.Deck(
+                    layers=[h3_layer],
+                    initial_view_state=pdk.ViewState(latitude=24.4, longitude=77.15, zoom=8, pitch=0),
+                    map_style="dark",
+                    tooltip={"text": "Hex: {h3_res" + str(h3_res) + "}\nFires: {value}\nMean FRP: {value:.1f} MW"},
+                ))
+                st.caption(f"{len(h3_agg)} hexagons at resolution {h3_res}")
+    except ImportError:
+        pass  # h3 not installed — skip heatmap
+
     # ── Monthly heatmap ───────────────────────────────────────────────────────
     st.subheader("Annual Fire Counts by Month")
     try:

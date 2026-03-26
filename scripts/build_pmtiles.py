@@ -38,34 +38,20 @@ SOURCES = {
 }
 
 
-def geojson_to_mvt_pmtiles(geojson_path: Path, output_path: Path, layer_name: str) -> None:
+def geojson_to_tiles(geojson_path: Path, output_path: Path, layer_name: str) -> None:
     """
-    Convert GeoJSON to PMTiles using Python-only pipeline.
+    Save GeoJSON as optimized tile-ready format.
 
-    For production with large datasets, use tippecanoe instead:
+    For small datasets (<10MB), GeoJSON is served directly by MapLibre.
+    For production at scale, install tippecanoe and run:
         tippecanoe -o output.pmtiles -z14 -Z5 --drop-densest-as-needed input.geojson
     """
-    try:
-        from pmtiles.convert import convert as pmtiles_convert
-    except ImportError:
-        log.warning("pmtiles.convert not available — using fallback approach")
-        _copy_as_geojson_tile(geojson_path, output_path)
-        return
-
-    log.info("Converting %s → %s", geojson_path.name, output_path.name)
-    pmtiles_convert(str(geojson_path), str(output_path))
-    log.info("  PMTiles written: %.1f KB", output_path.stat().st_size / 1024)
-
-
-def _copy_as_geojson_tile(geojson_path: Path, output_path: Path) -> None:
-    """
-    Fallback: copy GeoJSON as-is for direct MapLibre consumption.
-    MapLibre can read GeoJSON directly — PMTiles is an optimization for large datasets.
-    """
-    import shutil
+    # Copy to tile output directory as GeoJSON (MapLibre reads it natively)
     fallback = output_path.with_suffix(".geojson")
-    shutil.copy2(geojson_path, fallback)
-    log.info("  Fallback: copied GeoJSON → %s", fallback.name)
+    if geojson_path != fallback:
+        fallback.write_text(geojson_path.read_text(encoding="utf-8"), encoding="utf-8")
+    size_kb = fallback.stat().st_size / 1024
+    log.info("  Saved %s (%.1f KB) — serve directly with MapLibre", fallback.name, size_kb)
 
 
 def build_alert_tiles(alerts_dir: Path, output_path: Path) -> None:
@@ -111,7 +97,7 @@ def build_alert_tiles(alerts_dir: Path, output_path: Path) -> None:
         json.dump(fc, f)
     log.info("  Combined %d fire features from %d alerts", len(features), len(alert_files[-90:]))
 
-    geojson_to_mvt_pmtiles(tmp_geojson, output_path, "alerts")
+    geojson_to_tiles(tmp_geojson, output_path, "alerts")
 
 
 def main():
@@ -126,14 +112,14 @@ def main():
     if args.input:
         inp = Path(args.input)
         out = out_dir / inp.with_suffix(".pmtiles").name
-        geojson_to_mvt_pmtiles(inp, out, inp.stem)
+        geojson_to_tiles(inp, out, inp.stem)
         return
 
     # Build all standard tile sets
     for name, src in SOURCES.items():
         if src.exists():
             out = out_dir / f"{name}.pmtiles"
-            geojson_to_mvt_pmtiles(src, out, name)
+            geojson_to_tiles(src, out, name)
         else:
             log.warning("Source not found: %s", src)
 

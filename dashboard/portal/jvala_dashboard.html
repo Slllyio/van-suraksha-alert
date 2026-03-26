@@ -1773,6 +1773,42 @@
       console.warn("SSE stream disconnected. Reconnecting...");
     };
 
+    // Phase 16C: Fire Alert SSE from Van Suraksha API (/events/alerts)
+    (function initFireAlertSSE() {
+      var apiBase = window.location.port === '8501' ? 'http://localhost:8000' : '';
+      var alertSSE = new EventSource(apiBase + '/events/alerts');
+
+      alertSSE.addEventListener('fire', function (e) {
+        var fire = JSON.parse(e.data);
+        console.log('FIRE ALERT:', fire);
+        // Flash the banner red and update
+        var banner = document.querySelector('.alert-banner, .sched-status');
+        if (banner) {
+          banner.style.background = '#dc2626';
+          banner.textContent = 'LIVE FIRE: ' + (fire.severity || 'DETECTED') +
+            ' at ' + (fire.lat || '?') + ', ' + (fire.lon || '?') +
+            ' FRP: ' + (fire.frp || '?') + ' MW';
+          setTimeout(function () { banner.style.background = ''; }, 10000);
+        }
+        // Refresh data to pick up new alert
+        fetchData();
+      });
+
+      alertSSE.addEventListener('pipeline_complete', function (e) {
+        console.log('Pipeline completed:', JSON.parse(e.data));
+        fetchData();
+        if (typeof fetchSchedulerState === 'function') fetchSchedulerState();
+      });
+
+      alertSSE.addEventListener('connected', function () {
+        console.log('Connected to Van Suraksha fire alert stream');
+      });
+
+      alertSSE.onerror = function () {
+        console.warn('Fire alert SSE disconnected. Will auto-reconnect...');
+      };
+    })();
+
     // ── Scheduler Polling ─────────────────────────────────────────────────
     function fetchSchedulerState() {
       fetch('/api/scheduler', { cache: 'no-store' })
