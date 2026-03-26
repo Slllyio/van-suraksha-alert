@@ -403,6 +403,32 @@ def _init_spread_predictor():
         return None
 
 
+def _init_burn_estimator():
+    """Lazily initialise the BurnEstimator."""
+    try:
+        from src.analysis.burn_estimator import BurnEstimator
+        return BurnEstimator()
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(
+            "BurnEstimator unavailable (%s). Burn estimates will be skipped.", e
+        )
+        return None
+
+
+def _init_smoke_estimator():
+    """Lazily initialise the SmokeImpactEstimator (Phase 5)."""
+    try:
+        from src.analysis.population_impact import SmokeImpactEstimator
+        return SmokeImpactEstimator()
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(
+            "SmokeImpactEstimator unavailable (%s). Smoke impact will be skipped.", e
+        )
+        return None
+
+
 def build_alert(target_date: date,
                 fires: pd.DataFrame,
                 fwi_row: dict) -> dict:
@@ -413,8 +439,10 @@ def build_alert(target_date: date,
     fwi_val = float(fwi_row.get("fwi") or 0)
     danger  = fwi_row.get("danger_class") or fwi_danger(fwi_val)
 
-    # Initialise spread predictor (reused for all fires in this alert)
+    # Initialise spread predictor + burn estimator + smoke estimator (reused for all fires)
     spread_predictor = _init_spread_predictor()
+    burn_estimator = _init_burn_estimator()
+    smoke_estimator = _init_smoke_estimator()
 
     fire_alerts = []
     for _, row in fires.iterrows():
@@ -490,6 +518,40 @@ def build_alert(target_date: date,
                     "Spread prediction failed for (%.3f, %.3f): %s", lat, lon, e
                 )
 
+        # Probable burn scar estimation (requires spread prediction)
+        probable_burn_scar = None
+        if burn_estimator is not None and predicted_spread is not None:
+            try:
+                burn_result = burn_estimator.estimate(
+                    fire_detection={"fire_lat": lat, "fire_lon": lon,
+                                    "frp_mw": frp, "land_cover": lc_name},
+                    spread_result=predicted_spread,
+                    fwi=fwi_val,
+                )
+                probable_burn_scar = burn_result
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning(
+                    "Burn estimation failed for (%.3f, %.3f): %s", lat, lon, e
+                )
+
+        # Smoke plume impact estimation (CRITICAL and HIGH fires only — Phase 5)
+        smoke_impact = None
+        if smoke_estimator is not None and sev in ("CRITICAL", "HIGH") and frp >= 5:
+            try:
+                wind_speed_ms = float(fwi_row.get("wind_kmh") or 10) / 3.6
+                wind_dir_deg = float(fwi_row.get("wind_dir_deg") or 225.0)
+                smoke_result = smoke_estimator.estimate_impact(
+                    fire_lat=lat, fire_lon=lon, frp_mw=frp,
+                    wind_speed_ms=wind_speed_ms, wind_dir_deg=wind_dir_deg,
+                )
+                smoke_impact = smoke_result
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning(
+                    "Smoke impact estimation failed for (%.3f, %.3f): %s", lat, lon, e
+                )
+
         # Human-readable message
         if sev == "CRITICAL":
             msg = (f"CRITICAL {lc_tag}: {frp_cat} {dn_label} FOREST fire at "
@@ -536,6 +598,8 @@ def build_alert(target_date: date,
             "tactical_order":   tactical_order,
             "prescriptive_metrics": prescription,
             "predicted_spread": predicted_spread,
+            "probable_burn_scar": probable_burn_scar,
+            "smoke_impact": smoke_impact,
         })
 
     # Sort by severity then FRP descending
@@ -559,7 +623,11 @@ def build_alert(target_date: date,
     peak_frp    = max((f["frp_mw"] for f in fire_alerts), default=0.0)
     forest_mask_available = FOREST_MASK_30M.exists()
 
-    return {
+    import os as _os_env
+    dispatch_webhook = _os_env.environ.get("VANAAGNI_DISPATCH_WEBHOOK")
+    dispatch_ready = dispatch_webhook is not None and dispatch_webhook != ""
+
+    bulletin = {
         "alert_id":        f"GUNA-{target_date}-{len(fire_alerts):03d}fires",
         "generated_at":    now_ist,
         "target_date":     str(target_date),
@@ -590,7 +658,12 @@ def build_alert(target_date: date,
         },
         "data_sources":    ["FIRMS VIIRS SNPP", "NASA POWER / GFS FWI"],
         "abm_ignition_risk": _compute_abm_ignition_risk(target_date, fwi_row),
+        # Phase 6: dispatch readiness flag
+        "dispatch_ready":  dispatch_ready,
     }
+    if dispatch_ready:
+        bulletin["dispatch_url"] = dispatch_webhook
+    return bulletin
 
 
 # =============================================================================
@@ -660,6 +733,30 @@ def print_bulletin(alert: dict):
                       f" {sp['spread_24h']['area_ha']:>9.1f}"
                       f"  {sp['byram_intensity_kw_m']:>8.0f}kW"
                       f" {sp['flame_length_m']:>5.1f}m")
+
+        # Print smoke impact summary for fires that have it (Phase 5)
+        fires_with_smoke = [f for f in fires if f.get("smoke_impact")]
+        if fires_with_smoke:
+            print(f"\n  SMOKE IMPACT ({len(fires_with_smoke)} fires):")
+            print(f"  {'LAT':>7} {'LON':>8}  {'PM2.5':>9}  {'Plume Reach':>12}  {'Settlements':>12}  {'Population':>10}")
+            print("  " + "-" * 80)
+            for f in fires_with_smoke:
+                sm = f["smoke_impact"]
+                # Support both field name conventions from existing/new estimator
+                pm25 = sm.get("max_pm25_ug_m3") or sm.get("pm25_at_1km_ug_m3") or 0.0
+                reach = sm.get("plume_reach_km", 0.0)
+                n_settle = (
+                    len(sm.get("affected_settlements", []))
+                    if sm.get("affected_settlements") is not None
+                    else sm.get("settlements_affected", 0)
+                )
+                pop = sm.get("total_population_exposed") or sm.get("population_at_risk") or 0
+                settle_label = f"{n_settle} affected" if n_settle else "none in range"
+                print(f"  {f['fire_lat']:>7.3f} {f['fire_lon']:>8.3f}"
+                      f"  {pm25:>7.0f}ug"
+                      f"  {reach:>8.1f}km"
+                      f"  {settle_label:>14}"
+                      f"  {pop:>10,}")
     else:
         if sev == "WATCH":
             print(f"\n  No active fires detected.")

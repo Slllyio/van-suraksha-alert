@@ -334,6 +334,15 @@ def main():
     print(f"{'='*60}")
     build_unified_feed(target_date)
 
+    # Step 6: 3-day fire danger forecast (GFS + forward FWI)
+    forecast_script = ROOT / "scripts" / "forecast_fire_danger.py"
+    if forecast_script.exists() and not args.skip_prediction:
+        run_step("3-Day Fire Danger Forecast", [
+            PYTHON, str(forecast_script),
+            "--date", target_date,
+            "--no-risk-maps",  # fast mode: FWI forecast only
+        ], timeout=180)
+
     elapsed = (datetime.now() - started).total_seconds()
     print(f"\n{'='*60}")
     print(f"  PIPELINE COMPLETE -- {elapsed:.0f}s elapsed")
@@ -342,6 +351,7 @@ def main():
     print(f"    Detection:  outputs/dashboard_feed/latest_alert.json")
     print(f"    Prediction: outputs/predictive_fire_risk/risk_map_{target_date}.csv")
     print(f"    Unified:    outputs/dashboard_feed/unified_alert.geojson")
+    print(f"    Forecast:   outputs/dashboard_feed/fire_danger_forecast.json")
 
 
 if __name__ == "__main__":
