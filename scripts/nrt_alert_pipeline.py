@@ -390,6 +390,19 @@ def _compute_abm_ignition_risk(target_date: date, fwi_row: dict) -> dict:
         }
 
 
+def _init_spread_predictor():
+    """Lazily initialise the SpreadPredictor (import-heavy, GDAL-dependent)."""
+    try:
+        from src.analysis.spread_predictor import SpreadPredictor
+        return SpreadPredictor()
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(
+            "SpreadPredictor unavailable (%s). Spread predictions will be skipped.", e
+        )
+        return None
+
+
 def build_alert(target_date: date,
                 fires: pd.DataFrame,
                 fwi_row: dict) -> dict:
@@ -399,6 +412,9 @@ def build_alert(target_date: date,
     now_ist = datetime.now(IST).isoformat()
     fwi_val = float(fwi_row.get("fwi") or 0)
     danger  = fwi_row.get("danger_class") or fwi_danger(fwi_val)
+
+    # Initialise spread predictor (reused for all fires in this alert)
+    spread_predictor = _init_spread_predictor()
 
     fire_alerts = []
     for _, row in fires.iterrows():
@@ -447,6 +463,33 @@ def build_alert(target_date: date,
         prescription = generate_tactical_prescription(intensity_kw, ros_proxy_kmh, fwi_val, lc_name)
         tactical_order = draft_ai_dispatch_order(lc_name, (lat, lon), prescription)
 
+        # Fire spread prediction (MODERATE+ fires only, skip LOW to save compute)
+        predicted_spread = None
+        if spread_predictor is not None and sev in ("CRITICAL", "HIGH", "MODERATE"):
+            try:
+                spread_result = spread_predictor.predict(
+                    fire_detection={"fire_lat": lat, "fire_lon": lon, "frp_mw": frp},
+                    weather={
+                        "wind_kmh": float(fwi_row.get("wind_kmh") or 10),
+                        "temp_c": float(fwi_row.get("temp_c") or 35),
+                        "rh_pct": float(fwi_row.get("rh_pct") or 25),
+                        "fwi": fwi_val,
+                    },
+                )
+                predicted_spread = {
+                    "spread_6h": spread_result["spread_6h"],
+                    "spread_12h": spread_result["spread_12h"],
+                    "spread_24h": spread_result["spread_24h"],
+                    "byram_intensity_kw_m": spread_result["byram_intensity_kw_m"],
+                    "flame_length_m": spread_result["flame_length_m"],
+                    "mode": spread_result["mode"],
+                }
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning(
+                    "Spread prediction failed for (%.3f, %.3f): %s", lat, lon, e
+                )
+
         # Human-readable message
         if sev == "CRITICAL":
             msg = (f"CRITICAL {lc_tag}: {frp_cat} {dn_label} FOREST fire at "
@@ -492,6 +535,7 @@ def build_alert(target_date: date,
             "message":          msg,
             "tactical_order":   tactical_order,
             "prescriptive_metrics": prescription,
+            "predicted_spread": predicted_spread,
         })
 
     # Sort by severity then FRP descending
@@ -601,6 +645,21 @@ def print_bulletin(alert: dict):
                   f"{f['fire_time_ist']:<10} "
                   f"{lc_disp:<16} "
                   f"{f['message'][:55]}")
+
+        # Print spread predictions for fires that have them
+        fires_with_spread = [f for f in fires if f.get("predicted_spread")]
+        if fires_with_spread:
+            print(f"\n  PREDICTED SPREAD ({len(fires_with_spread)} fires):")
+            print(f"  {'LAT':>7} {'LON':>8}  {'6h (ha)':>8} {'12h (ha)':>9} {'24h (ha)':>9}  {'Intensity':>10} {'Flame':>6}")
+            print("  " + "-" * 75)
+            for f in fires_with_spread:
+                sp = f["predicted_spread"]
+                print(f"  {f['fire_lat']:>7.3f} {f['fire_lon']:>8.3f}"
+                      f"  {sp['spread_6h']['area_ha']:>8.1f}"
+                      f" {sp['spread_12h']['area_ha']:>9.1f}"
+                      f" {sp['spread_24h']['area_ha']:>9.1f}"
+                      f"  {sp['byram_intensity_kw_m']:>8.0f}kW"
+                      f" {sp['flame_length_m']:>5.1f}m")
     else:
         if sev == "WATCH":
             print(f"\n  No active fires detected.")

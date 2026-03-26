@@ -2032,6 +2032,28 @@ elif selected_tab == "\U0001f6a8 Live Alert":
             use_container_width=True, height=350
         )
 
+        # ── Spread predictions ──────────────────────────────────────────────
+        fires_with_spread = [f for f in fires if f.get("predicted_spread")]
+        if fires_with_spread:
+            st.subheader(f"Predicted Fire Spread ({len(fires_with_spread)} fires)")
+            spread_rows = []
+            for f in fires_with_spread:
+                sp = f["predicted_spread"]
+                spread_rows.append({
+                    "Severity": f["severity"],
+                    "Lat": f["fire_lat"],
+                    "Lon": f["fire_lon"],
+                    "FRP (MW)": f["frp_mw"],
+                    "6h Area (ha)": sp["spread_6h"]["area_ha"],
+                    "12h Area (ha)": sp["spread_12h"]["area_ha"],
+                    "24h Area (ha)": sp["spread_24h"]["area_ha"],
+                    "Intensity (kW/m)": sp["byram_intensity_kw_m"],
+                    "Flame (m)": sp["flame_length_m"],
+                    "Mode": sp["mode"],
+                })
+            st.dataframe(pd.DataFrame(spread_rows), use_container_width=True, height=200)
+            st.caption("Spread polygons shown on map: yellow=6h, orange=12h, red=24h")
+
         # ── Map ────────────────────────────────────────────────────────────
         st.subheader("Fire Locations")
         map_cols = [c for c in ["fire_lat","fire_lon","frp_mw","severity"] if c in fire_df.columns]
@@ -2052,6 +2074,39 @@ elif selected_tab == "\U0001f6a8 Live Alert":
                 get_fill_color="color", pickable=True,
             )
             layers = [fire_layer]
+
+            # Add spread polygon layers (6h=yellow, 12h=orange, 24h=red)
+            _spread_colors = {
+                "spread_6h":  [255, 255, 0, 60],   # yellow, transparent
+                "spread_12h": [255, 165, 0, 50],    # orange
+                "spread_24h": [255, 0, 0, 40],      # red
+            }
+            for horizon_key, fill_color in _spread_colors.items():
+                spread_features = []
+                for f in fires:
+                    sp = f.get("predicted_spread")
+                    if not sp:
+                        continue
+                    poly = sp.get(horizon_key, {}).get("polygon")
+                    if poly and poly.get("coordinates"):
+                        spread_features.append({
+                            "type": "Feature",
+                            "geometry": poly,
+                            "properties": {
+                                "area_ha": sp[horizon_key].get("area_ha", 0),
+                                "horizon": horizon_key,
+                            },
+                        })
+                if spread_features:
+                    geojson_fc = {"type": "FeatureCollection", "features": spread_features}
+                    layers.append(pdk.Layer(
+                        "GeoJsonLayer", data=geojson_fc,
+                        get_fill_color=fill_color,
+                        get_line_color=fill_color[:3] + [180],
+                        line_width_min_pixels=1,
+                        pickable=True,
+                    ))
+
             boundary = load_boundary_geojson()
             if boundary:
                 layers.insert(0, pdk.Layer(
@@ -2063,7 +2118,7 @@ elif selected_tab == "\U0001f6a8 Live Alert":
                 layers=layers,
                 initial_view_state=pdk.ViewState(latitude=24.4,longitude=77.15,zoom=9,pitch=0),
                 map_style="dark",
-                tooltip={"text": "{severity} \u2014 FRP: {frp_mw} MW"},
+                tooltip={"text": "{severity} \u2014 FRP: {frp_mw} MW\n{horizon}: {area_ha} ha"},
             )
             st.pydeck_chart(_deck_alert)
             fullscreen_map_button(_deck_alert, "live_alert")

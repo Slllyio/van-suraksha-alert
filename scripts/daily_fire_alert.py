@@ -101,6 +101,7 @@ def build_unified_feed(target_date: str):
                         "message": fire.get("message", ""),
                         "source": "FIRMS_DETECTION",
                         "alert_type": "DETECTED",
+                        "predicted_spread": fire.get("predicted_spread"),
                     },
                 }
                 features.append(feat)
