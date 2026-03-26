@@ -972,7 +972,7 @@ const camera = new THREE.PerspectiveCamera(55, canvas.clientWidth / canvas.clien
 
 const cx = TERRAIN_W * SCALE * 0.3;
 const cz = TERRAIN_H * SCALE * 0.3;
-camera.position.set(cx, 30, cz);
+camera.position.set(cx, 45, cz);
 
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
@@ -1033,14 +1033,19 @@ const heightmapTex = new THREE.TextureLoader().load(OVERLAY_BASE + '/heightmap_g
 heightmapTex.minFilter = THREE.LinearFilter;
 heightmapTex.magFilter = THREE.LinearFilter;
 
-const lulcTex = new THREE.TextureLoader().load(OVERLAY_BASE + '/lulc.png');
+const lulcTex = new THREE.TextureLoader().load(OVERLAY_BASE + '/' + (CONFIG.terrain.lulc || 'lulc.png'));
+const maskTex = new THREE.TextureLoader().load(OVERLAY_BASE + '/mask_guna.png');
+maskTex.minFilter = THREE.LinearFilter;
+maskTex.magFilter = THREE.LinearFilter;
 
 let terrainMat;
 try {{
 terrainMat = new THREE.ShaderMaterial({{
+  transparent: true,
   uniforms: {{
     heightmap: {{ value: heightmapTex }},
     lulcMap: {{ value: lulcTex }},
+    boundaryMask: {{ value: maskTex }},
     elevRange: {{ value: new THREE.Vector2(ELEV[0], ELEV[1]) }},
     exaggeration: {{ value: EXAG * 0.01 }},
     sunDir: {{ value: new THREE.Vector3(0.5, 0.8, 0.3).normalize() }},
@@ -1060,7 +1065,7 @@ terrainMat = new THREE.ShaderMaterial({{
       vec3 pos = position;
       pos.y = elev;
 
-      float texel = 1.0 / 1024.0;
+      float texel = 1.0 / 2048.0;
       float hL = texture2D(heightmap, uv + vec2(-texel, 0.0)).r;
       float hR = texture2D(heightmap, uv + vec2( texel, 0.0)).r;
       float hD = texture2D(heightmap, uv + vec2(0.0, -texel)).r;
@@ -1074,20 +1079,36 @@ terrainMat = new THREE.ShaderMaterial({{
   `,
   fragmentShader: `
     uniform sampler2D lulcMap;
+    uniform sampler2D boundaryMask;
     uniform vec3 sunDir;
     varying vec2 vUv;
     varying vec3 vNormal;
     varying vec3 vWorldPos;
 
+    // Simple hash noise
+    float hash(vec2 p) {{
+      return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+    }}
+
     void main() {{
+      float mask = texture2D(boundaryMask, vUv).r;
+      if (mask < 0.3) discard;
+
       vec3 lulcColor = texture2D(lulcMap, vUv).rgb;
-      vec3 baseColor = mix(lulcColor, vec3(0.3, 0.35, 0.15), 0.3);
 
-      float diff = max(dot(normalize(vNormal), sunDir), 0.0);
-      float ambient = 0.35;
-      vec3 lit = baseColor * (ambient + diff * 0.65);
+      // Micro noise for natural variation
+      float n = hash(vUv * 512.0) * 0.08 - 0.04;
+      vec3 baseColor = clamp(lulcColor + n, 0.0, 1.0);
 
-      gl_FragColor = vec4(lit, 1.0);
+      // Enhanced lighting: diffuse + rim from slope
+      vec3 N = normalize(vNormal);
+      float diff = max(dot(N, sunDir), 0.0);
+      float rim = pow(1.0 - max(dot(N, vec3(0.0, 1.0, 0.0)), 0.0), 3.0) * 0.15;
+      float ambient = 0.3;
+      vec3 lit = baseColor * (ambient + diff * 0.65 + rim);
+
+      float edgeAlpha = smoothstep(0.3, 0.6, mask);
+      gl_FragColor = vec4(lit, edgeAlpha);
     }}
   `
 }});
@@ -1106,17 +1127,17 @@ const SPECIES_COLORS = {{
   bamboo: 0x7ab356, shrub: 0x8b7d3c,
 }};
 
-const trunkGeo = new THREE.CylinderGeometry(0.08, 0.15, 1.5, 5);
-const canopyGeo = new THREE.DodecahedronGeometry(1.0, 1);
-const trunkMat = new THREE.MeshStandardMaterial({{ color: 0x5c3a1e, roughness: 0.9 }});
-const canopyMat = new THREE.MeshStandardMaterial({{ color: 0x3d6b2e, roughness: 0.8 }});
+const trunkGeo = new THREE.CylinderGeometry(0.008, 0.015, 0.15, 4);
+const canopyGeo = new THREE.DodecahedronGeometry(0.1, 0);
+const trunkMat = new THREE.MeshLambertMaterial({{ color: 0x5c3a1e }});
+const canopyMat = new THREE.MeshLambertMaterial({{ color: 0x3d6b2e }});
 
 const TREES = CONFIG.trees;
 const treeCount = TREES.length;
 const trunkMesh = new THREE.InstancedMesh(trunkGeo, trunkMat, treeCount);
 const canopyMesh = new THREE.InstancedMesh(canopyGeo, canopyMat, treeCount);
-trunkMesh.castShadow = true;
-canopyMesh.castShadow = true;
+trunkMesh.castShadow = false;
+canopyMesh.castShadow = false;
 
 const _d = new THREE.Object3D();
 for (let i = 0; i < treeCount; i++) {{
@@ -1124,13 +1145,13 @@ for (let i = 0; i < treeCount; i++) {{
   const wPos = geoToWorld(t.lon, t.lat);
   const s = t.height || 1.0;
 
-  _d.position.set(wPos.x, wPos.y + 0.75 * s, wPos.z);
+  _d.position.set(wPos.x, wPos.y + 0.075 * s, wPos.z);
   _d.scale.set(s, s, s);
   _d.rotation.y = Math.random() * Math.PI * 2;
   _d.updateMatrix();
   trunkMesh.setMatrixAt(i, _d.matrix);
 
-  _d.position.y = wPos.y + 2.0 * s;
+  _d.position.y = wPos.y + 0.18 * s;
   _d.scale.set(s * (0.8 + Math.random() * 0.4), s * (0.7 + Math.random() * 0.5), s * (0.8 + Math.random() * 0.4));
   _d.updateMatrix();
   canopyMesh.setMatrixAt(i, _d.matrix);
@@ -1141,6 +1162,31 @@ for (let i = 0; i < treeCount; i++) {{
 
 scene.add(trunkMesh);
 scene.add(canopyMesh);
+
+// --- Instanced Shrubs ---
+const SHRUBS = CONFIG.shrubs || [];
+if (SHRUBS.length > 0) {{
+  const shrubGeo = new THREE.SphereGeometry(0.06, 4, 3);
+  const shrubMat = new THREE.MeshLambertMaterial({{ color: 0x6b7b42 }});
+  const shrubMesh = new THREE.InstancedMesh(shrubGeo, shrubMat, SHRUBS.length);
+  shrubMesh.castShadow = false;
+
+  const _sd = new THREE.Object3D();
+  for (let i = 0; i < SHRUBS.length; i++) {{
+    const sh = SHRUBS[i];
+    const wPos = geoToWorld(sh.lon, sh.lat);
+    const s = sh.height || 0.5;
+    _sd.position.set(wPos.x, wPos.y + 0.03 * s, wPos.z);
+    _sd.scale.set(s, s * 0.6, s);
+    _sd.rotation.y = Math.random() * Math.PI * 2;
+    _sd.updateMatrix();
+    shrubMesh.setMatrixAt(i, _sd.matrix);
+
+    const green = new THREE.Color().setHSL(0.25 + Math.random() * 0.08, 0.4, 0.3 + Math.random() * 0.15);
+    shrubMesh.setColorAt(i, green);
+  }}
+  scene.add(shrubMesh);
+}}
 
 // --- Fire Particles ---
 const activeFires = FIRES.active;
@@ -1444,7 +1490,7 @@ window.addEventListener('resize', () => {{
 </script>
 </body></html>"""
 
-    st.components.v1.html(twin_html, height=820)
+    st.components.v1.html(twin_html, height=960)
 
     # Quick stats row
     _n_fires = _latest_alert.get("fires_detected", 0)
