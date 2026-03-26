@@ -830,44 +830,44 @@ if selected_tab == "\U0001f310 3D Digital Twin":
 <html><head>
 <meta charset="UTF-8">
 <style>
-  * {{{{ margin:0; padding:0; box-sizing:border-box; }}}}
-  body {{{{ background:#0a0a0f; overflow:hidden; }}}}
-  #c {{{{ width:100%; height:800px; display:block; }}}}
+  * {{ margin:0; padding:0; box-sizing:border-box; }}
+  body {{ background:#0a0a0f; overflow:hidden; }}
+  #c {{ width:100%; height:800px; display:block; }}
 
-  .panel {{{{
+  .panel {{
     position:absolute; z-index:10;
     background:rgba(10,10,20,0.88); color:#fff;
     border:1px solid rgba(255,255,255,0.15);
     border-radius:8px; backdrop-filter:blur(8px);
     font-family:'Segoe UI',system-ui,sans-serif;
-  }}}}
+  }}
 
-  #overlay-btns {{{{
+  #overlay-btns {{
     top:12px; right:12px; padding:8px; display:flex; gap:6px;
-  }}}}
-  .obtn {{{{
+  }}
+  .obtn {{
     padding:6px 12px; border:1px solid rgba(255,255,255,0.25);
     border-radius:6px; background:transparent; color:#fff;
     cursor:pointer; font-size:12px; transition:all 0.2s;
-  }}}}
-  .obtn:hover {{{{ border-color:rgba(255,255,255,0.5); }}}}
-  .obtn.active {{{{ border-color:#4ade80; color:#4ade80; }}}}
+  }}
+  .obtn:hover {{ border-color:rgba(255,255,255,0.5); }}
+  .obtn.active {{ border-color:#4ade80; color:#4ade80; }}
 
-  #info {{{{
+  #info {{
     bottom:12px; left:12px; padding:12px 16px; min-width:200px;
-  }}}}
-  #info h4 {{{{ font-size:13px; color:#4ade80; margin-bottom:4px; }}}}
-  #info p {{{{ font-size:11px; opacity:0.8; line-height:1.4; }}}}
+  }}
+  #info h4 {{ font-size:13px; color:#4ade80; margin-bottom:4px; }}
+  #info p {{ font-size:11px; opacity:0.8; line-height:1.4; }}
 
-  #style-toggle {{{{
+  #style-toggle {{
     bottom:12px; right:12px; padding:6px 14px;
-  }}}}
-  .obtn.style {{{{ font-size:11px; }}}}
+  }}
+  .obtn.style {{ font-size:11px; }}
 
-  #stats {{{{
+  #stats {{
     top:12px; left:12px; padding:8px 12px; font-size:11px;
     font-family:monospace;
-  }}}}
+  }}
 </style>
 </head><body>
 <canvas id="c"></canvas>
@@ -893,20 +893,20 @@ if selected_tab == "\U0001f310 3D Digital Twin":
 </div>
 
 <script type="importmap">
-{{{{
-  "imports": {{{{
+{{
+  "imports": {{
     "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js",
     "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/"
-  }}}}
-}}}}
+  }}
+}}
 </script>
 
 <script type="module">
 import * as THREE from 'three';
-import {{{{ OrbitControls }}}} from 'three/addons/controls/OrbitControls.js';
-import {{{{ EffectComposer }}}} from 'three/addons/postprocessing/EffectComposer.js';
-import {{{{ RenderPass }}}} from 'three/addons/postprocessing/RenderPass.js';
-import {{{{ ShaderPass }}}} from 'three/addons/postprocessing/ShaderPass.js';
+import {{ OrbitControls }} from 'three/addons/controls/OrbitControls.js';
+import {{ EffectComposer }} from 'three/addons/postprocessing/EffectComposer.js';
+import {{ RenderPass }} from 'three/addons/postprocessing/RenderPass.js';
+import {{ ShaderPass }} from 'three/addons/postprocessing/ShaderPass.js';
 
 // --- Data ---
 const CONFIG = {_twin_config_json};
@@ -920,17 +920,17 @@ const TERRAIN_H = B.north - B.south;
 const SCALE = 100;
 
 // --- Coordinate Mapping: lon->X, lat->Z, elev->Y ---
-function geoToWorld(lon, lat, elev) {{{{
+function geoToWorld(lon, lat, elev) {{
   const x = (lon - B.west) / TERRAIN_W * TERRAIN_W * SCALE - (TERRAIN_W * SCALE / 2);
   const z = -((lat - B.south) / TERRAIN_H * TERRAIN_H * SCALE - (TERRAIN_H * SCALE / 2));
   const y = elev !== undefined ?
     ((elev - ELEV[0]) / (ELEV[1] - ELEV[0])) * (ELEV[1] - ELEV[0]) * EXAG * 0.01 : 0;
   return new THREE.Vector3(x, y, z);
-}}}}
+}}
 
 // --- Renderer ---
 const canvas = document.getElementById('c');
-const renderer = new THREE.WebGLRenderer({{{{ canvas, antialias: true }}}});
+const renderer = new THREE.WebGLRenderer({{ canvas, antialias: true }});
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
@@ -956,13 +956,13 @@ controls.autoRotate = true;
 controls.autoRotateSpeed = 0.3;
 
 let autoRotateTimer = null;
-controls.addEventListener('start', () => {{{{
+controls.addEventListener('start', () => {{
   controls.autoRotate = false;
   clearTimeout(autoRotateTimer);
-}}}});
-controls.addEventListener('end', () => {{{{
-  autoRotateTimer = setTimeout(() => {{{{ controls.autoRotate = true; }}}}, 10000);
-}}}});
+}});
+controls.addEventListener('end', () => {{
+  autoRotateTimer = setTimeout(() => {{ controls.autoRotate = true; }}, 10000);
+}});
 
 // --- Lighting ---
 scene.add(new THREE.AmbientLight(0x445566, 0.6));
@@ -982,16 +982,16 @@ scene.add(sun);
 scene.add(new THREE.DirectionalLight(0x88aacc, 0.4).translateX(-40).translateY(30));
 // --- Sky ---
 const skyGeo = new THREE.SphereGeometry(2000, 32, 32);
-const skyMat = new THREE.ShaderMaterial({{{{
+const skyMat = new THREE.ShaderMaterial({{
   side: THREE.BackSide,
-  uniforms: {{{{
-    topColor: {{{{ value: new THREE.Color(0x0044aa) }}}},
-    bottomColor: {{{{ value: new THREE.Color(0xccddee) }}}},
-  }}}},
-  vertexShader: `varying vec3 vWP; void main(){{{{ vWP=(modelMatrix*vec4(position,1.0)).xyz; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }}}}`,
+  uniforms: {{
+    topColor: {{ value: new THREE.Color(0x0044aa) }},
+    bottomColor: {{ value: new THREE.Color(0xccddee) }},
+  }},
+  vertexShader: `varying vec3 vWP; void main(){{ vWP=(modelMatrix*vec4(position,1.0)).xyz; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }}`,
   fragmentShader: `uniform vec3 topColor,bottomColor; varying vec3 vWP;
-    void main(){{{{ float h=normalize(vWP+20.0).y; gl_FragColor=vec4(mix(bottomColor,topColor,max(pow(max(h,0.0),0.4),0.0)),1.0); }}}}`
-}}}});
+    void main(){{ float h=normalize(vWP+20.0).y; gl_FragColor=vec4(mix(bottomColor,topColor,max(pow(max(h,0.0),0.4),0.0)),1.0); }}`
+}});
 scene.add(new THREE.Mesh(skyGeo, skyMat));
 
 // --- Terrain (GPU-displaced) ---
@@ -1007,15 +1007,15 @@ heightmapTex.magFilter = THREE.LinearFilter;
 const lulcTex = new THREE.TextureLoader().load(OVERLAY_BASE + '/lulc.png');
 
 let terrainMat;
-try {{{{
-terrainMat = new THREE.ShaderMaterial({{{{
-  uniforms: {{{{
-    heightmap: {{{{ value: heightmapTex }}}},
-    lulcMap: {{{{ value: lulcTex }}}},
-    elevRange: {{{{ value: new THREE.Vector2(ELEV[0], ELEV[1]) }}}},
-    exaggeration: {{{{ value: EXAG * 0.01 }}}},
-    sunDir: {{{{ value: new THREE.Vector3(0.5, 0.8, 0.3).normalize() }}}},
-  }}}},
+try {{
+terrainMat = new THREE.ShaderMaterial({{
+  uniforms: {{
+    heightmap: {{ value: heightmapTex }},
+    lulcMap: {{ value: lulcTex }},
+    elevRange: {{ value: new THREE.Vector2(ELEV[0], ELEV[1]) }},
+    exaggeration: {{ value: EXAG * 0.01 }},
+    sunDir: {{ value: new THREE.Vector3(0.5, 0.8, 0.3).normalize() }},
+  }},
   vertexShader: `
     uniform sampler2D heightmap;
     uniform vec2 elevRange;
@@ -1024,7 +1024,7 @@ terrainMat = new THREE.ShaderMaterial({{{{
     varying vec3 vNormal;
     varying vec3 vWorldPos;
 
-    void main() {{{{
+    void main() {{
       vUv = uv;
       float h = texture2D(heightmap, uv).r;
       float elev = mix(elevRange.x, elevRange.y, h) * exaggeration;
@@ -1041,7 +1041,7 @@ terrainMat = new THREE.ShaderMaterial({{{{
 
       vWorldPos = (modelMatrix * vec4(pos, 1.0)).xyz;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-    }}}}
+    }}
   `,
   fragmentShader: `
     uniform sampler2D lulcMap;
@@ -1050,7 +1050,7 @@ terrainMat = new THREE.ShaderMaterial({{{{
     varying vec3 vNormal;
     varying vec3 vWorldPos;
 
-    void main() {{{{
+    void main() {{
       vec3 lulcColor = texture2D(lulcMap, vUv).rgb;
       vec3 baseColor = mix(lulcColor, vec3(0.3, 0.35, 0.15), 0.3);
 
@@ -1059,28 +1059,28 @@ terrainMat = new THREE.ShaderMaterial({{{{
       vec3 lit = baseColor * (ambient + diff * 0.65);
 
       gl_FragColor = vec4(lit, 1.0);
-    }}}}
+    }}
   `
-}}}});
-}}}} catch(e) {{{{
+}});
+}} catch(e) {{
   console.warn('Terrain shader failed, using Lambert fallback:', e);
-  terrainMat = new THREE.MeshLambertMaterial({{{{ color: 0x3d6b2e }}}});
-}}}}
+  terrainMat = new THREE.MeshLambertMaterial({{ color: 0x3d6b2e }});
+}}
 
 const terrain = new THREE.Mesh(terrainGeo, terrainMat);
 terrain.receiveShadow = true;
 scene.add(terrain);
 
 // --- Instanced Trees ---
-const SPECIES_COLORS = {{{{
+const SPECIES_COLORS = {{
   teak: 0x2d5a27, tendu: 0x5a6e30, mahua: 0x4a7c3f,
   bamboo: 0x7ab356, shrub: 0x8b7d3c,
-}}}};
+}};
 
 const trunkGeo = new THREE.CylinderGeometry(0.08, 0.15, 1.5, 5);
 const canopyGeo = new THREE.DodecahedronGeometry(1.0, 1);
-const trunkMat = new THREE.MeshStandardMaterial({{{{ color: 0x5c3a1e, roughness: 0.9 }}}});
-const canopyMat = new THREE.MeshStandardMaterial({{{{ color: 0x3d6b2e, roughness: 0.8 }}}});
+const trunkMat = new THREE.MeshStandardMaterial({{ color: 0x5c3a1e, roughness: 0.9 }});
+const canopyMat = new THREE.MeshStandardMaterial({{ color: 0x3d6b2e, roughness: 0.8 }});
 
 const TREES = CONFIG.trees;
 const treeCount = TREES.length;
@@ -1090,7 +1090,7 @@ trunkMesh.castShadow = true;
 canopyMesh.castShadow = true;
 
 const _d = new THREE.Object3D();
-for (let i = 0; i < treeCount; i++) {{{{
+for (let i = 0; i < treeCount; i++) {{
   const t = TREES[i];
   const wPos = geoToWorld(t.lon, t.lat);
   const s = t.height || 1.0;
@@ -1108,7 +1108,7 @@ for (let i = 0; i < treeCount; i++) {{{{
 
   const col = new THREE.Color(SPECIES_COLORS[t.species] || 0x3d6b2e);
   canopyMesh.setColorAt(i, col);
-}}}}
+}}
 
 scene.add(trunkMesh);
 scene.add(canopyMesh);
@@ -1118,19 +1118,19 @@ const activeFires = FIRES.active;
 let _fireShader = null;
 let _fireGlows = null;
 
-if (activeFires.length > 0) {{{{
+if (activeFires.length > 0) {{
   const FIRE_COUNT = Math.min(activeFires.length * 200, 800);
   const SMOKE_COUNT = Math.min(activeFires.length * 80, 300);
 
-  const fireShader = new THREE.ShaderMaterial({{{{
+  const fireShader = new THREE.ShaderMaterial({{
     transparent: true, depthWrite: false,
     blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
-    uniforms: {{{{ uTime: {{{{ value: 0 }}}} }}}},
+    uniforms: {{ uTime: {{ value: 0 }} }},
     vertexShader: `
       attribute float aLife, aSpeed, aSize, aBaseY;
       uniform float uTime;
       varying float vLife;
-      void main() {{{{
+      void main() {{
         float life = fract(aLife + uTime * aSpeed * 0.3);
         vLife = life;
         vec3 pos = position;
@@ -1138,19 +1138,19 @@ if (activeFires.length > 0) {{{{
         vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
         gl_Position = projectionMatrix * mvPos;
         gl_PointSize = aSize * (1.0 - life * 0.6) * 80.0 / -mvPos.z;
-      }}}}
+      }}
     `,
     fragmentShader: `
       varying float vLife;
-      void main() {{{{
+      void main() {{
         float d = length(gl_PointCoord - 0.5) * 2.0;
         if (d > 1.0) discard;
         float alpha = (1.0 - d) * (1.0 - vLife) * 0.9;
         vec3 col = mix(vec3(1.0, 0.8, 0.2), vec3(0.8, 0.1, 0.0), vLife);
         gl_FragColor = vec4(col, alpha);
-      }}}}
+      }}
     `
-  }}}});
+  }});
 
   const firePositions = new Float32Array(FIRE_COUNT * 3);
   const fireLife = new Float32Array(FIRE_COUNT);
@@ -1158,7 +1158,7 @@ if (activeFires.length > 0) {{{{
   const fireSize = new Float32Array(FIRE_COUNT);
   const fireBaseY = new Float32Array(FIRE_COUNT);
 
-  for (let i = 0; i < FIRE_COUNT; i++) {{{{
+  for (let i = 0; i < FIRE_COUNT; i++) {{
     const fire = activeFires[i % activeFires.length];
     const wp = geoToWorld(fire.lon, fire.lat);
     const spread = (fire.frp || 5) * 0.05;
@@ -1169,7 +1169,7 @@ if (activeFires.length > 0) {{{{
     fireSpeed[i] = 0.5 + Math.random() * 1.5;
     fireSize[i] = 0.3 + Math.random() * 0.8;
     fireBaseY[i] = wp.y;
-  }}}}
+  }}
 
   const fireGeo = new THREE.BufferGeometry();
   fireGeo.setAttribute('position', new THREE.BufferAttribute(firePositions, 3));
@@ -1181,57 +1181,57 @@ if (activeFires.length > 0) {{{{
   const firePoints = new THREE.Points(fireGeo, fireShader);
   scene.add(firePoints);
 
-  const fireGlows = activeFires.map(f => {{{{
+  const fireGlows = activeFires.map(f => {{
     const wp = geoToWorld(f.lon, f.lat);
     const light = new THREE.PointLight(0xff4400, 15, 30);
     light.position.set(wp.x, wp.y + 3, wp.z);
     scene.add(light);
     return light;
-  }}}});
+  }});
 
   const smokePositions = new Float32Array(SMOKE_COUNT * 3);
-  for (let i = 0; i < SMOKE_COUNT; i++) {{{{
+  for (let i = 0; i < SMOKE_COUNT; i++) {{
     const fire = activeFires[i % activeFires.length];
     const wp = geoToWorld(fire.lon, fire.lat);
     smokePositions[i*3]   = wp.x + (Math.random()-0.5) * 2;
     smokePositions[i*3+1] = wp.y + 3 + Math.random() * 15;
     smokePositions[i*3+2] = wp.z + (Math.random()-0.5) * 2;
-  }}}}
+  }}
 
   const smokeGeo = new THREE.BufferGeometry();
   smokeGeo.setAttribute('position', new THREE.BufferAttribute(smokePositions, 3));
-  const smokeMat = new THREE.PointsMaterial({{{{
+  const smokeMat = new THREE.PointsMaterial({{
     color: 0x555555, size: 2.5, transparent: true,
     opacity: 0.2, depthWrite: false, sizeAttenuation: true,
-  }}}});
+  }});
   scene.add(new THREE.Points(smokeGeo, smokeMat));
 
   _fireShader = fireShader;
   _fireGlows = fireGlows;
-}}}}
+}}
 
 // --- Compartment Boundaries ---
 const boundaryGroup = new THREE.Group();
-const bMat = new THREE.LineBasicMaterial({{{{ color: 0x4ade80, opacity: 0.35, transparent: true }}}});
+const bMat = new THREE.LineBasicMaterial({{ color: 0x4ade80, opacity: 0.35, transparent: true }});
 
-CONFIG.boundaries.forEach((b, idx) => {{{{
-  const pts = b.coords.map(c => {{{{
+CONFIG.boundaries.forEach((b, idx) => {{
+  const pts = b.coords.map(c => {{
     const wp = geoToWorld(c[0], c[1]);
     return new THREE.Vector3(wp.x, wp.y + 0.2, wp.z);
-  }}}});
+  }});
   if (pts.length < 3) return;
   const geo = new THREE.BufferGeometry().setFromPoints(pts);
   const line = new THREE.Line(geo, bMat);
-  line.userData = {{{{ idx, beat: b.beat, range: b.range, lulc: b.lulc }}}};
+  line.userData = {{ idx, beat: b.beat, range: b.range, lulc: b.lulc }};
   boundaryGroup.add(line);
-}}}});
+}});
 scene.add(boundaryGroup);
 
 // --- Raycasting for Info Panel ---
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-canvas.addEventListener('mousemove', (e) => {{{{
+canvas.addEventListener('mousemove', (e) => {{
   const rect = canvas.getBoundingClientRect();
   mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
@@ -1239,105 +1239,105 @@ canvas.addEventListener('mousemove', (e) => {{{{
   raycaster.setFromCamera(mouse, camera);
   const hits = raycaster.intersectObjects(boundaryGroup.children);
 
-  if (hits.length > 0) {{{{
+  if (hits.length > 0) {{
     const d = hits[0].object.userData;
     document.getElementById('info-title').textContent = d.beat + ' (' + d.range + ')';
     document.getElementById('info-body').textContent =
       'Tree: ' + d.lulc.tree + '% · Shrub: ' + d.lulc.shrub + '% · Grass: ' + d.lulc.grass + '%';
-  }}}}
-}}}});
+  }}
+}});
 
 // --- Overlay Groups ---
-const overlayGroups = {{{{ spread: new THREE.Group(), risk: new THREE.Group(), firms: new THREE.Group() }}}};
-Object.values(overlayGroups).forEach(g => {{{{ g.visible = false; scene.add(g); }}}});
+const overlayGroups = {{ spread: new THREE.Group(), risk: new THREE.Group(), firms: new THREE.Group() }};
+Object.values(overlayGroups).forEach(g => {{ g.visible = false; scene.add(g); }});
 
 // FIRMS History dots
-if (FIRES.firms_history && FIRES.firms_history.length > 0) {{{{
+if (FIRES.firms_history && FIRES.firms_history.length > 0) {{
   const fhCount = FIRES.firms_history.length;
   const fhGeo = new THREE.BufferGeometry();
   const fhPos = new Float32Array(fhCount * 3);
   const fhCol = new Float32Array(fhCount * 3);
   const now = Date.now();
 
-  FIRES.firms_history.forEach((f, i) => {{{{
+  FIRES.firms_history.forEach((f, i) => {{
     const wp = geoToWorld(f.lon, f.lat);
     fhPos[i*3] = wp.x; fhPos[i*3+1] = wp.y + 0.5; fhPos[i*3+2] = wp.z;
     const age = (now - new Date(f.date).getTime()) / (365 * 86400000);
     const c = new THREE.Color().setHSL(0, 1.0 - age * 0.8, 0.5);
     fhCol[i*3] = c.r; fhCol[i*3+1] = c.g; fhCol[i*3+2] = c.b;
-  }}}});
+  }});
 
   fhGeo.setAttribute('position', new THREE.BufferAttribute(fhPos, 3));
   fhGeo.setAttribute('color', new THREE.BufferAttribute(fhCol, 3));
   overlayGroups.firms.add(new THREE.Points(fhGeo,
-    new THREE.PointsMaterial({{{{ size: 1.5, vertexColors: true, sizeAttenuation: true, transparent: true, opacity: 0.8 }}}})));
-}}}}
+    new THREE.PointsMaterial({{ size: 1.5, vertexColors: true, sizeAttenuation: true, transparent: true, opacity: 0.8 }})));
+}}
 
 // ABM Risk Heatmap
-if (FIRES.abm_hotspots && FIRES.abm_hotspots.length > 0) {{{{
-  FIRES.abm_hotspots.forEach(h => {{{{
+if (FIRES.abm_hotspots && FIRES.abm_hotspots.length > 0) {{
+  FIRES.abm_hotspots.forEach(h => {{
     const wp = geoToWorld(h.longitude, h.latitude);
     const cellGeo = new THREE.PlaneGeometry(1.5, 1.5);
     cellGeo.rotateX(-Math.PI / 2);
     const prob = h.probability || 0.1;
     const c = new THREE.Color().setHSL(0.1 - prob * 0.1, 1, 0.5);
-    const mat = new THREE.MeshBasicMaterial({{{{ color: c, transparent: true, opacity: prob * 2, side: THREE.DoubleSide }}}});
+    const mat = new THREE.MeshBasicMaterial({{ color: c, transparent: true, opacity: prob * 2, side: THREE.DoubleSide }});
     const cell = new THREE.Mesh(cellGeo, mat);
     cell.position.set(wp.x, wp.y + 0.3, wp.z);
     overlayGroups.risk.add(cell);
-  }}}});
-}}}}
+  }});
+}}
 
 // Spread Sim (concentric rings)
-if (activeFires.length > 0) {{{{
-  activeFires.forEach(f => {{{{
+if (activeFires.length > 0) {{
+  activeFires.forEach(f => {{
     const wp = geoToWorld(f.lon, f.lat);
     const ros = (f.ros || 5) * 0.001;
-    for (let r = 1; r <= 3; r++) {{{{
+    for (let r = 1; r <= 3; r++) {{
       const ringGeo = new THREE.RingGeometry(r * ros * 30, r * ros * 30 + 0.1, 32);
       ringGeo.rotateX(-Math.PI / 2);
-      const mat = new THREE.MeshBasicMaterial({{{{
+      const mat = new THREE.MeshBasicMaterial({{
         color: 0xff4400, transparent: true, opacity: 0.4 / r, side: THREE.DoubleSide
-      }}}});
+      }});
       const ring = new THREE.Mesh(ringGeo, mat);
       ring.position.set(wp.x, wp.y + 0.3, wp.z);
       overlayGroups.spread.add(ring);
-    }}}}
-  }}}});
-}}}}
+    }}
+  }});
+}}
 
 // --- Overlay toggle ---
 let activeOverlay = 'fires';
-window.setOverlay = function(name, btn) {{{{
+window.setOverlay = function(name, btn) {{
   activeOverlay = name;
   document.querySelectorAll('#overlay-btns .obtn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   overlayGroups.spread.visible = (name === 'spread');
   overlayGroups.risk.visible = (name === 'risk');
   overlayGroups.firms.visible = (name === 'firms');
-}}}};
+}};
 
 // --- Dithering Post-Process ---
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 
 let ditherEnabled = true;
-const DitherShader = {{{{
-  uniforms: {{{{
-    tDiffuse: {{{{ value: null }}}},
-    resolution: {{{{ value: new THREE.Vector2(canvas.clientWidth, canvas.clientHeight) }}}},
-    ditherScale: {{{{ value: 4.0 }}}},
-    colorLevels: {{{{ value: 16.0 }}}},
-    enabled: {{{{ value: 1.0 }}}},
-  }}}},
-  vertexShader: `varying vec2 vUv; void main(){{{{ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }}}}`,
+const DitherShader = {{
+  uniforms: {{
+    tDiffuse: {{ value: null }},
+    resolution: {{ value: new THREE.Vector2(canvas.clientWidth, canvas.clientHeight) }},
+    ditherScale: {{ value: 4.0 }},
+    colorLevels: {{ value: 16.0 }},
+    enabled: {{ value: 1.0 }},
+  }},
+  vertexShader: `varying vec2 vUv; void main(){{ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }}`,
   fragmentShader: `
     uniform sampler2D tDiffuse;
     uniform vec2 resolution;
     uniform float ditherScale, colorLevels, enabled;
     varying vec2 vUv;
 
-    float bayer8(vec2 p) {{{{
+    float bayer8(vec2 p) {{
       ivec2 ip = ivec2(mod(p, 8.0));
       int b[64] = int[64](
         0,32,8,40,2,34,10,42, 48,16,56,24,50,18,58,26,
@@ -1346,72 +1346,72 @@ const DitherShader = {{{{
         15,47,7,39,13,45,5,37, 63,31,55,23,61,29,53,21
       );
       return float(b[ip.y*8+ip.x]) / 63.0;
-    }}}}
+    }}
 
-    void main() {{{{
+    void main() {{
       vec4 color = texture2D(tDiffuse, vUv);
-      if (enabled < 0.5) {{{{ gl_FragColor = color; return; }}}}
+      if (enabled < 0.5) {{ gl_FragColor = color; return; }}
       vec2 pc = vUv * resolution / ditherScale;
       float d = bayer8(pc);
       vec3 c = floor(color.rgb * (colorLevels - 1.0) + d) / (colorLevels - 1.0);
       gl_FragColor = vec4(c, 1.0);
-    }}}}
+    }}
   `
-}}}};
+}};
 
 let ditherPass;
-try {{{{
+try {{
   ditherPass = new ShaderPass(DitherShader);
   composer.addPass(ditherPass);
-}}}} catch(e) {{{{
+}} catch(e) {{
   console.warn('Dither shader failed, using fallback:', e);
   ditherEnabled = false;
-}}}}
+}}
 
-window.toggleDither = function(btn) {{{{
+window.toggleDither = function(btn) {{
   if (!ditherPass) return;
   ditherEnabled = !ditherEnabled;
   ditherPass.uniforms.enabled.value = ditherEnabled ? 1.0 : 0.0;
   btn.classList.toggle('active');
   btn.textContent = ditherEnabled ? '⬡ Dithered' : '◻ Realistic';
-}}}};
+}};
 
 // --- Animation ---
 const clock = new THREE.Clock();
 let fc = 0, lastFT = 0;
 
-function animate() {{{{
+function animate() {{
   requestAnimationFrame(animate);
   controls.update();
 
-  if (_fireShader) {{{{
+  if (_fireShader) {{
     _fireShader.uniforms.uTime.value = clock.getElapsedTime();
-  }}}}
-  if (_fireGlows) {{{{
+  }}
+  if (_fireGlows) {{
     const t = clock.getElapsedTime();
-    _fireGlows.forEach((l, i) => {{{{
+    _fireGlows.forEach((l, i) => {{
       l.intensity = 12 + Math.sin(t * 8 + i * 2) * 5;
-    }}}});
-  }}}}
+    }});
+  }}
 
   composer.render();
 
   fc++;
   const t = clock.getElapsedTime();
-  if (t - lastFT > 0.5) {{{{
+  if (t - lastFT > 0.5) {{
     document.getElementById('fps').textContent = Math.round(fc / (t - lastFT));
     fc = 0; lastFT = t;
-  }}}}
-}}}}
+  }}
+}}
 animate();
 
-window.addEventListener('resize', () => {{{{
+window.addEventListener('resize', () => {{
   camera.aspect = canvas.clientWidth / canvas.clientHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   composer.setSize(canvas.clientWidth, canvas.clientHeight);
   if (ditherPass) ditherPass.uniforms.resolution.value.set(canvas.clientWidth, canvas.clientHeight);
-}}}});
+}});
 </script>
 </body></html>"""
 
