@@ -298,6 +298,13 @@ def _save_detections(
 
     date_tag = acq_date.strftime("%Y%m%d")
 
+    # Add H3 spatial indices for aggregation and spatial CV
+    try:
+        from src.utils.h3_index import add_h3_index
+        gdf = add_h3_index(gdf, resolutions=[7, 9])
+    except ImportError:
+        log.debug("h3 not installed — skipping H3 indexing")
+
     # GeoParquet — fast spatial joins (ACID-safe for incremental updates)
     parquet_path = dest_dir / f"viirs_nrt_{date_tag}.parquet"
     gdf.to_parquet(parquet_path, index=False)

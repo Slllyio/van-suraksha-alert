@@ -77,6 +77,21 @@ herbie-data>=2024.9.0
 # FIRMS VIIRS — GeoParquet storage (firms_ingest.py)
 pyarrow>=14.0.0            # required by geopandas .to_parquet / .read_parquet
 
+# H3 hexagonal spatial indexing (src/utils/h3_index.py)
+h3>=4.0.0                  # range-level (res 7) and beat-level (res 9) aggregation
+
+# DuckDB — in-process analytical SQL for spatial queries (src/utils/spatial_db.py)
+duckdb>=1.0.0              # ad-hoc analytics over Parquet/GeoJSON, ST_* spatial functions
+
+# TiTiler — dynamic COG tile server (scripts/serve_tiles.py)
+titiler.core>=2.0.0        # FastAPI-based XYZ tile serving for rasters
+
+# PMTiles — zero-server vector tile hosting (scripts/build_pmtiles.py)
+pmtiles>=3.2.0             # read/write PMTiles archives for MapLibre consumption
+
+# Lonboard — high-performance map rendering (src/viz/lonboard_layers.py)
+lonboard>=0.9.0            # 30-40x faster than PyDeck, GeoArrow binary pipeline
+
 # Fire dynamics — DBSCAN clustering, alpha hull (fire_dynamics.py)
 scikit-learn>=1.3.2        # already pinned above; explicit for clarity
 scipy>=1.12.0              # Delaunay triangulation for alpha hull

@@ -399,30 +399,57 @@ def firms_to_pixels(firms_df, transform, shape):
 # Spatial Block Splitting
 # ═══════════════════════════════════════════════════════════════════════════
 
-BLOCK_SIZE_DEG = 0.05  # ~5km blocks
+BLOCK_SIZE_DEG = 0.05  # ~5km blocks (legacy grid-based fallback)
+H3_BLOCK_RES = 6       # H3 resolution for spatial CV blocking (~36 km² hexes)
 
 
-def assign_spatial_blocks(rows, cols, transform, seed=42):
-    """Assign each pixel to a spatial block, then split blocks into train/val/test."""
+def assign_spatial_blocks(rows, cols, transform, seed=42, use_h3=True):
+    """
+    Assign each pixel to a spatial block, then split blocks into train/val/test.
+
+    Parameters
+    ----------
+    use_h3 : bool
+        If True (default), use H3 hexagonal blocking which provides better
+        spatial separation than rectangular grids — hexes have uniform adjacency
+        (6 neighbors vs 4/8 for squares) and no edge/corner artifacts.
+        Falls back to grid-based blocking if h3 is not installed.
+    """
     lons = transform.c + cols * transform.a
     lats = transform.f + rows * transform.e
 
-    # Quantize to blocks
-    block_x = (lons / BLOCK_SIZE_DEG).astype(int)
-    block_y = (lats / BLOCK_SIZE_DEG).astype(int)
-    block_ids = block_x * 10000 + block_y
+    if use_h3:
+        try:
+            import h3
+            # H3 res 6 → ~36 km² hexes — good separation for Guna Division
+            block_ids = np.array([
+                h3.latlng_to_cell(float(lat), float(lon), H3_BLOCK_RES)
+                for lat, lon in zip(lats, lons)
+            ])
+            unique_blocks = np.unique(block_ids)
+            log.info(f"   H3 blocking (res {H3_BLOCK_RES}): {len(unique_blocks)} unique hexes")
+        except ImportError:
+            log.warning("h3 not installed — falling back to grid-based blocking")
+            use_h3 = False
 
-    # Get unique blocks and assign splits
-    unique_blocks = np.unique(block_ids)
+    if not use_h3:
+        # Legacy grid-based fallback
+        block_x = (lons / BLOCK_SIZE_DEG).astype(int)
+        block_y = (lats / BLOCK_SIZE_DEG).astype(int)
+        block_ids = block_x * 10000 + block_y
+        unique_blocks = np.unique(block_ids)
+
+    # Shuffle and assign splits (70/15/15)
     rng = np.random.RandomState(seed)
-    rng.shuffle(unique_blocks)
+    shuffled = unique_blocks.copy()
+    rng.shuffle(shuffled)
 
-    n = len(unique_blocks)
+    n = len(shuffled)
     n_train = int(n * 0.7)
     n_val = int(n * 0.15)
 
     block_to_split = {}
-    for i, b in enumerate(unique_blocks):
+    for i, b in enumerate(shuffled):
         if i < n_train:
             block_to_split[b] = "train"
         elif i < n_train + n_val:
