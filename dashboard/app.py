@@ -5,7 +5,7 @@ Streamlit dashboard for Guna Division, Madhya Pradesh.
 
 Tabs:
   1. Live Alert       — today's fire alert bulletin + FWI gauge
-  2. 3D Digital Twin  — CesiumJS globe visualization
+  2. 3D Digital Twin  — Three.js 3D terrain visualization
   3. Fire History     — FIRMS fire detections on interactive map
   4. Burn Scars       — Prithvi burn scar catalog + causal fire links
   5. FWI Trends       — Canadian FWI time series, annual peaks, seasonality
@@ -493,6 +493,25 @@ def load_firms_all() -> pd.DataFrame:
 
 
 @st.cache_data(ttl=600)
+def load_firms_history(lookback_days: int = 365) -> list:
+    """Load VIIRS/MODIS fire detections for Three.js overlay.
+    Reuses load_firms_all() which merges annual parquets + NRT CSVs."""
+    df = load_firms_all()
+    if df.empty:
+        return []
+    cutoff = pd.Timestamp.now() - pd.Timedelta(days=lookback_days)
+    df = df[df["acq_date"] >= cutoff].sort_values("acq_date", ascending=False)
+    out = []
+    for _, r in df.head(2000).iterrows():
+        out.append({
+            "lat": float(r.latitude), "lon": float(r.longitude),
+            "date": r.acq_date.strftime("%Y-%m-%d"),
+            "frp": float(r.get("frp", 0) if hasattr(r, "get") else 0),
+        })
+    return out
+
+
+@st.cache_data(ttl=600)
 def load_fire_links() -> pd.DataFrame:
     if not LINKS_CSV.exists():
         return pd.DataFrame()
@@ -692,6 +711,29 @@ with st.sidebar:
             step_i = st.session_state["demo_step"]
             st.caption(f"Step {step_i + 1}/{len(DEMO_STEPS)}")
 
+    # --- Static file server (shared, used by 3D Digital Twin & overlays) ---
+    if "overlay_server" not in st.session_state:
+        import threading, http.server
+
+        class CORSHandler(http.server.SimpleHTTPRequestHandler):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, directory=str(ROOT / "dashboard" / "static"), **kwargs)
+
+            def end_headers(self):
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Access-Control-Allow-Methods", "GET")
+                super().end_headers()
+
+            def log_message(self, format, *args):
+                pass  # suppress logs
+
+        _srv = http.server.HTTPServer(("127.0.0.1", 8777), CORSHandler)
+        _srv.timeout = 0.1
+        threading.Thread(target=_srv.serve_forever, daemon=True).start()
+        st.session_state["overlay_server"] = True
+
+    _overlay_base = "http://127.0.0.1:8777"
+
     tab_names = [
         "\U0001f6a8 Live Alert",
         "\U0001f310 3D Digital Twin",
@@ -753,1129 +795,637 @@ with st.sidebar:
 # ─────────────────────────────────────────────────────────────────────────────
 
 if selected_tab == "\U0001f310 3D Digital Twin":
-    # Fullscreen CSS — hide Streamlit padding, make map fill viewport
-    st.markdown("""<style>
-    .block-container { padding: 0 !important; max-width: 100% !important; }
-    [data-testid="stHeader"] { display: none !important; }
-    [data-testid="stBottom"] { display: none !important; }
-    footer { display: none !important; }
-    iframe { border: none !important; }
-    </style>""", unsafe_allow_html=True)
-
-    # Date picker in sidebar — find latest alert with fires as default
-    _default_sim = date.today()
-    for _af in sorted(ALERT_DIR.glob("*_alert.json"), reverse=True):
-        try:
-            _ad = json.loads(_af.read_text(encoding="utf-8"))
-            if _ad.get("fires"):
-                _default_sim = date.fromisoformat(_af.stem.replace("_alert", ""))
-                break
-        except Exception:
-            continue
-    with st.sidebar:
-        # Demo narration for 3D tab (fullscreen, so banner goes in sidebar)
-        if st.session_state.get("demo_active"):
-            step_info = DEMO_STEPS[st.session_state["demo_step"]]
-            st.markdown(f"""<div style="background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.3);
-                border-radius:8px; padding:12px; margin-bottom:12px; font-size:0.75rem; color:#e6edf3; line-height:1.5;">
-                <div style="color:#f97316; font-weight:700; font-size:0.6rem; letter-spacing:1.5px; margin-bottom:6px;">
-                    {step_info['title']}</div>
-                {_md_bold_to_html(step_info['script'])}
-                <div style="color:#3b82f6; font-style:italic; margin-top:6px; font-size:0.65rem;">
-                    {step_info['highlight']}</div>
-            </div>""", unsafe_allow_html=True)
-            nav_l, nav_r = st.columns(2)
-            with nav_l:
-                if st.session_state["demo_step"] > 0:
-                    if st.button("\u25c0 Prev", key="demo_prev_3d"):
-                        st.session_state["demo_step"] -= 1
-                        st.rerun()
-            with nav_r:
-                if st.session_state["demo_step"] < len(DEMO_STEPS) - 1:
-                    if st.button("Next \u25b6", key="demo_next_3d"):
-                        st.session_state["demo_step"] += 1
-                        st.rerun()
-        st.markdown("**Simulation**")
-        sim_date = st.date_input(
-            "Date", value=_default_sim,
-            min_value=date(2013, 1, 1), max_value=date.today(), key="sim_date",
-        )
-        st.caption("Muhurta-2D PDE Engine")
-
-    sim_alert = load_alert_for_date(sim_date)
-    fire_points_js = "[]"
-    sim_ros = 5.0
-    sim_intensity = 500.0
-    sim_wind_speed = 10.0
-    sim_wind_dir = 225.0
-    sim_center_lat = 24.640
-    sim_center_lon = 77.320
-    sim_frp = 0.0
-    sim_sev = "CLEAR"
-    sim_fwi_val = 0.0
-    sim_n_fires = 0
-    sim_danger = "—"
-    sim_temp = 0.0
-    sim_rh = 0.0
-    sim_ffmc = 0.0
-    sim_dmc = 0.0
-    sim_dc = 0.0
-    sim_isi = 0.0
-    sim_bui = 0.0
-
-    if sim_alert and sim_alert.get("fires"):
-        fires = sim_alert["fires"]
-        sim_n_fires = len(fires)
-        fdata = []
-        for f in fires:
-            pm = f.get("prescriptive_metrics", {})
-            fdata.append({
-                "lat": f["fire_lat"], "lon": f["fire_lon"],
-                "frp": f.get("frp_mw", 10), "severity": f.get("severity", "HIGH"),
-                "category": f.get("frp_category", ""),
-                "ros": pm.get("ros_m_min", 5.0) if pm else 5.0,
-                "intensity": pm.get("intensity_kw_m", 500.0) if pm else 500.0,
-            })
-        fire_points_js = json.dumps(fdata)
-        sim_center_lat = fires[0]["fire_lat"]
-        sim_center_lon = fires[0]["fire_lon"]
-        pm0 = fires[0].get("prescriptive_metrics", {})
-        if pm0:
-            sim_ros = pm0.get("ros_m_min", 5.0)
-            sim_intensity = pm0.get("intensity_kw_m", 500.0)
-        fwi_d = sim_alert.get("fwi", {})
-        sim_wind_speed = fwi_d.get("wind_kmh", 10.0)
-        sim_frp = sim_alert.get("peak_frp_mw", 0)
-        sim_sev = sim_alert.get("bulletin_severity", "CLEAR")
-        sim_fwi_val = fwi_d.get("value", 0)
-        sim_danger = fwi_d.get("danger_class", "—")
-        sim_temp = fwi_d.get("temp_c", 0)
-        sim_rh = fwi_d.get("rh_pct", 0)
-        sim_ffmc = fwi_d.get("ffmc", 0)
-        sim_dmc = fwi_d.get("dmc", 0)
-        sim_dc = fwi_d.get("dc", 0)
-        sim_isi = fwi_d.get("isi", 0)
-        sim_bui = fwi_d.get("bui", 0)
-
-    # ── 3D Forest Canopy — load 747 compartment polygons ──
-    _comp_path = ROOT / "data" / "aoi" / "gunafinal.geojson"
-    compartments_js = "[]"
-    _n_compartments = 0
-    if _comp_path.exists():
-        _gj = json.loads(_comp_path.read_text(encoding="utf-8"))
-        _comp_list = []
-        for feat in _gj.get("features", []):
-            props = feat.get("properties", {})
-            geom = feat.get("geometry", {})
-            if geom.get("type") not in ("Polygon", "MultiPolygon"):
-                continue
-            coords_raw = geom["coordinates"]
-            if geom["type"] == "MultiPolygon":
-                coords_raw = coords_raw[0]
-            ring = coords_raw[0]
-            # Downsample large rings (keep every Nth point) + round to 4 decimals
-            step = max(1, len(ring) // 30)
-            sampled = ring[::step]
-            if sampled[-1] != ring[-1]:
-                sampled.append(ring[-1])  # close ring
-            flat = []
-            for pt in sampled:
-                flat.extend([round(pt[0], 4), round(pt[1], 4)])
-            area2015 = float(props.get("area2015", 0) or 0)
-            area_orig = float(props.get("areaOrigin", 0) or 0)
-            health = (area2015 / area_orig) if area_orig > 0 else 1.0
-            if health >= 0.8:
-                color = "#22c55e"
-            elif health >= 0.6:
-                color = "#eab308"
-            elif health >= 0.4:
-                color = "#f97316"
-            else:
-                color = "#ef4444"
-            # Compute centroid for tree placement
-            lons = [pt[0] for pt in sampled]
-            lats = [pt[1] for pt in sampled]
-            cx = round(sum(lons) / len(lons), 4)
-            cy = round(sum(lats) / len(lats), 4)
-            _comp_list.append({
-                "c": flat,
-                "h": max(area2015 * 0.5, 50),
-                "cl": color,
-                "b": props.get("BEAT", ""),
-                "r": props.get("RANGE", ""),
-                "a": area2015,
-                "ao": area_orig,
-                "hl": round(health, 3),
-                "f": 0,
-                "cx": cx, "cy": cy,
-                "sl": 0.0, "asp": 0.0, "el": 0.0,
-                "lt": 0, "ls": 0, "lg": 0, "lc": 0, "lb": 0, "lw": 0,
-            })
-        # Count FIRMS fires per compartment (bbox approximation)
-        try:
-            _firms_df = load_firms_all()
-            if not _firms_df.empty:
-                _flons = _firms_df["longitude"].values
-                _flats = _firms_df["latitude"].values
-                for comp in _comp_list:
-                    _rlons = comp["c"][0::2]
-                    _rlats = comp["c"][1::2]
-                    lo0, lo1 = min(_rlons), max(_rlons)
-                    la0, la1 = min(_rlats), max(_rlats)
-                    comp["f"] = int((
-                        (_flons >= lo0) & (_flons <= lo1) &
-                        (_flats >= la0) & (_flats <= la1)
-                    ).sum())
-        except Exception:
-            pass
-        # Load precomputed terrain stats (slope, aspect, elevation)
-        _terrain_path = ROOT / "data" / "aoi" / "compartment_terrain.json"
-        if _terrain_path.exists():
-            _terr = json.loads(_terrain_path.read_text(encoding="utf-8"))
-            for i, comp in enumerate(_comp_list):
-                t = _terr.get(str(i), {})
-                comp["sl"] = t.get("slope", 0.0)
-                comp["asp"] = t.get("aspect", 0.0)
-                comp["el"] = t.get("elev", 0.0)
-        # Load precomputed LULC breakdown per compartment
-        _lulc_path = ROOT / "data" / "aoi" / "compartment_lulc.json"
-        if _lulc_path.exists():
-            _lulc = json.loads(_lulc_path.read_text(encoding="utf-8"))
-            for i, comp in enumerate(_comp_list):
-                lc = _lulc.get(str(i), {})
-                comp["lt"] = lc.get("tree", 0)    # % tree
-                comp["ls"] = lc.get("shrub", 0)   # % shrub
-                comp["lg"] = lc.get("grass", 0)   # % grass
-                comp["lc"] = lc.get("crop", 0)    # % crop
-                comp["lb"] = lc.get("built", 0)   # % built
-                comp["lw"] = lc.get("water", 0)   # % water
-        _n_compartments = len(_comp_list)
-        compartments_js = json.dumps(_comp_list, separators=(",", ":"))
-
-    # ── FIRMS Fire History (date-filtered, max 2000 by FRP) ──
-    firms_js = "[]"
-    try:
-        _firms_all = load_firms_all()
-        if not _firms_all.empty:
-            _yr_ago = str(sim_date - timedelta(days=365))
-            _today_s = str(sim_date)
-            _firms_rng = _firms_all[
-                (_firms_all["acq_date"].astype(str) >= _yr_ago)
-                & (_firms_all["acq_date"].astype(str) <= _today_s)
-            ]
-            if len(_firms_rng) > 2000:
-                _firms_rng = _firms_rng.nlargest(2000, "frp")
-            firms_js = json.dumps([
-                {"la": round(float(r.latitude), 4), "lo": round(float(r.longitude), 4),
-                 "f": round(float(r.frp), 1) if pd.notna(r.frp) else 0,
-                 "d": str(r.acq_date)[:10],
-                 "c": str(getattr(r, 'confidence', 'nominal')).lower()}
-                for r in _firms_rng.itertuples()
-            ], separators=(',', ':'))
-    except Exception:
-        pass
-
-    # ── Burn Scars ──
-    burns_js = "[]"
-    try:
-        _burns_df = load_fire_links()
-        if not _burns_df.empty:
-            burns_js = json.dumps([
-                {"la": round(float(r.fire_lat), 4), "lo": round(float(r.fire_lon), 4),
-                 "a": round(float(r.burn_area_ha), 1),
-                 "c": str(r.confidence),
-                 "sd": str(r.scene_date)[:10], "fd": str(r.fire_date)[:10]}
-                for r in _burns_df.itertuples() if pd.notna(r.fire_lat)
-            ], separators=(',', ':'))
-    except Exception:
-        pass
-
-    # ── Predictive Risk Grid (601 cells → small rectangles from centroids) ──
-    pred_js = "[]"
-    _pred_path = ROOT / "outputs" / "dashboard_feed" / "unified_alert.geojson"
-    if _pred_path.exists():
-        try:
-            with open(_pred_path, encoding="utf-8") as _pf:
-                _pred_gj = json.load(_pf)
-            _pred_cells = []
-            _cell_half = 0.015  # ~1.5 km half-width
-            for feat in _pred_gj.get("features", []):
-                props = feat.get("properties", {})
-                coords = feat["geometry"]["coordinates"]
-                clon, clat = coords[0], coords[1]
-                # Build rectangle corners [lon,lat, lon,lat, ...]
-                _rect = [
-                    round(clon - _cell_half, 4), round(clat - _cell_half, 4),
-                    round(clon + _cell_half, 4), round(clat - _cell_half, 4),
-                    round(clon + _cell_half, 4), round(clat + _cell_half, 4),
-                    round(clon - _cell_half, 4), round(clat + _cell_half, 4),
-                ]
-                _pred_cells.append({
-                    "c": _rect,
-                    "s": round(props.get("risk_score", 0), 2),
-                    "l": props.get("risk_level", "LOW"),
-                    "b": props.get("beat", ""),
-                    "r": props.get("range", ""),
-                })
-            pred_js = json.dumps(_pred_cells, separators=(',', ':'))
-        except Exception:
-            pass
-
-    _n_firms = firms_js.count('"la"')
-    _n_burns = burns_js.count('"la"')
-    _n_pred = pred_js.count('"c"')
-
-    # Serve overlay PNGs via HTTP (start once)
-    if "overlay_server" not in st.session_state:
-        import threading, http.server, functools
-        _static_dir = str(ROOT / "dashboard" / "static")
-        handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=_static_dir)
-        _srv = http.server.HTTPServer(("127.0.0.1", 8777), handler)
-        _srv.timeout = 0.1
-        _t = threading.Thread(target=_srv.serve_forever, daemon=True)
-        _t.start()
-        st.session_state["overlay_server"] = True
-    _overlay_base = "http://127.0.0.1:8777"
-    # Load overlay bounds
-    _ov_bounds_path = ROOT / "dashboard" / "static" / "overlay_bounds.json"
-    _ov_bounds = json.loads(_ov_bounds_path.read_text(encoding="utf-8")) if _ov_bounds_path.exists() else {}
-
-    # Define the Cesium HTML component with built-in fire spread simulation
-    cesium_html = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <script src="https://unpkg.com/cesium@1.95.0/Build/Cesium/Cesium.js"></script>
-        <link href="https://unpkg.com/cesium@1.95.0/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
-        <style>
-            body {{ margin: 0; padding: 0; overflow: hidden; background: #0a0a0a; font-family: 'Segoe UI', system-ui, sans-serif; }}
-            #cesiumContainer {{ width: 100%; height: 100%; position: absolute; top: 0; left: 0; }}
-
-            /* ── Animations ── */
-            @keyframes pls {{ 0%,100%{{ opacity:1; }} 50%{{ opacity:0.7; }} }}
-            @keyframes pulse-ring {{ 0%{{ transform:scale(1); opacity:0.8; }} 100%{{ transform:scale(2.5); opacity:0; }} }}
-            @keyframes glow {{ 0%,100%{{ box-shadow: 0 0 8px rgba(239,68,68,0.4); }} 50%{{ box-shadow: 0 0 20px rgba(239,68,68,0.8); }} }}
-
-            /* ── Glassmorphism base ── */
-            .glass {{
-                background: rgba(15,23,42,0.85); backdrop-filter: blur(12px);
-                border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
-                box-shadow: 0 8px 32px rgba(0,0,0,0.4); color: #e6edf3;
-            }}
-
-            /* ── Layer Control Panel (left) ── */
-            #layerPanel {{
-                position: absolute; top: 60px; left: 16px; z-index: 1000;
-                width: 240px; padding: 14px; max-height: calc(100vh - 120px); overflow-y: auto;
-            }}
-            #layerPanel::-webkit-scrollbar {{ width: 4px; }}
-            #layerPanel::-webkit-scrollbar-thumb {{ background: rgba(255,255,255,0.15); border-radius: 2px; }}
-            .panel-title {{
-                font-size: 0.6rem; font-weight: 800; color: #f97316;
-                letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;
-            }}
-            .layer-row {{
-                display: flex; align-items: center; gap: 8px; padding: 5px 6px;
-                border-radius: 6px; cursor: pointer; transition: background 0.15s;
-                font-size: 0.68rem; margin-bottom: 2px;
-            }}
-            .layer-row:hover {{ background: rgba(255,255,255,0.06); }}
-            .layer-row input[type="checkbox"] {{
-                accent-color: #f97316; width: 14px; height: 14px; cursor: pointer; flex-shrink: 0;
-            }}
-            .layer-icon {{ font-size: 0.85rem; flex-shrink: 0; }}
-            .layer-label {{ flex: 1; }}
-            .layer-count {{
-                font-size: 0.55rem; background: rgba(255,255,255,0.08); padding: 1px 6px;
-                border-radius: 10px; color: #8b949e;
-            }}
-            .panel-sep {{ border: 0; border-top: 1px solid rgba(255,255,255,0.08); margin: 8px 0; }}
-
-            /* FWI badge in layer panel */
-            .fwi-badge {{
-                display: flex; align-items: center; gap: 8px; padding: 8px 10px;
-                border-radius: 8px; margin-bottom: 6px;
-            }}
-            .fwi-badge-val {{ font-size: 1.2rem; font-weight: 800; }}
-            .fwi-badge-label {{ font-size: 0.55rem; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; }}
-            .wx-row {{ display: flex; justify-content: space-between; font-size: 0.65rem; margin-bottom: 3px; }}
-            .wx-lbl {{ color: #8b949e; }}
-            .wx-val {{ font-weight: 600; }}
-
-            /* Simulation buttons */
-            .sim-section {{ margin-top: 4px; }}
-            .b {{
-                display: block; width: 100%; background: rgba(255,255,255,0.06); color: #c9d1d9;
-                border: 1px solid rgba(255,255,255,0.1); padding: 7px 4px;
-                border-radius: 6px; cursor: pointer; font-size: 0.62rem;
-                font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-                transition: all 0.2s; text-align: center; margin-bottom: 3px;
-            }}
-            .brow {{ display: flex; gap: 4px; }}
-            .brow .b {{ margin-bottom: 0; }}
-            .b:hover {{ background: rgba(255,255,255,0.12); }}
-            .b.active {{ background: rgba(239,68,68,0.3); border-color: #ef4444; color: #ef4444; }}
-            .b.running {{ background: rgba(239,68,68,0.8); border-color: #ef4444; color: #fff; animation: pls 1.5s infinite; }}
-
-            /* ── Fire Metrics (right) ── */
-            #fmet {{
-                position: absolute; top: 60px; right: 16px;
-                padding: 14px; width: 200px; z-index: 1000; display: none;
-                border-color: rgba(239,68,68,0.3);
-            }}
-            #fmet h4 {{ margin: 0 0 8px; font-size: 0.65rem; color: #ef4444; letter-spacing: 1.5px; text-transform: uppercase; }}
-            .mv {{ text-align: center; margin-bottom: 5px; }}
-            .mvn {{ font-size: 1.3rem; font-weight: 800; color: #f97316; }}
-            .mvl {{ font-size: 0.55rem; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; }}
-            .hr {{ display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.72rem; }}
-            .hl {{ color: #8b949e; }}
-            .hv {{ font-weight: 600; color: #3b82f6; }}
-            .hv.red {{ color: #ef4444; }}
-            .hv.amber {{ color: #f59e0b; }}
-            .hv.green {{ color: #22c55e; }}
-
-            /* ── Status bar (bottom center) ── */
-            #sbar {{
-                position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
-                padding: 6px 20px; font-size: 0.62rem; z-index: 1000; white-space: nowrap;
-                border-radius: 20px;
-            }}
-            .sd {{ display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }}
-            .sd.g {{ background: #22c55e; }}
-            .sd.r {{ background: #ef4444; animation: pls 1s infinite; }}
-
-            /* ── Top command bar ── */
-            #topbar {{
-                position: absolute; top: 0; left: 0; right: 0; z-index: 1001;
-                background: linear-gradient(180deg, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0.6) 80%, transparent 100%);
-                padding: 10px 20px 24px; display: flex; align-items: center; gap: 16px;
-            }}
-            #topbar .logo {{ font-size: 0.75rem; font-weight: 800; color: #f97316; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }}
-            #topbar .sep {{ width: 1px; height: 20px; background: rgba(255,255,255,0.15); }}
-            .idx {{
-                background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-                border-radius: 6px; padding: 4px 10px; text-align: center; min-width: 70px;
-            }}
-            .idx .iv {{ font-size: 1rem; font-weight: 800; line-height: 1.2; }}
-            .idx .il {{ font-size: 0.5rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.8px; }}
-            .iv.crit {{ color: #ef4444; }}
-            .iv.warn {{ color: #f59e0b; }}
-            .iv.info {{ color: #3b82f6; }}
-            .iv.ok {{ color: #22c55e; }}
-
-            /* ── Bottom FWI indices strip ── */
-            #fwi-strip {{
-                position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
-                z-index: 1000; display: flex; gap: 4px;
-            }}
-            .fi {{
-                border-radius: 6px; padding: 4px 8px; text-align: center; min-width: 44px;
-                backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.08);
-            }}
-            .fi .fv {{ font-size: 0.8rem; font-weight: 700; }}
-            .fi .fl {{ font-size: 0.45rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; }}
-            .fi-low {{ background: rgba(34,197,94,0.15); }}
-            .fi-low .fv {{ color: #22c55e; }}
-            .fi-mod {{ background: rgba(234,179,8,0.15); }}
-            .fi-mod .fv {{ color: #eab308; }}
-            .fi-high {{ background: rgba(249,115,22,0.15); }}
-            .fi-high .fv {{ color: #f97316; }}
-            .fi-vhigh {{ background: rgba(239,68,68,0.15); }}
-            .fi-vhigh .fv {{ color: #ef4444; }}
-
-            /* ── Legend panel (bottom-right, collapsible) ── */
-            #legend-panel {{
-                position: absolute; bottom: 50px; right: 16px; z-index: 1000;
-                padding: 12px 14px; min-width: 200px; max-height: 340px; overflow-y: auto;
-            }}
-            #legend-panel::-webkit-scrollbar {{ width: 3px; }}
-            #legend-panel::-webkit-scrollbar-thumb {{ background: rgba(255,255,255,0.15); border-radius: 2px; }}
-            .leg-title {{ font-size: 0.58rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 5px; }}
-            .leg-group {{ margin-bottom: 8px; }}
-            .leg-group-label {{ font-size: 0.5rem; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }}
-            .lg-row {{ display: flex; align-items: center; gap: 8px; margin-bottom: 2px; font-size: 0.6rem; }}
-            .lg-swatch {{ width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }}
-            .lg-circle {{ width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.2); }}
-            .lg-diamond {{ width: 10px; height: 10px; transform: rotate(45deg); flex-shrink: 0; }}
-            #legend-toggle {{
-                position: absolute; bottom: 50px; right: 16px; z-index: 999;
-                width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
-                display: flex; align-items: center; justify-content: center;
-                font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.1);
-                background: rgba(15,23,42,0.85); backdrop-filter: blur(8px); color: #e6edf3;
-            }}
-        </style>
-    </head>
-    <body>
-        <div id="cesiumContainer"></div>
-
-        <!-- Top command bar with overlapping indices -->
-        <div id="topbar">
-            <div class="logo">Van Suraksha 3D Command Center</div>
-            <div class="sep"></div>
-            <div class="idx"><div class="iv crit">{sim_sev}</div><div class="il">Severity</div></div>
-            <div class="idx"><div class="iv warn">{sim_frp:.1f}</div><div class="il">FRP (MW)</div></div>
-            <div class="idx"><div class="iv crit">{sim_fwi_val:.1f}</div><div class="il">FWI</div></div>
-            <div class="idx"><div class="iv info">{sim_wind_speed:.1f}</div><div class="il">Wind km/h</div></div>
-            <div class="idx"><div class="iv warn">{sim_temp:.1f}&deg;</div><div class="il">Temp &deg;C</div></div>
-            <div class="idx"><div class="iv info">{sim_rh:.1f}%</div><div class="il">Humidity</div></div>
-            <div class="idx"><div class="iv crit">{sim_danger}</div><div class="il">Danger</div></div>
-            <div class="sep"></div>
-            <div class="idx"><div class="iv ok">{sim_n_fires}</div><div class="il">Fires</div></div>
-            <div style="margin-left:auto;font-size:0.55rem;color:#8b949e;">{sim_date} &bull; Guna Division, MP</div>
-        </div>
-
-        <!-- ═══ Layer Control Panel (left) ═══ -->
-        <div id="layerPanel" class="glass">
-            <div class="panel-title">Layers</div>
-
-            <label class="layer-row">
-                <input type="checkbox" id="chk-nrt" checked onchange="toggleLayerNrt()">
-                <span class="layer-icon" style="color:#ef4444;">&#x1f525;</span>
-                <span class="layer-label">NRT Fires</span>
-                <span class="layer-count" id="cnt-nrt">{sim_n_fires}</span>
-            </label>
-            <label class="layer-row">
-                <input type="checkbox" id="chk-hist" checked onchange="toggleLayerHist()">
-                <span class="layer-icon" style="color:#f97316;">&#x1f4cd;</span>
-                <span class="layer-label">Fire History</span>
-                <span class="layer-count" id="cnt-hist">{_n_firms}</span>
-            </label>
-            <label class="layer-row">
-                <input type="checkbox" id="chk-burn" checked onchange="toggleLayerBurn()">
-                <span class="layer-icon" style="color:#dc2626;">&#x1f4a0;</span>
-                <span class="layer-label">Burn Scars</span>
-                <span class="layer-count" id="cnt-burn">{_n_burns}</span>
-            </label>
-            <label class="layer-row">
-                <input type="checkbox" id="chk-pred" onchange="toggleLayerPred()">
-                <span class="layer-icon" style="color:#eab308;">&#x26a0;</span>
-                <span class="layer-label">Risk Grid</span>
-                <span class="layer-count" id="cnt-pred">{_n_pred}</span>
-            </label>
-            <label class="layer-row">
-                <input type="checkbox" id="chk-forest" checked onchange="toggleForest2()">
-                <span class="layer-icon" style="color:#22c55e;">&#x1f333;</span>
-                <span class="layer-label">3D Forest</span>
-                <span class="layer-count">{_n_compartments}</span>
-            </label>
-            <label class="layer-row">
-                <input type="checkbox" id="chk-lulc" checked onchange="toggleLulc2()">
-                <span class="layer-icon" style="color:#84cc16;">&#x1f5fa;</span>
-                <span class="layer-label">LULC</span>
-            </label>
-            <label class="layer-row">
-                <input type="checkbox" id="chk-slope" onchange="toggleSlope2()">
-                <span class="layer-icon" style="color:#f97316;">&#x26f0;</span>
-                <span class="layer-label">Slope</span>
-            </label>
-            <label class="layer-row">
-                <input type="checkbox" id="chk-aspect" onchange="toggleAspect2()">
-                <span class="layer-icon" style="color:#3b82f6;">&#x1f9ed;</span>
-                <span class="layer-label">Aspect</span>
-            </label>
-
-            <hr class="panel-sep">
-
-            <!-- FWI badge -->
-            <div class="fwi-badge" style="background:rgba({{"239,68,68" if sim_fwi_val > 30 else "249,115,22" if sim_fwi_val > 15 else "234,179,8" if sim_fwi_val > 5 else "34,197,94"}},0.15);
-                border:1px solid rgba({{"239,68,68" if sim_fwi_val > 30 else "249,115,22" if sim_fwi_val > 15 else "234,179,8" if sim_fwi_val > 5 else "34,197,94"}},0.3);">
-                <div>
-                    <div class="fwi-badge-val" style="color:{{"#ef4444" if sim_fwi_val > 30 else "#f97316" if sim_fwi_val > 15 else "#eab308" if sim_fwi_val > 5 else "#22c55e"}};">{sim_fwi_val:.1f}</div>
-                    <div class="fwi-badge-label">FWI &bull; {sim_danger}</div>
-                </div>
-            </div>
-            <div class="wx-row"><span class="wx-lbl">&#x1f321; Temp</span><span class="wx-val" style="color:#f97316;">{sim_temp:.1f}&deg;C</span></div>
-            <div class="wx-row"><span class="wx-lbl">&#x1f4a8; Wind</span><span class="wx-val" style="color:#3b82f6;">{sim_wind_speed:.1f} km/h</span></div>
-            <div class="wx-row"><span class="wx-lbl">&#x1f4a7; RH</span><span class="wx-val" style="color:#22c55e;">{sim_rh:.1f}%</span></div>
-
-            <hr class="panel-sep">
-
-            <!-- Simulation controls -->
-            <div class="sim-section">
-                <div style="font-size:0.55rem;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">Muhurta-2D Simulation</div>
-                <div class="hr"><span class="hl">Time</span><span class="hv" id="stime">00:00</span></div>
-                <div class="hr"><span class="hl">Intensity</span><span class="hv red" id="intensity-val">-- kW/m</span></div>
-                <div class="hr"><span class="hl">Spread</span><span class="hv amber" id="ros-val">-- m/min</span></div>
-                <div class="hr"><span class="hl">Flame</span><span class="hv" id="flame-val" style="color:#4ecdc4;">-- m</span></div>
-                <div class="hr"><span class="hl">Status</span><span class="hv green" id="sstat">Ready</span></div>
-                <div class="hr"><span class="hl">Area</span><span class="hv" id="sarea">0 ha</span></div>
-                <div class="hr"><span class="hl">Class</span><span class="hv" id="sfcls">&mdash;</span></div>
-                <div class="brow" style="margin-top:6px;">
-                    <button class="b" id="simBtn" onclick="toggleSim()">&#x25b6; START</button>
-                    <button class="b" id="lnBtn" onclick="setM('FIRELINE')">Fireline</button>
-                    <button class="b" id="igBtn" onclick="setM('BACKFIRE')">Ignite</button>
-                </div>
-                <button class="b" onclick="resetSim()">&#x21ba; Reset</button>
-            </div>
-        </div>
-
-        <!-- ═══ Fire Behavior Metrics (right, shown during sim) ═══ -->
-        <div id="fmet" class="glass">
-            <h4>Fire Behavior</h4>
-            <div class="mv"><div class="mvn" id="mRos">{sim_ros:.1f}</div><div class="mvl">Rate of Spread (m/min)</div></div>
-            <div class="mv"><div class="mvn" id="mInt">{sim_intensity:.0f}</div><div class="mvl">Byram Intensity (kW/m)</div></div>
-            <div class="mv"><div class="mvn" id="mWnd">{sim_wind_speed:.1f}</div><div class="mvl">Wind Speed (km/h)</div></div>
-            <hr class="panel-sep">
-            <div class="hr"><span class="hl">FWI</span><span class="hv red">{sim_fwi_val:.1f}</span></div>
-            <div class="hr"><span class="hl">Mode</span><span class="hv red">Defensive</span></div>
-        </div>
-
-        <!-- ═══ FWI Indices Strip (bottom center) ═══ -->
-        <div id="fwi-strip">
-            <div class="fi {"fi-vhigh" if sim_ffmc > 90 else "fi-high" if sim_ffmc > 84 else "fi-mod" if sim_ffmc > 70 else "fi-low"}"><div class="fv">{sim_ffmc:.1f}</div><div class="fl">FFMC</div></div>
-            <div class="fi {"fi-vhigh" if sim_dmc > 60 else "fi-high" if sim_dmc > 30 else "fi-mod" if sim_dmc > 15 else "fi-low"}"><div class="fv">{sim_dmc:.1f}</div><div class="fl">DMC</div></div>
-            <div class="fi {"fi-vhigh" if sim_dc > 400 else "fi-high" if sim_dc > 200 else "fi-mod" if sim_dc > 80 else "fi-low"}"><div class="fv">{sim_dc:.1f}</div><div class="fl">DC</div></div>
-            <div class="fi {"fi-vhigh" if sim_isi > 10 else "fi-high" if sim_isi > 5 else "fi-mod" if sim_isi > 2 else "fi-low"}"><div class="fv">{sim_isi:.1f}</div><div class="fl">ISI</div></div>
-            <div class="fi {"fi-vhigh" if sim_bui > 60 else "fi-high" if sim_bui > 30 else "fi-mod" if sim_bui > 15 else "fi-low"}"><div class="fv">{sim_bui:.1f}</div><div class="fl">BUI</div></div>
-            <div class="fi {"fi-vhigh" if sim_fwi_val > 30 else "fi-high" if sim_fwi_val > 15 else "fi-mod" if sim_fwi_val > 5 else "fi-low"}"><div class="fv">{sim_fwi_val:.1f}</div><div class="fl">FWI</div></div>
-        </div>
-
-        <!-- ═══ Unified Legend (bottom-right) ═══ -->
-        <div id="legend-panel" class="glass">
-            <div class="leg-title" style="color:#f97316;">Legend</div>
-
-            <div class="leg-group">
-                <div class="leg-group-label">NRT Fires</div>
-                <div class="lg-row"><div class="lg-circle" style="background:#ef4444;"></div> CRITICAL</div>
-                <div class="lg-row"><div class="lg-circle" style="background:#f97316;"></div> HIGH / Other</div>
-            </div>
-            <div class="leg-group">
-                <div class="leg-group-label">FIRMS History</div>
-                <div class="lg-row"><div class="lg-circle" style="background:#dc2626;"></div> High conf</div>
-                <div class="lg-row"><div class="lg-circle" style="background:#f97316;"></div> Nominal</div>
-                <div class="lg-row"><div class="lg-circle" style="background:#eab308;"></div> Low conf</div>
-            </div>
-            <div class="leg-group">
-                <div class="leg-group-label">Burn Scars</div>
-                <div class="lg-row"><div class="lg-diamond" style="background:#dc2626;"></div> HIGH</div>
-                <div class="lg-row"><div class="lg-diamond" style="background:#f59e0b;"></div> MEDIUM</div>
-                <div class="lg-row"><div class="lg-diamond" style="background:#6b7280;"></div> LOW</div>
-            </div>
-            <div class="leg-group">
-                <div class="leg-group-label">Risk Grid</div>
-                <div class="lg-row"><div class="lg-swatch" style="background:#dc2626;"></div> CRITICAL</div>
-                <div class="lg-row"><div class="lg-swatch" style="background:#f97316;"></div> HIGH</div>
-                <div class="lg-row"><div class="lg-swatch" style="background:#eab308;"></div> MODERATE</div>
-                <div class="lg-row"><div class="lg-swatch" style="background:#22c55e;"></div> LOW</div>
-            </div>
-            <div class="leg-group">
-                <div class="leg-group-label">Forest Health</div>
-                <div class="lg-row"><div class="lg-swatch" style="background:#22c55e;"></div> Healthy (&ge;80%)</div>
-                <div class="lg-row"><div class="lg-swatch" style="background:#eab308;"></div> Moderate (60-80%)</div>
-                <div class="lg-row"><div class="lg-swatch" style="background:#f97316;"></div> Stressed (40-60%)</div>
-                <div class="lg-row"><div class="lg-swatch" style="background:#ef4444;"></div> Degraded (&lt;40%)</div>
-            </div>
-        </div>
-
-        <div id="sbar">
-            <span class="sd g" id="sdot"></span>
-            <span id="stxt">3D Command Center &mdash; {sim_n_fires} NRT fires &bull; {_n_firms} FIRMS &bull; {_n_burns} burn scars &bull; {_n_compartments} compartments &bull; {_n_pred} risk cells</span>
-        </div>
-
-        <script>
-            // ── All data layers (declare first) ──
-            const FIRES = {fire_points_js};
-            const CMP = {compartments_js};
-            const HIST = {firms_js};
-            const BURNS = {burns_js};
-            const PRED = {pred_js};
-
-            // ── Viewer with real 3D terrain ──
-            const viewer = new Cesium.Viewer('cesiumContainer', {{
-                imageryProvider: new Cesium.ArcGisMapServerImageryProvider({{
-                    url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
-                }}),
-                terrainProvider: Cesium.createWorldTerrain({{ requestVertexNormals: true }}),
-                baseLayerPicker: false, infoBox: true, animation: false, timeline: false,
-                geocoder: false, homeButton: false, sceneModePicker: false,
-                navigationHelpButton: false, fullscreenButton: false
-            }});
-            viewer.scene.globe.depthTestAgainstTerrain = true;
-            viewer.scene.globe.enableLighting = true;
-
-            // ── LULC overlay (ESA WorldCover 10m) ──
-            var lulcBounds = {json.dumps(_ov_bounds.get("lulc", {{}}))};
-            var lulcLayer = null;
-            if (lulcBounds.w) {{
-                lulcLayer = viewer.imageryLayers.addImageryProvider(
-                    new Cesium.SingleTileImageryProvider({{
-                        url: '{_overlay_base}/lulc.png',
-                        rectangle: Cesium.Rectangle.fromDegrees(lulcBounds.w, lulcBounds.s, lulcBounds.e, lulcBounds.n)
-                    }})
-                );
-                lulcLayer.alpha = 0.7;
-                lulcLayer.show = true;
-            }}
-
-            // ── Slope overlay ──
-            var slopeBounds = {json.dumps(_ov_bounds.get("slope", {{}}))};
-            var slopeLayer = null;
-            if (slopeBounds.w) {{
-                slopeLayer = viewer.imageryLayers.addImageryProvider(
-                    new Cesium.SingleTileImageryProvider({{
-                        url: '{_overlay_base}/slope.png',
-                        rectangle: Cesium.Rectangle.fromDegrees(slopeBounds.w, slopeBounds.s, slopeBounds.e, slopeBounds.n)
-                    }})
-                );
-                slopeLayer.alpha = 0.6;
-                slopeLayer.show = false;
-            }}
-
-            // ── Aspect overlay ──
-            var aspectBounds = {json.dumps(_ov_bounds.get("aspect", {{}}))};
-            var aspectLayer = null;
-            if (aspectBounds.w) {{
-                aspectLayer = viewer.imageryLayers.addImageryProvider(
-                    new Cesium.SingleTileImageryProvider({{
-                        url: '{_overlay_base}/aspect.png',
-                        rectangle: Cesium.Rectangle.fromDegrees(aspectBounds.w, aspectBounds.s, aspectBounds.e, aspectBounds.n)
-                    }})
-                );
-                aspectLayer.alpha = 0.6;
-                aspectLayer.show = false;
-            }}
-
-            // Camera: if fires → zoom to fire, else overview all compartments
-            const _hasFires = FIRES.length > 0;
-            viewer.camera.flyTo({{
-                destination: _hasFires
-                    ? Cesium.Cartesian3.fromDegrees({sim_center_lon}, {sim_center_lat} - 0.015, 6000)
-                    : Cesium.Cartesian3.fromDegrees(77.15, 24.30, 55000),
-                orientation: {{ pitch: Cesium.Math.toRadians(-35), heading: Cesium.Math.toRadians(15) }},
-                duration: 2.0
-            }});
-            const MLAT = 111320;
-            const MLON = MLAT * Math.cos({sim_center_lat} * Math.PI / 180);
-            const WRAD = ({sim_wind_dir} + 180) * Math.PI / 180;
-
-            // ── State ──
-            let fCoords = [], cCoords = [];
-            let running = false, timer = null, st = 0, mode = null;
-
-            // ── Outer fire perimeter polygon ──
-            viewer.entities.add({{
-                name: 'FireOuter',
-                polygon: {{
-                    hierarchy: new Cesium.CallbackProperty(() => {{
-                        return fCoords.length > 2 ? new Cesium.PolygonHierarchy(
-                            fCoords.map(c => Cesium.Cartesian3.fromDegrees(c.lon, c.lat))
-                        ) : null;
-                    }}, false),
-                    material: Cesium.Color.ORANGERED.withAlpha(0.55),
-                    outline: true, outlineColor: Cesium.Color.YELLOW,
-                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                }}
-            }});
-
-            // ── Inner fire core polygon ──
-            viewer.entities.add({{
-                name: 'FireCore',
-                polygon: {{
-                    hierarchy: new Cesium.CallbackProperty(() => {{
-                        return cCoords.length > 2 ? new Cesium.PolygonHierarchy(
-                            cCoords.map(c => Cesium.Cartesian3.fromDegrees(c.lon, c.lat))
-                        ) : null;
-                    }}, false),
-                    material: Cesium.Color.YELLOW.withAlpha(0.35),
-                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                }}
-            }});
-
-            // ── 3D Forest Digital Twin — LULC-aware compartments + billboards ──
-            const forestEntities = [];
-            const bbEntities = [];
-            let forestVisible = true;
-
-            function aspDir(a) {{
-                if (a < 22.5 || a >= 337.5) return 'N';
-                if (a < 67.5) return 'NE'; if (a < 112.5) return 'E';
-                if (a < 157.5) return 'SE'; if (a < 202.5) return 'S';
-                if (a < 247.5) return 'SW'; if (a < 292.5) return 'W'; return 'NW';
-            }}
-            function sRand(s) {{ var x = Math.sin(s) * 10000; return x - Math.floor(x); }}
-
-            // SVG billboards for each LULC type
-            var svgTree = 'data:image/svg+xml,' + encodeURIComponent(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="48"><polygon points="16,2 4,20 12,18 6,32 12,30 8,42 24,42 20,30 26,32 20,18 28,20" fill="#15803d" stroke="#0a5c2a" stroke-width="1"/><rect x="13" y="42" width="6" height="6" fill="#7c3f00"/></svg>');
-            var svgShrub = 'data:image/svg+xml,' + encodeURIComponent(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><ellipse cx="16" cy="18" rx="13" ry="10" fill="#4d7c0f" stroke="#365314" stroke-width="1"/><ellipse cx="10" cy="14" rx="8" ry="7" fill="#65a30d" opacity="0.7"/><rect x="14" y="26" width="4" height="6" fill="#7c3f00"/></svg>');
-            var svgCrop = 'data:image/svg+xml,' + encodeURIComponent(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="44"><line x1="14" y1="44" x2="14" y2="12" stroke="#a16207" stroke-width="2"/><line x1="14" y1="20" x2="6" y2="14" stroke="#a16207" stroke-width="1.5"/><line x1="14" y1="20" x2="22" y2="14" stroke="#a16207" stroke-width="1.5"/><ellipse cx="14" cy="8" rx="7" ry="6" fill="#eab308" stroke="#ca8a04" stroke-width="1"/><ellipse cx="8" cy="12" rx="4" ry="3" fill="#facc15" opacity="0.6"/><ellipse cx="20" cy="12" rx="4" ry="3" fill="#facc15" opacity="0.6"/></svg>');
-            var svgGrass = 'data:image/svg+xml,' + encodeURIComponent(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><path d="M6,28 Q8,12 10,4" stroke="#65a30d" fill="none" stroke-width="2"/><path d="M14,28 Q14,10 14,2" stroke="#4d7c0f" fill="none" stroke-width="2"/><path d="M22,28 Q20,12 18,4" stroke="#65a30d" fill="none" stroke-width="2"/><path d="M10,28 Q12,16 16,8" stroke="#84cc16" fill="none" stroke-width="1.5"/><path d="M18,28 Q16,16 12,8" stroke="#84cc16" fill="none" stroke-width="1.5"/></svg>');
-            var svgBuilt = 'data:image/svg+xml,' + encodeURIComponent(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="28"><rect x="3" y="10" width="18" height="18" fill="#6b7280" stroke="#4b5563" stroke-width="1"/><polygon points="12,2 1,12 23,12" fill="#9ca3af" stroke="#6b7280" stroke-width="1"/><rect x="9" y="18" width="6" height="10" fill="#fbbf24"/></svg>');
-            var svgWater = 'data:image/svg+xml,' + encodeURIComponent(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="20"><path d="M2,10 Q7,4 14,10 Q21,16 26,10" stroke="#3b82f6" fill="none" stroke-width="2.5"/><path d="M2,16 Q7,10 14,16 Q21,22 26,16" stroke="#60a5fa" fill="none" stroke-width="2"/></svg>');
-
-            var lcIcons = [
-                {{key:'lt', svg:svgTree,  w:24, h:36}},
-                {{key:'ls', svg:svgShrub, w:22, h:22}},
-                {{key:'lg', svg:svgGrass, w:20, h:20}},
-                {{key:'lc', svg:svgCrop,  w:20, h:32}},
-                {{key:'lb', svg:svgBuilt, w:18, h:22}},
-                {{key:'lw', svg:svgWater, w:22, h:16}},
-            ];
-
-            CMP.forEach(function(d, idx) {{
-                try {{
-                    // Extruded compartment polygon
-                    var pos = Cesium.Cartesian3.fromDegreesArray(d.c);
-                    var e = viewer.entities.add({{
-                        name: 'FC',
-                        polygon: {{
-                            hierarchy: new Cesium.PolygonHierarchy(pos),
-                            material: Cesium.Color.fromCssColorString(d.cl).withAlpha(0.55),
-                            extrudedHeight: d.h,
-                            height: 0,
-                            outline: true,
-                            outlineColor: d.f > 0
-                                ? Cesium.Color.RED.withAlpha(0.8)
-                                : Cesium.Color.WHITE.withAlpha(0.2),
-                        }},
-                        description:
-                            '<table style="font-size:13px;border-collapse:collapse;">' +
-                            '<tr><td style="padding:2px 8px;color:#888;">Beat</td><td><b>' + d.b + '</b></td></tr>' +
-                            '<tr><td style="padding:2px 8px;color:#888;">Range</td><td><b>' + d.r + '</b></td></tr>' +
-                            '<tr><td colspan="2" style="border-top:1px solid #333;padding-top:4px;font-size:11px;color:#666;">LAND COVER</td></tr>' +
-                            '<tr><td style="padding:2px 8px;color:#15803d;">&#x1f332; Trees</td><td><b>' + d.lt + '%</b></td></tr>' +
-                            '<tr><td style="padding:2px 8px;color:#4d7c0f;">&#x1fab4; Shrubs</td><td>' + d.ls + '%</td></tr>' +
-                            '<tr><td style="padding:2px 8px;color:#84cc16;">&#x1f33f; Grass</td><td>' + d.lg + '%</td></tr>' +
-                            '<tr><td style="padding:2px 8px;color:#eab308;">&#x1f33e; Crops</td><td>' + d.lc + '%</td></tr>' +
-                            (d.lb > 0 ? '<tr><td style="padding:2px 8px;color:#6b7280;">&#x1f3d8; Built</td><td>' + d.lb + '%</td></tr>' : '') +
-                            (d.lw > 0 ? '<tr><td style="padding:2px 8px;color:#3b82f6;">&#x1f4a7; Water</td><td>' + d.lw + '%</td></tr>' : '') +
-                            '<tr><td colspan="2" style="border-top:1px solid #333;padding-top:4px;font-size:11px;color:#666;">FOREST STATUS</td></tr>' +
-                            '<tr><td style="padding:2px 8px;color:#888;">Area</td><td>' + d.a + ' ha (was ' + d.ao + ')</td></tr>' +
-                            '<tr><td style="padding:2px 8px;color:#888;">Health</td><td style="color:' + d.cl + ';font-weight:700;">' + (d.hl * 100).toFixed(0) + '%</td></tr>' +
-                            '<tr><td style="padding:2px 8px;color:#888;">Fires</td><td style="color:' + (d.f > 0 ? '#ef4444' : '#22c55e') + ';">' + d.f + '</td></tr>' +
-                            '<tr><td colspan="2" style="border-top:1px solid #333;padding-top:4px;font-size:11px;color:#666;">TERRAIN</td></tr>' +
-                            '<tr><td style="padding:2px 8px;color:#888;">Elevation</td><td>' + d.el + ' m</td></tr>' +
-                            '<tr><td style="padding:2px 8px;color:#888;">Slope</td><td>' + d.sl + '&deg;</td></tr>' +
-                            '<tr><td style="padding:2px 8px;color:#888;">Aspect</td><td>' + d.asp + '&deg; (' + aspDir(d.asp) + ')</td></tr>' +
-                            '</table>',
-                    }});
-                    forestEntities.push(e);
-
-                    // LULC-aware billboard placement — proportional to actual land cover %
-                    var lons = d.c.filter(function(_, i) {{ return i % 2 === 0; }});
-                    var lats = d.c.filter(function(_, i) {{ return i % 2 === 1; }});
-                    var loMin = Math.min.apply(null, lons), loMax = Math.max.apply(null, lons);
-                    var laMin = Math.min.apply(null, lats), laMax = Math.max.apply(null, lats);
-                    var seed = idx * 31;
-
-                    lcIcons.forEach(function(lc) {{
-                        var pct = d[lc.key] || 0;
-                        // Scale: 1 billboard per ~12% coverage, min 0, max 8
-                        var n = Math.min(Math.round(pct / 12), 8);
-                        for (var t = 0; t < n; t++) {{
-                            seed++;
-                            var tlon = loMin + sRand(seed * 7) * (loMax - loMin);
-                            var tlat = laMin + sRand(seed * 11) * (laMax - laMin);
-                            var te = viewer.entities.add({{
-                                name: 'BB',
-                                position: Cesium.Cartesian3.fromDegrees(tlon, tlat, d.h + 3),
-                                billboard: {{
-                                    image: lc.svg,
-                                    width: lc.w,
-                                    height: lc.h,
-                                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                                    scaleByDistance: new Cesium.NearFarScalar(3000, 1.5, 60000, 0.25),
-                                }},
-                            }});
-                            bbEntities.push(te);
-                        }}
-                    }});
-                }} catch(ex) {{ /* skip bad geometry */ }}
-            }});
-
-            // ── Layer toggle functions (wired to checkbox onchange) ──
-            function toggleForest2() {{
-                forestVisible = document.getElementById('chk-forest').checked;
-                forestEntities.forEach(function(e) {{ e.show = forestVisible; }});
-                bbEntities.forEach(function(e) {{ e.show = forestVisible; }});
-            }}
-            function toggleLulc2() {{
-                if (!lulcLayer) return;
-                lulcLayer.show = document.getElementById('chk-lulc').checked;
-            }}
-            function toggleSlope2() {{
-                if (!slopeLayer) return;
-                slopeLayer.show = document.getElementById('chk-slope').checked;
-            }}
-            function toggleAspect2() {{
-                if (!aspectLayer) return;
-                aspectLayer.show = document.getElementById('chk-aspect').checked;
-            }}
-
-            // ── NRT Fire markers (with pulsing effect) ──
-            const nrtEntities = [];
-            let pulsePhase = 0;
-            FIRES.forEach((f, i) => {{
-                const isCrit = f.severity === 'CRITICAL';
-                const baseSize = isCrit ? 16 : 12;
-                const e = viewer.entities.add({{
-                    position: Cesium.Cartesian3.fromDegrees(f.lon, f.lat),
-                    point: {{
-                        pixelSize: new Cesium.CallbackProperty(() => {{
-                            return baseSize + Math.sin(pulsePhase + i) * 4;
-                        }}, false),
-                        color: isCrit ? Cesium.Color.RED.withAlpha(0.9) : Cesium.Color.ORANGE.withAlpha(0.9),
-                        outlineColor: Cesium.Color.WHITE, outlineWidth: 2,
-                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                    }},
-                    label: {{
-                        text: (f.category || f.severity) + ' (' + f.frp.toFixed(1) + ' MW)',
-                        font: '11px sans-serif bold', fillColor: Cesium.Color.WHITE,
-                        style: Cesium.LabelStyle.FILL_AND_OUTLINE, outlineWidth: 3, outlineColor: Cesium.Color.BLACK,
-                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                        pixelOffset: new Cesium.Cartesian2(0, -22),
-                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                    }},
-                    description: '<b>NRT Fire Alert</b><br>Severity: ' + f.severity +
-                        '<br>FRP: ' + f.frp.toFixed(1) + ' MW<br>ROS: ' + f.ros.toFixed(1) +
-                        ' m/min<br>Intensity: ' + f.intensity.toFixed(0) + ' kW/m'
-                }});
-                nrtEntities.push(e);
-            }});
-            // Animate NRT pulse
-            viewer.clock.onTick.addEventListener(() => {{ pulsePhase += 0.08; }});
-
-            function toggleLayerNrt() {{
-                const vis = document.getElementById('chk-nrt').checked;
-                nrtEntities.forEach(e => e.show = vis);
-            }}
-
-            // ── FIRMS Fire History layer ──
-            const histEntities = [];
-            HIST.forEach(h => {{
-                const sz = Math.max(4, Math.min(14, h.f / 10));
-                const clr = h.c === 'high' ? '#dc2626' : h.c === 'nominal' ? '#f97316' : '#eab308';
-                histEntities.push(viewer.entities.add({{
-                    position: Cesium.Cartesian3.fromDegrees(h.lo, h.la),
-                    point: {{
-                        pixelSize: sz,
-                        color: Cesium.Color.fromCssColorString(clr).withAlpha(0.7),
-                        outlineColor: Cesium.Color.BLACK.withAlpha(0.3), outlineWidth: 1,
-                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                    }},
-                    description: '<b>FIRMS Detection</b><br>Date: ' + h.d +
-                        '<br>FRP: ' + h.f + ' MW<br>Confidence: ' + h.c,
-                    show: true
-                }}));
-            }});
-
-            function toggleLayerHist() {{
-                const vis = document.getElementById('chk-hist').checked;
-                histEntities.forEach(e => e.show = vis);
-            }}
-
-            // ── Burn Scars layer (diamond-like markers) ──
-            var svgDiamond = 'data:image/svg+xml,' + encodeURIComponent(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">' +
-                '<polygon points="10,1 19,10 10,19 1,10" fill="#dc2626" stroke="#fff" stroke-width="1.5"/></svg>');
-            var svgDiamondMed = 'data:image/svg+xml,' + encodeURIComponent(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">' +
-                '<polygon points="10,1 19,10 10,19 1,10" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/></svg>');
-            var svgDiamondLow = 'data:image/svg+xml,' + encodeURIComponent(
-                '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">' +
-                '<polygon points="10,1 19,10 10,19 1,10" fill="#6b7280" stroke="#fff" stroke-width="1.5"/></svg>');
-
-            const burnEntities = [];
-            BURNS.forEach(b => {{
-                const sz = Math.max(14, Math.min(28, b.a / 50));
-                const svg = b.c.includes('HIGH') ? svgDiamond : b.c.includes('MED') ? svgDiamondMed : svgDiamondLow;
-                burnEntities.push(viewer.entities.add({{
-                    position: Cesium.Cartesian3.fromDegrees(b.lo, b.la),
-                    billboard: {{
-                        image: svg, width: sz, height: sz,
-                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-                        scaleByDistance: new Cesium.NearFarScalar(5000, 1.2, 80000, 0.3)
-                    }},
-                    description: '<b>Burn Scar</b><br>Area: ' + b.a + ' ha' +
-                        '<br>Scene: ' + b.sd + '<br>Fire: ' + b.fd + '<br>Confidence: ' + b.c,
-                    show: true
-                }}));
-            }});
-
-            function toggleLayerBurn() {{
-                const vis = document.getElementById('chk-burn').checked;
-                burnEntities.forEach(e => e.show = vis);
-            }}
-
-            // ── Predictive Risk Grid layer ──
-            const predEntities = [];
-            const riskColors = {{ CRITICAL: '#dc2626', HIGH: '#f97316', MODERATE: '#eab308', LOW: '#22c55e' }};
-            PRED.forEach(p => {{
-                const clr = riskColors[p.l] || '#22c55e';
-                predEntities.push(viewer.entities.add({{
-                    polygon: {{
-                        hierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(p.c)),
-                        material: Cesium.Color.fromCssColorString(clr).withAlpha(0.35),
-                        height: 0, outline: true,
-                        outlineColor: Cesium.Color.fromCssColorString(clr).withAlpha(0.8),
-                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                    }},
-                    description: '<b>Risk Cell</b><br>Beat: ' + p.b +
-                        '<br>Range: ' + p.r + '<br>Score: ' + (p.s * 100).toFixed(0) +
-                        '%<br>Level: ' + p.l,
-                    show: false
-                }}));
-            }});
-
-            function toggleLayerPred() {{
-                const vis = document.getElementById('chk-pred').checked;
-                predEntities.forEach(e => e.show = vis);
-            }}
-
-            // ── Elliptical fire spread model ──
-            function firePeri(ctr, t, ros, scl) {{
-                const s = scl || 1.0;
-                const hd = ros * t * s, fl = ros * 0.28 * t * s, bk = ros * 0.08 * t * s;
-                const a = (hd + bk) / 2, b = fl, off = (hd - bk) / 2;
-                const pts = [];
-                for (let i = 0; i < 48; i++) {{
-                    const th = i / 48 * 2 * Math.PI;
-                    let x = a * Math.cos(th) + off, y = b * Math.sin(th);
-                    const j = 1.0 + Math.sin(th * 5 + t * 0.7) * 0.06;
-                    x *= j; y *= j;
-                    const rx = x * Math.cos(WRAD) - y * Math.sin(WRAD);
-                    const ry = x * Math.sin(WRAD) + y * Math.cos(WRAD);
-                    pts.push({{ lon: ctr.lon + rx / MLON, lat: ctr.lat + ry / MLAT }});
-                }}
-                return pts;
-            }}
-
-            // ── Polygon area (shoelace) in hectares ──
-            function pArea(pts) {{
-                let a = 0;
-                for (let i = 0; i < pts.length; i++) {{
-                    const j = (i + 1) % pts.length;
-                    a += (pts[j].lon - pts[i].lon) * (pts[j].lat + pts[i].lat);
-                }}
-                return Math.abs(a / 2) * MLON * MLAT / 10000;
-            }}
-
-            // ── Intervention mode ──
-            let intCount = 0;
-            function setM(m) {{
-                mode = m;
-                document.getElementById('lnBtn').classList.toggle('active', m === 'FIRELINE');
-                document.getElementById('igBtn').classList.toggle('active', m === 'BACKFIRE');
-                document.getElementById('sstat').innerText = m === 'FIRELINE' ? 'Click map: place firebreak' : 'Click map: place backfire';
-                document.getElementById('sstat').className = 'hv amber';
-            }}
-
-            const hndl = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
-            hndl.setInputAction((click) => {{
-                if (!mode) return;
-                // Use pickEllipsoid (works with EllipsoidTerrainProvider)
-                const cartesian = viewer.camera.pickEllipsoid(click.position, viewer.scene.globe.ellipsoid);
-                if (!cartesian) return;
-                const carto = Cesium.Cartographic.fromCartesian(cartesian);
-                const lon = Cesium.Math.toDegrees(carto.longitude);
-                const lat = Cesium.Math.toDegrees(carto.latitude);
-                intCount++;
-                const isFl = mode === 'FIRELINE';
-                viewer.entities.add({{
-                    name: 'Intervention',
-                    position: Cesium.Cartesian3.fromDegrees(lon, lat),
-                    point: {{
-                        pixelSize: isFl ? 14 : 12,
-                        color: isFl ? Cesium.Color.CYAN : Cesium.Color.ORANGERED,
-                        outlineColor: Cesium.Color.WHITE, outlineWidth: 2,
-                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                    }},
-                    label: {{
-                        text: (isFl ? 'FIRELINE ' : 'BACKFIRE ') + intCount,
-                        font: '11px sans-serif bold',
-                        fillColor: isFl ? Cesium.Color.CYAN : Cesium.Color.ORANGERED,
-                        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-                        outlineWidth: 3, outlineColor: Cesium.Color.BLACK,
-                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                        pixelOffset: new Cesium.Cartesian2(0, -18),
-                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                    }}
-                }});
-                document.getElementById('sstat').innerText = (isFl ? 'Firebreak' : 'Backfire') + ' #' + intCount + ' placed at ' + lat.toFixed(3) + 'N ' + lon.toFixed(3) + 'E';
-            }}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-
-            // ── Simulation engine (Real-Time WebSocket) ──
-            function toggleSim() {{
-                if (running) {{
-                    running = false; if (socket) socket.close();
-                    document.getElementById('simBtn').innerHTML = '&#x25b6; START';
-                    document.getElementById('simBtn').classList.remove('running');
-                    document.getElementById('sstat').innerText = 'Stopped';
-                    document.getElementById('sdot').className = 'sd g';
-                    return;
-                }}
-
-                running = true;
-                document.getElementById('simBtn').innerHTML = '&#x23f9; STOP';
-                document.getElementById('simBtn').classList.add('running');
-                document.getElementById('sstat').innerText = 'Connecting...';
-                document.getElementById('sdot').className = 'sd r';
-
-                // Use 127.0.0.1 for local stability
-                socket = new WebSocket("ws://127.0.0.1:8001/ws/simulate");
-                
-                socket.onopen = () => {{
-                    document.getElementById('sstat').innerText = 'Syncing PDE...';
-                    socket.send(JSON.stringify({{
-                        lat: {sim_center_lat}, lon: {sim_center_lon}, 
-                        wind_u: {sim_wind_speed / 3.6}, wind_v: 0.0,
-                        interventions: interventions
-                    }}));
-                }};
-
-                socket.onmessage = (e) => {{
-                    const data = JSON.parse(e.data);
-                    if (data.polygons && data.polygons.length > 0) {{
-                        fCoords = data.polygons[0].map(c => ({{ lon: c[0], lat: c[1] }}));
-                    }}
-                    
-                    // Update HUD
-                    document.getElementById('stime').innerText = '+' + data.time_elapsed + ':00';
-                    document.getElementById('intensity-val').innerText = data.intensity_kw_m.toFixed(0) + ' kW/m';
-                    document.getElementById('ros-val').innerText = data.ros_m_min.toFixed(1) + ' m/min';
-                    document.getElementById('flame-val').innerText = data.flame_height_m.toFixed(1) + ' m';
-                    
-                    document.getElementById('sstat').innerText = 'Streaming Physics';
-                    document.getElementById('sstat').className = 'hv red';
-                }};
-
-                socket.onerror = () => {{
-                    document.getElementById('sstat').innerText = 'WS Error (Port 8001)';
-                    running = false;
-                }};
-            }}
-
-            function resetSim() {{
-                running = false; clearInterval(timer); st = 0;
-                fCoords = []; cCoords = []; intCount = 0;
-                viewer.entities.values.filter(e => e.name === 'Intervention').forEach(e => viewer.entities.remove(e));
-                document.getElementById('simBtn').innerText = '&#x25b6; START';
-                document.getElementById('simBtn').classList.remove('running');
-                document.getElementById('sstat').innerText = 'Ready';
-                document.getElementById('sstat').className = 'hv green';
-                document.getElementById('stime').innerText = '00:00';
-                document.getElementById('sarea').innerText = '0 ha';
-                document.getElementById('sfcls').innerText = '\u2014';
-                document.getElementById('fmet').style.display = 'none';
-                document.getElementById('sdot').className = 'sd g';
-                document.getElementById('stxt').innerText = '3D Command Center \u2014 ' + FIRES.length + ' NRT fires \u2022 ' +
-                    HIST.length + ' FIRMS \u2022 ' + BURNS.length + ' burn scars \u2022 ' +
-                    CMP.length + ' compartments \u2022 ' + PRED.length + ' risk cells';
-                mode = null;
-            }}
-        </script>
-    </body>
-    </html>
-    """
-    
-    st.components.v1.html(cesium_html, height=1050)
+    st.subheader("3D Digital Twin — Guna Division")
+
+    # Load config and fire data
+    _twin_config_path = ROOT / "dashboard" / "static" / "twin_config.json"
+    if _twin_config_path.exists():
+        with open(_twin_config_path) as _f:
+            _twin_cfg = json.load(_f)
+    else:
+        st.warning("Twin config not found. Run: python scripts/generate_twin_data.py")
+        _twin_cfg = {"terrain": {"bounds": {}, "elevation_range": [0, 1]}, "trees": [], "boundaries": []}
+
+    # Load latest alert for fire overlay
+    _alert_path = ROOT / "data_lake" / "alerts" / "latest_alert.json"
+    if _alert_path.exists():
+        with open(_alert_path) as _f:
+            _latest_alert = json.load(_f)
+    else:
+        _latest_alert = {"fires": [], "fires_detected": 0}
+    _fires_data = json.dumps({
+        "active": [
+            {"lat": f["fire_lat"], "lon": f["fire_lon"],
+             "frp": f.get("frp_mw", 0),
+             "ros": f.get("prescriptive_metrics", {}).get("ros_m_min", 5.0)}
+            for f in _latest_alert.get("fires", [])
+        ],
+        "abm_hotspots": _latest_alert.get("abm_ignition_risk", {}).get("hotspots", []),
+        "firms_history": load_firms_history(),
+    })
+
+    _twin_config_json = json.dumps(_twin_cfg)
+
+    twin_html = f"""<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<style>
+  * {{{{ margin:0; padding:0; box-sizing:border-box; }}}}
+  body {{{{ background:#0a0a0f; overflow:hidden; }}}}
+  #c {{{{ width:100%; height:800px; display:block; }}}}
+
+  .panel {{{{
+    position:absolute; z-index:10;
+    background:rgba(10,10,20,0.88); color:#fff;
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:8px; backdrop-filter:blur(8px);
+    font-family:'Segoe UI',system-ui,sans-serif;
+  }}}}
+
+  #overlay-btns {{{{
+    top:12px; right:12px; padding:8px; display:flex; gap:6px;
+  }}}}
+  .obtn {{{{
+    padding:6px 12px; border:1px solid rgba(255,255,255,0.25);
+    border-radius:6px; background:transparent; color:#fff;
+    cursor:pointer; font-size:12px; transition:all 0.2s;
+  }}}}
+  .obtn:hover {{{{ border-color:rgba(255,255,255,0.5); }}}}
+  .obtn.active {{{{ border-color:#4ade80; color:#4ade80; }}}}
+
+  #info {{{{
+    bottom:12px; left:12px; padding:12px 16px; min-width:200px;
+  }}}}
+  #info h4 {{{{ font-size:13px; color:#4ade80; margin-bottom:4px; }}}}
+  #info p {{{{ font-size:11px; opacity:0.8; line-height:1.4; }}}}
+
+  #style-toggle {{{{
+    bottom:12px; right:12px; padding:6px 14px;
+  }}}}
+  .obtn.style {{{{ font-size:11px; }}}}
+
+  #stats {{{{
+    top:12px; left:12px; padding:8px 12px; font-size:11px;
+    font-family:monospace;
+  }}}}
+</style>
+</head><body>
+<canvas id="c"></canvas>
+
+<div class="panel" id="overlay-btns">
+  <button class="obtn active" onclick="setOverlay('fires',this)">\U0001f525 Fires</button>
+  <button class="obtn" onclick="setOverlay('spread',this)">\U0001f4e1 Spread</button>
+  <button class="obtn" onclick="setOverlay('risk',this)">\U0001f5fa\ufe0f Risk</button>
+  <button class="obtn" onclick="setOverlay('firms',this)">\U0001f4cd FIRMS</button>
+</div>
+
+<div class="panel" id="info">
+  <h4 id="info-title">Guna Division</h4>
+  <p id="info-body">747 compartments \u00b7 8 ranges \u00b7 Drag to explore</p>
+</div>
+
+<div class="panel" id="style-toggle">
+  <button class="obtn style active" onclick="toggleDither(this)">\u2b21 Dithered</button>
+</div>
+
+<div class="panel" id="stats">
+  <span id="fps">--</span> FPS
+</div>
+
+<script type="importmap">
+{{{{
+  "imports": {{{{
+    "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/"
+  }}}}
+}}}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import {{{{ OrbitControls }}}} from 'three/addons/controls/OrbitControls.js';
+import {{{{ EffectComposer }}}} from 'three/addons/postprocessing/EffectComposer.js';
+import {{{{ RenderPass }}}} from 'three/addons/postprocessing/RenderPass.js';
+import {{{{ ShaderPass }}}} from 'three/addons/postprocessing/ShaderPass.js';
+
+// --- Data ---
+const CONFIG = {_twin_config_json};
+const FIRES = {_fires_data};
+const OVERLAY_BASE = "{_overlay_base}";
+const B = CONFIG.terrain.bounds;
+const ELEV = CONFIG.terrain.elevation_range;
+const EXAG = CONFIG.terrain.vertical_exaggeration || 2.5;
+const TERRAIN_W = B.east - B.west;
+const TERRAIN_H = B.north - B.south;
+const SCALE = 100;
+
+// --- Coordinate Mapping: lon->X, lat->Z, elev->Y ---
+function geoToWorld(lon, lat, elev) {{{{
+  const x = (lon - B.west) / TERRAIN_W * TERRAIN_W * SCALE - (TERRAIN_W * SCALE / 2);
+  const z = -((lat - B.south) / TERRAIN_H * TERRAIN_H * SCALE - (TERRAIN_H * SCALE / 2));
+  const y = elev !== undefined ?
+    ((elev - ELEV[0]) / (ELEV[1] - ELEV[0])) * (ELEV[1] - ELEV[0]) * EXAG * 0.01 : 0;
+  return new THREE.Vector3(x, y, z);
+}}}}
+
+// --- Renderer ---
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({{{{ canvas, antialias: true }}}});
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(55, canvas.clientWidth / canvas.clientHeight, 0.1, 5000);
+
+const cx = TERRAIN_W * SCALE * 0.3;
+const cz = TERRAIN_H * SCALE * 0.3;
+camera.position.set(cx, 30, cz);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.target.set(0, 5, 0);
+controls.maxPolarAngle = Math.PI / 2.1;
+controls.minDistance = 20;
+controls.maxDistance = TERRAIN_W * SCALE * 2;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.3;
+
+let autoRotateTimer = null;
+controls.addEventListener('start', () => {{{{
+  controls.autoRotate = false;
+  clearTimeout(autoRotateTimer);
+}}}});
+controls.addEventListener('end', () => {{{{
+  autoRotateTimer = setTimeout(() => {{{{ controls.autoRotate = true; }}}}, 10000);
+}}}});
+
+// --- Lighting ---
+scene.add(new THREE.AmbientLight(0x445566, 0.6));
+
+const sun = new THREE.DirectionalLight(0xffeedd, 1.8);
+sun.position.set(60, 80, 40);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 300;
+const sc = TERRAIN_W * SCALE;
+sun.shadow.camera.left = -sc;
+sun.shadow.camera.right = sc;
+sun.shadow.camera.top = sc;
+sun.shadow.camera.bottom = -sc;
+scene.add(sun);
+scene.add(new THREE.DirectionalLight(0x88aacc, 0.4).translateX(-40).translateY(30));
+// --- Sky ---
+const skyGeo = new THREE.SphereGeometry(2000, 32, 32);
+const skyMat = new THREE.ShaderMaterial({{{{
+  side: THREE.BackSide,
+  uniforms: {{{{
+    topColor: {{{{ value: new THREE.Color(0x0044aa) }}}},
+    bottomColor: {{{{ value: new THREE.Color(0xccddee) }}}},
+  }}}},
+  vertexShader: `varying vec3 vWP; void main(){{{{ vWP=(modelMatrix*vec4(position,1.0)).xyz; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }}}}`,
+  fragmentShader: `uniform vec3 topColor,bottomColor; varying vec3 vWP;
+    void main(){{{{ float h=normalize(vWP+20.0).y; gl_FragColor=vec4(mix(bottomColor,topColor,max(pow(max(h,0.0),0.4),0.0)),1.0); }}}}`
+}}}});
+scene.add(new THREE.Mesh(skyGeo, skyMat));
+
+// --- Terrain (GPU-displaced) ---
+const terrainGeo = new THREE.PlaneGeometry(
+  TERRAIN_W * SCALE, TERRAIN_H * SCALE, 1024, 1024
+);
+terrainGeo.rotateX(-Math.PI / 2);
+
+const heightmapTex = new THREE.TextureLoader().load(OVERLAY_BASE + '/heightmap_guna.png');
+heightmapTex.minFilter = THREE.LinearFilter;
+heightmapTex.magFilter = THREE.LinearFilter;
+
+const lulcTex = new THREE.TextureLoader().load(OVERLAY_BASE + '/lulc.png');
+
+let terrainMat;
+try {{{{
+terrainMat = new THREE.ShaderMaterial({{{{
+  uniforms: {{{{
+    heightmap: {{{{ value: heightmapTex }}}},
+    lulcMap: {{{{ value: lulcTex }}}},
+    elevRange: {{{{ value: new THREE.Vector2(ELEV[0], ELEV[1]) }}}},
+    exaggeration: {{{{ value: EXAG * 0.01 }}}},
+    sunDir: {{{{ value: new THREE.Vector3(0.5, 0.8, 0.3).normalize() }}}},
+  }}}},
+  vertexShader: `
+    uniform sampler2D heightmap;
+    uniform vec2 elevRange;
+    uniform float exaggeration;
+    varying vec2 vUv;
+    varying vec3 vNormal;
+    varying vec3 vWorldPos;
+
+    void main() {{{{
+      vUv = uv;
+      float h = texture2D(heightmap, uv).r;
+      float elev = mix(elevRange.x, elevRange.y, h) * exaggeration;
+      vec3 pos = position;
+      pos.y = elev;
+
+      float texel = 1.0 / 1024.0;
+      float hL = texture2D(heightmap, uv + vec2(-texel, 0.0)).r;
+      float hR = texture2D(heightmap, uv + vec2( texel, 0.0)).r;
+      float hD = texture2D(heightmap, uv + vec2(0.0, -texel)).r;
+      float hU = texture2D(heightmap, uv + vec2(0.0,  texel)).r;
+      vec3 n = normalize(vec3(hL - hR, 2.0 * texel / exaggeration, hD - hU));
+      vNormal = normalMatrix * n;
+
+      vWorldPos = (modelMatrix * vec4(pos, 1.0)).xyz;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+    }}}}
+  `,
+  fragmentShader: `
+    uniform sampler2D lulcMap;
+    uniform vec3 sunDir;
+    varying vec2 vUv;
+    varying vec3 vNormal;
+    varying vec3 vWorldPos;
+
+    void main() {{{{
+      vec3 lulcColor = texture2D(lulcMap, vUv).rgb;
+      vec3 baseColor = mix(lulcColor, vec3(0.3, 0.35, 0.15), 0.3);
+
+      float diff = max(dot(normalize(vNormal), sunDir), 0.0);
+      float ambient = 0.35;
+      vec3 lit = baseColor * (ambient + diff * 0.65);
+
+      gl_FragColor = vec4(lit, 1.0);
+    }}}}
+  `
+}}}});
+}}}} catch(e) {{{{
+  console.warn('Terrain shader failed, using Lambert fallback:', e);
+  terrainMat = new THREE.MeshLambertMaterial({{{{ color: 0x3d6b2e }}}});
+}}}}
+
+const terrain = new THREE.Mesh(terrainGeo, terrainMat);
+terrain.receiveShadow = true;
+scene.add(terrain);
+
+// --- Instanced Trees ---
+const SPECIES_COLORS = {{{{
+  teak: 0x2d5a27, tendu: 0x5a6e30, mahua: 0x4a7c3f,
+  bamboo: 0x7ab356, shrub: 0x8b7d3c,
+}}}};
+
+const trunkGeo = new THREE.CylinderGeometry(0.08, 0.15, 1.5, 5);
+const canopyGeo = new THREE.DodecahedronGeometry(1.0, 1);
+const trunkMat = new THREE.MeshStandardMaterial({{{{ color: 0x5c3a1e, roughness: 0.9 }}}});
+const canopyMat = new THREE.MeshStandardMaterial({{{{ color: 0x3d6b2e, roughness: 0.8 }}}});
+
+const TREES = CONFIG.trees;
+const treeCount = TREES.length;
+const trunkMesh = new THREE.InstancedMesh(trunkGeo, trunkMat, treeCount);
+const canopyMesh = new THREE.InstancedMesh(canopyGeo, canopyMat, treeCount);
+trunkMesh.castShadow = true;
+canopyMesh.castShadow = true;
+
+const _d = new THREE.Object3D();
+for (let i = 0; i < treeCount; i++) {{{{
+  const t = TREES[i];
+  const wPos = geoToWorld(t.lon, t.lat);
+  const s = t.height || 1.0;
+
+  _d.position.set(wPos.x, wPos.y + 0.75 * s, wPos.z);
+  _d.scale.set(s, s, s);
+  _d.rotation.y = Math.random() * Math.PI * 2;
+  _d.updateMatrix();
+  trunkMesh.setMatrixAt(i, _d.matrix);
+
+  _d.position.y = wPos.y + 2.0 * s;
+  _d.scale.set(s * (0.8 + Math.random() * 0.4), s * (0.7 + Math.random() * 0.5), s * (0.8 + Math.random() * 0.4));
+  _d.updateMatrix();
+  canopyMesh.setMatrixAt(i, _d.matrix);
+
+  const col = new THREE.Color(SPECIES_COLORS[t.species] || 0x3d6b2e);
+  canopyMesh.setColorAt(i, col);
+}}}}
+
+scene.add(trunkMesh);
+scene.add(canopyMesh);
+
+// --- Fire Particles ---
+const activeFires = FIRES.active;
+let _fireShader = null;
+let _fireGlows = null;
+
+if (activeFires.length > 0) {{{{
+  const FIRE_COUNT = Math.min(activeFires.length * 200, 800);
+  const SMOKE_COUNT = Math.min(activeFires.length * 80, 300);
+
+  const fireShader = new THREE.ShaderMaterial({{{{
+    transparent: true, depthWrite: false,
+    blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+    uniforms: {{{{ uTime: {{{{ value: 0 }}}} }}}},
+    vertexShader: `
+      attribute float aLife, aSpeed, aSize, aBaseY;
+      uniform float uTime;
+      varying float vLife;
+      void main() {{{{
+        float life = fract(aLife + uTime * aSpeed * 0.3);
+        vLife = life;
+        vec3 pos = position;
+        pos.y = aBaseY + life * 5.0;
+        vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
+        gl_Position = projectionMatrix * mvPos;
+        gl_PointSize = aSize * (1.0 - life * 0.6) * 80.0 / -mvPos.z;
+      }}}}
+    `,
+    fragmentShader: `
+      varying float vLife;
+      void main() {{{{
+        float d = length(gl_PointCoord - 0.5) * 2.0;
+        if (d > 1.0) discard;
+        float alpha = (1.0 - d) * (1.0 - vLife) * 0.9;
+        vec3 col = mix(vec3(1.0, 0.8, 0.2), vec3(0.8, 0.1, 0.0), vLife);
+        gl_FragColor = vec4(col, alpha);
+      }}}}
+    `
+  }}}});
+
+  const firePositions = new Float32Array(FIRE_COUNT * 3);
+  const fireLife = new Float32Array(FIRE_COUNT);
+  const fireSpeed = new Float32Array(FIRE_COUNT);
+  const fireSize = new Float32Array(FIRE_COUNT);
+  const fireBaseY = new Float32Array(FIRE_COUNT);
+
+  for (let i = 0; i < FIRE_COUNT; i++) {{{{
+    const fire = activeFires[i % activeFires.length];
+    const wp = geoToWorld(fire.lon, fire.lat);
+    const spread = (fire.frp || 5) * 0.05;
+    firePositions[i*3]   = wp.x + (Math.random()-0.5) * spread;
+    firePositions[i*3+1] = wp.y;
+    firePositions[i*3+2] = wp.z + (Math.random()-0.5) * spread;
+    fireLife[i] = Math.random();
+    fireSpeed[i] = 0.5 + Math.random() * 1.5;
+    fireSize[i] = 0.3 + Math.random() * 0.8;
+    fireBaseY[i] = wp.y;
+  }}}}
+
+  const fireGeo = new THREE.BufferGeometry();
+  fireGeo.setAttribute('position', new THREE.BufferAttribute(firePositions, 3));
+  fireGeo.setAttribute('aLife', new THREE.BufferAttribute(fireLife, 1));
+  fireGeo.setAttribute('aSpeed', new THREE.BufferAttribute(fireSpeed, 1));
+  fireGeo.setAttribute('aSize', new THREE.BufferAttribute(fireSize, 1));
+  fireGeo.setAttribute('aBaseY', new THREE.BufferAttribute(fireBaseY, 1));
+
+  const firePoints = new THREE.Points(fireGeo, fireShader);
+  scene.add(firePoints);
+
+  const fireGlows = activeFires.map(f => {{{{
+    const wp = geoToWorld(f.lon, f.lat);
+    const light = new THREE.PointLight(0xff4400, 15, 30);
+    light.position.set(wp.x, wp.y + 3, wp.z);
+    scene.add(light);
+    return light;
+  }}}});
+
+  const smokePositions = new Float32Array(SMOKE_COUNT * 3);
+  for (let i = 0; i < SMOKE_COUNT; i++) {{{{
+    const fire = activeFires[i % activeFires.length];
+    const wp = geoToWorld(fire.lon, fire.lat);
+    smokePositions[i*3]   = wp.x + (Math.random()-0.5) * 2;
+    smokePositions[i*3+1] = wp.y + 3 + Math.random() * 15;
+    smokePositions[i*3+2] = wp.z + (Math.random()-0.5) * 2;
+  }}}}
+
+  const smokeGeo = new THREE.BufferGeometry();
+  smokeGeo.setAttribute('position', new THREE.BufferAttribute(smokePositions, 3));
+  const smokeMat = new THREE.PointsMaterial({{{{
+    color: 0x555555, size: 2.5, transparent: true,
+    opacity: 0.2, depthWrite: false, sizeAttenuation: true,
+  }}}});
+  scene.add(new THREE.Points(smokeGeo, smokeMat));
+
+  _fireShader = fireShader;
+  _fireGlows = fireGlows;
+}}}}
+
+// --- Compartment Boundaries ---
+const boundaryGroup = new THREE.Group();
+const bMat = new THREE.LineBasicMaterial({{{{ color: 0x4ade80, opacity: 0.35, transparent: true }}}});
+
+CONFIG.boundaries.forEach((b, idx) => {{{{
+  const pts = b.coords.map(c => {{{{
+    const wp = geoToWorld(c[0], c[1]);
+    return new THREE.Vector3(wp.x, wp.y + 0.2, wp.z);
+  }}}});
+  if (pts.length < 3) return;
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const line = new THREE.Line(geo, bMat);
+  line.userData = {{{{ idx, beat: b.beat, range: b.range, lulc: b.lulc }}}};
+  boundaryGroup.add(line);
+}}}});
+scene.add(boundaryGroup);
+
+// --- Raycasting for Info Panel ---
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+canvas.addEventListener('mousemove', (e) => {{{{
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(boundaryGroup.children);
+
+  if (hits.length > 0) {{{{
+    const d = hits[0].object.userData;
+    document.getElementById('info-title').textContent = d.beat + ' (' + d.range + ')';
+    document.getElementById('info-body').textContent =
+      'Tree: ' + d.lulc.tree + '% · Shrub: ' + d.lulc.shrub + '% · Grass: ' + d.lulc.grass + '%';
+  }}}}
+}}}});
+
+// --- Overlay Groups ---
+const overlayGroups = {{{{ spread: new THREE.Group(), risk: new THREE.Group(), firms: new THREE.Group() }}}};
+Object.values(overlayGroups).forEach(g => {{{{ g.visible = false; scene.add(g); }}}});
+
+// FIRMS History dots
+if (FIRES.firms_history && FIRES.firms_history.length > 0) {{{{
+  const fhCount = FIRES.firms_history.length;
+  const fhGeo = new THREE.BufferGeometry();
+  const fhPos = new Float32Array(fhCount * 3);
+  const fhCol = new Float32Array(fhCount * 3);
+  const now = Date.now();
+
+  FIRES.firms_history.forEach((f, i) => {{{{
+    const wp = geoToWorld(f.lon, f.lat);
+    fhPos[i*3] = wp.x; fhPos[i*3+1] = wp.y + 0.5; fhPos[i*3+2] = wp.z;
+    const age = (now - new Date(f.date).getTime()) / (365 * 86400000);
+    const c = new THREE.Color().setHSL(0, 1.0 - age * 0.8, 0.5);
+    fhCol[i*3] = c.r; fhCol[i*3+1] = c.g; fhCol[i*3+2] = c.b;
+  }}}});
+
+  fhGeo.setAttribute('position', new THREE.BufferAttribute(fhPos, 3));
+  fhGeo.setAttribute('color', new THREE.BufferAttribute(fhCol, 3));
+  overlayGroups.firms.add(new THREE.Points(fhGeo,
+    new THREE.PointsMaterial({{{{ size: 1.5, vertexColors: true, sizeAttenuation: true, transparent: true, opacity: 0.8 }}}})));
+}}}}
+
+// ABM Risk Heatmap
+if (FIRES.abm_hotspots && FIRES.abm_hotspots.length > 0) {{{{
+  FIRES.abm_hotspots.forEach(h => {{{{
+    const wp = geoToWorld(h.longitude, h.latitude);
+    const cellGeo = new THREE.PlaneGeometry(1.5, 1.5);
+    cellGeo.rotateX(-Math.PI / 2);
+    const prob = h.probability || 0.1;
+    const c = new THREE.Color().setHSL(0.1 - prob * 0.1, 1, 0.5);
+    const mat = new THREE.MeshBasicMaterial({{{{ color: c, transparent: true, opacity: prob * 2, side: THREE.DoubleSide }}}});
+    const cell = new THREE.Mesh(cellGeo, mat);
+    cell.position.set(wp.x, wp.y + 0.3, wp.z);
+    overlayGroups.risk.add(cell);
+  }}}});
+}}}}
+
+// Spread Sim (concentric rings)
+if (activeFires.length > 0) {{{{
+  activeFires.forEach(f => {{{{
+    const wp = geoToWorld(f.lon, f.lat);
+    const ros = (f.ros || 5) * 0.001;
+    for (let r = 1; r <= 3; r++) {{{{
+      const ringGeo = new THREE.RingGeometry(r * ros * 30, r * ros * 30 + 0.1, 32);
+      ringGeo.rotateX(-Math.PI / 2);
+      const mat = new THREE.MeshBasicMaterial({{{{
+        color: 0xff4400, transparent: true, opacity: 0.4 / r, side: THREE.DoubleSide
+      }}}});
+      const ring = new THREE.Mesh(ringGeo, mat);
+      ring.position.set(wp.x, wp.y + 0.3, wp.z);
+      overlayGroups.spread.add(ring);
+    }}}}
+  }}}});
+}}}}
+
+// --- Overlay toggle ---
+let activeOverlay = 'fires';
+window.setOverlay = function(name, btn) {{{{
+  activeOverlay = name;
+  document.querySelectorAll('#overlay-btns .obtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  overlayGroups.spread.visible = (name === 'spread');
+  overlayGroups.risk.visible = (name === 'risk');
+  overlayGroups.firms.visible = (name === 'firms');
+}}}};
+
+// --- Dithering Post-Process ---
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+
+let ditherEnabled = true;
+const DitherShader = {{{{
+  uniforms: {{{{
+    tDiffuse: {{{{ value: null }}}},
+    resolution: {{{{ value: new THREE.Vector2(canvas.clientWidth, canvas.clientHeight) }}}},
+    ditherScale: {{{{ value: 4.0 }}}},
+    colorLevels: {{{{ value: 16.0 }}}},
+    enabled: {{{{ value: 1.0 }}}},
+  }}}},
+  vertexShader: `varying vec2 vUv; void main(){{{{ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }}}}`,
+  fragmentShader: `
+    uniform sampler2D tDiffuse;
+    uniform vec2 resolution;
+    uniform float ditherScale, colorLevels, enabled;
+    varying vec2 vUv;
+
+    float bayer8(vec2 p) {{{{
+      ivec2 ip = ivec2(mod(p, 8.0));
+      int b[64] = int[64](
+        0,32,8,40,2,34,10,42, 48,16,56,24,50,18,58,26,
+        12,44,4,36,14,46,6,38, 60,28,52,20,62,30,54,22,
+        3,35,11,43,1,33,9,41, 51,19,59,27,49,17,57,25,
+        15,47,7,39,13,45,5,37, 63,31,55,23,61,29,53,21
+      );
+      return float(b[ip.y*8+ip.x]) / 63.0;
+    }}}}
+
+    void main() {{{{
+      vec4 color = texture2D(tDiffuse, vUv);
+      if (enabled < 0.5) {{{{ gl_FragColor = color; return; }}}}
+      vec2 pc = vUv * resolution / ditherScale;
+      float d = bayer8(pc);
+      vec3 c = floor(color.rgb * (colorLevels - 1.0) + d) / (colorLevels - 1.0);
+      gl_FragColor = vec4(c, 1.0);
+    }}}}
+  `
+}}}};
+
+let ditherPass;
+try {{{{
+  ditherPass = new ShaderPass(DitherShader);
+  composer.addPass(ditherPass);
+}}}} catch(e) {{{{
+  console.warn('Dither shader failed, using fallback:', e);
+  ditherEnabled = false;
+}}}}
+
+window.toggleDither = function(btn) {{{{
+  if (!ditherPass) return;
+  ditherEnabled = !ditherEnabled;
+  ditherPass.uniforms.enabled.value = ditherEnabled ? 1.0 : 0.0;
+  btn.classList.toggle('active');
+  btn.textContent = ditherEnabled ? '⬡ Dithered' : '◻ Realistic';
+}}}};
+
+// --- Animation ---
+const clock = new THREE.Clock();
+let fc = 0, lastFT = 0;
+
+function animate() {{{{
+  requestAnimationFrame(animate);
+  controls.update();
+
+  if (_fireShader) {{{{
+    _fireShader.uniforms.uTime.value = clock.getElapsedTime();
+  }}}}
+  if (_fireGlows) {{{{
+    const t = clock.getElapsedTime();
+    _fireGlows.forEach((l, i) => {{{{
+      l.intensity = 12 + Math.sin(t * 8 + i * 2) * 5;
+    }}}});
+  }}}}
+
+  composer.render();
+
+  fc++;
+  const t = clock.getElapsedTime();
+  if (t - lastFT > 0.5) {{{{
+    document.getElementById('fps').textContent = Math.round(fc / (t - lastFT));
+    fc = 0; lastFT = t;
+  }}}}
+}}}}
+animate();
+
+window.addEventListener('resize', () => {{{{
+  camera.aspect = canvas.clientWidth / canvas.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  composer.setSize(canvas.clientWidth, canvas.clientHeight);
+  if (ditherPass) ditherPass.uniforms.resolution.value.set(canvas.clientWidth, canvas.clientHeight);
+}}}});
+</script>
+</body></html>"""
+
+    st.components.v1.html(twin_html, height=820)
+
+    # Quick stats row
+    _n_fires = _latest_alert.get("fires_detected", 0)
+    _fwi = _latest_alert.get("fwi", {}).get("value", 0)
+    _fwi_class = _latest_alert.get("fwi", {}).get("danger_class", "N/A")
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Compartments", len(_twin_cfg.get("boundaries", [])))
+    c2.metric("Trees", f"{len(_twin_cfg.get('trees', [])):,}")
+    c3.metric("Active Fires", _n_fires)
+    c4.metric("FWI", f"{_fwi:.1f} ({_fwi_class})")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TAB 1: Live Alert (includes NRT Hotspot Feed)
