@@ -97,9 +97,11 @@ def generate_heightmap(
 
     with rasterio.open(dem_path) as src:
         pixel_size = abs(src.transform.a)
-        assert pixel_size < 0.01, (
-            f"Expected degree-based CRS, got pixel size {pixel_size}"
-        )
+        if pixel_size >= 0.01:
+            raise ValueError(
+                f"DEM appears to be in a projected CRS (pixel_size={pixel_size:.4f}). "
+                "Expected a geographic CRS with degree units."
+            )
 
         window = from_bounds(
             bounds["west"],
@@ -114,7 +116,7 @@ def generate_heightmap(
     dem_norm, dem_min, dem_max = _normalize_dem(dem, nodata=nodata_val)
 
     img = Image.fromarray(dem_norm)
-    img = img.resize((size, size), Image.BILINEAR)
+    img = img.resize((size, size), Image.Resampling.BILINEAR)
 
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     img.save(output_path)
@@ -202,8 +204,8 @@ def generate_trees(
         terrain_data = json.load(f)
 
     tree_pcts: list[float] = []
-    for idx in range(len(gdf)):
-        lulc = lulc_data.get(str(idx), {})
+    for pos in range(len(gdf)):
+        lulc = lulc_data.get(str(pos), {})
         tree_pcts.append(lulc.get("tree", 0))
 
     total_pct = sum(p for p in tree_pcts if p > 15)
@@ -211,8 +213,8 @@ def generate_trees(
         return []
 
     all_trees: list[dict] = []
-    for idx, row in gdf.iterrows():
-        pct = tree_pcts[idx]
+    for pos, (_df_idx, row) in enumerate(gdf.iterrows()):
+        pct = tree_pcts[pos]
         if pct <= 15:
             continue
 
@@ -228,9 +230,9 @@ def generate_trees(
 
         points = _poisson_disk_sample(geom, min_dist_deg, n_trees)
 
-        terrain = terrain_data.get(str(idx), {})
+        terrain = terrain_data.get(str(pos), {})
         elev = terrain.get("elev", 450)
-        lulc = lulc_data.get(str(idx), {})
+        lulc = lulc_data.get(str(pos), {})
         has_shrub = lulc.get("shrub", 0) > 10
 
         for lon, lat in points:
@@ -268,18 +270,20 @@ def generate_boundaries(
         lulc_data = json.load(f)
 
     boundaries: list[dict] = []
-    for idx, row in gdf.iterrows():
+    for pos, (_df_idx, row) in enumerate(gdf.iterrows()):
         geom = row.geometry
         if geom.geom_type == "MultiPolygon":
             geom = max(geom.geoms, key=lambda g: g.area)
 
         simplified = geom.simplify(tolerance, preserve_topology=True)
+        if simplified.is_empty or simplified.geom_type != "Polygon":
+            continue
         coords = [
             [round(c[0], 5), round(c[1], 5)] for c in simplified.exterior.coords
         ]
 
-        lulc = lulc_data.get(str(idx), {})
-        beat_name = row.get("BEAT", f"Compartment-{idx}")
+        lulc = lulc_data.get(str(pos), {})
+        beat_name = row.get("BEAT", f"Compartment-{pos}")
         range_name = row.get("RANGE", "Unknown")
 
         boundaries.append(
@@ -312,7 +316,7 @@ def generate_config(
 
     config = {
         "terrain": {
-            "heightmap": "heightmap_guna.png",
+            "heightmap": Path(heightmap_output_path).name,
             "bounds": heightmap_meta["bounds"],
             "elevation_range": [heightmap_meta["dem_min"], heightmap_meta["dem_max"]],
             "vertical_exaggeration": 2.5,
