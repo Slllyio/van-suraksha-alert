@@ -37,3 +37,14 @@ lint:  ## Run linting
 clean:  ## Remove temporary files and caches
 	rm -rf tmp/ cache/ __pycache__/ .pytest_cache/
 	find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+
+offline-setup:  ## Download PMTiles basemap + assets for offline maps
+	python scripts/download_basemap.py
+	python scripts/download_basemap_assets.py
+	python scripts/build_pmtiles_overlays.py
+
+offline-up:  ## Start offline AI services (Qdrant + Ollama)
+	docker compose --profile ai up -d
+
+offline-ingest:  ## Pull models and ingest fire knowledge into vector DB
+	python scripts/setup_offline.py

@@ -247,6 +247,40 @@ pipeline:
     # Run DDL migrations before ingesting GeoJSON
     run_migrations: true
 
+# ── Offline capabilities (PMTiles basemaps + Local RAG) ────────────────────────
+offline:
+  pmtiles_dir: "data/tiles/pmtiles"
+  basemap_assets_dir: "data/tiles/basemap-assets"
+  qdrant_url: "http://localhost:6333"
+  ollama_url: "http://localhost:11434"
+  embed_model: "nomic-embed-text:v1.5"
+  chat_model: "llama3.2:3b"
+  chunk_size: 5100
+  chunk_overlap: 450
+
+# ── Fire Physics Engine Constants ────────────────────────────────────────────
+# Single source of truth for all fire behaviour calculations.
+# All modules import from src/analysis/fire_physics.py which reads this section.
+fire_physics:
+  fuel_load_kg_m2: 0.35            # 3.5 t/ha, Indian dry deciduous (Reddy et al. 2019: 2-5 t/ha)
+  heat_of_combustion_kj_kg: 18000  # kJ/kg (standard for deciduous litter)
+  frp_to_intensity_factor: 75.0    # kW/m per MW (Wooster et al. 2005)
+  rothermel_a: 0.069               # deciduous litter a-parameter
+  emission_factor_pm25: 0.012      # kg PM2.5 per MW (Kaiser et al. 2012 GFAS)
+  plume_height_coeff: 20.0         # Sofiev (2012): H = coeff * FRP^exponent
+  plume_height_exponent: 0.4
+  max_pm25_ug_m3: 2000.0           # Physical cap — dense wildfire smoke rarely exceeds this
+  land_cover_ros_multipliers:
+    forest: 1.0       # ESA class 10 — baseline
+    shrubland: 1.5     # ESA class 20
+    grassland: 2.5     # ESA class 30 — grass fires spread faster
+    cropland: 1.5      # ESA class 40
+    built_up: 0.0      # ESA class 50 — non-burnable
+    barren: 0.3        # ESA class 60
+    water: 0.0         # ESA class 80 — non-burnable
+    wetland: 0.5       # ESA class 90
+  burn_calibration_ratio: 0.6      # Fraction of spread area that burns (literature: 40-80%)
+
 notifications:
   enabled: true
   # Uncomment and set your webhook URLs:

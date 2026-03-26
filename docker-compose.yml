@@ -93,11 +93,16 @@ services:
       <<: *db-env
       VS_SLACK_WEBHOOK: ${VS_SLACK_WEBHOOK:-}
       WORKERS: ${WORKERS:-2}
+      VS_QDRANT_URL: ${VS_QDRANT_URL:-http://qdrant:6333}
+      VS_OLLAMA_URL: ${VS_OLLAMA_URL:-http://ollama:11434}
+      VS_PMTILES_DIR: ${VS_PMTILES_DIR:-/app/data/tiles/pmtiles}
+      VS_BASEMAP_ASSETS_DIR: ${VS_BASEMAP_ASSETS_DIR:-/app/data/tiles/basemap-assets}
     ports:
       - "${VS_API_PORT:-8000}:8000"
     volumes:
       - ./config.yaml:/app/config.yaml:ro
       - ./outputs:/app/outputs:ro          # read-only: API never writes outputs
+      - ./data/tiles:/app/data/tiles:ro    # PMTiles basemaps + overlays
     entrypoint:
       - uvicorn
       - src.api.api:app
@@ -174,6 +179,47 @@ services:
       retries: 3
       start_period: 30s
 
+  # ── Qdrant Vector Database (opt-in: --profile ai) ─────────
+  qdrant:
+    image: qdrant/qdrant:v1.12.1
+    container_name: vansuraksha-qdrant
+    restart: unless-stopped
+    profiles: ["ai"]
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:6333/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ── Ollama LLM Server (opt-in: --profile ai) ────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: vansuraksha-ollama
+    restart: unless-stopped
+    profiles: ["ai"]
+    environment:
+      OLLAMA_NUM_GPU: ${OLLAMA_NUM_GPU:-0}      # 0 = CPU only (default for field laptops)
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:11434/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
 volumes:
   pgdata:
+    driver: local
+  qdrant_data:
+    driver: local
+  ollama_data:
     driver: local

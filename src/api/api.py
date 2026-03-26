@@ -26,9 +26,10 @@ from datetime import datetime, date
 from pathlib import Path
 from typing import AsyncGenerator, Generator, Optional
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Query
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import psycopg
 import yaml
@@ -57,6 +58,11 @@ DB_DSN = (
     f"user={_db.get('user', 'postgres')} "
     f"password={_db_password}"
 )
+
+# ── Offline config ────────────────────────────────────────────────────────────
+_offline = _cfg.get("offline", {}) if '_cfg' in dir() else {}
+PMTILES_DIR = Path(os.environ.get("VS_PMTILES_DIR", _offline.get("pmtiles_dir", "data/tiles/pmtiles")))
+BASEMAP_ASSETS_DIR = Path(os.environ.get("VS_BASEMAP_ASSETS_DIR", _offline.get("basemap_assets_dir", "data/tiles/basemap-assets")))
 
 # API key for write endpoints (labels). Set via VS_API_KEY env var.
 _API_KEY = os.environ.get("VS_API_KEY", "")
@@ -631,3 +637,184 @@ def latest_alert_snapshot():
     if latest.exists():
         return json.loads(latest.read_text(encoding="utf-8"))
     return {"status": "no_alerts", "message": "No alerts generated yet"}
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# PMTiles — Offline basemap serving
+# ═════════════════════════════════════════════════════════════════════════════
+
+# Mount static files for PMTiles, fonts, and sprites (supports HTTP Range requests)
+if PMTILES_DIR.exists():
+    app.mount(
+        "/maps/pmtiles",
+        StaticFiles(directory=str(PMTILES_DIR)),
+        name="pmtiles",
+    )
+    log.info("Mounted PMTiles directory: %s", PMTILES_DIR)
+
+_fonts_dir = BASEMAP_ASSETS_DIR / "fonts"
+if _fonts_dir.exists():
+    app.mount("/maps/fonts", StaticFiles(directory=str(_fonts_dir)), name="map-fonts")
+
+_sprites_dir = BASEMAP_ASSETS_DIR / "sprites"
+if _sprites_dir.exists():
+    app.mount("/maps/sprites", StaticFiles(directory=str(_sprites_dir)), name="map-sprites")
+
+
+@app.get("/api/maps/style")
+def map_style(request: Request):
+    """
+    Generate MapLibre style JSON from discovered PMTiles files.
+
+    Scans the pmtiles directory for .pmtiles files and builds a
+    MapLibre style with pmtiles:// protocol source URLs.
+    """
+    base_url = str(request.base_url).rstrip("/")
+    sources = {}
+    layers = []
+
+    if PMTILES_DIR.exists():
+        for pmt in sorted(PMTILES_DIR.glob("*.pmtiles")):
+            name = pmt.stem
+            pmtiles_url = f"pmtiles://{base_url}/maps/pmtiles/{pmt.name}"
+
+            # Detect if this is a basemap or overlay
+            is_basemap = "india" in name or "planet" in name or "guna" in name.replace("_", "")
+
+            if is_basemap:
+                sources[name] = {
+                    "type": "vector",
+                    "url": pmtiles_url,
+                    "attribution": "Protomaps | OSM",
+                }
+                # Add basic basemap layers
+                layers.extend([
+                    {
+                        "id": f"{name}-background",
+                        "type": "background",
+                        "paint": {"background-color": "#0b0f1a"},
+                    },
+                    {
+                        "id": f"{name}-water",
+                        "type": "fill",
+                        "source": name,
+                        "source-layer": "water",
+                        "paint": {"fill-color": "#1a2742"},
+                        "filter": ["==", "$type", "Polygon"],
+                    },
+                    {
+                        "id": f"{name}-landuse",
+                        "type": "fill",
+                        "source": name,
+                        "source-layer": "landuse",
+                        "paint": {"fill-color": "#0f1520", "fill-opacity": 0.5},
+                    },
+                    {
+                        "id": f"{name}-roads",
+                        "type": "line",
+                        "source": name,
+                        "source-layer": "roads",
+                        "paint": {"line-color": "#1e293b", "line-width": 0.8},
+                    },
+                    {
+                        "id": f"{name}-labels",
+                        "type": "symbol",
+                        "source": name,
+                        "source-layer": "places",
+                        "layout": {
+                            "text-field": ["get", "name"],
+                            "text-size": 11,
+                            "text-font": ["Noto Sans Regular"],
+                        },
+                        "paint": {"text-color": "#94a3b8", "text-halo-color": "#0b0f1a", "text-halo-width": 1},
+                    },
+                ])
+            else:
+                # Overlay (beats, ranges, division)
+                sources[name] = {
+                    "type": "vector",
+                    "url": pmtiles_url,
+                }
+                color = {
+                    "beats": "rgba(34, 197, 94, 0.4)",
+                    "ranges": "rgba(168, 85, 247, 0.3)",
+                    "division": "rgba(249, 115, 22, 0.5)",
+                }.get(name, "rgba(255, 255, 255, 0.3)")
+
+                layers.append({
+                    "id": f"{name}-outline",
+                    "type": "line",
+                    "source": name,
+                    "source-layer": name,
+                    "paint": {"line-color": color, "line-width": 1.5},
+                })
+
+    # Build font/sprite URLs
+    glyphs = f"{base_url}/maps/fonts/{{fontstack}}/{{range}}.pbf"
+    sprite = f"{base_url}/maps/sprites/dark"
+
+    style = {
+        "version": 8,
+        "name": "JvalaNetra Offline",
+        "sources": sources,
+        "layers": layers,
+        "glyphs": glyphs if _fonts_dir.exists() else "",
+        "sprite": sprite if _sprites_dir.exists() else "",
+    }
+
+    return style
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Chat — Local RAG + Gemini + data-driven fallback
+# ═════════════════════════════════════════════════════════════════════════════
+
+class ChatRequest(BaseModel):
+    query: str
+    model: str = ""
+    stream: bool = True
+
+
+@app.post("/api/chat")
+async def chat_endpoint(req: ChatRequest):
+    """
+    AI chat endpoint with SSE streaming.
+
+    Priority chain:
+      1. Local RAG (Qdrant + Ollama) — if available
+      2. Gemini API — if configured
+      3. Data-driven fallback — always works
+
+    Streaming: data: {content}\\n\\n ... data: [DONE]\\n\\n
+    Non-streaming: {"response": "..."}
+    """
+    from src.analysis.forest_chat import ForestChatEngine
+
+    chat_engine = ForestChatEngine()
+
+    if req.stream:
+        async def generate():
+            try:
+                for token in chat_engine.ask_stream(req.query, model=req.model):
+                    yield f"data: {json.dumps({'content': token})}\n\n"
+            except Exception as e:
+                log.error("Chat stream error: %s", e)
+                yield f"data: {json.dumps({'content': f'Error: {e}'})}\n\n"
+            yield "data: [DONE]\n\n"
+
+        return StreamingResponse(
+            generate(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            },
+        )
+    else:
+        try:
+            response = chat_engine.ask(req.query)
+            return {"response": response}
+        except Exception as e:
+            log.error("Chat error: %s", e)
+            raise HTTPException(500, f"Chat failed: {e}")

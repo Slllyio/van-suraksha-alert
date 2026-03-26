@@ -2,8 +2,11 @@
 VanAagni 'Chat With Your Forest' (RAG Engine)
 ============================================
 Natural Language Interface for the Forest Command Horizon.
-Uses Google Gemini with real fire/FWI data context to answer questions.
-Falls back to data-driven responses when API is unavailable.
+
+Priority chain:
+  1. Local RAG (Qdrant + Ollama) — offline, private, fast
+  2. Google Gemini — cloud LLM with real data context
+  3. Data-driven fallback — always works, no LLM needed
 """
 
 import os
@@ -12,7 +15,7 @@ import logging
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Generator, Optional
 
 from src.analysis import gemini_service
 
@@ -22,11 +25,28 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 DATA_LAKE = ROOT / "data_lake"
 
 
+def _get_local_rag():
+    """Lazy import and init of LocalRAGEngine (avoids import errors if deps missing)."""
+    try:
+        from src.analysis.local_rag import LocalRAGEngine
+        return LocalRAGEngine()
+    except Exception as e:
+        log.debug("Local RAG not available: %s", e)
+        return None
+
+
 class ForestChatEngine:
     def __init__(self):
+        self._local_rag = _get_local_rag()
+        self._local_rag_available = (
+            self._local_rag is not None and self._local_rag.is_available()
+        )
         self._gemini_available = gemini_service.is_available()
         self._context = self._build_data_context()
-        if self._gemini_available:
+
+        if self._local_rag_available:
+            log.info("Forest Chat: Local RAG (Qdrant + Ollama) active")
+        elif self._gemini_available:
             log.info("Forest Chat: Gemini API active with real data RAG")
         else:
             log.info("Forest Chat: Using data-driven responses (no LLM)")
@@ -132,17 +152,58 @@ class ForestChatEngine:
         return "\n".join(parts)
 
     def ask(self, user_query: str) -> str:
-        """Answer a user question using Gemini + real data context."""
+        """
+        Answer a user question. Priority: Local RAG -> Gemini -> data-driven.
+        """
         log.info(f"Forest Chat processing: {user_query}")
 
-        # Try Gemini first
+        # Priority 1: Local RAG (Qdrant + Ollama)
+        if self._local_rag_available:
+            try:
+                result = self._local_rag.chat(user_query)
+                if result and len(result) > 10:
+                    return result
+            except Exception as e:
+                log.warning("Local RAG chat failed: %s", e)
+
+        # Priority 2: Gemini
         if self._gemini_available:
             result = self._ask_gemini(user_query)
             if result:
                 return result
 
-        # Fallback to data-driven responses
+        # Priority 3: Data-driven fallback
         return self._ask_data_driven(user_query)
+
+    def ask_stream(self, user_query: str, model: str = "") -> Generator[str, None, None]:
+        """
+        Streaming answer generator. Priority: Local RAG -> Gemini -> data-driven.
+
+        Yields tokens one at a time for SSE consumption.
+        """
+        log.info(f"Forest Chat streaming: {user_query}")
+
+        # Priority 1: Local RAG streaming
+        if self._local_rag_available:
+            try:
+                yielded = False
+                for token in self._local_rag.chat_stream(user_query, model=model):
+                    yielded = True
+                    yield token
+                if yielded:
+                    return
+            except Exception as e:
+                log.warning("Local RAG stream failed: %s", e)
+
+        # Priority 2: Gemini (non-streaming, yield as single chunk)
+        if self._gemini_available:
+            result = self._ask_gemini(user_query)
+            if result:
+                yield result
+                return
+
+        # Priority 3: Data-driven fallback (single chunk)
+        yield self._ask_data_driven(user_query)
 
     def _ask_gemini(self, query: str) -> Optional[str]:
         """Use Gemini with real data RAG context."""

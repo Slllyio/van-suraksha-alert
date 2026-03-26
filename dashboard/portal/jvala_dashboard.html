@@ -13,6 +13,31 @@
   <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
   <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
 
+  <!-- PMTiles Protocol — local first, CDN fallback -->
+  <script>
+    (function () {
+      function loadPMTiles(src) {
+        return new Promise(function (resolve, reject) {
+          var s = document.createElement('script');
+          s.src = src; s.onload = resolve; s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
+      // Try local pmtiles.js first, then CDN
+      window._pmtilesReady = loadPMTiles('/static/pmtiles.js').catch(function () {
+        return loadPMTiles('https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js');
+      }).then(function () {
+        if (typeof pmtiles !== 'undefined' && typeof maplibregl !== 'undefined') {
+          var protocol = new pmtiles.Protocol();
+          maplibregl.addProtocol('pmtiles', protocol.tile);
+          console.log('PMTiles protocol registered');
+        }
+      }).catch(function (e) {
+        console.warn('PMTiles protocol not available:', e);
+      });
+    })();
+  </script>
+
   <!-- Google Fonts -->
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
@@ -194,6 +219,105 @@
     .sched-dot.not {
       background: #64748b;
     }
+
+    /* ─── AI Chat Panel ────────────────────────────────────────────────── */
+    #chat-panel {
+      border-top: 1px solid var(--border);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      max-height: 320px;
+    }
+
+    #chat-panel.collapsed #chat-body { display: none; }
+
+    #chat-toggle {
+      background: none;
+      border: none;
+      color: var(--accent-2);
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      text-align: left;
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #chat-toggle .chevron {
+      transition: transform 0.2s;
+      font-size: 10px;
+    }
+
+    #chat-panel:not(.collapsed) #chat-toggle .chevron { transform: rotate(90deg); }
+
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      margin: 8px 0;
+      max-height: 200px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .chat-msg {
+      margin-bottom: 8px;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+
+    .chat-msg.user {
+      background: rgba(249, 115, 22, 0.12);
+      border: 1px solid rgba(249, 115, 22, 0.2);
+      text-align: right;
+    }
+
+    .chat-msg.assistant {
+      background: rgba(34, 211, 238, 0.08);
+      border: 1px solid rgba(34, 211, 238, 0.15);
+    }
+
+    .chat-msg.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: var(--red);
+      font-size: 11px;
+    }
+
+    #chat-input-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    #chat-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 12px;
+      outline: none;
+    }
+
+    #chat-input:focus { border-color: var(--accent-2); }
+
+    #chat-send {
+      background: var(--accent-2);
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      color: #0b0f1a;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    #chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* ─── Sidebar ─────────────────────────────────────────────────────── */
     #sidebar {
@@ -649,6 +773,21 @@
     <div class="sidebar-section">
       <h2>Beat Risk Status</h2>
       <div id="beat-list"><!-- Beat cards injected by JS --></div>
+    </div>
+
+    <!-- AI Chat Panel -->
+    <div id="chat-panel" class="collapsed">
+      <button id="chat-toggle" onclick="toggleChat()">
+        <span class="chevron">&#9654;</span> AI ASSISTANT
+      </button>
+      <div id="chat-body">
+        <div id="chat-messages"></div>
+        <div id="chat-input-row">
+          <input id="chat-input" type="text" placeholder="Ask about fire risk..." autocomplete="off"
+            onkeydown="if(event.key==='Enter')sendChat()" />
+          <button id="chat-send" onclick="sendChat()">Send</button>
+        </div>
+      </div>
     </div>
   </aside>
 
@@ -1678,34 +1817,31 @@
       });
     }
 
-    // Init MapLibre
-    safe(function () {
+    // CartoDB fallback style (always available online)
+    var _cartoStyle = {
+      version: 8,
+      sources: {
+        carto: {
+          type: 'raster', tileSize: 256,
+          tiles: ['https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'],
+          attribution: '\u00A9 CartoDB \u00A9 OSM'
+        }
+      },
+      layers: [{ id: 'carto', type: 'raster', source: 'carto' }]
+    };
+
+    // Init MapLibre — try PMTiles style first, fallback to CartoDB
+    function _initMap(style) {
       window._jvMap = new maplibregl.Map({
         container: 'map',
-        style: {
-          version: 8,
-          sources: {
-            carto: {
-              type: 'raster', tileSize: 256,
-              tiles: ['https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png'],
-              attribution: '\u00A9 CartoDB \u00A9 OSM'
-            }
-          },
-          layers: [{ id: 'carto', type: 'raster', source: 'carto' }]
-        },
+        style: style,
         center: [77.28, 24.65], zoom: 10, attributionControl: false
       });
-    }, null);
+    }
 
-    if (!window._jvMap) {
-      safe(function () {
-        var el = document.getElementById('map');
-        if (el) {
-          el.style.cssText = 'display:flex;align-items:center;justify-content:center;background:#0b0f1a;color:#64748b;font-size:13px;text-align:center;';
-          el.innerHTML = '<div>\uD83D\uDDFA Map unavailable<br><small>CDN offline \u2014 beat data in sidebar</small></div>';
-        }
-      });
-    } else {
+    // Post-init: wire up deck overlay, shapefile, risk grid after map is created
+    function _onMapCreated() {
+      if (!window._jvMap) return;
       window._jvMap.on('move', function () {
         if (!deckOverlay) return;
         safe(function () {
@@ -1720,12 +1856,9 @@
       });
 
       window._jvMap.on('load', function () {
-        // 1. Load the Guna Division shapefile
         safe(function () { loadShapefile(); });
-        // 2. Load Zenith Phase 14/15 Risk Grid
         safe(function () { loadZenithRiskGrid(); });
 
-        // 2. Add deck.Deck canvas for scatter/CFL layers
         var canvas = document.createElement('canvas');
         canvas.id = 'deck-canvas';
         canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;';
@@ -1756,6 +1889,41 @@
         setTimeout(rebuildDeckLayers, 1400);
       });
     }
+
+    safe(function () {
+      // Wait for PMTiles protocol, then try local style
+      var pmReady = window._pmtilesReady || Promise.resolve();
+      pmReady.then(function () {
+        return fetch('/api/maps/style').then(function (r) { return r.json(); });
+      }).then(function (pmStyle) {
+        if (pmStyle && pmStyle.sources && Object.keys(pmStyle.sources).length > 0) {
+          console.log('Using PMTiles offline style');
+          _initMap(pmStyle);
+        } else {
+          _initMap(_cartoStyle);
+        }
+      }).catch(function () {
+        console.log('PMTiles style unavailable, using CartoDB');
+        _initMap(_cartoStyle);
+      }).finally(function () {
+        _onMapCreated();
+      });
+    }, function () {
+      try { _initMap(_cartoStyle); _onMapCreated(); } catch (e) { console.error('Map init failed:', e); }
+    });
+
+    // Fallback message if map never initializes (checked after timeout)
+    setTimeout(function () {
+      if (!window._jvMap) {
+        safe(function () {
+          var el = document.getElementById('map');
+          if (el) {
+            el.style.cssText = 'display:flex;align-items:center;justify-content:center;background:#0b0f1a;color:#64748b;font-size:13px;text-align:center;';
+            el.innerHTML = '<div>\uD83D\uDDFA Map unavailable<br><small>CDN offline \u2014 beat data in sidebar</small></div>';
+          }
+        });
+      }
+    }, 5000);
 
     // ── Bootstrap ─────────────────────────────────────────────────────────
     fetchData();
@@ -2116,6 +2284,77 @@
         // Value annotation
         '<text x="' + (px + 8) + '" y="' + (py - 6) + '" fill="#f97316" font-size="9" font-weight="bold">P=' + (prec * 100).toFixed(1) + '% R=' + (rec * 100).toFixed(1) + '%</text>' +
         '</svg>';
+    }
+
+    // ── AI Chat Panel ─────────────────────────────────────────────────────
+    function toggleChat() {
+      var panel = document.getElementById('chat-panel');
+      panel.classList.toggle('collapsed');
+    }
+
+    function appendChatMsg(role, text) {
+      var msgs = document.getElementById('chat-messages');
+      var div = document.createElement('div');
+      div.className = 'chat-msg ' + role;
+      div.textContent = text;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+      return div;
+    }
+
+    function sendChat() {
+      var input = document.getElementById('chat-input');
+      var query = input.value.trim();
+      if (!query) return;
+
+      input.value = '';
+      appendChatMsg('user', query);
+      var btn = document.getElementById('chat-send');
+      btn.disabled = true;
+
+      var apiBase = window.location.port === '8501' ? 'http://localhost:8000' : '';
+      var assistantDiv = appendChatMsg('assistant', '');
+
+      fetch(apiBase + '/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: query, stream: true })
+      }).then(function (response) {
+        if (!response.ok) throw new Error('Chat unavailable (HTTP ' + response.status + ')');
+        var reader = response.body.getReader();
+        var decoder = new TextDecoder();
+        var buffer = '';
+
+        function pump() {
+          return reader.read().then(function (result) {
+            if (result.done) { btn.disabled = false; return; }
+            buffer += decoder.decode(result.value, { stream: true });
+
+            var lines = buffer.split('\n');
+            buffer = lines.pop(); // Keep incomplete line in buffer
+
+            for (var i = 0; i < lines.length; i++) {
+              var line = lines[i].trim();
+              if (!line.startsWith('data: ')) continue;
+              var payload = line.slice(6);
+              if (payload === '[DONE]') { btn.disabled = false; return; }
+              try {
+                var data = JSON.parse(payload);
+                if (data.content) assistantDiv.textContent += data.content;
+              } catch (e) { /* skip malformed chunks */ }
+            }
+            var msgs = document.getElementById('chat-messages');
+            msgs.scrollTop = msgs.scrollHeight;
+            return pump();
+          });
+        }
+
+        return pump();
+      }).catch(function (err) {
+        assistantDiv.remove();
+        appendChatMsg('error', 'Chat unavailable. Start: docker compose --profile ai up -d');
+        btn.disabled = false;
+      });
     }
 
   </script>
