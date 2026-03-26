@@ -919,12 +919,41 @@ const TERRAIN_W = B.east - B.west;
 const TERRAIN_H = B.north - B.south;
 const SCALE = 100;
 
+// --- Heightmap CPU Sampling (for placing objects on terrain) ---
+let _hmPixels = null, _hmW = 0, _hmH = 0;
+await new Promise((resolve) => {{
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {{
+    const cv = document.createElement('canvas');
+    cv.width = img.width; cv.height = img.height;
+    const ctx = cv.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const idata = ctx.getImageData(0, 0, img.width, img.height);
+    _hmPixels = idata.data; _hmW = img.width; _hmH = img.height;
+    resolve();
+  }};
+  img.onerror = () => resolve();
+  img.src = OVERLAY_BASE + '/heightmap_guna.png';
+}});
+
+function getTerrainY(lon, lat) {{
+  if (!_hmPixels) return 0;
+  const u = Math.min(Math.max((lon - B.west) / TERRAIN_W, 0), 1);
+  const v = Math.min(Math.max((lat - B.south) / TERRAIN_H, 0), 1);
+  const px = Math.min(Math.floor(u * _hmW), _hmW - 1);
+  const py = Math.min(Math.floor(v * _hmH), _hmH - 1);
+  const idx = (py * _hmW + px) * 4;
+  const h = _hmPixels[idx] / 255.0;
+  return (ELEV[0] + (ELEV[1] - ELEV[0]) * h) * EXAG * 0.01;
+}}
+
 // --- Coordinate Mapping: lon->X, lat->Z, elev->Y ---
 function geoToWorld(lon, lat, elev) {{
   const x = (lon - B.west) / TERRAIN_W * TERRAIN_W * SCALE - (TERRAIN_W * SCALE / 2);
   const z = -((lat - B.south) / TERRAIN_H * TERRAIN_H * SCALE - (TERRAIN_H * SCALE / 2));
   const y = elev !== undefined ?
-    ((elev - ELEV[0]) / (ELEV[1] - ELEV[0])) * (ELEV[1] - ELEV[0]) * EXAG * 0.01 : 0;
+    ((elev - ELEV[0]) / (ELEV[1] - ELEV[0])) * (ELEV[1] - ELEV[0]) * EXAG * 0.01 : getTerrainY(lon, lat);
   return new THREE.Vector3(x, y, z);
 }}
 
