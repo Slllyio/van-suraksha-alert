@@ -22,11 +22,11 @@ from datetime import datetime
 from collections import Counter
 
 # ─── Paths ───────────────────────────────────────────────────────────────────
-BASE          = Path(r"C:\Users\S.C.C\OneDrive\Desktop\JwalaNetra_Vanaagni_Operational_2026")
-JVALA_OUTPUTS = BASE / "jwalaNetra" / "outputs" / "jvala"
-FUSED_LATEST  = BASE / "outputs" / "fused" / "fused_latest.json"
-ALERT_LATEST  = BASE / "jwalaNetra_2" / "data_lake" / "alerts" / "latest_alert.json"
-DASHBOARD_DIR = BASE / "jwalaNetra_2" / "dashboard"
+ROOT          = Path(__file__).resolve().parent.parent.parent
+JVALA_OUTPUTS = ROOT / "outputs" / "checkpoints" / "outputs" / "jvala"
+FUSED_LATEST  = ROOT / "outputs" / "fused" / "fused_latest.json"
+ALERT_LATEST  = ROOT / "data_lake" / "alerts" / "latest_alert.json"
+DASHBOARD_DIR = ROOT / "dashboard"
 
 PORT  = 8790
 TODAY = datetime.now().strftime("%Y-%m-%d")
@@ -284,6 +284,8 @@ class DashboardHandler(SimpleHTTPRequestHandler):
             self._handle_beat_rakshak(qs)
         elif path == "/api/available-dates":
             self._handle_available_dates()
+        elif path == "/api/ignition-v17":
+            self._handle_ignition_v17(qs)
         else:
             super().do_GET()
 
@@ -309,6 +311,33 @@ class DashboardHandler(SimpleHTTPRequestHandler):
     def _handle_available_dates(self):
         dates = get_available_dates()
         self._send_json({"dates": dates, "today": TODAY})
+
+    def _handle_ignition_v17(self, qs):
+        """Return v17 ignition predictions (banded alerts) for a given date.
+
+        If `date` parameter matches the latest run, returns `ignition_risk_v17.json`.
+        Otherwise tries the dated copy `ignition_risk_v17_{date}.json`.
+        """
+        feed_dir = ROOT / "outputs" / "dashboard_feed"
+        date_str = qs.get("date", [None])[0]
+        candidate = None
+        if date_str:
+            dated = feed_dir / f"ignition_risk_v17_{date_str}.json"
+            if dated.exists():
+                candidate = dated
+        if candidate is None:
+            candidate = feed_dir / "ignition_risk_v17.json"
+        if not candidate.exists():
+            self._send_json({"error": "no v17 output available", "requested_date": date_str})
+            return
+        try:
+            payload = json.loads(candidate.read_text())
+        except Exception as e:
+            self._send_json({"error": str(e), "requested_date": date_str})
+            return
+        # Trim alerts_all_cells (42K rows) — dashboard only needs banded_alerts
+        payload.pop("alerts_all_cells", None)
+        self._send_json(payload)
 
     # ------------------------------------------------------------------
     def _send_json(self, payload):

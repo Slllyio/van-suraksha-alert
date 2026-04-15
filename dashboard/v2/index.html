@@ -276,6 +276,41 @@ async function init() {
     center: CONFIG.center, zoom: CONFIG.zoom, pitch: 0
   });
 
+  state.map.on('load', () => {
+    state.map.addSource('fires', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+    state.map.addLayer({
+      id: 'fire-layer', type: 'circle', source: 'fires',
+      paint: {
+        'circle-radius': 8, 'circle-color': '#f97316', 'circle-stroke-width': 2, 'circle-stroke-color': '#fff',
+        'circle-opacity': 0.8
+      }
+    });
+
+    // v17 ignition predictions (NEW layer, bands: CRITICAL/ALERT/WATCH)
+    state.map.addSource('ignition-v17', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+    state.map.addLayer({
+      id: 'ignition-v17-layer', type: 'circle', source: 'ignition-v17',
+      paint: {
+        'circle-radius': [
+          'match', ['get', 'band'],
+          'CRITICAL', 10, 'ALERT', 7, 'WATCH', 4, 3
+        ],
+        'circle-color': [
+          'match', ['get', 'band'],
+          'CRITICAL', '#dc2626', 'ALERT', '#ea580c', 'WATCH', '#facc15', '#9ca3af'
+        ],
+        'circle-opacity': [
+          'match', ['get', 'band'],
+          'CRITICAL', 0.85, 'ALERT', 0.65, 'WATCH', 0.4, 0.3
+        ],
+        'circle-stroke-width': 1, 'circle-stroke-color': '#1e293b'
+      }
+    });
+
+    fetchRealData();
+    fetchIgnitionV17();
+  });
+
   // 2. Initialize Cesium (3D Twin Mode)
   state.cesium = new Cesium.Viewer('cesiumContainer', {
     terrainProvider: Cesium.createWorldTerrain(),
@@ -285,6 +320,106 @@ async function init() {
 
   setupEvents();
   setTimeout(() => document.getElementById('loadingOverlay').classList.add('hidden'), 1000);
+}
+
+async function fetchRealData() {
+  try {
+    const res = await fetch(CONFIG.realDataUrl);
+    const data = await res.json();
+    updateUI(data);
+  } catch (err) {
+    console.error("Failed to fetch real data", err);
+  }
+}
+
+async function fetchIgnitionV17() {
+  try {
+    const res = await fetch('/api/ignition-v17');
+    const data = await res.json();
+    if (data.error) {
+      console.warn('v17 ignition:', data.error);
+      return;
+    }
+    const alerts = data.banded_alerts || [];
+    const features = alerts.map(a => ({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [a.lon, a.lat] },
+      properties: {
+        cell_id: a.cell_id,
+        band: a.band,
+        ignition_risk: a.ignition_risk,
+        rank: a.rank,
+        hawkes_n_recent_10km_7d: a.hawkes_n_recent_10km_7d,
+      }
+    }));
+    state.map.getSource('ignition-v17').setData({ type: 'FeatureCollection', features });
+    console.log(`v17 ignition: ${alerts.length} alerts loaded (model=${data.model})`);
+
+    // Hover tooltip
+    const popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
+    state.map.on('mouseenter', 'ignition-v17-layer', (e) => {
+      state.map.getCanvas().style.cursor = 'pointer';
+      const p = e.features[0].properties;
+      popup.setLngLat(e.lngLat)
+        .setHTML(`<div style="font-size:11px;color:#222;">
+            <b>${p.band}</b> — ${p.cell_id}<br>
+            Ignition risk: ${Number(p.ignition_risk).toFixed(3)}<br>
+            Rank: ${(Number(p.rank) * 100).toFixed(1)}%<br>
+            Recent 10km/7d: ${p.hawkes_n_recent_10km_7d}
+          </div>`)
+        .addTo(state.map);
+    });
+    state.map.on('mouseleave', 'ignition-v17-layer', () => {
+      state.map.getCanvas().style.cursor = '';
+      popup.remove();
+    });
+  } catch (err) {
+    console.error("Failed to fetch v17 ignition predictions", err);
+  }
+}
+
+function updateUI(data) {
+  // Update Threat Level
+  const threatEl = document.getElementById('threatLevel');
+  const sev = data.bulletin_severity || 'CLEAR';
+  threatEl.innerText = sev;
+  threatEl.className = 'threat-level ' + sev.toLowerCase();
+
+  // Update FWI
+  const fwi = data.division_fwi || { value: 0 };
+  const fwiFill = document.getElementById('fwiFill');
+  const fwiPct = Math.min(100, (fwi.value / 60) * 100);
+  fwiFill.style.width = fwiPct + '%';
+
+  // Update Alert Feed
+  const alertList = document.getElementById('alertList');
+  alertList.innerHTML = '';
+  
+  const beats = data.active_beats || [];
+  beats.forEach(beat => {
+    const card = document.createElement('div');
+    card.className = 'glass';
+    card.style.padding = '12px';
+    card.style.marginBottom = '8px';
+    card.style.borderLeft = `4px solid ${beat.fused_tier === 'CRITICAL' ? '#ef4444' : '#f97316'}`;
+    card.innerHTML = `
+      <div style="font-size:11px; color:#94a3b8; font-weight:600;">BEAT: ${beat.beat_id}</div>
+      <div style="font-size:14px; font-weight:700; margin:4px 0;">Tier: ${beat.fused_tier}</div>
+      <div style="font-size:12px; color:#64748b;">Risk Score: ${(beat.risk_score || 0).toFixed(2)}</div>
+    `;
+    card.onclick = () => {
+      state.map.flyTo({ center: [beat.centroid_lon, beat.centroid_lat], zoom: 13 });
+    };
+    alertList.appendChild(card);
+  });
+
+  // Update Map Markers
+  const features = beats.map(b => ({
+    type: 'Feature',
+    geometry: { type: 'Point', coordinates: [b.centroid_lon, b.centroid_lat] },
+    properties: { id: b.beat_id, tier: b.fused_tier }
+  }));
+  state.map.getSource('fires').setData({ type: 'FeatureCollection', features });
 }
 
 function setupEvents() {
@@ -349,7 +484,9 @@ function toggleTwinSimulation() {
         return;
     }
 
-    state.socket = new WebSocket("ws://" + window.location.hostname + ":8001/ws/simulate");
+    const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+    const wsHost = window.location.hostname || "localhost";
+    state.socket = new WebSocket(wsProtocol + wsHost + ":8001/ws/simulate");
     state.isSimulating = true;
     btn.innerText = "STOP SIM";
     btn.classList.add('active');
