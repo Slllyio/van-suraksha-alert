@@ -133,7 +133,19 @@ def select_pilot_pairs(n_per_class: int = 100, seed: int = 42) -> pd.DataFrame:
     ctrl_sample["class"] = "control"
     keep_cols = ["cell_id", "date", "class", "centroid_lat", "centroid_lon",
                  "division", "beat", "ignition_risk", "within_day_rank", "band"]
-    pairs = pd.concat([ig_sample[keep_cols], ctrl_sample[keep_cols]], ignore_index=True)
+
+    # Interleave matched pairs so partial completion still gives a balanced sample.
+    # Truncate to common length (in case ctrl_sample lost rows in matching).
+    n_pairs = min(len(ig_sample), len(ctrl_sample))
+    ig_part = ig_sample[keep_cols].iloc[:n_pairs].reset_index(drop=True)
+    ct_part = ctrl_sample[keep_cols].iloc[:n_pairs].reset_index(drop=True)
+    interleaved = []
+    for i in range(n_pairs):
+        interleaved.append(ig_part.iloc[i])
+        interleaved.append(ct_part.iloc[i])
+    pairs = pd.DataFrame(interleaved).reset_index(drop=True)
+    log.info("  Interleaved order: %d pairs (%d ignited + %d control alternating)",
+             n_pairs, n_pairs, n_pairs)
     return pairs
 
 
@@ -180,19 +192,73 @@ def _parse_score_json(content: str) -> dict:
         return {"score": -1, "confidence": 0.0, "evidence": f"parse_error: {e} || raw: {content[:200]}"}
 
 
-def score_chip_with_vlm(png_bytes: bytes) -> dict:
-    """Score a chip with whichever VLM credential is available.
+def score_chip_with_ollama(png_bytes: bytes, model: str = "llava:7b",
+                            temperature: float = 0.4,
+                            host: str = "http://127.0.0.1:11434") -> dict:
+    """Score a chip with a local Ollama vision model (no rate limits, no cost)."""
+    b64 = base64.b64encode(png_bytes).decode("ascii")
+    payload = {
+        "model": model,
+        "prompt": PROMPT,
+        "images": [b64],
+        "format": "json",
+        "stream": False,
+        "options": {
+            "temperature": temperature,
+            "num_predict": 256,
+            "seed": 42,
+        },
+    }
+    try:
+        r = requests.post(f"{host}/api/generate", json=payload, timeout=120)
+    except requests.RequestException as e:
+        return {"score": -1, "confidence": 0.0, "evidence": f"ollama_conn_error: {e}"}
+    if r.status_code >= 400:
+        return {"score": -1, "confidence": 0.0,
+                "evidence": f"ollama_http_{r.status_code}: {r.text[:200]}"}
+    raw = r.json().get("response", "")
+    return _parse_score_json(raw)
 
-    Priority: GOOGLE_API_KEY (Gemini 1.5 Flash) → OPENAI_API_KEY (gpt-4o-mini).
+
+def score_chip_with_vlm(png_bytes: bytes, backend: str = "ollama",
+                         ollama_model: str = "llava:7b",
+                         ollama_temperature: float = 0.4) -> dict:
+    """Score a chip via the chosen VLM backend.
+
+    backend: "ollama" (local, free, fast), "gemini" (Google API),
+             "openai" (OpenAI API), or "auto" (pick based on env/availability).
     """
+    if backend == "ollama":
+        return score_chip_with_ollama(png_bytes, model=ollama_model,
+                                       temperature=ollama_temperature)
+
     gemini_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     openai_key = os.environ.get("OPENAI_API_KEY")
 
+    if backend == "auto":
+        # Prefer ollama if daemon reachable; else gemini; else openai
+        try:
+            requests.get("http://127.0.0.1:11434/api/tags", timeout=2)
+            return score_chip_with_ollama(png_bytes, model=ollama_model,
+                                           temperature=ollama_temperature)
+        except requests.RequestException:
+            pass
+        if gemini_key:
+            backend = "gemini"
+        elif openai_key:
+            backend = "openai"
+        else:
+            return {"score": -1, "confidence": 0.0,
+                    "evidence": "auto: no backend available"}
+
     b64 = base64.b64encode(png_bytes).decode("ascii")
 
-    if gemini_key:
-        # Google Gemini 1.5 Flash (free tier: 15 RPM)
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
+    if backend == "gemini":
+        if not gemini_key:
+            return {"score": -1, "confidence": 0.0,
+                    "evidence": "gemini backend requested but GOOGLE_API_KEY not set"}
+        # Google Gemini 2.5 Flash
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_key}"
         payload = {
             "contents": [{
                 "parts": [
@@ -200,7 +266,21 @@ def score_chip_with_vlm(png_bytes: bytes) -> dict:
                     {"inline_data": {"mime_type": "image/png", "data": b64}},
                 ],
             }],
-            "generationConfig": {"temperature": 0.0, "maxOutputTokens": 200},
+            "generationConfig": {
+                "temperature": 0.0,
+                "maxOutputTokens": 1024,  # Gemini 2.5 burns thinking tokens; give headroom
+                "responseMimeType": "application/json",
+                "responseSchema": {
+                    "type": "OBJECT",
+                    "properties": {
+                        "score": {"type": "INTEGER"},
+                        "confidence": {"type": "NUMBER"},
+                        "evidence": {"type": "STRING"},
+                    },
+                    "required": ["score", "confidence", "evidence"],
+                },
+                "thinkingConfig": {"thinkingBudget": 0},  # disable chain-of-thought to save tokens
+            },
         }
         for attempt in range(4):
             r = requests.post(url, json=payload, timeout=60)
@@ -219,8 +299,12 @@ def score_chip_with_vlm(png_bytes: bytes) -> dict:
                 return {"score": -1, "confidence": 0.0, "evidence": f"gemini_parse_error: {e}"}
         return {"score": -1, "confidence": 0.0, "evidence": "gemini_rate_limit_persistent"}
 
+    if backend != "openai":
+        return {"score": -1, "confidence": 0.0,
+                "evidence": f"unknown backend: {backend}"}
     if not openai_key:
-        raise SystemExit("No VLM credentials found. Set GOOGLE_API_KEY (Gemini) or OPENAI_API_KEY.")
+        return {"score": -1, "confidence": 0.0,
+                "evidence": "openai backend requested but OPENAI_API_KEY not set"}
 
     # OpenAI GPT-4o-mini vision
     payload = {
@@ -257,19 +341,59 @@ def main() -> int:
     parser.add_argument("--n-pairs", type=int, default=100, help="Pairs per class (default 100 ign + 100 ctrl)")
     parser.add_argument("--skip-vlm", action="store_true", help="Only fetch chips, don't call VLM")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--backend", choices=["ollama", "gemini", "openai", "auto"],
+                        default="ollama", help="VLM backend (default: ollama, free local)")
+    parser.add_argument("--ollama-model", default="llava:7b",
+                        help="Ollama model name (default: llava:7b — verified vision-grounded)")
+    parser.add_argument("--ollama-temperature", type=float, default=0.4,
+                        help="Sampling temperature for ollama; 0 anchors to modal answer (default 0.4)")
+    parser.add_argument("--no-resume", action="store_true",
+                        help="Ignore existing parquet and re-score everything")
     args = parser.parse_args()
 
     CHIP_DIR.mkdir(parents=True, exist_ok=True)
 
     log.info("=== VLM PRECURSOR PILOT — Stage VLM.1 ===\n")
+    log.info("Backend: %s (model=%s)" if args.backend == "ollama" else "Backend: %s",
+             args.backend, args.ollama_model)
     pairs = select_pilot_pairs(n_per_class=args.n_pairs, seed=args.seed)
     log.info("Pilot set: %d cells (%d ignited + %d control)",
              len(pairs), (pairs["class"] == "ignited").sum(), (pairs["class"] == "control").sum())
 
+    # Resume: load existing parquet, build set of (cell_id, date_str, class, backend) keys
+    # already scored. Same backend + valid score → skip.
+    done_keys: set = set()
+    cached_rows: dict = {}  # key → row dict to copy through unchanged
+    if OUT_PATH.exists() and not args.no_resume:
+        prev = pd.read_parquet(OUT_PATH)
+        if "vlm_backend" not in prev.columns:
+            prev["vlm_backend"] = "unknown"
+        for _, prev_row in prev.iterrows():
+            score = prev_row.get("vlm_score")
+            backend_used = str(prev_row.get("vlm_backend", "unknown"))
+            if score is None or pd.isna(score) or score < 0:
+                continue
+            if backend_used != args.backend:
+                continue  # different backend, must rescore for consistency
+            key = (str(prev_row["cell_id"]),
+                   pd.Timestamp(prev_row["date"]).strftime("%Y-%m-%d"),
+                   str(prev_row["class"]))
+            done_keys.add(key)
+            cached_rows[key] = prev_row.to_dict()
+        log.info("Resume: %d rows already scored with backend=%s, will be skipped",
+                 len(done_keys), args.backend)
+
     log.info("\nFetching S2 chips + scoring with VLM (this is the slow part)...")
     rows = []
+    sleep_seconds = {"gemini": 7.0, "openai": 1.0, "ollama": 0.0, "auto": 1.0}[args.backend]
+    n_skipped_resume = 0
     for i, r in pairs.iterrows():
         date = pd.Timestamp(r["date"])
+        key = (str(r["cell_id"]), date.strftime("%Y-%m-%d"), str(r["class"]))
+        if key in done_keys:
+            rows.append(cached_rows[key])
+            n_skipped_resume += 1
+            continue
         chip_fname = CHIP_DIR / f"{r['class']}_{r['cell_id']}_{date.strftime('%Y%m%d')}.png"
         png = None
         if chip_fname.exists() and chip_fname.stat().st_size > 0:
@@ -281,33 +405,46 @@ def main() -> int:
         if png is None:
             log.warning("  [%d/%d] %s NO CHIP AVAILABLE", i + 1, len(pairs), r["cell_id"])
             rows.append({**r.to_dict(), "chip_available": False, "vlm_score": None,
-                         "vlm_confidence": None, "vlm_evidence": None, "chip_bytes": 0})
+                         "vlm_confidence": None, "vlm_evidence": None,
+                         "vlm_backend": args.backend, "chip_bytes": 0})
             continue
 
         if args.skip_vlm:
             rows.append({**r.to_dict(), "chip_available": True, "vlm_score": None,
-                         "vlm_confidence": None, "vlm_evidence": None, "chip_bytes": len(png)})
+                         "vlm_confidence": None, "vlm_evidence": None,
+                         "vlm_backend": args.backend, "chip_bytes": len(png)})
         else:
             try:
-                result = score_chip_with_vlm(png)
+                result = score_chip_with_vlm(
+                    png,
+                    backend=args.backend,
+                    ollama_model=args.ollama_model,
+                    ollama_temperature=args.ollama_temperature,
+                )
                 rows.append({**r.to_dict(), "chip_available": True,
                               "vlm_score": result["score"], "vlm_confidence": result["confidence"],
-                              "vlm_evidence": result["evidence"], "chip_bytes": len(png)})
+                              "vlm_evidence": result["evidence"],
+                              "vlm_backend": args.backend, "chip_bytes": len(png)})
             except Exception as e:
                 log.warning("  VLM error on %s: %s", r["cell_id"], e)
                 rows.append({**r.to_dict(), "chip_available": True, "vlm_score": -2,
-                              "vlm_confidence": 0, "vlm_evidence": f"error: {e}", "chip_bytes": len(png)})
+                              "vlm_confidence": 0, "vlm_evidence": f"error: {e}",
+                              "vlm_backend": args.backend, "chip_bytes": len(png)})
 
         if (i + 1) % 10 == 0:
-            log.info("  [%d/%d] processed (chips cached: %d)",
-                     i + 1, len(pairs), sum(r.get("chip_available", False) for r in rows))
-        # Rate-limit protection: 2s between calls
-        if not args.skip_vlm:
-            time.sleep(2.0)
+            valid = sum(1 for x in rows
+                        if isinstance(x, dict) and x.get("vlm_score") is not None
+                        and (x.get("vlm_score") or -1) >= 0)
+            log.info("  [%d/%d] processed (valid scores so far: %d, resumed: %d)",
+                     i + 1, len(pairs), valid, n_skipped_resume)
+        if not args.skip_vlm and sleep_seconds > 0:
+            time.sleep(sleep_seconds)
 
     df = pd.DataFrame(rows)
     df.to_parquet(OUT_PATH, index=False)
-    log.info("\nSaved: %s (%d rows)", OUT_PATH.relative_to(ROOT), len(df))
+    log.info("\nSaved: %s (%d rows; %d resumed, %d freshly scored)",
+             OUT_PATH.relative_to(ROOT), len(df), n_skipped_resume,
+             len(df) - n_skipped_resume)
 
     log.info("\n=== STAGE VLM.1 VERDICT ===")
     log.info("Chip availability: %d/%d (%.0f%%)",
