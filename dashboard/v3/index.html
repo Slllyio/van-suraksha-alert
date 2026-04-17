@@ -225,9 +225,10 @@ th{color:var(--t3);font-size:11px;font-weight:600;text-transform:uppercase;lette
       <button onclick="loadVIIRS()" style="width:100%;padding:8px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;margin-bottom:14px">Load Fires</button>
       <div class="side-label">VIIRS / MODIS Detections</div>
       <div class="risk-card alrt animate-in" style="border-color:var(--crit)">
-        <div class="rc-top"><span class="rc-count" id="viirs-total">0</span><span class="rc-label" style="color:var(--crit)">Fire Detections</span></div>
+        <div class="rc-top"><span class="rc-count" id="viirs-total">0</span><span class="rc-label" style="color:var(--crit)">Forest Fires</span></div>
         <div class="rc-sub" id="viirs-range">Select dates and click Load</div>
       </div>
+      <div class="rc-sub" id="viirs-clip-info" style="margin-bottom:8px;font-size:11px;color:var(--t3)"></div>
       <div class="side-label" style="margin-top:16px">Detections</div>
       <div id="viirs-list" style="font-size:12px;max-height:calc(100vh - 280px);overflow-y:auto"></div>
     </div>
@@ -602,7 +603,13 @@ function loadVIIRS() {
   else if (fromDate) url += '?from=' + fromDate;
   fetch(url).then(function(r){return r.json()}).then(function(data) {
     document.getElementById('viirs-total').textContent = data.n_fires;
-    document.getElementById('viirs-range').textContent = 'Latest: ' + (data.latest_date || data.date_range);
+    document.getElementById('viirs-range').textContent = data.date_range || data.latest_date;
+    var clipEl = document.getElementById('viirs-clip-info');
+    if (data.n_clipped > 0) {
+      clipEl.textContent = 'Clipped to forest beats: ' + data.n_clipped + ' non-forest fires removed (of ' + data.n_before_clip + ' total)';
+    } else {
+      clipEl.textContent = 'All detections within forest beats';
+    }
 
     // Fire list sidebar
     var list = document.getElementById('viirs-list');
@@ -617,9 +624,14 @@ function loadVIIRS() {
         if (viirsMap) viirsMap.flyTo({center:[f.lon, f.lat], zoom:12, duration:800});
       });
 
+      var beatInfo = document.createElement('div');
+      beatInfo.style.cssText = 'font-size:12px;font-weight:500;color:var(--t1)';
+      beatInfo.textContent = (f.beat || '') + (f.range ? ' / ' + f.range : '');
+      row.appendChild(beatInfo);
+
       var loc = document.createElement('div');
-      loc.style.cssText = 'font-family:JetBrains Mono,monospace;font-size:11px;color:var(--t2)';
-      loc.textContent = f.lat.toFixed(3) + ', ' + f.lon.toFixed(3);
+      loc.style.cssText = 'font-family:JetBrains Mono,monospace;font-size:10px;color:var(--t3)';
+      loc.textContent = f.lat.toFixed(3) + ', ' + f.lon.toFixed(3) + (f.division ? '  ' + f.division : '');
       row.appendChild(loc);
 
       var meta = document.createElement('div');
@@ -654,6 +666,21 @@ function loadVIIRS() {
       viirsMap.addControl(new maplibregl.NavigationControl(), 'top-right');
 
       viirsMap.on('load', function() {
+        // Load beat boundaries
+        fetch('/api/beats-boundary').then(function(r){return r.json()}).then(function(geo) {
+          if (!geo.error) {
+            viirsMap.addSource('beats', {type:'geojson', data:geo});
+            viirsMap.addLayer({
+              id:'beats-fill', type:'fill', source:'beats',
+              paint:{'fill-color':'#22c55e','fill-opacity':0.05}
+            });
+            viirsMap.addLayer({
+              id:'beats-line', type:'line', source:'beats',
+              paint:{'line-color':'#22c55e','line-opacity':0.25,'line-width':0.5},
+              minzoom:8
+            });
+          }
+        });
         addVIIRSLayer(fires);
       });
     } else {
@@ -668,7 +695,7 @@ function addVIIRSLayer(fires) {
     return {
       type: 'Feature',
       geometry: { type:'Point', coordinates:[f.lon, f.lat] },
-      properties: { confidence: f.confidence, brightness: f.brightness || 300, time: f.time, isHigh: isHigh }
+      properties: { confidence: f.confidence, brightness: f.brightness || 300, time: f.time, isHigh: isHigh, beat: f.beat||'', division: f.division||'', range: f.range||'' }
     };
   });
 
@@ -703,7 +730,7 @@ function addVIIRSLayer(fires) {
       var p = e.features[0].properties;
       var el = document.createElement('div');
       el.style.whiteSpace = 'pre';
-      el.textContent = 'VIIRS Fire Detection\nConfidence: ' + p.confidence + '\nBrightness: ' + (p.brightness ? Number(p.brightness).toFixed(0)+'K' : 'N/A') + '\nTime: ' + p.time;
+      el.textContent = 'VIIRS Fire Detection\nBeat: ' + (p.beat||'') + '\nDivision: ' + (p.division||'') + '\nConfidence: ' + p.confidence + '\nBrightness: ' + (p.brightness ? Number(p.brightness).toFixed(0)+'K' : 'N/A') + '\nTime: ' + p.time;
       popup.setLngLat(e.lngLat).setDOMContent(el).addTo(viirsMap);
     });
     viirsMap.on('mouseleave', 'viirs-dots', function() {

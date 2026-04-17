@@ -24,6 +24,8 @@ DASHBOARD_DIR = ROOT / "dashboard"
 FEED_DIR = ROOT / "outputs" / "dashboard_feed"
 ALERTS_DIR = ROOT / "data_lake" / "alerts"
 AUDITS_DIR = ROOT / "data_lake" / "audits"
+BEATS_GEOJSON = ROOT / "data" / "aoi" / "mp_beats_wgs84.geojson"
+BEATS_SHP = ROOT / "data" / "aoi" / "MP_Merge Divsion Beat Range" / "Mp_Beat_Merge.shp"
 
 PORT = 8790
 TODAY = datetime.now().strftime("%Y-%m-%d")
@@ -159,8 +161,45 @@ def _build_transparency() -> dict:
     }
 
 
+_BEAT_POLYGONS = None
+
+def _load_beat_polygons():
+    global _BEAT_POLYGONS
+    if _BEAT_POLYGONS is not None:
+        return _BEAT_POLYGONS
+    import geopandas as gpd
+    if BEATS_GEOJSON.exists():
+        _BEAT_POLYGONS = gpd.read_file(BEATS_GEOJSON)
+    elif BEATS_SHP.exists():
+        _BEAT_POLYGONS = gpd.read_file(BEATS_SHP).to_crs("EPSG:4326")
+    return _BEAT_POLYGONS
+
+
+def _clip_fires_to_forest(df: pd.DataFrame) -> pd.DataFrame:
+    """Spatial join fires to beat polygons — keep only fires inside forest beats."""
+    beats = _load_beat_polygons()
+    if beats is None or len(beats) == 0:
+        return df
+    import geopandas as gpd
+    from shapely.geometry import Point
+    gdf = gpd.GeoDataFrame(
+        df, geometry=[Point(lon, lat) for lat, lon in zip(df["latitude"], df["longitude"])],
+        crs="EPSG:4326",
+    )
+    joined = gpd.sjoin_nearest(
+        gdf, beats[["Division", "Range", "Beat", "geometry"]],
+        how="inner", max_distance=0.02, distance_col="_dist",
+    )
+    joined = joined.sort_values("_dist").drop_duplicates(
+        subset=["latitude", "longitude", "acq_date", "acq_time"], keep="first"
+    )
+    drop_cols = [c for c in ["geometry", "index_right", "_dist"] if c in joined.columns]
+    result = pd.DataFrame(joined.drop(columns=drop_cols))
+    return result
+
+
 def _build_viirs_fires(date_from: str | None = None, date_to: str | None = None) -> dict:
-    """Load VIIRS fire detections for a date range. Defaults to latest date only."""
+    """Load VIIRS fire detections clipped to MP forest beats."""
     fires = []
     nrt_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "nrt_7d.parquet"
     cons_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "firms_mp_consolidated.parquet"
@@ -193,8 +232,13 @@ def _build_viirs_fires(date_from: str | None = None, date_to: str | None = None)
     else:
         df = df[df["acq_date"] == latest_date]
 
+    n_before_clip = len(df)
+    df = _clip_fires_to_forest(df)
+    n_after_clip = len(df)
+
     keep_cols = ["latitude", "longitude", "acq_date", "acq_time",
-                 "confidence", "bright_ti4", "satellite", "source", "frp"]
+                 "confidence", "bright_ti4", "satellite", "source", "frp",
+                 "Division", "Range", "Beat"]
     available = [c for c in keep_cols if c in df.columns]
     df = df[available].head(5000)
 
@@ -209,14 +253,19 @@ def _build_viirs_fires(date_from: str | None = None, date_to: str | None = None)
             "brightness": float(r["bright_ti4"]) if "bright_ti4" in r and pd.notna(r["bright_ti4"]) else None,
             "satellite": str(r.get("satellite", "")),
             "source": str(r.get("source", "")),
+            "division": str(r.get("Division", "")),
+            "range": str(r.get("Range", "")),
+            "beat": str(r.get("Beat", "")),
         }
         records.append(rec)
 
-    date_min = str(df["acq_date"].min())[:10]
-    date_max = str(df["acq_date"].max())[:10]
+    date_min = str(df["acq_date"].min())[:10] if len(df) else ""
+    date_max = str(df["acq_date"].max())[:10] if len(df) else ""
     return {
         "fires": records,
         "n_fires": len(records),
+        "n_before_clip": n_before_clip,
+        "n_clipped": n_before_clip - n_after_clip,
         "date_range": f"{date_min} to {date_max}",
         "latest_date": str(latest_date)[:10],
     }
@@ -253,6 +302,11 @@ class PortalHandler(SimpleHTTPRequestHandler):
             self._send_json(_build_transparency())
         elif path == "/api/validation-log":
             self._send_json(_build_validation_log())
+        elif path == "/api/beats-boundary":
+            if BEATS_GEOJSON.exists():
+                self._serve_file(BEATS_GEOJSON, "application/json")
+            else:
+                self._send_json({"error": "beats geojson not found"})
         elif path == "/api/viirs-fires":
             date_from = qs.get("from", [None])[0]
             date_to = qs.get("to", [None])[0]
