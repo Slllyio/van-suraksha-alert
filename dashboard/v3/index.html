@@ -163,6 +163,7 @@ th{color:var(--t3);font-size:11px;font-weight:600;text-transform:uppercase;lette
     <button class="tab" onclick="switchTab('divisions',this)">Divisions</button>
     <button class="tab" onclick="switchTab('model',this)">Model Card</button>
     <button class="tab" onclick="switchTab('validation',this)">Validation</button>
+    <button class="tab" onclick="switchTab('viirs',this)">VIIRS Fires</button>
   </div>
   <div class="hdr-meta"><b>v17</b> Production<br><span id="pred-date"></span></div>
 </div>
@@ -212,6 +213,28 @@ th{color:var(--t3);font-size:11px;font-weight:600;text-transform:uppercase;lette
 
   <!-- TAB 4: VALIDATION -->
   <div id="pane-validation" class="pane"><div class="scroll-pane" id="val-content"></div></div>
+
+  <!-- TAB 5: VIIRS FIRES -->
+  <div id="pane-viirs" class="pane">
+    <div style="width:340px;background:var(--surface);border-right:1px solid var(--border);padding:16px;overflow-y:auto;flex-shrink:0">
+      <div class="side-label">Date Range</div>
+      <div style="display:flex;gap:6px;margin-bottom:12px">
+        <input type="date" id="viirs-from" style="flex:1;background:var(--raised);border:1px solid var(--border);color:var(--t1);padding:6px 8px;border-radius:6px;font-size:12px" value="2026-04-07">
+        <input type="date" id="viirs-to" style="flex:1;background:var(--raised);border:1px solid var(--border);color:var(--t1);padding:6px 8px;border-radius:6px;font-size:12px" value="2026-04-07">
+      </div>
+      <button onclick="loadVIIRS()" style="width:100%;padding:8px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;margin-bottom:14px">Load Fires</button>
+      <div class="side-label">VIIRS / MODIS Detections</div>
+      <div class="risk-card alrt animate-in" style="border-color:var(--crit)">
+        <div class="rc-top"><span class="rc-count" id="viirs-total">0</span><span class="rc-label" style="color:var(--crit)">Fire Detections</span></div>
+        <div class="rc-sub" id="viirs-range">Select dates and click Load</div>
+      </div>
+      <div class="side-label" style="margin-top:16px">Detections</div>
+      <div id="viirs-list" style="font-size:12px;max-height:calc(100vh - 280px);overflow-y:auto"></div>
+    </div>
+    <div style="flex:1;position:relative;min-height:0">
+      <div id="viirs-map" style="position:absolute;top:0;left:0;right:0;bottom:0"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -226,6 +249,7 @@ function switchTab(name, btn) {
   if (name === 'divisions') loadDivisions();
   if (name === 'model') loadModel();
   if (name === 'validation') loadValidation();
+  if (name === 'viirs') loadVIIRS();
 }
 
 document.getElementById('flyout-close').addEventListener('click', function() {
@@ -566,6 +590,127 @@ function loadValidation() {
     pb.textContent='Recall @ top-5%: Of all fires that occurred in the 7-day window, how many were in the top 5% patrol list? CRITICAL precision: Of cells flagged CRITICAL, how many had actual fires? Training baselines: R@5% = 47.4% (tiered) / 22.7% (strict). Field values may differ due to distribution shift.';
     c.appendChild(pb);
   });
+}
+
+// VIIRS FIRES
+var viirsMap = null;
+function loadVIIRS() {
+  var fromDate = document.getElementById('viirs-from').value;
+  var toDate = document.getElementById('viirs-to').value;
+  var url = '/api/viirs-fires';
+  if (fromDate && toDate) url += '?from=' + fromDate + '&to=' + toDate;
+  else if (fromDate) url += '?from=' + fromDate;
+  fetch(url).then(function(r){return r.json()}).then(function(data) {
+    document.getElementById('viirs-total').textContent = data.n_fires;
+    document.getElementById('viirs-range').textContent = 'Latest: ' + (data.latest_date || data.date_range);
+
+    // Fire list sidebar
+    var list = document.getElementById('viirs-list');
+    while (list.firstChild) list.removeChild(list.firstChild);
+    var fires = data.fires || [];
+    fires.slice(0, 100).forEach(function(f, i) {
+      var row = document.createElement('div');
+      row.style.cssText = 'padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer';
+      row.addEventListener('mouseenter', function() { row.style.background = 'var(--raised)'; });
+      row.addEventListener('mouseleave', function() { row.style.background = 'transparent'; });
+      row.addEventListener('click', function() {
+        if (viirsMap) viirsMap.flyTo({center:[f.lon, f.lat], zoom:12, duration:800});
+      });
+
+      var loc = document.createElement('div');
+      loc.style.cssText = 'font-family:JetBrains Mono,monospace;font-size:11px;color:var(--t2)';
+      loc.textContent = f.lat.toFixed(3) + ', ' + f.lon.toFixed(3);
+      row.appendChild(loc);
+
+      var meta = document.createElement('div');
+      meta.style.cssText = 'font-size:11px;color:var(--t3);display:flex;gap:8px;margin-top:2px';
+      var conf = document.createElement('span');
+      conf.textContent = f.confidence;
+      conf.style.color = f.confidence === 'high' || f.confidence === 'h' ? 'var(--crit)' : f.confidence === 'nominal' || f.confidence === 'n' ? 'var(--watch)' : 'var(--t3)';
+      meta.appendChild(conf);
+      if (f.brightness) {
+        var bri = document.createElement('span');
+        bri.textContent = f.brightness.toFixed(0) + 'K';
+        meta.appendChild(bri);
+      }
+      var time = document.createElement('span');
+      time.textContent = f.time;
+      meta.appendChild(time);
+      row.appendChild(meta);
+      list.appendChild(row);
+    });
+
+    // Init VIIRS map if needed
+    if (!viirsMap) {
+      viirsMap = new maplibregl.Map({
+        container: 'viirs-map',
+        style: {
+          version: 8,
+          sources: { osm: { type:'raster', tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'], tileSize:256 }},
+          layers: [{ id:'base', type:'raster', source:'osm', paint:{'raster-brightness-max':0.3,'raster-saturation':-0.8} }]
+        },
+        center: [78.5, 23.5], zoom: 6.2
+      });
+      viirsMap.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+      viirsMap.on('load', function() {
+        addVIIRSLayer(fires);
+      });
+    } else {
+      addVIIRSLayer(fires);
+    }
+  });
+}
+
+function addVIIRSLayer(fires) {
+  var features = fires.map(function(f) {
+    var isHigh = f.confidence === 'high' || f.confidence === 'h';
+    return {
+      type: 'Feature',
+      geometry: { type:'Point', coordinates:[f.lon, f.lat] },
+      properties: { confidence: f.confidence, brightness: f.brightness || 300, time: f.time, isHigh: isHigh }
+    };
+  });
+
+  var src = viirsMap.getSource('viirs-fires');
+  if (src) {
+    src.setData({ type:'FeatureCollection', features:features });
+  } else {
+    viirsMap.addSource('viirs-fires', { type:'geojson', data:{ type:'FeatureCollection', features:features }});
+    viirsMap.addLayer({
+      id: 'viirs-glow', type: 'circle', source: 'viirs-fires',
+      paint: {
+        'circle-radius': ['interpolate',['linear'],['zoom'], 5,8, 12,20],
+        'circle-color': '#ef4444',
+        'circle-opacity': 0.15,
+        'circle-blur': 1
+      }
+    });
+    viirsMap.addLayer({
+      id: 'viirs-dots', type: 'circle', source: 'viirs-fires',
+      paint: {
+        'circle-radius': ['interpolate',['linear'],['zoom'], 5,4, 12,10],
+        'circle-color': ['case', ['get','isHigh'], '#ef4444', '#f97316'],
+        'circle-opacity': 0.9,
+        'circle-stroke-width': 1.5,
+        'circle-stroke-color': 'rgba(255,255,255,0.3)'
+      }
+    });
+
+    var popup = new maplibregl.Popup({closeButton:false, closeOnClick:false, offset:10});
+    viirsMap.on('mouseenter', 'viirs-dots', function(e) {
+      viirsMap.getCanvas().style.cursor = 'pointer';
+      var p = e.features[0].properties;
+      var el = document.createElement('div');
+      el.style.whiteSpace = 'pre';
+      el.textContent = 'VIIRS Fire Detection\nConfidence: ' + p.confidence + '\nBrightness: ' + (p.brightness ? Number(p.brightness).toFixed(0)+'K' : 'N/A') + '\nTime: ' + p.time;
+      popup.setLngLat(e.lngLat).setDOMContent(el).addTo(viirsMap);
+    });
+    viirsMap.on('mouseleave', 'viirs-dots', function() {
+      viirsMap.getCanvas().style.cursor = '';
+      popup.remove();
+    });
+  }
 }
 
 initMap();

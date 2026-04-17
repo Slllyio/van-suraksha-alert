@@ -159,6 +159,69 @@ def _build_transparency() -> dict:
     }
 
 
+def _build_viirs_fires(date_from: str | None = None, date_to: str | None = None) -> dict:
+    """Load VIIRS fire detections for a date range. Defaults to latest date only."""
+    fires = []
+    nrt_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "nrt_7d.parquet"
+    cons_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "firms_mp_consolidated.parquet"
+
+    if nrt_path.exists():
+        nrt = pd.read_parquet(nrt_path)
+        nrt["acq_date"] = pd.to_datetime(nrt["acq_date"])
+        nrt["source"] = "NRT"
+        fires.append(nrt)
+
+    if cons_path.exists():
+        cons = pd.read_parquet(cons_path)
+        cons["acq_date"] = pd.to_datetime(cons["acq_date"])
+        fires.append(cons)
+
+    if not fires:
+        return {"fires": [], "n_fires": 0, "date_range": "", "latest_date": ""}
+
+    df = pd.concat(fires, ignore_index=True).drop_duplicates(
+        subset=["latitude", "longitude", "acq_date", "acq_time"], keep="first"
+    )
+    df = df.sort_values("acq_date", ascending=False)
+
+    latest_date = df["acq_date"].max()
+
+    if date_from and date_to:
+        df = df[(df["acq_date"] >= pd.Timestamp(date_from)) & (df["acq_date"] <= pd.Timestamp(date_to))]
+    elif date_from:
+        df = df[df["acq_date"] >= pd.Timestamp(date_from)]
+    else:
+        df = df[df["acq_date"] == latest_date]
+
+    keep_cols = ["latitude", "longitude", "acq_date", "acq_time",
+                 "confidence", "bright_ti4", "satellite", "source", "frp"]
+    available = [c for c in keep_cols if c in df.columns]
+    df = df[available].head(5000)
+
+    records = []
+    for _, r in df.iterrows():
+        rec = {
+            "lat": float(r["latitude"]),
+            "lon": float(r["longitude"]),
+            "date": str(r["acq_date"])[:10],
+            "time": str(r.get("acq_time", "")),
+            "confidence": str(r.get("confidence", "")),
+            "brightness": float(r["bright_ti4"]) if "bright_ti4" in r and pd.notna(r["bright_ti4"]) else None,
+            "satellite": str(r.get("satellite", "")),
+            "source": str(r.get("source", "")),
+        }
+        records.append(rec)
+
+    date_min = str(df["acq_date"].min())[:10]
+    date_max = str(df["acq_date"].max())[:10]
+    return {
+        "fires": records,
+        "n_fires": len(records),
+        "date_range": f"{date_min} to {date_max}",
+        "latest_date": str(latest_date)[:10],
+    }
+
+
 def _build_validation_log() -> dict:
     path = ALERTS_DIR / "v17_validation_rolling.parquet"
     if not path.exists():
@@ -190,6 +253,10 @@ class PortalHandler(SimpleHTTPRequestHandler):
             self._send_json(_build_transparency())
         elif path == "/api/validation-log":
             self._send_json(_build_validation_log())
+        elif path == "/api/viirs-fires":
+            date_from = qs.get("from", [None])[0]
+            date_to = qs.get("to", [None])[0]
+            self._send_json(_build_viirs_fires(date_from=date_from, date_to=date_to))
         else:
             super().do_GET()
 
