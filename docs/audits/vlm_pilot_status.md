@@ -1,9 +1,23 @@
-# VLM Precursor Pilot — BLOCKED on API credentials
+# VLM Precursor Pilot — COMPLETED: FAIL (2026-04-17)
 
-## Status (2026-04-16 11:32)
+## Final status
 
-**Pipeline built and validated end-to-end on chip fetching (free).**
-**VLM scoring step BLOCKED — OpenAI key returns `insufficient_quota` (account out of credit).**
+**Both VLM text scoring AND CLIP embedding classification FAIL on the same 200-cell matched-pair pilot. The visual-precursor hypothesis is DEAD at 30m Sentinel-2 resolution.**
+
+| Pilot | Method | Key metric | Verdict | Commit |
+|-------|--------|-----------|---------|--------|
+| VLM.1 | LLaVA-7b zero-shot (Ollama local) | MW p=0.74, delta=−0.29 | FAIL | `b8f7f78` |
+| CLIP | CLIP-ViT-L/14 embeddings + LR/LightGBM | 5-fold ROC=0.562, perm p=0.095 | FAIL | `bdd98bb` |
+
+**See:** `docs/audits/vlm_pilot_finding.md` (VLM detail), `docs/audits/clip_pilot_finding.md` (CLIP detail).
+
+**Decision:** v17 at R@5%=47.41% is accepted as production ceiling. Operational focus going forward.
+
+---
+
+## Historical: original block status (2026-04-16 11:32, resolved same day)
+
+Pipeline was initially blocked on API credentials. Resolved by pivoting to local Ollama with LLaVA-7b.
 
 ## What works
 
