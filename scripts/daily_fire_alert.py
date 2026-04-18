@@ -599,6 +599,12 @@ def main():
     if not args.skip_prediction:
         run_v17_ignition(target_date)
 
+    # Step 4.6: Decorate raw v17 with trust tiers + actions + budget caps + weather/calendar
+    if not args.skip_prediction:
+        run_step("Build Operational Alerts", [
+            PYTHON, "scripts/build_operational_alerts.py",
+        ], timeout=60)
+
     # Step 5: Build unified feed (detection + grid prediction + v17 ignition)
     print(f"\n{'='*60}")
     print(f"  STEP: Build Unified Alert Feed")

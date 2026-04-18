@@ -197,6 +197,7 @@ th{color:var(--t3);font-size:11px;font-weight:600;text-transform:uppercase;lette
       </div>
     </div>
     <div style="flex:1;position:relative;min-height:0">
+      <div id="ops-banner" style="position:absolute;top:8px;left:8px;right:380px;z-index:5;display:flex;gap:8px;pointer-events:none"></div>
       <div id="map"></div>
       <div class="flyout" id="flyout">
         <div class="flyout-close" id="flyout-close">&#x2715;</div>
@@ -383,7 +384,13 @@ function showFlyout(p) {
   while (body.firstChild) body.removeChild(body.firstChild);
 
   var hawkes = Number(p.hawkes_n_recent_10km_7d||0);
-  var trust = hawkes>=3?'HIGH':hawkes>=1?'MEDIUM':'LOW';
+  var rank = Number(p.rank||0);
+  // Server-aligned trust calibration
+  var trust, isCold;
+  if (rank>=0.99 && hawkes<=1) { trust='COLD_START'; isCold=true; }
+  else if (rank>=0.99 && hawkes>=3) { trust='HIGH'; isCold=false; }
+  else if (rank>=0.95) { trust='MEDIUM'; isCold=false; }
+  else { trust='LOW'; isCold=false; }
 
   // Header
   var h2 = document.createElement('h2'); h2.textContent = 'Cell Detail'; body.appendChild(h2);
@@ -424,19 +431,92 @@ function showFlyout(p) {
   var ac = document.createElement('div');
   if (trust==='HIGH') {
     ac.className='action-card dispatch';
-    var ah = document.createElement('h4'); ah.textContent='Dispatch Priority'; ac.appendChild(ah);
-    var ap = document.createElement('p'); ap.textContent='Active fire contagion detected nearby. High probability of spread to this cell. Recommend immediate ground patrol.'; ac.appendChild(ap);
+    var ah = document.createElement('h4'); ah.textContent='DISPATCH — Active Front'; ac.appendChild(ah);
+    var ap = document.createElement('p'); ap.textContent='Active fire contagion detected nearby (3+ fires within 10km in past 7 days). Dispatch 2-person patrol team to GPS within 2 hours.'; ac.appendChild(ap);
+  } else if (trust==='COLD_START') {
+    ac.className='action-card awareness';
+    ac.style.borderLeft='4px solid #f97316';
+    var ahc = document.createElement('h4'); ahc.textContent='VERIFY — Cold-Start Alert'; ac.appendChild(ahc);
+    var apc = document.createElement('p'); apc.textContent='High risk score but NO recent nearby fires (Hawkes_n=0). Model is uncertain here (historical precision ~6%). Phone VFPC/village for ground-truth before deploying team.'; ac.appendChild(apc);
   } else if (trust==='MEDIUM') {
     ac.className='action-card monitor';
-    var ah2 = document.createElement('h4'); ah2.textContent='Scheduled Patrol'; ac.appendChild(ah2);
-    var ap2 = document.createElement('p'); ap2.textContent='Some fire activity in the area. Schedule patrol within 24-48 hours. Monitor weather conditions for escalation.'; ac.appendChild(ap2);
+    var ah2 = document.createElement('h4'); ah2.textContent='PATROL — Intensify'; ac.appendChild(ah2);
+    var ap2 = document.createElement('p'); ap2.textContent='Moderate confidence. Schedule patrol within 24-48 hours. Brief beat guard and VFPC. Keep fire-line equipment in vehicle.'; ac.appendChild(ap2);
   } else {
     ac.className='action-card awareness';
-    var ah3 = document.createElement('h4'); ah3.textContent='Awareness Only'; ac.appendChild(ah3);
-    var ap3 = document.createElement('p'); ap3.textContent='No recent fires nearby. Alert is based on weather and vegetation conditions only. Low confidence \u2014 treat as background awareness, not dispatch.'; ac.appendChild(ap3);
+    var ah3 = document.createElement('h4'); ah3.textContent='AWARENESS'; ac.appendChild(ah3);
+    var ap3 = document.createElement('p'); ap3.textContent='Routine awareness. Log in dashboard. No deployment needed unless village reports come in.'; ac.appendChild(ap3);
   }
   body.appendChild(ac);
+
+  // Field feedback buttons
+  var fbSec = document.createElement('div'); fbSec.className='flyout-section';
+  var fbH = document.createElement('h3'); fbH.textContent='Field Response'; fbSec.appendChild(fbH);
+  var fbRow = document.createElement('div'); fbRow.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px';
+  [['confirmed','Fire confirmed','#ef4444'],
+   ['signs','Signs/smoke only','#f97316'],
+   ['clear','All clear','#22c55e'],
+   ['unreachable','Unreachable','#64748b']].forEach(function(opt){
+    var b = document.createElement('button');
+    b.textContent = opt[1];
+    b.style.cssText = 'padding:8px 4px;border:1px solid '+opt[2]+';background:transparent;color:'+opt[2]+
+                     ';border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;transition:all .2s';
+    b.onmouseover = function(){ b.style.background=opt[2]; b.style.color='#fff'; };
+    b.onmouseout  = function(){ b.style.background='transparent'; b.style.color=opt[2]; };
+    b.onclick = function(){ submitFieldResponse(p, opt[0], b); };
+    fbRow.appendChild(b);
+  });
+  fbSec.appendChild(fbRow);
+  var fbStatus = document.createElement('div');
+  fbStatus.id = 'fb-status';
+  fbStatus.style.cssText='font-size:11px;color:#94a3b8;min-height:14px';
+  fbSec.appendChild(fbStatus);
+  body.appendChild(fbSec);
+
   flyout.classList.add('open');
+}
+
+function submitFieldResponse(p, outcome, btn) {
+  var status = document.getElementById('fb-status');
+  status.textContent = 'Submitting...';
+  btn.disabled = true;
+  var staffId = localStorage.getItem('jn_staff_id');
+  if (!staffId) {
+    staffId = prompt('Enter your staff ID (e.g. RO-Dewas-42):') || 'anonymous';
+    localStorage.setItem('jn_staff_id', staffId);
+  }
+  var body = JSON.stringify({
+    cell_id: p.cell_id,
+    outcome: outcome,
+    staff_id: staffId,
+    band: p.band,
+    prediction_date: p.prediction_date || '',
+    trust_level: p.trust_level || '',
+    lat: Number(p.lat),
+    lon: Number(p.lon),
+    note: ''
+  });
+  fetch('/api/field-response', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: body
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(j){
+    if (j.status === 'ok') {
+      status.textContent = 'Logged ('+j.n_total_responses+' total responses). Thank you.';
+      status.style.color = '#22c55e';
+    } else {
+      status.textContent = 'Error: ' + (j.error || 'unknown');
+      status.style.color = '#ef4444';
+      btn.disabled = false;
+    }
+  })
+  .catch(function(e){
+    status.textContent = 'Network error. Try again.';
+    status.style.color = '#ef4444';
+    btn.disabled = false;
+  });
 }
 
 function addSection(parent, title, rows) {
@@ -741,6 +821,39 @@ function addVIIRSLayer(fires) {
 }
 
 initMap();
+loadOpsBanner();
+
+function loadOpsBanner() {
+  fetch('/api/operational-alerts').then(function(r){return r.json();}).then(function(data){
+    if (data.error) return;
+    var banner = document.getElementById('ops-banner');
+    banner.innerHTML = '';
+    var wx = data.weather_context || {};
+    var cal = data.calendar_context || {};
+    var counts = data.counts || {};
+    function chip(bg, fg, text) {
+      var d = document.createElement('div');
+      d.style.cssText = 'background:'+bg+';color:'+fg+';padding:8px 14px;border-radius:8px;'+
+                       'font-size:12px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.4);'+
+                       'backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);pointer-events:auto';
+      d.textContent = text;
+      return d;
+    }
+    if (wx.is_extreme) {
+      banner.appendChild(chip('rgba(239,68,68,.95)', '#fff',
+        'EXTREME WEATHER — FFMC ' + (wx.ffmc||0).toFixed(0) +
+        ' / RH ' + (wx.rh_pct||0).toFixed(0) + '% / ' + (wx.danger_class||'?')));
+    }
+    if (cal.events && cal.events.length) {
+      banner.appendChild(chip('rgba(251,191,36,.95)', '#1a1a1a',
+        'CALENDAR: ' + cal.events.join(' + ')));
+    }
+    if (counts.cold_start > 0) {
+      banner.appendChild(chip('rgba(30,41,59,.9)', '#fbbf24',
+        counts.cold_start + ' COLD-START alerts — verify before dispatch'));
+    }
+  }).catch(function(){});
+}
 </script>
 </body>
 </html>

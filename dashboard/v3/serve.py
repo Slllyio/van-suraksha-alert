@@ -10,7 +10,8 @@ Usage:
 from __future__ import annotations
 
 import json
-from collections import Counter, defaultdict
+import threading
+from collections import defaultdict
 from datetime import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
@@ -26,6 +27,10 @@ ALERTS_DIR = ROOT / "data_lake" / "alerts"
 AUDITS_DIR = ROOT / "data_lake" / "audits"
 BEATS_GEOJSON = ROOT / "data" / "aoi" / "mp_beats_wgs84.geojson"
 BEATS_SHP = ROOT / "data" / "aoi" / "MP_Merge Divsion Beat Range" / "Mp_Beat_Merge.shp"
+OPERATIONAL_ALERTS = FEED_DIR / "operational_alerts_v17.json"
+DIVISION_BRIEFINGS = FEED_DIR / "division_briefings.json"
+FIELD_RESPONSES = ALERTS_DIR / "field_responses.parquet"
+_RESPONSE_LOCK = threading.Lock()
 
 PORT = 8790
 TODAY = datetime.now().strftime("%Y-%m-%d")
@@ -271,6 +276,71 @@ def _build_viirs_fires(date_from: str | None = None, date_to: str | None = None)
     }
 
 
+def _load_operational_alerts(date_str: str | None = None) -> dict:
+    path = OPERATIONAL_ALERTS
+    if date_str:
+        dated = FEED_DIR / f"operational_alerts_v17_{date_str}.json"
+        if dated.exists():
+            path = dated
+    if not path.exists():
+        return {"error": "operational alerts not built yet — run "
+                "scripts/build_operational_alerts.py"}
+    return json.loads(path.read_text())
+
+
+def _load_division_briefings() -> dict:
+    if not DIVISION_BRIEFINGS.exists():
+        return {"error": "no briefings"}
+    return json.loads(DIVISION_BRIEFINGS.read_text())
+
+
+def _append_field_response(payload: dict) -> dict:
+    """Append a field-staff response to the rolling parquet, thread-safe."""
+    required = ("cell_id", "outcome", "staff_id")
+    for key in required:
+        if key not in payload:
+            return {"error": f"missing field: {key}"}
+    if payload["outcome"] not in ("confirmed", "signs", "clear", "unreachable"):
+        return {"error": "outcome must be one of: confirmed, signs, clear, unreachable"}
+
+    entry = {
+        "cell_id": str(payload["cell_id"]),
+        "outcome": str(payload["outcome"]),
+        "staff_id": str(payload["staff_id"]),
+        "timestamp_utc": datetime.utcnow().isoformat(),
+        "prediction_date": str(payload.get("prediction_date", "")),
+        "band": str(payload.get("band", "")),
+        "trust_level": str(payload.get("trust_level", "")),
+        "note": str(payload.get("note", ""))[:500],
+        "lat": float(payload["lat"]) if "lat" in payload else None,
+        "lon": float(payload["lon"]) if "lon" in payload else None,
+    }
+
+    with _RESPONSE_LOCK:
+        if FIELD_RESPONSES.exists():
+            existing = pd.read_parquet(FIELD_RESPONSES)
+            df = pd.concat([existing, pd.DataFrame([entry])], ignore_index=True)
+        else:
+            df = pd.DataFrame([entry])
+        FIELD_RESPONSES.parent.mkdir(parents=True, exist_ok=True)
+        df.to_parquet(FIELD_RESPONSES, index=False)
+
+    return {"status": "ok", "n_total_responses": int(len(df)), "saved": entry}
+
+
+def _summarize_field_responses() -> dict:
+    if not FIELD_RESPONSES.exists():
+        return {"total": 0, "by_outcome": {}, "recent": []}
+    df = pd.read_parquet(FIELD_RESPONSES)
+    by_outcome = df["outcome"].value_counts().to_dict()
+    recent = df.tail(20).to_dict(orient="records")
+    return {
+        "total": int(len(df)),
+        "by_outcome": {str(k): int(v) for k, v in by_outcome.items()},
+        "recent": recent,
+    }
+
+
 def _build_validation_log() -> dict:
     path = ALERTS_DIR / "v17_validation_rolling.parquet"
     if not path.exists():
@@ -311,8 +381,41 @@ class PortalHandler(SimpleHTTPRequestHandler):
             date_from = qs.get("from", [None])[0]
             date_to = qs.get("to", [None])[0]
             self._send_json(_build_viirs_fires(date_from=date_from, date_to=date_to))
+        elif path == "/api/operational-alerts":
+            self._send_json(_load_operational_alerts(qs.get("date", [None])[0]))
+        elif path == "/api/division-briefings":
+            self._send_json(_load_division_briefings())
+        elif path == "/api/field-responses":
+            self._send_json(_summarize_field_responses())
         else:
             super().do_GET()
+
+    def do_POST(self):
+        parsed = urlparse(self.path)
+        path = parsed.path.rstrip("/")
+        length = int(self.headers.get("Content-Length", "0") or 0)
+        raw = self.rfile.read(length) if length > 0 else b"{}"
+        try:
+            body = json.loads(raw.decode("utf-8") or "{}")
+        except json.JSONDecodeError:
+            self.send_error(400, "invalid json")
+            return
+
+        if path == "/api/field-response":
+            result = _append_field_response(body)
+            if "error" in result:
+                self._send_json(result, status=400)
+            else:
+                self._send_json(result)
+        else:
+            self.send_error(404, "unknown POST endpoint")
+
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
 
     def _serve_file(self, filepath: Path, content_type: str):
         if not filepath.exists():
@@ -325,11 +428,13 @@ class PortalHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    def _send_json(self, payload: dict):
+    def _send_json(self, payload: dict, status: int = 200):
         body = json.dumps(payload, default=str).encode("utf-8")
-        self.send_response(200)
+        self.send_response(status)
         self.send_header("Content-Type", "application/json")
         self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.send_header("Content-Length", len(body))
         self.end_headers()
         self.wfile.write(body)
