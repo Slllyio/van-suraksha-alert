@@ -645,6 +645,149 @@ function loadModel() {
 
     H2('Research Status');
     P('8 independent experiments attempted to improve v17 this session: VLM text scoring, CLIP embeddings, temporal deltas, hybrid ranking, origination model, calendar features, GDELT geocoding, deep origination features. None improved the primary metric. v17 is at the information-theoretic ceiling with current satellite and weather data.');
+
+    // ---- Season Pulse chart (Prophet diagnostic) ----
+    H2('Season Pulse');
+    P('Statewide daily FRP (Fire Radiative Power, high-conf MODIS+VIIRS). Black dots = observed, blue line = Prophet seasonal baseline trained on 2019-2025, shaded band = 90% uncertainty. Orange curve is a 28-day rolling average.');
+    var seasonWrap = document.createElement('div');
+    seasonWrap.style.cssText = 'background:var(--raised);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0';
+    var seasonCanvas = document.createElement('canvas');
+    seasonCanvas.id = 'season-pulse-canvas';
+    seasonCanvas.width = 900; seasonCanvas.height = 340;
+    seasonCanvas.style.cssText = 'width:100%;max-width:100%;height:340px;display:block';
+    seasonWrap.appendChild(seasonCanvas);
+    var seasonMeta = document.createElement('div');
+    seasonMeta.id = 'season-meta';
+    seasonMeta.style.cssText = 'font-size:12px;color:var(--t3);margin-top:8px';
+    seasonWrap.appendChild(seasonMeta);
+    c.appendChild(seasonWrap);
+    renderSeasonPulse();
+  });
+}
+
+function renderSeasonPulse() {
+  fetch('/api/seasonal-pulse').then(function(r){return r.json();}).then(function(d){
+    if (d.error) { document.getElementById('season-meta').textContent = d.error; return; }
+    var canvas = document.getElementById('season-pulse-canvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+    var PADX = 48, PADY = 24;
+    var plotW = W - PADX*2, plotH = H - PADY*2 - 20;
+
+    var series = d.series_recent || [];
+    var future = d.forecast_forward || [];
+    var all = series.concat(future);
+    if (!all.length) { return; }
+
+    // Scales
+    var values = [];
+    all.forEach(function(r){
+      if (r.frp_sum != null) values.push(r.frp_sum);
+      if (r.yhat != null) values.push(r.yhat);
+      if (r.yhat_upper != null) values.push(r.yhat_upper);
+      if (r.frp_28d != null) values.push(r.frp_28d);
+    });
+    var maxY = Math.max.apply(null, values) * 1.05;
+    var minY = 0;
+    var n = all.length;
+
+    function xAt(i){ return PADX + (plotW * i / Math.max(n - 1, 1)); }
+    function yAt(v){
+      if (v == null || isNaN(v)) return null;
+      var frac = (v - minY) / (maxY - minY);
+      return PADY + plotH * (1 - frac);
+    }
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Gridlines
+    ctx.strokeStyle = '#2a2d3e'; ctx.lineWidth = 1;
+    ctx.fillStyle = '#64748b'; ctx.font = '10px monospace';
+    for (var k = 0; k <= 4; k++) {
+      var val = minY + (maxY - minY) * k / 4;
+      var y = yAt(val);
+      ctx.beginPath(); ctx.moveTo(PADX, y); ctx.lineTo(PADX + plotW, y); ctx.stroke();
+      ctx.fillText(val.toFixed(0), 4, y + 4);
+    }
+
+    // Vertical line at "today" (end of actual, start of forecast-forward)
+    var todayIdx = series.length - 1;
+    if (todayIdx >= 0 && future.length > 0) {
+      var xT = xAt(todayIdx);
+      ctx.strokeStyle = '#475569'; ctx.setLineDash([4,4]);
+      ctx.beginPath(); ctx.moveTo(xT, PADY); ctx.lineTo(xT, PADY + plotH); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#94a3b8'; ctx.fillText('today', xT - 14, PADY - 6);
+    }
+
+    // yhat shaded band (confidence interval)
+    ctx.fillStyle = 'rgba(59,130,246,0.15)';
+    ctx.beginPath();
+    var started = false;
+    all.forEach(function(r, i){
+      if (r.yhat_upper == null) return;
+      var xy = yAt(r.yhat_upper);
+      var x = xAt(i);
+      if (!started) { ctx.moveTo(x, xy); started = true; }
+      else ctx.lineTo(x, xy);
+    });
+    for (var i = all.length - 1; i >= 0; i--) {
+      var r2 = all[i];
+      if (r2.yhat_lower == null) continue;
+      ctx.lineTo(xAt(i), yAt(r2.yhat_lower));
+    }
+    ctx.closePath(); ctx.fill();
+
+    // Prophet yhat line
+    ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    var ls = false;
+    all.forEach(function(r, i){
+      if (r.yhat == null) return;
+      var x = xAt(i), y = yAt(r.yhat);
+      if (!ls) { ctx.moveTo(x, y); ls = true; } else { ctx.lineTo(x, y); }
+    });
+    ctx.stroke();
+
+    // Actual daily FRP dots
+    ctx.fillStyle = '#f1f5f9';
+    series.forEach(function(r, i){
+      if (r.frp_sum == null) return;
+      ctx.beginPath(); ctx.arc(xAt(i), yAt(r.frp_sum), 1.6, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // 28-day rolling average
+    ctx.strokeStyle = '#f97316'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    var rs = false;
+    series.forEach(function(r, i){
+      if (r.frp_28d == null) return;
+      var x = xAt(i), y = yAt(r.frp_28d);
+      if (!rs) { ctx.moveTo(x, y); rs = true; } else { ctx.lineTo(x, y); }
+    });
+    ctx.stroke();
+
+    // Date labels (first, middle, today, forecast-end)
+    ctx.fillStyle = '#94a3b8'; ctx.font = '10px monospace';
+    var labelIdx = [0, Math.floor(n/3), Math.floor(2*n/3), n-1];
+    labelIdx.forEach(function(i){
+      if (i < 0 || i >= all.length) return;
+      ctx.fillText(all[i].date, xAt(i) - 32, H - 6);
+    });
+
+    // Meta: drift status + legend
+    var meta = document.getElementById('season-meta');
+    var drift = d.drift || {};
+    var color = {ELEVATED:'#ef4444', TYPICAL:'#22c55e', QUIET:'#3b82f6', UNKNOWN:'#94a3b8'}[drift.status] || '#94a3b8';
+    meta.innerHTML =
+      '<span style="color:#f1f5f9;font-weight:600">' + (d.latest_actual_date||'?') + ':</span> ' +
+      'FRP_sum = <b>' + (drift.actual_frp_sum != null ? drift.actual_frp_sum.toFixed(0) : '?') + '</b> &nbsp;·&nbsp; ' +
+      'expected ' + (drift.expected_yhat != null ? drift.expected_yhat.toFixed(0) : '?') +
+      ' [' + (drift.expected_lower != null ? drift.expected_lower.toFixed(0) : '?') +
+      '..' + (drift.expected_upper != null ? drift.expected_upper.toFixed(0) : '?') + '] &nbsp;·&nbsp; ' +
+      '<span style="color:' + color + ';font-weight:700">' + (drift.status||'—') + '</span>' +
+      '<span style="margin-left:20px;color:#94a3b8">● actual &nbsp;<span style="color:#3b82f6">━</span> Prophet &nbsp;<span style="color:#f97316">━</span> 28-day rolling</span>';
   });
 }
 

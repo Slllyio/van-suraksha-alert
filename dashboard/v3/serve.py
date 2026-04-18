@@ -29,6 +29,7 @@ BEATS_GEOJSON = ROOT / "data" / "aoi" / "mp_beats_wgs84.geojson"
 BEATS_SHP = ROOT / "data" / "aoi" / "MP_Merge Divsion Beat Range" / "Mp_Beat_Merge.shp"
 OPERATIONAL_ALERTS = FEED_DIR / "operational_alerts_v17.json"
 DIVISION_BRIEFINGS = FEED_DIR / "division_briefings.json"
+SEASONAL_PULSE = FEED_DIR / "seasonal_pulse.json"
 FIELD_RESPONSES = ALERTS_DIR / "field_responses.parquet"
 _RESPONSE_LOCK = threading.Lock()
 
@@ -294,6 +295,12 @@ def _load_division_briefings() -> dict:
     return json.loads(DIVISION_BRIEFINGS.read_text())
 
 
+def _load_seasonal_pulse() -> dict:
+    if not SEASONAL_PULSE.exists():
+        return {"error": "seasonal pulse not built — run scripts/fit_prophet_firms_seasonality.py"}
+    return json.loads(SEASONAL_PULSE.read_text())
+
+
 def _append_field_response(payload: dict) -> dict:
     """Append a field-staff response to the rolling parquet, thread-safe."""
     required = ("cell_id", "outcome", "staff_id")
@@ -387,6 +394,8 @@ class PortalHandler(SimpleHTTPRequestHandler):
             self._send_json(_load_division_briefings())
         elif path == "/api/field-responses":
             self._send_json(_summarize_field_responses())
+        elif path == "/api/seasonal-pulse":
+            self._send_json(_load_seasonal_pulse())
         else:
             super().do_GET()
 

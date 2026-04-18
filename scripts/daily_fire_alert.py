@@ -605,6 +605,12 @@ def main():
             PYTHON, "scripts/build_operational_alerts.py",
         ], timeout=60)
 
+    # Step 4.7: Season Pulse (Prophet seasonal baseline + 28-day rolling FRP)
+    if not args.skip_prediction:
+        run_step("Fit Prophet Season Pulse", [
+            PYTHON, "scripts/fit_prophet_firms_seasonality.py",
+        ], timeout=120)
+
     # Step 5: Build unified feed (detection + grid prediction + v17 ignition)
     print(f"\n{'='*60}")
     print(f"  STEP: Build Unified Alert Feed")
