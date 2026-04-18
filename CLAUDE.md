@@ -2,11 +2,32 @@
 
 ## Project Overview
 
-AI-driven forest fire Early Warning System for **Guna Division, Madhya Pradesh** (~2,144 sq km, 8 Forest Ranges, 139 Beats). Combines satellite remote sensing (HLS, FIRMS, Dynamic World), deep learning (Prithvi-EO-2.0 600M), gradient boosting (LightGBM), and physics-based fire weather indices to detect, classify, and predict forest fires.
+AI-driven forest fire Early Warning System for **Madhya Pradesh state-wide** (87 forest divisions, 8,973 beats, ~94,000 sq km of forested area). Originally piloted in Guna Division, now scaled to all of MP. Combines satellite remote sensing (HLS, FIRMS VIIRS+MODIS), gradient boosting (LightGBM with Hawkes self-excitation), burnt-area fusion (MCD64A1 + FireCCI51 + S2 dNBR via Andela 2019 flood-fill), and physics-based fire weather indices.
 
-**AOI**: Guna Division, MP (lat 23.80-24.95N, lon 76.45-77.85E)
+**AOI**: Madhya Pradesh state (lat 21.0-27.0N, lon 74.0-83.0E)
+**Pilot focus**: Guna Division (lat 23.80-24.95N, lon 76.45-77.85E) — now expanded statewide
 **Forest Type**: Dry deciduous (teak, tendu, mahua, bamboo)
 **Fire Season**: February-May (peak March-April)
+**Production model**: v17_ba_pu (LightGBM, 111 features) at R@top-5%=47.41% (BA-tiered) / 22.7% (DBSCAN-strict)
+
+## Production Status (2026-04-17)
+
+**v17 is at the information-theoretic ceiling** for new-outbreak prediction with current satellite + weather data. 8 improvement experiments in 2026-04-16/17 sessions all failed:
+
+| Experiment | Result | Commit |
+|------------|--------|--------|
+| VLM precursor (LLaVA-7b) on S2 chips | MW p=0.74 (no signal) | `b8f7f78` |
+| CLIP-ViT-L/14 embeddings + classifier | ROC=0.562, perm p=0.095 | `bdd98bb` |
+| Temporal NDVI/BSI delta features | 5-fold ROC=0.539 | `18f26e8` |
+| Hybrid Bayesian ranking (adaptive λ) | All variants WORSE than statewide | `d134e18` |
+| Origination Model B + soft-ensemble | Tradeoff only (more low-Hawkes ≠ more total catches) | `d134e18` |
+| Calendar features (v18) | DBSCAN +1.8pp, BA-tiered −11.9pp | `47aef8a` |
+| GDELT article geocoding | 0% yield (68% dead links, 88% non-fire articles) | `47aef8a` |
+| Deep origination features (VPD anomaly etc.) | 7/8 features scored zero gain | `d134e18` |
+
+**Key structural finding**: v17 excels at fire CONTAGION (Hawkes-driven, 25.5% R@5% in high-Hawkes regime) but is near-random on NEW OUTBREAKS (5.9% R@5% in low-Hawkes cells, where 77% of fires actually start). The visual-precursor hypothesis (anthropogenic ground-clearing visible in S2 imagery before ignition) was comprehensively falsified across three independent feature extraction methods.
+
+**Conclusion**: Further improvement requires data outside the current feature set — village-level human activity logs, NTFP collection schedules, patrol reports, or real-time mobile phone density near forest fringes.
 
 ## Unified Project Structure
 
@@ -126,43 +147,70 @@ FIRE/
 └── tmp/                         # Temporary files
 ```
 
-## Model Zoo
+## Model Zoo (current)
 
 | Model | Type | Best Metric | Status |
 |-------|------|-------------|--------|
-| LightGBM v3_expanded | Classification | AUC 0.824, F1 0.805 | CURRENT BEST |
-| VanAagni v1.0 | Neural (Prithvi-EO-2.0) | P=80.6%, R=69.6%, F1=0.747 | Frozen release |
-| LightGBM Ignition | Ignition probability | AUC 0.9997 (2023 holdout) | Production |
-| LightGBM Intensity | Fire intensity | In portal models | Production |
-| Muhurta ROS-UNet | Rate of Spread | Loss function needs fix | BROKEN |
+| **v17_ba_pu** | LightGBM, 111 feats, BA-tiered PU | **R@5%=47.41% (tiered) / 22.7% (DBSCAN)** | **PRODUCTION** |
+| v15 ensemble (v13×v14 geo-mean) | LightGBM ensemble | R@5%=40.45% | Predecessor (archive) |
+| v9 Hawkes | LightGBM + Hawkes self-excitation | R@5%=39.4% | First Hawkes breakthrough |
+| v8 DBSCAN ignition | LightGBM on DBSCAN-clustered ignitions | R@5%=28.1% | Ignition baseline |
+| v6e_live | LightGBM, 92 feats, spread labels | ROC=0.9150 | Spread tracker (not predictor) |
+| VanAagni v1.0 | Neural (Prithvi-EO-2.0 600M) | P=80.6%, R=69.6%, F1=0.747 | Frozen release (per-pixel detection) |
+| Muhurta ROS-UNet | Rate of Spread | Smooth_l1_loss fixed 2026-03-19 | Active |
 | SAM ViT-H | Mask refinement | Post-processing | Active |
 
-## Known Issues (from 10-agent audit, 2026-03-14) — UPDATED 2026-03-19
+**Key model files:**
+- `outputs/predictive_fire_risk/predictive_v17_ba_pu/model.txt` — production LightGBM
+- `scripts/predict_ignition_v17.py` — daily prediction helper (called by `daily_fire_alert.py`)
+- `outputs/dashboard_feed/ignition_risk_v17.json` — latest predictions (2,128 banded alerts)
 
-### FIXED (2026-03-19):
-1. ~~CRITICAL: ROS U-Net loss incoherent~~ **FIXED** — `src/train/train_ros_unet.py`
-   Changed from `F.mse_loss(ros_field * 60.0, target_growth * 100.0)` (dimensionally incoherent)
-   to `F.smooth_l1_loss(ros_field, ros_target)` with physics-reasonable 5 m/min target.
-   Also replaced `nn.BCELoss()` with `nn.SmoothL1Loss()` (ROS is continuous, not binary).
-2. ~~HIGH: GFS precipitation unit bug~~ **FIXED** — `src/data/weather_ingest.py`
-   Old code: `prec.attrs.get("units","").startswith("m")` matched "mm" incorrectly.
-   New code: explicit unit checking for "m" vs "mm" vs "kg m**-2".
+## v3 Portal — Forest Officer Dashboard (port 8790)
 
-### FALSE ALARMS (confirmed NOT bugs):
-3. ~~CRITICAL: Paper figures contain fabricated confusion matrix~~ **FALSE ALARM**
-   Code in `paper/generate_vanaagni_figures.py` correctly requires real `test_results.json`
-   with `confusion_matrix` key from actual model inference. Skips if unavailable.
-4. ~~HIGH: Van Wagner FMC=100% should be 60-85%~~ **FALSE ALARM**
-   Values in `scripts/compute_fwi.py` (FFMC0=85.0, DMC0=6.0, DC0=15.0) are standard
-   Van Wagner 1987 startup codes, NOT fuel moisture content percentages.
+Single-page portal at `dashboard/v3/` for forest officers, built with industry-best UI/UX patterns (UXmatters crisis UX, UXPin dashboard principles, CARTO geo-viz). Launch:
 
-### REMAINING (need attention):
-5. **HIGH**: Wind direction 270deg in `src/data/weather_ingest.py` — actually correct
-   meteorological formula `(270 - arctan2(v,u)) % 360` but should be parameterizable in config.
-6. **HIGH**: LightGBM alert filter in `scripts/train_alert_filter.py` — code is complete
-   (965 lines) but has never been executed. Needs: ground truth data + run the script.
-7. **MEDIUM**: 183 training samples may overlap train/val — needs dedup audit of
-   `data_lake/training_patches_v5/` manifest against spatial block split.
+```bash
+python dashboard/v3/serve.py
+# Open http://localhost:8790/v3/
+```
+
+**5 tabs:**
+1. **Live Map** — MapLibre dark map with v17 cells (CRITICAL/ALERT/WATCH), confidence ring gauge, layer toggles, click-to-detail flyout with action recommendations (Dispatch/Patrol/Awareness)
+2. **Divisions** — 74 division cards with alert counts + Hawkes coverage + confidence badges
+3. **Model Card** — honest performance metrics, weakness disclosure (5.9% low-Hawkes recall), trust guidance, feature importance bars
+4. **Validation** — rolling field validation log from `data_lake/alerts/v17_validation_rolling.parquet`
+5. **VIIRS Fires** — date-range picker for historical FIRMS detections (1.35M rows, 2014-2026), spatially clipped to forest beats (1,199 raw → 297 forest fires on 2026-04-07)
+
+**Forest beat clipping**: Uses `data/aoi/mp_beats_wgs84.geojson` (8,973 beats from `Mp_Beat_Merge.shp` reprojected to WGS84). Spatial join via `gpd.sjoin_nearest` with 0.02° tolerance (~2km) to handle polygon boundary precision. ~75% of raw VIIRS detections clipped out as non-forest.
+
+**Backend endpoints** (`dashboard/v3/serve.py`):
+- `/api/ignition-v17[?date=YYYY-MM-DD]` — v17 banded alerts
+- `/api/division-overview` — alerts aggregated by division (joins cells.csv for mapping)
+- `/api/model-transparency` — static metrics + trust guidance
+- `/api/validation-log` — rolling field validation
+- `/api/viirs-fires?from=YYYY-MM-DD&to=YYYY-MM-DD` — forest-clipped VIIRS detections
+- `/api/beats-boundary` — beat polygon GeoJSON for map overlay
+
+## Known Issues + Resolved Items
+
+### FIXED 2026-03-19
+- ROS U-Net loss incoherence (dimensional) — `src/train/train_ros_unet.py` now uses `F.smooth_l1_loss`
+- GFS precipitation unit bug — `src/data/weather_ingest.py` now explicitly checks "m" vs "mm" vs "kg m**-2"
+
+### CONFIRMED DEAD ENDS (do not re-attempt — see commit history for evidence)
+- **VLM zero-shot on S2 chips** — LLaVA-7b emits templated responses, image-agnostic at 30m resolution. See `docs/audits/vlm_pilot_finding.md` and `feedback_vlm_llava_7b_indiscriminate.md`
+- **CLIP embeddings + classifier** — 5-fold ROC=0.562, perm p=0.095. See `docs/audits/clip_pilot_finding.md`
+- **Temporal NDVI/BSI deltas** — 5-fold ROC=0.539. See `docs/audits/temporal_delta_finding.md`
+- **Sentinel-1 SAR amplitude (PS-1)** — both VV+ASC (21% cov) and VH+both-orbits (100% cov) gave ρ≈0.01, p>0.3. Anthropogenic <100m² clearings invisible at 2km cell. See `feedback_ps1_sar_amplitude_dead.md`
+- **GDELT article geocoding** — district-centroid only, 0% village-level yield from news article NER
+- **Hybrid Bayesian ranking** — All λ-blend variants DECREASE aggregate R@5% vs statewide
+- **Pre-2017 NISAR** — sensor launched Feb 2026, no usable historical data until ~2027
+
+### REMAINING (need attention)
+- **HIGH**: Wind direction 270° in `src/data/weather_ingest.py` — formula `(270 - arctan2(v,u)) % 360` is correct meteorologically but should be config-parameterizable
+- **HIGH**: LightGBM alert filter in `scripts/train_alert_filter.py` (965 lines) has never been executed. Needs ground truth + run
+- **MEDIUM**: 183 training samples may overlap train/val in `data_lake/training_patches_v5/` — needs dedup audit
+- **LOW**: Beat boundary layer not yet added to v3 portal Tab 1 (Live Map). Pattern from VIIRS tab can be copied
 
 ## Development Conventions
 
@@ -178,23 +226,44 @@ FIRE/
 ## Key Commands
 
 ```bash
-make setup          # Create venv + install deps
-make train-lgbm     # Train LightGBM classifier
-make train-vanaagni # Train VanAagni neural model
-make dashboard      # Launch Streamlit dashboard (port 8501)
-make pipeline       # Run NRT alert pipeline (single pass)
-make scheduler      # Start daily EWS scheduler daemon
-make test           # Run pytest suite
-make lint           # Run ruff + pyright
-make clean          # Remove tmp/ cache/ __pycache__/
+# Daily operations
+python scripts/daily_fire_alert.py              # Full daily pipeline (FWI + FIRMS + v17 + alerts)
+python scripts/predict_ignition_v17.py          # v17 prediction only (production model)
+python scripts/validate_v17_daily.py            # Field validation backtest
+
+# Model training (only if re-training needed; v17 is at ceiling)
+python scripts/train_v17_ba_pu.py               # Retrain v17 with BA-tiered PU labels
+python scripts/audit_v17_per_week.py            # Brutal per-cell-date audit
+python scripts/audit_low_hawkes_subset.py       # Low-Hawkes ablation diagnostic
+
+# Portals
+python dashboard/v3/serve.py                    # v3 unified portal (RECOMMENDED) → http://localhost:8790/v3/
+python dashboard/v2/serve_real_data.py          # v2 Command Horizon (legacy)
+python dashboard/portal/dashboard_server.py     # Jvala beat-level portal (port 8787)
+streamlit run dashboard/app.py                  # Original Streamlit dashboard
+
+# Make targets (legacy)
+make setup | train-lgbm | dashboard | pipeline | test | lint | clean
 ```
 
 ## Tech Stack
 
-- **Python 3.10+**, PyTorch, LightGBM, scikit-learn
-- **Prithvi-EO-2.0-600M-TL** (IBM/NASA foundation model via terratorch)
-- **Google Earth Engine** (satellite data pipeline)
-- **Streamlit** (dashboard)
-- **AMD RX 9060 XT** (DirectML training - custom Conv3d shim for Prithvi)
-- **Google Gemini 2.0 Flash** (VLM features)
-- **FIRMS** (NASA fire detections - VIIRS + MODIS)
+- **Python 3.12**, PyTorch 2.4.1 + torch-directml, LightGBM 4.6, scikit-learn 1.8
+- **Prithvi-EO-2.0-300M/600M** (IBM/NASA foundation model — frozen, used for embeddings only)
+- **Google Earth Engine** (satellite data pipeline; van-suraksha-alert project)
+- **MapLibre GL JS 4.7** + **deck.gl** (v3 portal mapping)
+- **GeoPandas** + **Shapely** (forest beat spatial joins)
+- **AMD RX 9060 XT** (DirectML training — custom Conv3d shim for Prithvi; works on torch 2.4 only, broken on 2.11)
+- **Ollama** local VLM (LLaVA-7b confirmed image-agnostic on satellite chips)
+- **FIRMS** (NASA NRT fire detections — VIIRS + MODIS, 1.35M historical rows)
+- **Sentinel-2 SR Harmonized** via GEE getDownloadURL (NPY format) for chip extraction
+- **MCD64A1 + FireCCI51** burnt-area products (Andela 2019 flood-fill clustering for label augmentation)
+
+## graphify
+
+This project has a graphify knowledge graph at graphify-out/.
+
+Rules:
+- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
+- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
+- After modifying code files in this session, run `python3 -c "from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code(Path('.'))"` to keep the graph current
