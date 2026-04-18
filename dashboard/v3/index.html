@@ -427,6 +427,26 @@ function showFlyout(p) {
   var tb = document.createElement('span'); tb.className='conf-tag '+trust; tb.textContent=trust;
   trustRow.appendChild(tl); trustRow.appendChild(tb); hs.appendChild(trustRow);
 
+  // Patrol radius (historical precision cone by Hawkes regime)
+  // Derived from data_lake/audits/division_precision_cones.csv + Hawkes-regime table
+  // Hawkes_n=0 -> 43km median / 96 p75 / 131 p90
+  // Hawkes_n=1-2 -> 19km median / 41 p75
+  // Hawkes_n=3-9 -> 16km median / 34 p75
+  // Hawkes_n>=10 -> 12km median / 21 p75
+  var patrol;
+  if (hawkes === 0)      patrol = {med:43, p75:96, label:'Hawkes_n=0 (new outbreak regime)'};
+  else if (hawkes <= 2)  patrol = {med:19, p75:41, label:'Hawkes_n=1-2 (sparse contagion)'};
+  else if (hawkes <= 9)  patrol = {med:16, p75:34, label:'Hawkes_n=3-9 (moderate contagion)'};
+  else                   patrol = {med:12, p75:21, label:'Hawkes_n>=10 (active contagion)'};
+  var pr = document.createElement('div');
+  pr.style.cssText = 'margin-top:8px;padding:8px;border-radius:6px;background:rgba(59,130,246,.08);'+
+                    'border-left:3px solid #3b82f6;font-size:11px;line-height:1.4';
+  pr.innerHTML = '<div style="color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;font-size:10px;margin-bottom:4px">Expected patrol radius</div>'+
+                '<div style="font-weight:600;font-family:JetBrains Mono,monospace">'+
+                patrol.med+' km median &nbsp;·&nbsp; '+patrol.p75+' km (75% of fires)</div>'+
+                '<div style="color:#64748b;font-size:10px;margin-top:2px">'+patrol.label+'</div>';
+  hs.appendChild(pr);
+
   // Action card
   var ac = document.createElement('div');
   if (trust==='HIGH') {
