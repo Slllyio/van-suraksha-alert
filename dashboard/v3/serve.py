@@ -30,6 +30,10 @@ BEATS_SHP = ROOT / "data" / "aoi" / "MP_Merge Divsion Beat Range" / "Mp_Beat_Mer
 OPERATIONAL_ALERTS = FEED_DIR / "operational_alerts_v17.json"
 DIVISION_BRIEFINGS = FEED_DIR / "division_briefings.json"
 SEASONAL_PULSE = FEED_DIR / "seasonal_pulse.json"
+DIVISION_PULSE = FEED_DIR / "division_pulse.json"
+FEATURE_DRIFT = FEED_DIR / "feature_drift.json"
+MATRIX_PROFILE = FEED_DIR / "matrix_profile_firms.json"
+SEASON_ONSET = FEED_DIR / "season_onset.json"
 FIELD_RESPONSES = ALERTS_DIR / "field_responses.parquet"
 _RESPONSE_LOCK = threading.Lock()
 
@@ -301,6 +305,12 @@ def _load_seasonal_pulse() -> dict:
     return json.loads(SEASONAL_PULSE.read_text())
 
 
+def _load_json_feed(path: Path, tool_name: str) -> dict:
+    if not path.exists():
+        return {"error": f"{tool_name} not generated yet — run scripts/{tool_name}.py"}
+    return json.loads(path.read_text())
+
+
 def _append_field_response(payload: dict) -> dict:
     """Append a field-staff response to the rolling parquet, thread-safe."""
     required = ("cell_id", "outcome", "staff_id")
@@ -396,6 +406,14 @@ class PortalHandler(SimpleHTTPRequestHandler):
             self._send_json(_summarize_field_responses())
         elif path == "/api/seasonal-pulse":
             self._send_json(_load_seasonal_pulse())
+        elif path == "/api/division-pulse":
+            self._send_json(_load_json_feed(DIVISION_PULSE, "fit_statsforecast_per_division"))
+        elif path == "/api/feature-drift":
+            self._send_json(_load_json_feed(FEATURE_DRIFT, "monitor_v17_feature_drift"))
+        elif path == "/api/matrix-profile":
+            self._send_json(_load_json_feed(MATRIX_PROFILE, "matrix_profile_firms"))
+        elif path == "/api/season-onset":
+            self._send_json(_load_json_feed(SEASON_ONSET, "detect_season_changepoints"))
         else:
             super().do_GET()
 

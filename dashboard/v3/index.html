@@ -646,6 +646,14 @@ function loadModel() {
     H2('Research Status');
     P('8 independent experiments attempted to improve v17 this session: VLM text scoring, CLIP embeddings, temporal deltas, hybrid ranking, origination model, calendar features, GDELT geocoding, deep origination features. None improved the primary metric. v17 is at the information-theoretic ceiling with current satellite and weather data.');
 
+    // ---- Diagnostic strip: Season onset + Matrix profile + Feature drift ----
+    H2('Diagnostic Signals');
+    var diagStrip = document.createElement('div');
+    diagStrip.id = 'diag-strip';
+    diagStrip.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0';
+    c.appendChild(diagStrip);
+    renderDiagnosticStrip();
+
     // ---- Season Pulse chart (Prophet diagnostic) ----
     H2('Season Pulse');
     P('Statewide daily FRP (Fire Radiative Power, high-conf MODIS+VIIRS). Black dots = observed, blue line = Prophet seasonal baseline trained on 2019-2025, shaded band = 90% uncertainty. Orange curve is a 28-day rolling average.');
@@ -662,6 +670,76 @@ function loadModel() {
     seasonWrap.appendChild(seasonMeta);
     c.appendChild(seasonWrap);
     renderSeasonPulse();
+  });
+}
+
+function makeDiagCard(title, value, subtitle, color) {
+  var d = document.createElement('div');
+  d.style.cssText = 'background:var(--raised);border:1px solid var(--border);border-radius:8px;padding:14px';
+  d.innerHTML =
+    '<div style="color:var(--t3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">'+title+'</div>'+
+    '<div style="color:'+(color||'var(--t1)')+';font-size:20px;font-weight:700;font-family:JetBrains Mono,monospace;margin-bottom:4px">'+value+'</div>'+
+    '<div style="color:var(--t2);font-size:11px;line-height:1.4">'+subtitle+'</div>';
+  return d;
+}
+
+function renderDiagnosticStrip() {
+  var strip = document.getElementById('diag-strip');
+  if (!strip) return;
+  while (strip.firstChild) strip.removeChild(strip.firstChild);
+
+  var statusColor = {
+    EARLY:'#fbbf24', ON_TIME:'#22c55e', LATE:'#3b82f6',
+    UNPRECEDENTED:'#ef4444', TYPICAL:'#22c55e',
+    ALERT:'#ef4444', WARN:'#fbbf24', OK:'#22c55e',
+    ELEVATED:'#ef4444', QUIET:'#3b82f6',
+    UNKNOWN:'#94a3b8'
+  };
+
+  // Season onset (ruptures)
+  fetch('/api/season-onset').then(function(r){return r.json();}).then(function(d){
+    if (d.error) return;
+    var klass = d.classification || 'UNKNOWN';
+    var diff = d.days_vs_median;
+    var diffStr = (diff == null) ? '' : (diff >= 0 ? '+' : '') + diff + ' days vs median';
+    strip.appendChild(makeDiagCard('Season onset (ruptures PELT)',
+      d.current_year_onset || '—',
+      (d.current_year||'') + ' season: ' + klass + ' — ' + diffStr,
+      statusColor[klass]));
+  });
+
+  // Matrix profile (STUMPY)
+  fetch('/api/matrix-profile').then(function(r){return r.json();}).then(function(d){
+    if (d.error) return;
+    var cw = d.current_window || {};
+    var status = cw.status || 'UNKNOWN';
+    var pct = cw.percentile_in_history;
+    strip.appendChild(makeDiagCard('28-day pattern (STUMPY matrix profile)',
+      (pct != null ? pct.toFixed(0) + '%' : '—') + 'ile',
+      status + ' — window ' + (cw.start_date || '?') + ' to ' + (cw.end_date || '?'),
+      statusColor[status]));
+  });
+
+  // Feature drift (scipy KS)
+  fetch('/api/feature-drift').then(function(r){return r.json();}).then(function(d){
+    if (d.error) return;
+    var st = d.overall_status || 'UNKNOWN';
+    var counts = d.counts || {};
+    strip.appendChild(makeDiagCard('v17 feature drift (KS test)', st,
+      'ALERT=' + (counts.ALERT||0) + ' WARN=' + (counts.WARN||0) + ' OK=' + (counts.OK||0) +
+      ' across ' + (d.per_feature||[]).length + ' features',
+      statusColor[st]));
+  });
+
+  // Division pulse (StatsForecast)
+  fetch('/api/division-pulse').then(function(r){return r.json();}).then(function(d){
+    if (d.error) return;
+    var sum = d.summary || {};
+    var primary = (sum.ELEVATED > 0) ? 'ELEVATED' : (sum.QUIET > sum.TYPICAL ? 'QUIET' : 'TYPICAL');
+    strip.appendChild(makeDiagCard('Per-division baselines (AutoARIMA)',
+      sum.ELEVATED + ' elevated',
+      sum.TYPICAL + ' typical, ' + sum.QUIET + ' quiet across ' + (d.n_divisions_fit||0) + ' divisions',
+      statusColor[primary]));
   });
 }
 

@@ -611,6 +611,21 @@ def main():
             PYTHON, "scripts/fit_prophet_firms_seasonality.py",
         ], timeout=120)
 
+    # Step 4.8: Diagnostic stack — per-division baselines + drift + matrix profile + season onset
+    if not args.skip_prediction:
+        run_step("Per-division AutoARIMA (StatsForecast)", [
+            PYTHON, "scripts/fit_statsforecast_per_division.py",
+        ], timeout=600)
+        run_step("v17 Feature Drift Monitor", [
+            PYTHON, "scripts/monitor_v17_feature_drift.py",
+        ], timeout=120)
+        run_step("STUMPY Matrix Profile", [
+            PYTHON, "scripts/matrix_profile_firms.py",
+        ], timeout=300)
+        run_step("Season Onset Change-points", [
+            PYTHON, "scripts/detect_season_changepoints.py",
+        ], timeout=120)
+
     # Step 5: Build unified feed (detection + grid prediction + v17 ignition)
     print(f"\n{'='*60}")
     print(f"  STEP: Build Unified Alert Feed")
