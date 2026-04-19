@@ -46,6 +46,38 @@ GLCM_PATH = ROOT / "data_lake" / "human_activity" / "glcm_texture_per_cell.parqu
 HYDRO_PATH = ROOT / "data_lake" / "human_activity" / "hydro_features_per_cell.parquet"
 CELLS_PATH = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v6e_live" / "cells.csv"
 CALIBRATION_PATH = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v17_ba_pu" / "calibration.json"
+HURDLE_STAGE_A_MODEL = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v17_hurdle_a" / "model.txt"
+HURDLE_BLEND_CONFIG = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v17_hurdle" / "blend_config.json"
+
+
+def _load_hurdle_blend() -> tuple[lgb.Booster | None, dict | None]:
+    """Returns (Stage A model, blend config) or (None, None) if missing."""
+    if not HURDLE_STAGE_A_MODEL.exists() or not HURDLE_BLEND_CONFIG.exists():
+        return None, None
+    try:
+        model_a = lgb.Booster(model_file=str(HURDLE_STAGE_A_MODEL))
+        cfg = json.loads(HURDLE_BLEND_CONFIG.read_text())
+        return model_a, cfg
+    except Exception:
+        return None, None
+
+
+def _apply_hurdle_blend(p_v17: np.ndarray, p_a: np.ndarray, variant: str) -> np.ndarray:
+    """Same blend formulas as scripts/evaluate_v17_hurdle_blend.py."""
+    eps = 1e-12
+    p_a = np.clip(p_a, eps, 1 - eps)
+    p_v = np.clip(p_v17, eps, 1 - eps)
+    if variant == "blend_geo_mean":
+        return np.sqrt(p_a * p_v)
+    if variant == "blend_geo_w0_3":
+        return (p_a ** 0.3) * (p_v ** 0.7)
+    if variant == "blend_geo_w0_5":
+        return (p_a ** 0.5) * (p_v ** 0.5)
+    if variant == "blend_geo_w0_7":
+        return (p_a ** 0.7) * (p_v ** 0.3)
+    if variant == "blend_harmonic":
+        return 2.0 / (1.0 / p_a + 1.0 / p_v)
+    return p_v17  # unknown variant — fall through
 
 
 def _load_calibration() -> dict | None:
@@ -204,6 +236,9 @@ def main() -> int:
     ap.add_argument("--top-pct", type=float, default=5.0)
     ap.add_argument("--rank-window-days", type=int, default=7)
     ap.add_argument("--output", default=str(ROOT / "outputs" / "dashboard_feed" / "ignition_risk_v17.json"))
+    ap.add_argument("--use-hurdle-blend", action="store_true",
+                    help="Apply Hurdle Stage A blend (Pivot A v2 T1 winner). "
+                         "Re-ranks cells by blend(Stage A × v17). Marginal positive in eval.")
     args = ap.parse_args()
 
     target_date = pd.Timestamp(args.date) if args.date else pd.Timestamp(datetime.now().date() + timedelta(days=1))
@@ -270,6 +305,35 @@ def main() -> int:
     df["ignition_risk"] = probs
     log.info("  Raw risk range [%.4f, %.4f]", probs.min(), probs.max())
 
+    hurdle_meta = None
+    if args.use_hurdle_blend:
+        stage_a, blend_cfg = _load_hurdle_blend()
+        if stage_a is not None and blend_cfg is not None:
+            stage_a_feats = stage_a.feature_name()
+            missing_a = [f for f in stage_a_feats if f not in df.columns]
+            if missing_a:
+                log.warning("Hurdle blend skipped — Stage A missing %d features in df: %s",
+                            len(missing_a), missing_a[:5])
+            else:
+                p_a = stage_a.predict(df[stage_a_feats].values)
+                variant = blend_cfg.get("variant", "blend_geo_w0_7")
+                df["stage_a_risk"] = p_a
+                blended = _apply_hurdle_blend(probs, p_a, variant)
+                df["ignition_risk"] = blended  # downstream rank/band uses this
+                probs = blended
+                hurdle_meta = {
+                    "applied": True,
+                    "variant": variant,
+                    "blend_config": {k: blend_cfg.get(k) for k in
+                                     ("low_hawkes_r5", "overall_r5",
+                                      "delta_low_hawkes_pp", "delta_overall_pp")},
+                }
+                log.info("  Hurdle blend applied (variant=%s); blended range [%.4f, %.4f]",
+                         variant, blended.min(), blended.max())
+        else:
+            log.warning("--use-hurdle-blend requested but Stage A or blend_config missing; "
+                        "falling back to raw v17 probs.")
+
     calib_params = _load_calibration()
     if calib_params is not None:
         df["calibrated_risk"] = _apply_calibration(probs, calib_params)
@@ -326,6 +390,7 @@ def main() -> int:
         "generated_at": datetime.now().isoformat(),
         "n_cells_total": int(len(df)),
         "rank_calibration": rank_meta,
+        "hurdle_blend": hurdle_meta,
         "probability_calibration": (
             {k: calib_params[k] for k in ("method", "brier", "logloss",
                                           "baseline_brier", "n_calibration",

@@ -86,22 +86,20 @@ def download_drive_csv(filename: str, dest: Path) -> bool:
 
 
 def build_parquet(download_dir: Path) -> int:
-    csvs = sorted(download_dir.glob("dw_monthly_*.csv"))
-    log.info("Concatenating %d monthly CSVs...", len(csvs))
+    """Concatenate CSV chunks. Pattern: dw_features_YYYY_cNN.csv (year-chunked,
+    each file already has year/month columns from server-side feature table)."""
+    csvs = sorted(download_dir.glob("dw_features_*.csv"))
+    log.info("Concatenating %d CSV chunks...", len(csvs))
     if not csvs:
-        log.error("No monthly CSVs found at %s", download_dir)
+        log.error("No CSVs matching dw_features_*.csv found at %s", download_dir)
         return 1
 
     frames = []
     for f in csvs:
-        # Filename pattern: dw_monthly_YYYY_MM.csv
-        parts = f.stem.split("_")
-        year = int(parts[2])
-        month = int(parts[3])
         df = pd.read_csv(f)
-        df["year"] = year
-        df["month"] = month
-        df["date"] = pd.Timestamp(year, month, 1)
+        # date column reconstructed from year/month already present in server-side export
+        if "year" in df.columns and "month" in df.columns:
+            df["date"] = pd.to_datetime(df[["year", "month"]].assign(day=1))
         frames.append(df)
     raw = pd.concat(frames, ignore_index=True)
     log.info("Raw monthly frame: %d rows × %d cols", len(raw), len(raw.columns))

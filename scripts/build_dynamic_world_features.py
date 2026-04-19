@@ -54,18 +54,20 @@ def init_ee() -> None:
     log.info("GEE initialised (project=%s)", GEE_PROJECT)
 
 
-def load_cell_centroids(limit: int | None = None) -> ee.FeatureCollection:
+def load_cell_centroids_list(limit: int | None = None) -> list:
+    """Return Python list of ee.Feature so we can chunk before wrapping
+    in FeatureCollection (request payload limit is ~10MB)."""
     cells = pd.read_csv(CELLS_PATH, usecols=["cell_id", "centroid_lat", "centroid_lon"])
     if limit is not None:
         cells = cells.head(limit)
     log.info("Loaded %d cell centroids", len(cells))
-    feats = []
-    for _, r in cells.iterrows():
-        feats.append(ee.Feature(
+    return [
+        ee.Feature(
             ee.Geometry.Point([float(r["centroid_lon"]), float(r["centroid_lat"])]),
             {"cell_id": str(r["cell_id"])},
-        ))
-    return ee.FeatureCollection(feats)
+        )
+        for _, r in cells.iterrows()
+    ]
 
 
 def monthly_mean_image(year: int, month: int, mp_bbox: ee.Geometry) -> ee.Image:
@@ -150,10 +152,13 @@ def build_year_feature_table(year: int, cells_fc: ee.FeatureCollection,
     return ee.FeatureCollection(tables).flatten()
 
 
-def submit_year_export(year: int, cells_fc: ee.FeatureCollection,
-                        mp_bbox: ee.Geometry) -> ee.batch.Task:
-    table = build_year_feature_table(year, cells_fc, mp_bbox)
-    name = f"{FILENAME_PREFIX}_{year:04d}"
+def submit_year_chunk_export(year: int, chunk_idx: int,
+                              cells_fc_chunk: ee.FeatureCollection,
+                              mp_bbox: ee.Geometry) -> ee.batch.Task:
+    """One yearly export per cell-chunk (≤5K cells per chunk to stay under
+    GEE's 10MB request payload limit)."""
+    table = build_year_feature_table(year, cells_fc_chunk, mp_bbox)
+    name = f"{FILENAME_PREFIX}_{year:04d}_c{chunk_idx:02d}"
     task = ee.batch.Export.table.toDrive(
         collection=table,
         description=name,
@@ -166,6 +171,14 @@ def submit_year_export(year: int, cells_fc: ee.FeatureCollection,
     )
     task.start()
     return task
+
+
+def chunk_cells(cells_fc_pylist: list, chunk_size: int = 5000) -> list[ee.FeatureCollection]:
+    """Split a Python list of ee.Feature into chunked FeatureCollections."""
+    out = []
+    for i in range(0, len(cells_fc_pylist), chunk_size):
+        out.append(ee.FeatureCollection(cells_fc_pylist[i:i + chunk_size]))
+    return out
 
 
 def years_to_run(args) -> list[int]:
@@ -189,6 +202,8 @@ def main() -> int:
                     help="Single year")
     ap.add_argument("--cell-limit", type=int, default=None,
                     help="Limit cells (for fast smoke test)")
+    ap.add_argument("--chunk-size", type=int, default=5000,
+                    help="Cells per export task (max ~5K to stay under 10MB request)")
     args = ap.parse_args()
 
     if args.test and args.cell_limit is None:
@@ -198,20 +213,24 @@ def main() -> int:
     mp_bbox = ee.Geometry.Rectangle(MP_BBOX_COORDS)
 
     years = years_to_run(args)
-    log.info("Planning %d yearly exports for years: %s", len(years), years)
-
-    cells_fc = load_cell_centroids(limit=args.cell_limit)
+    cells_pylist = load_cell_centroids_list(limit=args.cell_limit)
+    chunks = chunk_cells(cells_pylist, chunk_size=args.chunk_size)
+    n_per_year = len(chunks)
+    log.info("Planning %d yearly exports × %d cell-chunks each = %d total tasks",
+             len(years), n_per_year, len(years) * n_per_year)
 
     submitted = []
     for y in years:
-        try:
-            task = submit_year_export(y, cells_fc, mp_bbox)
-            submitted.append({"year": y, "filename": f"{FILENAME_PREFIX}_{y:04d}",
-                              "task_id": task.id})
-            log.info("  submitted %d (task_id=%s)", y, task.id)
-        except Exception as e:
-            log.error("  FAILED to submit %d: %s", y, e)
-        time.sleep(1.0)
+        for ci, chunk in enumerate(chunks):
+            try:
+                task = submit_year_chunk_export(y, ci, chunk, mp_bbox)
+                fname = f"{FILENAME_PREFIX}_{y:04d}_c{ci:02d}"
+                submitted.append({"year": y, "chunk": ci, "filename": fname,
+                                  "task_id": task.id})
+                log.info("  submitted %d.c%02d (task_id=%s)", y, ci, task.id)
+            except Exception as e:
+                log.error("  FAILED to submit %d.c%02d: %s", y, ci, e)
+            time.sleep(0.3)
 
     if submitted:
         out_path = ROOT / "tmp" / "dw_export_tasks.csv"
@@ -219,10 +238,10 @@ def main() -> int:
         pd.DataFrame(submitted).to_csv(out_path, index=False)
         log.info("Saved task list to %s", out_path.relative_to(ROOT))
 
-    log.info("\nSubmitted %d/%d yearly exports. Monitor at:",
-             len(submitted), len(years))
+    log.info("\nSubmitted %d/%d yearly export tasks. Monitor at:",
+             len(submitted), len(years) * n_per_year)
     log.info("  https://code.earthengine.google.com/tasks")
-    log.info("Outputs land in Drive folder: %s as %s_YYYY.csv",
+    log.info("Outputs land in Drive folder: %s as %s_YYYY_cNN.csv",
              DRIVE_FOLDER, FILENAME_PREFIX)
     log.info("Run scripts/download_dw_monthly_exports.py to fetch + concatenate.")
     return 0
