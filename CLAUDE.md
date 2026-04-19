@@ -10,6 +10,33 @@ AI-driven forest fire Early Warning System for **Madhya Pradesh state-wide** (87
 **Fire Season**: February-May (peak March-April)
 **Production model**: v17_ba_pu (LightGBM, 111 features) at R@top-5%=47.41% (BA-tiered) / 22.7% (DBSCAN-strict)
 
+## Production Status (2026-04-19, Pivot A v2 sprint in progress)
+
+**Sprint update 2026-04-19**: Two-track 1-week sprint executing per
+`docs/research/deep_research_synthesis_2026_04_19.md`:
+
+- **T1 — Hurdle Two-Stage** (Rodrigues 2020): DONE. Bernoulli Stage A
+  classifier on v17 features minus Hawkes, blended with v17 via geometric
+  mean. Best variant `geo_w0.7` gives **+1.77 pp low-Hawkes R@5%**
+  (5.88 → 7.65%) and **+0.89 pp overall** (22.66 → 23.55%) on DBSCAN-strict
+  2025 hold-out. Strictly Pareto-better than v17 alone on every metric;
+  just 0.35pp short of the 8% strict pass criterion. Wired as opt-in
+  `--use-hurdle-blend` flag in `predict_ignition_v17.py`. Production
+  pipeline NOT switched on yet — waiting for T2/T3 cascade decision.
+
+- **T2 — Dynamic World LULC delta features**: GEE-blocked. 37 chunked
+  exports (7 years × 9 cell-chunks) submitted but queued behind ~2,800
+  unrelated tasks in the project queue. Will resume in next session
+  when GEE clears. All downstream scripts ready
+  (`extend_dataset_with_dw.py`, `train_v18_dynamic_world.py`).
+
+- **T3 — Combined v18.5 evaluator**: Built (`evaluate_v18_combined.py`),
+  deferred until T2 lands.
+
+Finding doc: `docs/audits/pivot_a_v2_finding.md`.
+
+---
+
 ## Production Status (2026-04-17)
 
 **v17 is at the information-theoretic ceiling** for new-outbreak prediction with current satellite + weather data. 8 improvement experiments in 2026-04-16/17 sessions all failed:
@@ -152,6 +179,8 @@ FIRE/
 | Model | Type | Best Metric | Status |
 |-------|------|-------------|--------|
 | **v17_ba_pu** | LightGBM, 111 feats, BA-tiered PU | **R@5%=47.41% (tiered) / 22.7% (DBSCAN)** | **PRODUCTION** |
+| v17_hurdle_a | Bernoulli, 107 feats (no Hawkes) | PR=0.024, R@5%=29% solo | T1 Stage A — opt-in via `--use-hurdle-blend` |
+| v17.5 hurdle blend (geo_w0.7) | v17 × Stage A blend | DBSCAN R@5% 23.55%, low-Hawkes 7.65% | Marginal positive, opt-in only |
 | v15 ensemble (v13×v14 geo-mean) | LightGBM ensemble | R@5%=40.45% | Predecessor (archive) |
 | v9 Hawkes | LightGBM + Hawkes self-excitation | R@5%=39.4% | First Hawkes breakthrough |
 | v8 DBSCAN ignition | LightGBM on DBSCAN-clustered ignitions | R@5%=28.1% | Ignition baseline |
