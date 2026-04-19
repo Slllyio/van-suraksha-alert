@@ -646,6 +646,23 @@ function loadModel() {
     H2('Research Status');
     P('8 independent experiments attempted to improve v17 this session: VLM text scoring, CLIP embeddings, temporal deltas, hybrid ranking, origination model, calendar features, GDELT geocoding, deep origination features. None improved the primary metric. v17 is at the information-theoretic ceiling with current satellite and weather data.');
 
+    // ---- Calibration reliability diagram ----
+    H2('Probability Calibration (Reliability)');
+    P('Black dashed = perfect calibration. Red = raw v17 scores (over-confident). Blue = post-isotonic-calibration. Closer to diagonal = predicted probabilities match true ignition rates.');
+    var calWrap = document.createElement('div');
+    calWrap.style.cssText = 'background:var(--raised);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0';
+    var calCanvas = document.createElement('canvas');
+    calCanvas.id = 'calibration-canvas';
+    calCanvas.width = 700; calCanvas.height = 320;
+    calCanvas.style.cssText = 'width:100%;max-width:100%;height:320px;display:block';
+    calWrap.appendChild(calCanvas);
+    var calMeta = document.createElement('div');
+    calMeta.id = 'calibration-meta';
+    calMeta.style.cssText = 'font-size:12px;color:var(--t3);margin-top:8px';
+    calWrap.appendChild(calMeta);
+    c.appendChild(calWrap);
+    renderCalibrationChart();
+
     // ---- Diagnostic strip: Season onset + Matrix profile + Feature drift ----
     H2('Diagnostic Signals');
     var diagStrip = document.createElement('div');
@@ -670,6 +687,76 @@ function loadModel() {
     seasonWrap.appendChild(seasonMeta);
     c.appendChild(seasonWrap);
     renderSeasonPulse();
+  });
+}
+
+function renderCalibrationChart() {
+  fetch('/api/calibration-curve').then(function(r){return r.json();}).then(function(d){
+    if (d.error) {
+      var m = document.getElementById('calibration-meta');
+      if (m) m.textContent = d.error;
+      return;
+    }
+    var canvas = document.getElementById('calibration-canvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+    var PAD = 40;
+    var plotW = W - PAD*2, plotH = H - PAD*2;
+    function xAt(p){ return PAD + plotW*p; }
+    function yAt(p){ return PAD + plotH*(1-p); }
+
+    ctx.clearRect(0,0,W,H);
+
+    // Gridlines
+    ctx.strokeStyle='#2a2d3e'; ctx.fillStyle='#64748b'; ctx.font='10px monospace';
+    for (var k=0; k<=5; k++) {
+      var v = k/5;
+      ctx.beginPath(); ctx.moveTo(PAD, yAt(v)); ctx.lineTo(PAD+plotW, yAt(v)); ctx.stroke();
+      ctx.fillText(v.toFixed(1), 8, yAt(v)+4);
+      ctx.beginPath(); ctx.moveTo(xAt(v), PAD); ctx.lineTo(xAt(v), PAD+plotH); ctx.stroke();
+      ctx.fillText(v.toFixed(1), xAt(v)-8, H-12);
+    }
+
+    // Perfect calibration line
+    ctx.strokeStyle='#94a3b8'; ctx.setLineDash([5,5]); ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(xAt(0), yAt(0)); ctx.lineTo(xAt(1), yAt(1)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    function drawCurve(data, color, dotR){
+      if (!data || !data.mean_predicted) return;
+      ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=2;
+      ctx.beginPath();
+      data.mean_predicted.forEach(function(x, i){
+        var y = data.fraction_positive[i];
+        if (i===0) ctx.moveTo(xAt(x), yAt(y));
+        else ctx.lineTo(xAt(x), yAt(y));
+      });
+      ctx.stroke();
+      data.mean_predicted.forEach(function(x, i){
+        var y = data.fraction_positive[i];
+        ctx.beginPath(); ctx.arc(xAt(x), yAt(y), dotR, 0, 2*Math.PI); ctx.fill();
+      });
+    }
+    drawCurve(d.before_calibration, '#ef4444', 3);
+    drawCurve(d.after_calibration, '#3b82f6', 3);
+
+    // Axis labels
+    ctx.fillStyle='#94a3b8'; ctx.font='11px monospace';
+    ctx.fillText('Predicted probability', W/2-60, H-2);
+    ctx.save();
+    ctx.translate(12, H/2 + 40);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillText('Observed ignition rate', 0, 0);
+    ctx.restore();
+
+    var meta = document.getElementById('calibration-meta');
+    if (meta) {
+      meta.innerHTML = 'method=<b>' + (d.method||'?') + '</b> &nbsp;·&nbsp; ' +
+        '<span style="color:#ef4444">● raw scores</span> &nbsp; ' +
+        '<span style="color:#3b82f6">● calibrated</span> &nbsp; ' +
+        '<span style="color:#94a3b8">─ ─ perfect</span>';
+    }
   });
 }
 
@@ -740,6 +827,33 @@ function renderDiagnosticStrip() {
       sum.ELEVATED + ' elevated',
       sum.TYPICAL + ' typical, ' + sum.QUIET + ' quiet across ' + (d.n_divisions_fit||0) + ' divisions',
       statusColor[primary]));
+  });
+
+  // Soil pulse (Open-Meteo soil features)
+  fetch('/api/soil-pulse').then(function(r){return r.json();}).then(function(d){
+    if (d.error) return;
+    var st = d.status || 'TYPICAL';
+    var color = {DRY:'#ef4444', WET:'#3b82f6', TYPICAL:'#22c55e'}[st] || '#94a3b8';
+    var moistAnom = d.soil_moisture_anomaly;
+    var sign = moistAnom >= 0 ? '+' : '';
+    strip.appendChild(makeDiagCard('Soil moisture (0-7cm)',
+      st,
+      'moist anom ' + sign + (moistAnom*1000).toFixed(0) + ' (×10⁻³ m³/m³), 30-d avg ' +
+      ((d.rolling_30d_moisture_anom||0) >= 0 ? '+' : '') +
+      ((d.rolling_30d_moisture_anom||0)*1000).toFixed(0),
+      color));
+  });
+
+  // Calibration card (Brier improvement)
+  fetch('/api/operational-alerts').then(function(r){return r.json();}).then(function(d){
+    if (d.error) return;
+    var sample = (d.alerts||[])[0] || {};
+    if (sample.calibrated_risk == null) return;
+    strip.appendChild(makeDiagCard('Probability calibration',
+      'isotonic',
+      'Top alert: raw ' + (sample.ignition_risk*100).toFixed(0) + '% → calibrated ' +
+      (sample.calibrated_risk*100).toFixed(1) + '% true rate',
+      '#22c55e'));
   });
 }
 

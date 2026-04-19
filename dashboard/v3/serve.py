@@ -34,6 +34,8 @@ DIVISION_PULSE = FEED_DIR / "division_pulse.json"
 FEATURE_DRIFT = FEED_DIR / "feature_drift.json"
 MATRIX_PROFILE = FEED_DIR / "matrix_profile_firms.json"
 SEASON_ONSET = FEED_DIR / "season_onset.json"
+CALIB_CURVE = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v17_ba_pu" / "calibration_curve.json"
+SOIL_PARQUET = ROOT / "data_lake" / "fire_weather" / "soil_daily.parquet"
 FIELD_RESPONSES = ALERTS_DIR / "field_responses.parquet"
 _RESPONSE_LOCK = threading.Lock()
 
@@ -311,6 +313,34 @@ def _load_json_feed(path: Path, tool_name: str) -> dict:
     return json.loads(path.read_text())
 
 
+def _load_soil_pulse() -> dict:
+    if not SOIL_PARQUET.exists():
+        return {"error": "soil features not built — run scripts/build_soil_features.py"}
+    df = pd.read_parquet(SOIL_PARQUET)
+    df["date"] = pd.to_datetime(df["date"])
+    latest = df.tail(1).iloc[0]
+    last30 = df.tail(30)
+    temp_anom = float(latest["soil_temp_anomaly"])
+    moist_anom = float(latest["soil_moisture_anomaly"])
+    if moist_anom < -0.05:
+        status = "DRY"
+    elif moist_anom > 0.05:
+        status = "WET"
+    else:
+        status = "TYPICAL"
+    return {
+        "latest_date": latest["date"].strftime("%Y-%m-%d"),
+        "soil_temp_0_to_7cm_mean": float(latest["soil_temp_0_to_7cm_mean"]),
+        "soil_temp_anomaly": temp_anom,
+        "soil_moisture_0_to_7cm_mean": float(latest["soil_moisture_0_to_7cm_mean"]),
+        "soil_moisture_anomaly": moist_anom,
+        "status": status,
+        "rolling_30d_temp_anom": float(last30["soil_temp_anomaly"].mean()),
+        "rolling_30d_moisture_anom": float(last30["soil_moisture_anomaly"].mean()),
+        "n_days_history": int(len(df)),
+    }
+
+
 def _append_field_response(payload: dict) -> dict:
     """Append a field-staff response to the rolling parquet, thread-safe."""
     required = ("cell_id", "outcome", "staff_id")
@@ -414,6 +444,10 @@ class PortalHandler(SimpleHTTPRequestHandler):
             self._send_json(_load_json_feed(MATRIX_PROFILE, "matrix_profile_firms"))
         elif path == "/api/season-onset":
             self._send_json(_load_json_feed(SEASON_ONSET, "detect_season_changepoints"))
+        elif path == "/api/calibration-curve":
+            self._send_json(_load_json_feed(CALIB_CURVE, "calibrate_v17"))
+        elif path == "/api/soil-pulse":
+            self._send_json(_load_soil_pulse())
         else:
             super().do_GET()
 

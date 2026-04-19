@@ -626,6 +626,16 @@ def main():
             PYTHON, "scripts/detect_season_changepoints.py",
         ], timeout=120)
 
+    # Step 4.9: Soil features (Open-Meteo Archive) + v17 calibration refit
+    # These are slow/external so refit weekly is enough; if you want daily, just keep them on.
+    if not args.skip_prediction:
+        run_step("Soil Features (Open-Meteo Archive)", [
+            PYTHON, "scripts/build_soil_features.py",
+        ], timeout=300)
+        run_step("v17 Probability Calibration", [
+            PYTHON, "scripts/calibrate_v17.py",
+        ], timeout=120)
+
     # Step 5: Build unified feed (detection + grid prediction + v17 ignition)
     print(f"\n{'='*60}")
     print(f"  STEP: Build Unified Alert Feed")

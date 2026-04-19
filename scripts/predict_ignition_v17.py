@@ -45,6 +45,27 @@ HAWKES_PARAMS = ROOT / "data_lake" / "human_activity" / "hawkes" / "hawkes_param
 GLCM_PATH = ROOT / "data_lake" / "human_activity" / "glcm_texture_per_cell.parquet"
 HYDRO_PATH = ROOT / "data_lake" / "human_activity" / "hydro_features_per_cell.parquet"
 CELLS_PATH = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v6e_live" / "cells.csv"
+CALIBRATION_PATH = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v17_ba_pu" / "calibration.json"
+
+
+def _load_calibration() -> dict | None:
+    if not CALIBRATION_PATH.exists():
+        return None
+    try:
+        return json.loads(CALIBRATION_PATH.read_text())
+    except Exception:
+        return None
+
+
+def _apply_calibration(scores: np.ndarray, params: dict | None) -> np.ndarray:
+    if params is None:
+        return scores
+    if params.get("method") == "isotonic":
+        return np.interp(scores, params["knot_x"], params["knot_y"])
+    if params.get("method") == "platt_sigmoid":
+        z = params["slope"] * scores + params["intercept"]
+        return 1.0 / (1.0 + np.exp(-z))
+    return scores
 
 KM_PER_DEG_LAT = 110.6
 KM_PER_DEG_LON = 101.4
@@ -247,7 +268,17 @@ def main() -> int:
     log.info("Predicting...")
     probs = model.predict(df[feat_names].values)
     df["ignition_risk"] = probs
-    log.info("  Risk range [%.4f, %.4f]", probs.min(), probs.max())
+    log.info("  Raw risk range [%.4f, %.4f]", probs.min(), probs.max())
+
+    calib_params = _load_calibration()
+    if calib_params is not None:
+        df["calibrated_risk"] = _apply_calibration(probs, calib_params)
+        log.info("  Calibrated risk range [%.4f, %.4f] (method=%s)",
+                 df["calibrated_risk"].min(), df["calibrated_risk"].max(),
+                 calib_params.get("method"))
+    else:
+        df["calibrated_risk"] = probs
+        log.info("  No calibration JSON found — using raw scores")
 
     dashboard_dir = Path(args.output).parent
     rolling_history = (
@@ -276,6 +307,7 @@ def main() -> int:
                 "lat": cell_lookup[cid]["centroid_lat"],
                 "lon": cell_lookup[cid]["centroid_lon"],
                 "ignition_risk": float(row["ignition_risk"]),
+                "calibrated_risk": float(row["calibrated_risk"]),
                 "rank": float(row["rank"]),
                 "band": BAND_NAMES[int(row["band"])],
                 "hawkes_n_recent_10km_7d": int(row["hawkes_n_recent_10km_7d"]),
@@ -294,6 +326,12 @@ def main() -> int:
         "generated_at": datetime.now().isoformat(),
         "n_cells_total": int(len(df)),
         "rank_calibration": rank_meta,
+        "probability_calibration": (
+            {k: calib_params[k] for k in ("method", "brier", "logloss",
+                                          "baseline_brier", "n_calibration",
+                                          "n_validation") if k in calib_params}
+            if calib_params else None
+        ),
         "legacy_top_pct": {
             "top_pct": args.top_pct,
             "threshold": legacy_threshold,
