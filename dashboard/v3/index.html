@@ -1399,7 +1399,143 @@ function loadValidation() {
     while (c.firstChild) c.removeChild(c.firstChild);
     var rows = data.rows || [];
 
-    var h2 = document.createElement('h2'); h2.textContent='Field Validation Log'; c.appendChild(h2);
+    // ---- 2026 Full-Season backtest card ----
+    var seasonH2 = document.createElement('h2');
+    seasonH2.textContent = '2026 Fire Season — Extensive Backtest';
+    c.appendChild(seasonH2);
+    var seasonHost = document.createElement('div');
+    seasonHost.id = 'season-validation-host';
+    seasonHost.innerHTML = '<div class="shimmer" style="height:160px;border-radius:8px;margin-bottom:20px"></div>';
+    c.appendChild(seasonHost);
+    fetch('/api/season-validation').then(function(r){return r.json()}).then(function(sd) {
+      while (seasonHost.firstChild) seasonHost.removeChild(seasonHost.firstChild);
+      if (sd.error) {
+        var note = document.createElement('p');
+        note.style.cssText = 'color:var(--t3);font-size:12px';
+        note.textContent = 'Season-validation report not built yet. Run scripts/validate_2026_season.py to populate.';
+        seasonHost.appendChild(note);
+        return;
+      }
+      var s = sd.summary || {};
+      // Headline metric grid
+      var grid = document.createElement('div'); grid.className='mgrid';
+      function card(label, value, sub, color, tip) {
+        var mc=document.createElement('div'); mc.className='mcard';
+        var ml=document.createElement('div'); ml.className='ml'; ml.textContent=label;
+        if (tip) {
+          var t=document.createElement('span'); t.className='info-tip'; t.setAttribute('data-tip', tip); t.textContent='?'; ml.appendChild(t);
+        }
+        mc.appendChild(ml);
+        var mv=document.createElement('div'); mv.className='mv'; mv.style.color=color; mv.textContent=value; mc.appendChild(mv);
+        var ms=document.createElement('div'); ms.className='ms'; ms.textContent=sub; mc.appendChild(ms);
+        return mc;
+      }
+      var pct = function(v){return v==null?'\u2014':(v*100).toFixed(1)+'%';};
+      grid.appendChild(card(
+        'Unique-event recall',
+        pct(s.unique_recall_any_band),
+        'Caught \u2265 1x at any band over season',
+        'var(--accent)', null,
+        'Of all unique fire events in 2026 Feb-Apr, the fraction where at least one CRITICAL/ALERT/WATCH alert landed within 4 km during the [D, D+7] window.'
+      ));
+      grid.appendChild(card(
+        'Unique-event recall (CRITICAL)',
+        pct(s.unique_recall_critical),
+        'Only flagged at CRITICAL level',
+        'var(--watch)', null,
+        'Same metric but restricted to CRITICAL band only. Much lower than any-band because CRITICAL is a small subset.'
+      ));
+      grid.appendChild(card(
+        'CRITICAL precision',
+        pct(s.season_precision_critical),
+        '1 in ~30 CRITICALs caught a fire (7-day window, FIRMS-only)',
+        'var(--crit)', null,
+        'Of all CRITICAL alerts issued across 66 days, the fraction with a real fire within 4 km in [D, D+7]. Lower than the 22% on-training number because we use FIRMS-only ground truth (no burn-scar augmentation).'
+      ));
+      grid.appendChild(card(
+        'Median spatial offset',
+        (s.median_spatial_offset_km||0).toFixed(2)+' km',
+        'When caught, distance alert\u2194fire',
+        'var(--t1)', null,
+        'When the model catches a fire, the centroid of the predicted cell is on average this far from the centroid of the FIRMS event cluster. ~1 cell width.'
+      ));
+      grid.appendChild(card(
+        'Median lead-time',
+        '+'+(s.median_temporal_offset_days||0).toFixed(0)+' days',
+        'D+N detection of caught fires',
+        'var(--safe)', null,
+        'How many days after the prediction date the catching fire is actually detected. The model is medium-term ranker, not real-time alert.'
+      ));
+      grid.appendChild(card(
+        'Floor catches',
+        (s.n_floor_caught_event||0)+' events',
+        'at '+pct(s.season_precision_floor)+' precision',
+        'var(--alert)', null,
+        'Coverage-floor promotions caught this many real events at this precision. Lower than COLD_START but NOT zero \u2014 the floor is a meaningful safety-net for otherwise-silent divisions.'
+      ));
+      seasonHost.appendChild(grid);
+
+      // Per-trust-tier table
+      var hT = document.createElement('h3');
+      hT.style.cssText = 'font-size:13px;margin:18px 0 6px;color:var(--t2);text-transform:uppercase;letter-spacing:1px';
+      hT.textContent = 'Per Trust Tier';
+      seasonHost.appendChild(hT);
+      var t = document.createElement('table');
+      var thead = document.createElement('thead'); var hr = document.createElement('tr');
+      ['Trust tier','Alerts','Caught','Precision','Median offset (km)'].forEach(function(h){
+        var th=document.createElement('th'); th.textContent=h; hr.appendChild(th);
+      });
+      thead.appendChild(hr); t.appendChild(thead);
+      var tb = document.createElement('tbody');
+      (sd.per_trust_tier||[]).forEach(function(r){
+        var tr = document.createElement('tr');
+        if (r.trust_tier === 'DIVISION_FLOOR') tr.style.background = 'rgba(245,158,11,0.06)';
+        if (r.trust_tier === 'HIGH') tr.style.background = 'rgba(34,197,94,0.06)';
+        var cells = [
+          r.trust_tier,
+          (r.n_alerts||0).toLocaleString(),
+          (r.n_alerts_caught_event||0).toLocaleString(),
+          pct(r.precision),
+          r.median_match_offset_km==null?'\u2014':Number(r.median_match_offset_km).toFixed(2),
+        ];
+        cells.forEach(function(v){
+          var td=document.createElement('td'); td.textContent=v; tr.appendChild(td);
+        });
+        tb.appendChild(tr);
+      });
+      t.appendChild(tb); seasonHost.appendChild(t);
+
+      // Directional bias verdict
+      var db = s.directional_bias || {};
+      if (db.n_caught) {
+        var dh = document.createElement('h3');
+        dh.style.cssText = 'font-size:13px;margin:18px 0 6px;color:var(--t2);text-transform:uppercase;letter-spacing:1px';
+        dh.textContent = 'Directional Offset';
+        seasonHost.appendChild(dh);
+        var dp = document.createElement('p');
+        dp.style.cssText = 'color:var(--t2);font-size:12px;line-height:1.6';
+        var sigBadge = db.bias_is_significant_95ci
+          ? '<span style="color:#ef4444;font-weight:600">SYSTEMATIC BIAS</span>'
+          : '<span style="color:#22c55e;font-weight:600">RANDOM (no fix possible)</span>';
+        dp.innerHTML = sigBadge + ' \u00b7 mean east '+db.mean_east_km.toFixed(3)+
+          ' km (z='+db.z_east.toFixed(2)+'), mean north '+db.mean_north_km.toFixed(3)+
+          ' km (z='+db.z_north.toFixed(2)+
+          '). Mean resultant length '+db.mean_resultant_length.toFixed(3)+
+          ' (0=isotropic). '+(db.bias_interpretation||'');
+        seasonHost.appendChild(dp);
+      }
+
+      var srcRow = document.createElement('div');
+      srcRow.style.cssText = 'margin-top:14px;font-size:11px;color:var(--t3)';
+      srcRow.innerHTML = 'Window: <b>' + s.window_days + ' days</b> backfilled \u00b7 ' +
+        s.n_unique_ignition_events + ' unique events \u00b7 ' +
+        'Generated ' + (s.generated_at||'').slice(0,19);
+      seasonHost.appendChild(srcRow);
+    }).catch(function(e){
+      seasonHost.innerHTML = '<p style="color:var(--t3);font-size:12px">season-validation endpoint failed: '+(e&&e.message||e)+'</p>';
+    });
+
+    var h2 = document.createElement('h2'); h2.textContent='Field Validation Log (rolling)'; c.appendChild(h2);
     var p = document.createElement('p');
     p.style.cssText = 'color:var(--t2);margin-bottom:16px;font-size:14px;line-height:1.6';
     p.textContent='Compares v17 predictions against actual FIRMS ignitions in the 7-day window after each prediction. Updated daily by the production pipeline.';

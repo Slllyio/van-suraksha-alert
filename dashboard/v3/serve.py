@@ -35,6 +35,7 @@ FEATURE_DRIFT = FEED_DIR / "feature_drift.json"
 MATRIX_PROFILE = FEED_DIR / "matrix_profile_firms.json"
 SEASON_ONSET = FEED_DIR / "season_onset.json"
 CALIB_CURVE = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v17_ba_pu" / "calibration_curve.json"
+SEASON_VALIDATION_DIR = ROOT / "outputs" / "validation_reports"
 SOIL_PARQUET = ROOT / "data_lake" / "fire_weather" / "soil_daily.parquet"
 FIELD_RESPONSES = ALERTS_DIR / "field_responses.parquet"
 _RESPONSE_LOCK = threading.Lock()
@@ -301,6 +302,35 @@ def _load_division_briefings() -> dict:
     return json.loads(DIVISION_BRIEFINGS.read_text())
 
 
+def _load_season_validation() -> dict:
+    """Return the 2026 season validation summary + per-trust-tier breakdown.
+
+    Reads:
+      outputs/validation_reports/2026_season_summary.json  — main summary
+      outputs/validation_reports/2026_per_trust_tier.csv    — 4 tier rows
+      outputs/validation_reports/2026_per_day.csv           — daily timeline
+
+    Portal Validation tab surfaces this to reconcile the "1 validation row in
+    rolling parquet" situation with the full-season backtest.
+    """
+    summary_path = SEASON_VALIDATION_DIR / "2026_season_summary.json"
+    tier_path = SEASON_VALIDATION_DIR / "2026_per_trust_tier.csv"
+    day_path = SEASON_VALIDATION_DIR / "2026_per_day.csv"
+    if not summary_path.exists():
+        return {"error": "2026_season_summary.json not found — run "
+                "scripts/validate_2026_season.py first"}
+
+    out = {"summary": json.loads(summary_path.read_text())}
+    if tier_path.exists():
+        df = pd.read_csv(tier_path)
+        # Replace any NaN with None for safe JSON
+        out["per_trust_tier"] = df.where(pd.notnull(df), None).to_dict(orient="records")
+    if day_path.exists():
+        df = pd.read_csv(day_path)
+        out["per_day"] = df.where(pd.notnull(df), None).to_dict(orient="records")
+    return out
+
+
 def _build_blind_spots() -> dict:
     """Divisions where the model is silent during high-risk weather.
 
@@ -512,6 +542,8 @@ class PortalHandler(SimpleHTTPRequestHandler):
             self._send_json(_enrich_division_overview(base))
         elif path == "/api/blind-spots":
             self._send_json(_build_blind_spots())
+        elif path == "/api/season-validation":
+            self._send_json(_load_season_validation())
         elif path == "/api/model-transparency":
             self._send_json(_build_transparency())
         elif path == "/api/validation-log":

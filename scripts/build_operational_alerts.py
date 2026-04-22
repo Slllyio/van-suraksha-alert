@@ -183,13 +183,27 @@ def load_calendar_context(target: date) -> CalendarContext:
 
 
 def load_cell_metadata() -> dict[str, dict[str, str]]:
+    """Load per-cell division/range/beat + centroid lat/lon.
+
+    lat/lon are needed when the coverage floor promotes a cell from
+    alerts_all_cells — those records only carry cell_id+ignition_risk,
+    so the decorated alert would render at NaN coordinates without this
+    lookup.
+    """
     if not CELLS_CSV.exists():
         return {}
     cells = pd.read_csv(CELLS_CSV)
     needed = [c for c in ("division", "range", "beat") if c in cells.columns]
+    lat_col = next((c for c in ("centroid_lat", "lat", "latitude") if c in cells.columns), None)
+    lon_col = next((c for c in ("centroid_lon", "lon", "longitude") if c in cells.columns), None)
     out: dict[str, dict[str, str]] = {}
     for _, r in cells.iterrows():
-        out[str(r["cell_id"])] = {k: str(r[k]) if k in r else "" for k in needed}
+        meta = {k: str(r[k]) if k in r else "" for k in needed}
+        if lat_col is not None:
+            meta["lat"] = float(r[lat_col])
+        if lon_col is not None:
+            meta["lon"] = float(r[lon_col])
+        out[str(r["cell_id"])] = meta
     return out
 
 
@@ -365,13 +379,17 @@ def apply_division_coverage_floor(
                 existing["action"] = "VERIFY"
                 existing["action_text"] = _floor_action_text(div)
             elif cid not in cells_in_alerts:
-                # New floor cell — decorate from scratch
+                # New floor cell — decorate from scratch. alerts_all_cells
+                # records only carry {cell_id, ignition_risk}, so we pull
+                # lat/lon from cell_meta (loaded from cells.csv centroid_*).
                 meta = cell_meta.get(cid, {})
                 trust, is_cold = calibrate_trust(
                     c.get("rank", 0), c.get("hawkes_n_recent_10km_7d", 0)
                 )
                 new_alert = {
                     **c,
+                    "lat": meta.get("lat", c.get("lat")),
+                    "lon": meta.get("lon", c.get("lon")),
                     "band": "CRITICAL",
                     "division": meta.get("division", div),
                     "range": meta.get("range", ""),
@@ -467,13 +485,26 @@ def build_division_briefings(
 
 
 def main() -> int:
-    if not V17_JSON.exists():
-        log.error("v17 json not found: %s", V17_JSON)
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--input-v17", default=str(V17_JSON),
+                    help="Path to raw v17 predictions JSON (default: production feed)")
+    ap.add_argument("--output-alerts", default=str(OUT_ALERTS),
+                    help="Path to write operational_alerts JSON (default: production feed)")
+    ap.add_argument("--output-briefings", default=str(OUT_BRIEFINGS),
+                    help="Path to write division_briefings JSON (default: production feed)")
+    args = ap.parse_args()
+    in_v17 = Path(args.input_v17)
+    out_alerts = Path(args.output_alerts)
+    out_briefings = Path(args.output_briefings)
+
+    if not in_v17.exists():
+        log.error("v17 json not found: %s", in_v17)
         log.error("Run `python scripts/predict_ignition_v17.py` first.")
         return 1
 
-    log.info("Loading v17 raw predictions...")
-    raw = json.loads(V17_JSON.read_text())
+    log.info("Loading v17 raw predictions from %s...", in_v17)
+    raw = json.loads(in_v17.read_text())
     banded_alerts = raw.get("banded_alerts", [])
     all_cells = raw.get("alerts_all_cells", [])
     if not banded_alerts:
@@ -568,15 +599,22 @@ def main() -> int:
         "alerts": final_alerts,
     }
 
-    OUT_ALERTS.parent.mkdir(parents=True, exist_ok=True)
-    OUT_ALERTS.write_text(json.dumps(output, indent=2, default=str))
-    log.info("Wrote: %s", OUT_ALERTS.relative_to(ROOT))
+    out_alerts.parent.mkdir(parents=True, exist_ok=True)
+    out_alerts.write_text(json.dumps(output, indent=2, default=str))
+    try:
+        log.info("Wrote: %s", out_alerts.relative_to(ROOT))
+    except ValueError:
+        log.info("Wrote: %s", out_alerts)
 
     briefings = build_division_briefings(final_alerts, weather, calendar_ctx)
-    OUT_BRIEFINGS.write_text(json.dumps(briefings, indent=2, default=str))
-    log.info("Wrote: %s (%d divisions)",
-             OUT_BRIEFINGS.relative_to(ROOT),
-             briefings["n_divisions_with_alerts"])
+    out_briefings.write_text(json.dumps(briefings, indent=2, default=str))
+    try:
+        log.info("Wrote: %s (%d divisions)",
+                 out_briefings.relative_to(ROOT),
+                 briefings["n_divisions_with_alerts"])
+    except ValueError:
+        log.info("Wrote: %s (%d divisions)",
+                 out_briefings, briefings["n_divisions_with_alerts"])
 
     log.info("Sample top-5 CRITICAL with HIGH trust:")
     high_crit = [a for a in final_alerts
