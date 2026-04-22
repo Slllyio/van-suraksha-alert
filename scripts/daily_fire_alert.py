@@ -28,6 +28,15 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
+# Reconfigure stdout/stderr to UTF-8 so Unicode characters in log lines
+# (e.g. 'λ', '→', '×') don't crash the script on Windows CMD's default cp1252.
+# Same pattern as scripts/predict_ignition_v17.py and other ops scripts.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+    sys.stderr.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+except (AttributeError, Exception):
+    pass
+
 ROOT = Path(__file__).resolve().parent.parent
 PYTHON = sys.executable
 LOG_DIR = ROOT / "logs"
