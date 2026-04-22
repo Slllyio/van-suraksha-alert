@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JwalaNetra — Fire Intelligence Portal</title>
-<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css">
+<script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
@@ -194,6 +194,9 @@ th{color:var(--t3);font-size:11px;font-weight:600;text-transform:uppercase;lette
           <label class="layer-toggle"><input type="checkbox" checked data-band="ALERT"> Alert cells</label>
           <label class="layer-toggle"><input type="checkbox" checked data-band="WATCH"> Watch cells</label>
           <label class="layer-toggle"><input type="checkbox" id="toggle-beats" checked> Beat boundaries</label>
+          <label class="layer-toggle"><input type="checkbox" id="toggle-terrain"> 3D Terrain</label>
+          <label class="layer-toggle"><input type="checkbox" id="toggle-globe"> Globe view</label>
+          <label class="layer-toggle"><input type="checkbox" id="toggle-pulse" checked> Pulse CRITICAL</label>
         </div>
       </div>
     </div>
@@ -262,12 +265,13 @@ document.getElementById('flyout-close').addEventListener('click', function() {
 // Layer toggles
 document.querySelectorAll('.layer-toggle input').forEach(function(cb) {
   cb.addEventListener('change', function() {
-    if (this.id === 'toggle-beats') {
-      toggleBeatLayers(this.checked);
-    } else {
-      S.bands[this.dataset.band] = this.checked;
-      updateFilter();
-    }
+    if (this.id === 'toggle-beats')   { toggleBeatLayers(this.checked); return; }
+    if (this.id === 'toggle-terrain') { toggleTerrain(this.checked); return; }
+    if (this.id === 'toggle-globe')   { toggleGlobe(this.checked); return; }
+    if (this.id === 'toggle-pulse')   { togglePulse(this.checked); return; }
+    // Default: band visibility toggle
+    S.bands[this.dataset.band] = this.checked;
+    updateFilter();
   });
 });
 
@@ -277,6 +281,63 @@ function toggleBeatLayers(visible) {
   ['beats-fill', 'beats-line'].forEach(function(id) {
     if (S.map.getLayer(id)) S.map.setLayoutProperty(id, 'visibility', vis);
   });
+}
+
+function toggleTerrain(on) {
+  if (!S.map) return;
+  if (on) {
+    try {
+      S.map.setTerrain({ source: 'dem', exaggeration: 1.5 });
+      S.map.easeTo({ pitch: 45, duration: 800 });
+      // Add a simple sky layer so the horizon doesn't look flat
+      if (!S.map.getLayer('sky')) {
+        S.map.addLayer({
+          id: 'sky', type: 'sky',
+          paint: { 'sky-type': 'atmosphere', 'sky-atmosphere-sun-intensity': 8 }
+        });
+      }
+    } catch (e) { console.warn('setTerrain failed:', e); }
+  } else {
+    try { S.map.setTerrain(null); } catch(e){}
+    S.map.easeTo({ pitch: 0, duration: 600 });
+    if (S.map.getLayer('sky')) S.map.removeLayer('sky');
+  }
+}
+
+function toggleGlobe(on) {
+  if (!S.map) return;
+  try {
+    // MapLibre 5.x: setProjection({ type: 'globe' | 'mercator' })
+    S.map.setProjection({ type: on ? 'globe' : 'mercator' });
+  } catch (e) { console.warn('setProjection failed (needs MapLibre 5.x):', e); }
+}
+
+var _pulsePhase = 0;
+var _pulseInterval = null;
+function togglePulse(on) {
+  if (on && !_pulseInterval) {
+    _pulseInterval = setInterval(function() {
+      _pulsePhase += 0.12;
+      if (!S.map || !S.map.getLayer('v17-layer')) return;
+      // Sine-wave multiplier on CRITICAL circle radius (0.85 .. 1.25)
+      var m = 1.05 + 0.20 * Math.sin(_pulsePhase);
+      S.map.setPaintProperty('v17-layer', 'circle-radius', [
+        'interpolate', ['linear'], ['zoom'],
+        5,  ['match', ['get','band'], 'CRITICAL', 5 * m,  'ALERT', 3.5, 'WATCH', 2,  2],
+        12, ['match', ['get','band'], 'CRITICAL', 14 * m, 'ALERT', 10,  'WATCH', 7,  5]
+      ]);
+    }, 60);
+  } else if (!on && _pulseInterval) {
+    clearInterval(_pulseInterval);
+    _pulseInterval = null;
+    if (S.map && S.map.getLayer('v17-layer')) {
+      S.map.setPaintProperty('v17-layer', 'circle-radius', [
+        'interpolate', ['linear'], ['zoom'],
+        5,  ['match', ['get','band'], 'CRITICAL', 5,  'ALERT', 3.5, 'WATCH', 2,  2],
+        12, ['match', ['get','band'], 'CRITICAL', 14, 'ALERT', 10,  'WATCH', 7,  5]
+      ]);
+    }
+  }
 }
 
 function updateFilter() {
@@ -309,6 +370,17 @@ function initMap() {
   S.map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
   S.map.on('load', function() {
+    // DEM source for 3D terrain. Terrarium PNGs from AWS Open Data (NASA SRTM).
+    // Registered up-front; setTerrain() is toggled via the sidebar checkbox.
+    S.map.addSource('dem', {
+      type: 'raster-dem',
+      tiles: ['https://elevation-tiles-prod.s3.amazonaws.com/terrarium/{z}/{x}/{y}.png'],
+      tileSize: 256,
+      encoding: 'terrarium',
+      maxzoom: 12,
+      attribution: 'DEM: NASA SRTM via AWS Open Data'
+    });
+
     // Beat-boundary layer (same pattern as Tab 5 VIIRS map). Loads async;
     // v17 layer goes on top of beats fills so alerts remain visible.
     fetch('/api/beats-boundary').then(function(r){return r.json();}).then(function(geo){
@@ -365,6 +437,11 @@ function initMap() {
     });
 
     loadV17();
+
+    // Camera intro: gentle flyTo with slight pitch, then start pulse if enabled.
+    S.map.easeTo({ center: [78.5, 23.5], zoom: 6.4, pitch: 0, duration: 1200 });
+    var pulseCb = document.getElementById('toggle-pulse');
+    if (pulseCb && pulseCb.checked) togglePulse(true);
   });
 }
 
