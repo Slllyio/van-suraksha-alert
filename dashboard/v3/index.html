@@ -216,7 +216,7 @@ th{color:var(--t3);font-size:11px;font-weight:600;text-transform:uppercase;lette
     <div class="side">
       <div class="side-section">
         <div class="side-label">Alert Summary</div>
-        <div class="risk-card crit animate-in"><div class="rc-top"><span class="rc-count" id="nc">0</span><span class="rc-label" style="color:var(--crit)">Critical</span></div><div class="rc-bar"><div class="rc-bar-fill" id="nc-bar" style="background:var(--crit);width:0%"></div></div><div class="rc-sub">1 in 5 is a real fire (22% precision)</div></div>
+        <div class="risk-card crit animate-in"><div class="rc-top"><span class="rc-count" id="nc">0</span><span class="rc-label" style="color:var(--crit)">Critical</span></div><div class="rc-bar"><div class="rc-bar-fill" id="nc-bar" style="background:var(--crit);width:0%"></div></div><div class="rc-sub">1 in 5 is a real fire (22% precision) <span id="nc-sub" style="color:var(--watch);font-weight:500"></span></div></div>
         <div class="risk-card alrt animate-in"><div class="rc-top"><span class="rc-count" id="na">0</span><span class="rc-label" style="color:var(--alert)">Alert</span></div><div class="rc-bar"><div class="rc-bar-fill" id="na-bar" style="background:var(--alert);width:0%"></div></div><div class="rc-sub">Scheduled patrol recommended</div></div>
         <div class="risk-card wtch animate-in"><div class="rc-top"><span class="rc-count" id="nw">0</span><span class="rc-label" style="color:var(--watch)">Watch</span></div><div class="rc-bar"><div class="rc-bar-fill" id="nw-bar" style="background:var(--watch);width:0%"></div></div><div class="rc-sub">Elevated awareness zone</div></div>
       </div>
@@ -226,6 +226,13 @@ th{color:var(--t3);font-size:11px;font-weight:600;text-transform:uppercase;lette
         <div class="conf-block">
           <div class="conf-ring"><svg width="80" height="80"><circle cx="40" cy="40" r="34" fill="none" stroke="var(--bg)" stroke-width="6"/><circle id="conf-arc" cx="40" cy="40" r="34" fill="none" stroke="var(--safe)" stroke-width="6" stroke-dasharray="0 214" stroke-linecap="round"/></svg><div class="conf-pct" id="conf-pct">0%</div></div>
           <div class="conf-label">of alerts have Hawkes fire-neighborhood support</div>
+        </div>
+        <div id="coverage-strip" style="margin-top:10px;font-size:11px;color:var(--t2);line-height:1.5;padding:8px 10px;background:var(--raised);border:1px solid var(--border);border-radius:6px" title="Coverage stat across all 87 MP divisions."></div>
+        <div class="conf-legend" style="margin-top:10px;font-size:10px;color:var(--t3);line-height:1.65">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="width:10px;height:10px;background:#ef4444;border-radius:50%;border:2px solid #22c55e;display:inline-block"></span> HIGH trust (act now)</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="width:10px;height:10px;background:#ef4444;border-radius:50%;display:inline-block"></span> MEDIUM trust</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="width:10px;height:10px;background:#13141a;border-radius:50%;border:2px solid #ef4444;display:inline-block"></span> COLD-START (verify)</div>
+          <div style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;background:#13141a;border-radius:50%;border:3px solid #f59e0b;display:inline-block"></span> FLOOR (division cover)</div>
         </div>
       </div>
 
@@ -435,6 +442,14 @@ function initMap() {
         id: 'beats-fill', type: 'fill', source: 'beats',
         paint: { 'fill-color': '#22c55e', 'fill-opacity': 0.05 }
       });
+      // Blind-spot fill: amber overlay on beats whose division is silent in danger.
+      // Beat GeoJSON property is "Division" (capitalized). Empty filter
+      // initially; loadBlindSpots() updates it after fetch.
+      S.map.addLayer({
+        id: 'blind-spot-fill', type: 'fill', source: 'beats',
+        filter: ['in', 'Division', ''],
+        paint: { 'fill-color': '#f59e0b', 'fill-opacity': 0.18 }
+      });
       S.map.addLayer({
         id: 'beats-line', type: 'line', source: 'beats',
         paint: { 'line-color': '#22c55e', 'line-opacity': 0.25, 'line-width': 0.5 },
@@ -443,16 +458,37 @@ function initMap() {
     }).catch(function(){});
 
     S.map.addSource('v17', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+    // Confidence-tier-aware paint rule:
+    //   trust=HIGH       -> solid red, large stroke (high-confidence CRITICAL)
+    //   trust=MEDIUM     -> solid red, normal stroke
+    //   trust=COLD_START -> hollow red ring (filled with surface color)
+    //   trust=DIVISION_FLOOR -> orange ring + dashed via larger stroke gap
+    // Operationally: solid = act now; ring = verify before acting.
     S.map.addLayer({
       id: 'v17-layer', type: 'circle', source: 'v17',
       paint: {
         'circle-radius': ['interpolate', ['linear'], ['zoom'],
           5, ['match', ['get','band'], 'CRITICAL',5, 'ALERT',3.5, 'WATCH',2, 2],
           12, ['match', ['get','band'], 'CRITICAL',14, 'ALERT',10, 'WATCH',7, 5]],
-        'circle-color': ['match', ['get','band'], 'CRITICAL','#ef4444', 'ALERT','#f97316', 'WATCH','#fbbf24', '#6b7280'],
+        'circle-color': ['case',
+          // Floor-promoted CRITICAL: hollow orange ring (low-confidence forced visibility)
+          ['==', ['get','trust_level'], 'DIVISION_FLOOR'], '#13141a',
+          // Cold-start CRITICAL: hollow red ring (model uncertain in this regime)
+          ['==', ['get','trust_level'], 'COLD_START'], '#13141a',
+          // Default: band-color fill
+          ['match', ['get','band'],
+            'CRITICAL','#ef4444', 'ALERT','#f97316', 'WATCH','#fbbf24', '#6b7280']],
         'circle-opacity': ['match', ['get','band'], 'CRITICAL',0.9, 'ALERT',0.65, 'WATCH',0.35, 0.2],
-        'circle-stroke-width': ['match', ['get','band'], 'CRITICAL',2, 1],
-        'circle-stroke-color': ['match', ['get','band'], 'CRITICAL','rgba(239,68,68,0.3)', 'rgba(0,0,0,0.3)'],
+        'circle-stroke-width': ['case',
+          ['==', ['get','trust_level'], 'DIVISION_FLOOR'], 3,
+          ['==', ['get','trust_level'], 'COLD_START'], 2.5,
+          ['match', ['get','band'], 'CRITICAL',2, 1]],
+        'circle-stroke-color': ['case',
+          ['==', ['get','trust_level'], 'DIVISION_FLOOR'], '#f59e0b',
+          ['==', ['get','trust_level'], 'COLD_START'], '#ef4444',
+          ['==', ['get','trust_level'], 'HIGH'], '#22c55e',
+          ['match', ['get','band'], 'CRITICAL','rgba(239,68,68,0.6)', 'rgba(0,0,0,0.3)']],
+        'circle-stroke-opacity': 0.9,
       }
     });
 
@@ -491,23 +527,42 @@ function initMap() {
 }
 
 function loadV17() {
-  fetch('/api/ignition-v17').then(function(r) { return r.json(); }).then(function(data) {
+  // Pull from operational-alerts so floor-promoted DIVISION_FLOOR cells render
+  // — those are critical for coverage but absent from the raw v17 output.
+  fetch('/api/operational-alerts').then(function(r) { return r.json(); }).then(function(data) {
     S.v17 = data;
     if (data.error) return;
     document.getElementById('pred-date').textContent = data.prediction_date || '';
 
-    var alerts = data.banded_alerts || [];
+    var alerts = data.alerts || [];
     var counts = { CRITICAL:0, ALERT:0, WATCH:0 };
     var hawkesHigh = 0;
+    var floorCount = 0, coldCount = 0;
 
     var features = alerts.map(function(a) {
-      counts[a.band] = (counts[a.band]||0) + 1;
+      var band = a.budget_tier || a.band;
+      counts[band] = (counts[band]||0) + 1;
       if ((a.hawkes_n_recent_10km_7d||0) > 1) hawkesHigh++;
+      if (a.floor_promoted) floorCount++;
+      if (a.is_cold_start) coldCount++;
       return { type:'Feature', geometry:{type:'Point',coordinates:[a.lon,a.lat]},
-               properties: { cell_id:a.cell_id, band:a.band, ignition_risk:(a.ignition_risk||0).toFixed(4),
-                             rank:(a.rank||0).toFixed(4), lat:a.lat, lon:a.lon,
-                             hawkes_n_recent_10km_7d:a.hawkes_n_recent_10km_7d||0,
-                             hawkes_lambda:(a.hawkes_lambda||0).toFixed(4) }};
+               properties: {
+                 cell_id:a.cell_id,
+                 band:band,
+                 ignition_risk:(a.ignition_risk||0).toFixed(4),
+                 calibrated_risk:(a.calibrated_risk||0).toFixed(4),
+                 stage_a_risk:(a.stage_a_risk!=null?Number(a.stage_a_risk).toFixed(4):''),
+                 rank:(a.rank||0).toFixed(4),
+                 lat:a.lat, lon:a.lon,
+                 division:a.division || '',
+                 beat:a.beat || '',
+                 trust_level:a.trust_level || 'MEDIUM',
+                 floor_promoted: a.floor_promoted ? 1 : 0,
+                 is_cold_start: a.is_cold_start ? 1 : 0,
+                 action:a.action || '',
+                 action_text:a.action_text || '',
+                 hawkes_n_recent_10km_7d:a.hawkes_n_recent_10km_7d||0,
+                 hawkes_lambda:(a.hawkes_lambda||0).toFixed(4) }};
     });
 
     S.map.getSource('v17').setData({ type:'FeatureCollection', features:features });
@@ -520,13 +575,57 @@ function loadV17() {
     document.getElementById('na-bar').style.width = (counts.ALERT/total*100).toFixed(0)+'%';
     document.getElementById('nw-bar').style.width = (counts.WATCH/total*100).toFixed(0)+'%';
 
+    // Surface floor-promoted + cold-start counts as a sub-line on the CRITICAL row
+    var critSub = document.getElementById('nc-sub');
+    if (critSub) {
+      var parts = [];
+      if (floorCount > 0) parts.push(floorCount + ' floor');
+      if (coldCount > 0) parts.push(coldCount + ' cold-start');
+      critSub.textContent = parts.length ? '(' + parts.join(' \u00b7 ') + ')' : '';
+    }
+
     var pct = Math.round(hawkesHigh/total*100);
     var circumference = 2 * Math.PI * 34;
     var arc = document.getElementById('conf-arc');
     arc.setAttribute('stroke-dasharray', (circumference*pct/100)+' '+circumference);
     arc.setAttribute('stroke', pct>50?'var(--safe)':pct>30?'var(--watch)':'var(--crit)');
     document.getElementById('conf-pct').textContent = pct+'%';
+
+    // Refresh blind-spot overlay after main alerts render
+    loadBlindSpots();
   });
+}
+
+// Pulls /api/blind-spots + rewrites the map filter so beats inside
+// silent-in-danger divisions render amber. Also updates the coverage
+// banner strip below the risk cards.
+function loadBlindSpots() {
+  fetch('/api/blind-spots').then(function(r){return r.json();}).then(function(d){
+    if (d.error) return;
+    var names = (d.blind_spots||[]).map(function(b){ return b.division; });
+    if (S.map && S.map.getLayer && S.map.getLayer('blind-spot-fill')) {
+      // MapLibre 'in' filter: first two elements are operator+property, rest are values
+      var filter = ['in', 'Division'].concat(names.length ? names : ['__none__']);
+      try { S.map.setFilter('blind-spot-fill', filter); } catch(e) {}
+    }
+    var cov = document.getElementById('coverage-strip');
+    if (cov) {
+      var tot = d.n_divisions_total || 0;
+      var org = d.n_divisions_with_organic_alerts || 0;
+      var silent = d.n_divisions_silent_in_danger || 0;
+      var extremeBadge = d.weather_extreme
+        ? '<span style="color:#ef4444;font-weight:600">\u26a0 EXTREME WEATHER</span> \u00b7 '
+        : '';
+      var silentBadge = silent > 0
+        ? ' \u00b7 <span style="color:#f59e0b">' + silent + ' silent-in-danger</span>'
+        : '';
+      cov.innerHTML = extremeBadge + 'Coverage: ' + org + '/' + tot +
+        ' divisions with organic alerts' + silentBadge;
+      cov.title = silent > 0
+        ? 'Amber-shaded divisions on map had NO model-organic alerts during extreme weather. Only the coverage floor lit them up. Verify manually.'
+        : 'All divisions with organic alerts. Floor-promoted cells rendered as orange rings.';
+    }
+  }).catch(function(){});
 }
 
 function showFlyout(p) {
@@ -733,8 +832,51 @@ function addSection(parent, title, rows) {
 }
 
 // DIVISIONS
+// State held on S so filter-chip clicks persist within the tab
+S.divisionFilter = 'all';
+
 function loadDivisions() {
   fetch('/api/division-overview').then(function(r){return r.json()}).then(function(data) {
+    var pane = document.getElementById('pane-divisions');
+    // Ensure filter strip exists above the grid (idempotent, re-used on re-render)
+    var strip = document.getElementById('div-filter-strip');
+    if (!strip) {
+      strip = document.createElement('div');
+      strip.id = 'div-filter-strip';
+      strip.style.cssText = 'padding:16px 24px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap';
+      pane.insertBefore(strip, pane.firstChild);
+    }
+
+    var silentTotal = (data.divisions||[]).filter(function(d){return d.silent_in_danger;}).length;
+    var floorTotal = (data.divisions||[]).filter(function(d){return d.n_critical_floor_promoted>0;}).length;
+    var organicTotal = (data.divisions||[]).filter(function(d){return d.n_critical_organic>0;}).length;
+    var totalDivs = (data.divisions||[]).length;
+
+    function makeChip(id, label, count, color) {
+      var active = S.divisionFilter === id;
+      var c = document.createElement('span');
+      c.className = 'div-chip';
+      c.dataset.filter = id;
+      c.style.cssText = 'padding:5px 12px;border-radius:16px;border:1px solid ' + (active?color:'var(--border)') +
+        ';background:' + (active?color+'22':'var(--raised)') +
+        ';color:' + (active?color:'var(--t2)') +
+        ';cursor:pointer;font-size:11px;font-weight:600;user-select:none;transition:var(--transition)';
+      c.textContent = label + ' (' + count + ')';
+      c.addEventListener('click', function(){ S.divisionFilter = id; loadDivisions(); });
+      return c;
+    }
+    while (strip.firstChild) strip.removeChild(strip.firstChild);
+    strip.appendChild(makeChip('all', 'All', totalDivs, '#4f8cff'));
+    strip.appendChild(makeChip('organic', 'Model-organic', organicTotal, '#22c55e'));
+    strip.appendChild(makeChip('floor', 'Floor-promoted', floorTotal, '#f59e0b'));
+    strip.appendChild(makeChip('silent', 'Silent in danger', silentTotal, '#ef4444'));
+    if (data.weather_extreme) {
+      var warn = document.createElement('span');
+      warn.style.cssText = 'font-size:11px;color:#ef4444;font-weight:600;margin-left:8px';
+      warn.textContent = '\u26a0 EXTREME WEATHER — blind spots demand manual verification';
+      strip.appendChild(warn);
+    }
+
     var grid = document.getElementById('div-grid');
     while (grid.firstChild) grid.removeChild(grid.firstChild);
     if (!data.divisions||!data.divisions.length) {
@@ -742,28 +884,59 @@ function loadDivisions() {
       var p = document.createElement('p'); p.textContent='No division data available'; e.appendChild(p);
       grid.appendChild(e); return;
     }
-    data.divisions.forEach(function(d) {
+
+    // Filter
+    var divisions = data.divisions.filter(function(d){
+      if (S.divisionFilter === 'organic') return d.n_critical_organic > 0;
+      if (S.divisionFilter === 'floor') return d.n_critical_floor_promoted > 0;
+      if (S.divisionFilter === 'silent') return d.silent_in_danger;
+      return true;
+    });
+
+    divisions.forEach(function(d) {
       var card = document.createElement('div'); card.className='dcard';
+      if (d.silent_in_danger) {
+        card.style.borderLeft = '3px solid #ef4444';
+        card.style.background = 'linear-gradient(90deg, rgba(239,68,68,0.08), var(--surface) 40%)';
+      } else if (d.n_critical_floor_promoted > 0 && d.n_critical_organic === 0) {
+        card.style.borderLeft = '3px solid #f59e0b';
+      }
       card.addEventListener('click', function() {
         switchTab('map', document.querySelectorAll('.tab')[0]);
         setTimeout(function() {
-          S.map.flyTo({center:[d.center_lon,d.center_lat],zoom:9,duration:1200});
+          if (d.center_lat && d.center_lon) {
+            S.map.flyTo({center:[d.center_lon,d.center_lat],zoom:9,duration:1200});
+          }
         }, 100);
       });
 
       var h3 = document.createElement('h3'); h3.textContent=d.name; card.appendChild(h3);
+
+      if (d.silent_in_danger) {
+        var silentBadge = document.createElement('div');
+        silentBadge.style.cssText = 'display:inline-block;padding:3px 8px;background:rgba(239,68,68,0.15);border:1px solid #ef4444;color:#ef4444;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:8px';
+        silentBadge.textContent = 'MODEL SILENT — VERIFY MANUALLY';
+        card.appendChild(silentBadge);
+      }
+
       var badges = document.createElement('div'); badges.className='badges';
-      if (d.critical) { var b=document.createElement('span'); b.className='badge c'; b.textContent=d.critical+' CRIT'; badges.appendChild(b); }
+      var organicN = d.n_critical_organic || 0;
+      var floorN = d.n_critical_floor_promoted || 0;
+      if (organicN > 0) { var b=document.createElement('span'); b.className='badge c'; b.textContent=organicN+' CRIT'; badges.appendChild(b); }
+      if (floorN > 0)  { var bf=document.createElement('span'); bf.className='badge c'; bf.style.cssText='background:rgba(245,158,11,0.2);color:#f59e0b;border:1px solid #f59e0b'; bf.textContent=floorN+' FLOOR'; badges.appendChild(bf); }
       if (d.alert) { var b2=document.createElement('span'); b2.className='badge a'; b2.textContent=d.alert+' ALERT'; badges.appendChild(b2); }
       if (d.watch) { var b3=document.createElement('span'); b3.className='badge w'; b3.textContent=d.watch+' WATCH'; badges.appendChild(b3); }
       card.appendChild(badges);
 
       var meta = document.createElement('div'); meta.className='meta';
-      var ml = document.createElement('span'); ml.textContent='Peak risk: '+d.max_risk.toFixed(3);
-      var mr = document.createElement('span'); mr.textContent='Hawkes: '+d.hawkes_high_pct+'%';
+      var ml = document.createElement('span');
+      ml.textContent = d.max_risk ? ('Peak risk: '+Number(d.max_risk).toFixed(3)) : 'Floor-only division';
+      var mr = document.createElement('span');
+      mr.textContent = 'Hawkes: '+(d.hawkes_high_pct||0)+'%';
       meta.appendChild(ml); meta.appendChild(mr); card.appendChild(meta);
 
-      var ct = document.createElement('span'); ct.className='conf-tag '+d.confidence; ct.textContent=d.confidence+' confidence';
+      var ct = document.createElement('span'); ct.className='conf-tag '+(d.confidence||'LOW');
+      ct.textContent = (d.confidence||'LOW') + ' confidence';
       card.appendChild(ct);
       grid.appendChild(card);
     });
@@ -823,10 +996,51 @@ function loadModel() {
         'Of all annual ignitions, ~77% start in cells with NO neighbouring fires in past 7 days. This is the structural gap that visual-precursor experiments (VLM, CLIP, S2 deltas) all failed to close.'],
     ]);
 
+    H2('Geographic Coverage Today');
+    P('How many of MP\u0027s 87 forest divisions received alerts today. A low organic-coverage number means the Hawkes-dominated model concentrated on a few hotspot divisions. The per-division coverage floor then promotes the top-ranked cell in each silent division to CRITICAL (orange-ring glyph on the map) so no officer falsely concludes "no risk today".');
+    var covGrid = document.createElement('div');
+    covGrid.id = 'coverage-metric-grid';
+    covGrid.className = 'mgrid';
+    c.appendChild(covGrid);
+    fetch('/api/blind-spots').then(function(r){return r.json();}).then(function(bd) {
+      if (bd.error) return;
+      var tot = bd.n_divisions_total || 87;
+      var org = bd.n_divisions_with_organic_alerts || 0;
+      var silent = bd.n_divisions_silent_in_danger || 0;
+      var extreme = bd.weather_extreme;
+      var orgColor = org / tot > 0.7 ? 'var(--safe)' : (org / tot > 0.4 ? 'var(--watch)' : 'var(--crit)');
+      var silentColor = silent === 0 ? 'var(--safe)' : (silent < 5 ? 'var(--watch)' : 'var(--crit)');
+      [
+        ['Divisions Covered', org+' / '+tot, '(organic alerts, no floor needed)', orgColor, null,
+          'Fraction of MP\u0027s 87 divisions where the model produced at least 1 CRITICAL or ALERT on its own. When this falls below ~50% during peak fire weather, v17 is likely over-concentrating on Hawkes-dense hotspots.'],
+        ['Floor-Promoted', (tot-org)+' divisions', 'given top-rank cell to avoid silence', 'var(--watch)', null,
+          'Divisions with no organic alerts where the coverage floor promoted the highest-rank cell to CRITICAL. These appear on the map as hollow orange rings — lower confidence, manual verification before dispatch.'],
+        ['Silent in Danger', silent+' divisions', extreme ? 'EXTREME weather + zero organic' : 'zero today (weather not extreme)', silentColor, silent>0 ? 'var(--crit)' : null,
+          'Divisions with zero model-organic alerts during EXTREME fire weather (FFMC\u226592, RH\u226425%, wind\u226515 km/h). These are shaded amber on the map. Verify manually via phone/VFPC.'],
+      ].forEach(function(item) {
+        var mc = document.createElement('div'); mc.className='mcard';
+        if (item[4]) mc.style.border = '1px solid '+item[4];
+        var ml = document.createElement('div'); ml.className='ml'; ml.textContent = item[0];
+        if (item[5]) {
+          var tip = document.createElement('span'); tip.className='info-tip'; tip.setAttribute('data-tip', item[5]); tip.textContent='?'; ml.appendChild(tip);
+        }
+        mc.appendChild(ml);
+        var mv = document.createElement('div'); mv.className='mv'; mv.style.color = item[3]; mv.textContent = item[1]; mc.appendChild(mv);
+        var ms = document.createElement('div'); ms.className='ms'; ms.textContent = item[2]; mc.appendChild(ms);
+        covGrid.appendChild(mc);
+      });
+    });
+
     H2('When to Trust This Model');
     [['hi','TRUST HIGH: '+tg.trust_high],['med','TRUST MEDIUM: '+tg.trust_medium],['lo','TRUST LOW: '+tg.trust_low]].forEach(function(item){
       var tc=document.createElement('div');tc.className='trust-card '+item[0];tc.textContent=item[1];c.appendChild(tc);
     });
+    // Add DIVISION_FLOOR trust-tier card — new tier introduced by coverage floor
+    var tfloor = document.createElement('div');
+    tfloor.className = 'trust-card';
+    tfloor.style.cssText = 'background:rgba(245,158,11,0.12);border:1px solid #f59e0b;color:#fbbf24';
+    tfloor.textContent = 'TRUST DIVISION_FLOOR: When a division had NO organic alerts, the coverage floor promoted its highest-rank cell to CRITICAL so the map is not silent in danger. These are lower-confidence — verify via phone/VFPC before dispatch.';
+    c.appendChild(tfloor);
 
     H2('What Drives Predictions');
     fi.forEach(function(f){
@@ -1483,9 +1697,14 @@ function ensureHelpModal() {
     '<div class="hint">Keyboard: <b>?</b> toggle this help · <b>ESC</b> close flyout</div>' +
     '<h3>Trust levels</h3>' +
     '<dl>' +
-      '<dt>HIGH</dt><dd>Rank in top 1% AND ≥3 neighbouring fires in past 7 days. Validated ~30-58% precision. Dispatch immediately.</dd>' +
-      '<dt>MEDIUM</dt><dd>Rank in top 5%. Validated ~15% precision. Intensify patrol within 24-48h.</dd>' +
-      '<dt>COLD_START</dt><dd>High rank but NO recent nearby fires. Model is uncertain here (~6% precision). Verify via phone/VFPC before deploying.</dd>' +
+      '<dt>HIGH</dt><dd>Rank in top 1% AND \u22653 neighbouring fires in past 7 days. Validated ~30-58% precision. Dispatch immediately. Glyph: solid red with green stroke.</dd>' +
+      '<dt>MEDIUM</dt><dd>Rank in top 5%. Validated ~15% precision. Intensify patrol within 24-48h. Glyph: solid red.</dd>' +
+      '<dt>COLD_START</dt><dd>High rank but NO recent nearby fires. Model is uncertain here (~6% precision). Verify via phone/VFPC before deploying. Glyph: hollow red ring.</dd>' +
+      '<dt>DIVISION_FLOOR</dt><dd>Coverage-floor promotion: this division had zero organic alerts, so the highest-rank cell was promoted to CRITICAL to keep the map non-silent during high-risk weather. Lower confidence than cold-start; VERIFY before dispatch. Glyph: dashed orange ring.</dd>' +
+    '</dl>' +
+    '<h3>Blind-spot shading</h3>' +
+    '<dl>' +
+      '<dt>Amber fill</dt><dd>Division is silent-in-danger: EXTREME fire weather today AND zero model-organic alerts. The model is structurally blind in this regime (77% of new outbreaks happen far from recent fires). Treat amber divisions as ALERT by default; verify via phone.</dd>' +
     '</dl>' +
     '<h3>Layer controls</h3>' +
     '<dl>' +

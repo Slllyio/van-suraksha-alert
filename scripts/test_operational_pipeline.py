@@ -156,15 +156,31 @@ def test_ops_alerts_carry_calibrated_risk() -> tuple[bool, str]:
 
 
 def test_ops_alerts_budget_caps() -> tuple[bool, str]:
+    """Budget cap check understanding the per-division coverage floor.
+
+    The cap applies to the statewide-ranked base pool. The coverage floor
+    then adds AT MOST one CRITICAL per silent division (two during extreme
+    weather) — that's a deliberate breach-by-design of the pure statewide
+    top-N rule, ensuring no division reads as "no risk today" when it
+    actually has high-rank cells that just lost to hotter divisions.
+
+    So the check is: base <= cap AND floor_promoted <= 2 * 87 divisions.
+    """
     data = json.loads(OPS_JSON.read_text())
     counts = data.get("counts", {})
     raw = counts.get("raw_banded", 0)
     final_crit = counts.get("final_critical", 0)
+    base = counts.get("critical_base", final_crit)
+    floor = counts.get("division_floor_promoted", 0)
     if raw == 0:
         return False, "no raw_banded count"
-    if final_crit > 130:  # statewide cap
-        return False, f"final_critical={final_crit} exceeds statewide cap 130"
-    return True, f"raw={raw} -> final CRIT={final_crit} (within cap)"
+    if base > 130:
+        return False, f"critical_base={base} exceeds statewide cap 130"
+    if floor > 2 * 87:  # absolute upper bound: 2 per MP division
+        return False, f"division_floor_promoted={floor} exceeds 2 per 87 divisions"
+    return True, (
+        f"raw={raw} -> final CRIT={final_crit} (base={base} + floor={floor}, caps respected)"
+    )
 
 
 def test_division_briefings() -> tuple[bool, str]:

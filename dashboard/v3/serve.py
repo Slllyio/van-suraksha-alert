@@ -301,6 +301,100 @@ def _load_division_briefings() -> dict:
     return json.loads(DIVISION_BRIEFINGS.read_text())
 
 
+def _build_blind_spots() -> dict:
+    """Divisions where the model is silent during high-risk weather.
+
+    Reads division_briefings.json (which already computes silent_in_danger
+    after the per-division coverage floor) and returns the list. Used by
+    the portal to (a) shade those divisions amber on the Live Map and
+    (b) filter the Divisions tab to a "MODEL SILENT" view.
+    """
+    bf = _load_division_briefings()
+    if bf.get("error"):
+        return {"error": bf["error"], "blind_spots": []}
+    weather = bf.get("statewide_weather", {})
+    blind_spots = []
+    for b in bf.get("briefings", []):
+        if b.get("silent_in_danger"):
+            blind_spots.append({
+                "division": b["division"],
+                "n_critical": b.get("n_critical", 0),
+                "n_critical_organic": b.get("n_critical_organic", 0),
+                "n_critical_floor_promoted": b.get("n_critical_floor_promoted", 0),
+                "n_alert": b.get("n_alert", 0),
+                "n_cold_start": b.get("n_cold_start", 0),
+                "reason": "SILENT_IN_DANGER",
+            })
+    coverage_total = len(bf.get("briefings", []))
+    coverage_organic = sum(
+        1 for b in bf.get("briefings", [])
+        if (b.get("n_critical_organic", 0) + b.get("n_alert", 0)) > 0
+    )
+    return {
+        "generated_at": bf.get("generated_at"),
+        "weather_extreme": bool(weather.get("is_extreme")),
+        "weather_summary": weather,
+        "n_divisions_total": coverage_total,
+        "n_divisions_with_organic_alerts": coverage_organic,
+        "n_divisions_silent_in_danger": len(blind_spots),
+        "blind_spots": blind_spots,
+    }
+
+
+def _enrich_division_overview(base: dict) -> dict:
+    """Merge ops-pipeline silence + floor info into the v17-derived overview.
+
+    The base overview is built from v17 raw banded_alerts (which knows nothing
+    about the coverage floor or silence-detection). Here we left-join the
+    per-division fields produced by build_operational_alerts.py and APPEND
+    divisions that exist in briefings but not in banded_alerts (those are
+    pure floor-promoted divisions where the model was completely silent).
+    """
+    bf = _load_division_briefings()
+    by_div: dict[str, dict] = {}
+    for b in bf.get("briefings", []) if isinstance(bf, dict) else []:
+        by_div[b["division"]] = b
+
+    seen_names: set[str] = set()
+    for d in base.get("divisions", []):
+        seen_names.add(d["name"])
+        b = by_div.get(d["name"], {})
+        d["silent_in_danger"] = bool(b.get("silent_in_danger"))
+        d["n_critical_organic"] = int(b.get("n_critical_organic", 0))
+        d["n_critical_floor_promoted"] = int(b.get("n_critical_floor_promoted", 0))
+        d["n_cold_start"] = int(b.get("n_cold_start", 0))
+        # Re-emit the merged CRITICAL count (banded + floor-promoted)
+        d["critical"] = d["n_critical_organic"] + d["n_critical_floor_promoted"]
+
+    # Append floor-only divisions absent from banded_alerts
+    for div_name, b in by_div.items():
+        if div_name in seen_names:
+            continue
+        base.setdefault("divisions", []).append({
+            "name": div_name,
+            "critical": int(b.get("n_critical_floor_promoted", 0)),
+            "alert": int(b.get("n_alert", 0)),
+            "watch": 0,
+            "total": int(b.get("n_critical_floor_promoted", 0)) + int(b.get("n_alert", 0)),
+            "mean_risk": 0.0,
+            "max_risk": 0.0,
+            "hawkes_high_pct": 0,
+            "confidence": "FLOOR_ONLY",
+            "center_lat": 0.0,
+            "center_lon": 0.0,
+            "silent_in_danger": bool(b.get("silent_in_danger")),
+            "n_critical_organic": 0,
+            "n_critical_floor_promoted": int(b.get("n_critical_floor_promoted", 0)),
+            "n_cold_start": int(b.get("n_cold_start", 0)),
+        })
+
+    weather = (bf.get("statewide_weather") or {}) if isinstance(bf, dict) else {}
+    base["weather_extreme"] = bool(weather.get("is_extreme"))
+    base["weather_summary"] = weather
+    base["total_alerts"] = sum(d.get("total", 0) for d in base.get("divisions", []))
+    return base
+
+
 def _load_seasonal_pulse() -> dict:
     if not SEASONAL_PULSE.exists():
         return {"error": "seasonal pulse not built — run scripts/fit_prophet_firms_seasonality.py"}
@@ -414,7 +508,10 @@ class PortalHandler(SimpleHTTPRequestHandler):
             self._send_json(_load_latest_alert())
         elif path == "/api/division-overview":
             v17 = _load_v17_predictions(qs.get("date", [None])[0])
-            self._send_json(_build_division_overview(v17))
+            base = _build_division_overview(v17)
+            self._send_json(_enrich_division_overview(base))
+        elif path == "/api/blind-spots":
+            self._send_json(_build_blind_spots())
         elif path == "/api/model-transparency":
             self._send_json(_build_transparency())
         elif path == "/api/validation-log":
