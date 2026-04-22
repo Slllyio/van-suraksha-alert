@@ -32,6 +32,48 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .animate-in:nth-child(2){animation-delay:.08s}
 .animate-in:nth-child(3){animation-delay:.16s}
 .animate-in:nth-child(4){animation-delay:.24s}
+@keyframes staggerUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.stagger-1{animation:staggerUp .35s ease .00s both}
+.stagger-2{animation:staggerUp .35s ease .05s both}
+.stagger-3{animation:staggerUp .35s ease .10s both}
+.stagger-4{animation:staggerUp .35s ease .15s both}
+.stagger-5{animation:staggerUp .35s ease .20s both}
+.pane.tab-fade{animation:fadeIn .25s ease both}
+
+/* Shimmer placeholder for diagnostic cards while loading */
+.shimmer{background:linear-gradient(90deg, rgba(255,255,255,.02) 0%, rgba(255,255,255,.08) 50%, rgba(255,255,255,.02) 100%);background-size:200% 100%;animation:shimmer 1.4s ease infinite}
+
+/* Info tooltip (metric definition) */
+.info-tip{position:relative;display:inline-flex;align-items:center;margin-left:4px;cursor:help;color:var(--t3);font-size:11px;border:1px solid var(--border);border-radius:50%;width:14px;height:14px;justify-content:center;font-weight:600;user-select:none;transition:var(--transition)}
+.info-tip:hover{color:var(--accent);border-color:var(--accent)}
+.info-tip[data-tip]::before{content:attr(data-tip);position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--raised);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;font-weight:400;color:var(--t1);white-space:normal;width:260px;pointer-events:none;opacity:0;transition:opacity .18s ease;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:50;line-height:1.5;text-transform:none;letter-spacing:0}
+.info-tip:hover::before{opacity:1}
+
+/* Why-CRITICAL expandable in the flyout */
+.why-crit{margin-top:12px;border-top:1px solid var(--border);padding-top:10px}
+.why-crit-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;user-select:none;transition:var(--transition)}
+.why-crit-toggle:hover{color:var(--t1)}
+.why-crit-toggle .chev{transition:transform .2s ease;display:inline-block}
+.why-crit.open .chev{transform:rotate(90deg)}
+.why-crit-body{display:none;margin-top:8px;font-size:11px;line-height:1.55;color:var(--t2)}
+.why-crit.open .why-crit-body{display:block;animation:fadeIn .25s ease}
+
+/* Help modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px);animation:fadeIn .2s ease}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 28px;max-width:620px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.6);animation:fadeUp .3s ease}
+.modal h2{font-size:18px;font-weight:600;margin-bottom:4px}
+.modal .hint{color:var(--t3);font-size:12px;margin-bottom:18px}
+.modal h3{font-size:12px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px}
+.modal dl{display:grid;grid-template-columns:140px 1fr;gap:6px 14px;font-size:12px;line-height:1.55;color:var(--t2)}
+.modal dt{color:var(--t1);font-weight:500;font-family:'JetBrains Mono',monospace;font-size:11px}
+.modal-close{position:absolute;top:14px;right:16px;cursor:pointer;color:var(--t3);font-size:20px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:var(--transition)}
+.modal-close:hover{background:var(--raised);color:var(--t1)}
+
+/* Respect OS reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
 
 /* Header */
 .hdr{display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:linear-gradient(135deg,#161822 0%,#1a1028 50%,#1e1418 100%);border-bottom:1px solid var(--border);height:56px;gap:16px;background-size:200% 200%;animation:gradientShift 8s ease infinite}
@@ -247,15 +289,18 @@ th{color:var(--t3);font-size:11px;font-weight:600;text-transform:uppercase;lette
 var S = { map: null, v17: null, bands: { CRITICAL: true, ALERT: true, WATCH: true } };
 
 function switchTab(name, btn) {
-  document.querySelectorAll('.pane').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.pane').forEach(function(p) { p.classList.remove('active','tab-fade'); });
   document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
-  document.getElementById('pane-' + name).classList.add('active');
+  var target = document.getElementById('pane-' + name);
+  target.classList.add('active', 'tab-fade');
   if (btn) btn.classList.add('active');
   if (name === 'map' && S.map) setTimeout(function(){ S.map.resize(); }, 50);
   if (name === 'divisions') loadDivisions();
   if (name === 'model') loadModel();
   if (name === 'validation') loadValidation();
   if (name === 'viirs') loadVIIRS();
+  // Animate any count-up numbers that were rendered into the new pane
+  setTimeout(function(){ autoAnimateCounters(target); }, 80);
 }
 
 document.getElementById('flyout-close').addEventListener('click', function() {
@@ -599,6 +644,35 @@ function showFlyout(p) {
   fbSec.appendChild(fbStatus);
   body.appendChild(fbSec);
 
+  // "Why is this CRITICAL?" expandable — shows the per-cell drivers in plain language
+  var why = document.createElement('div');
+  why.className = 'why-crit';
+  var tog = document.createElement('div');
+  tog.className = 'why-crit-toggle';
+  tog.innerHTML = '<span class="chev">&#x25B8;</span> Why is this flagged?';
+  var whyBody = document.createElement('div');
+  whyBody.className = 'why-crit-body';
+  var reasons = [];
+  reasons.push('Risk percentile in top ' + (100 * (1 - Number(p.rank || 0))).toFixed(2) + '% of all MP cells today.');
+  if (hawkes > 0) {
+    reasons.push(hawkes + ' fire' + (hawkes > 1 ? 's' : '') + ' already detected within 10 km in the past 7 days (Hawkes self-excitation).');
+  } else {
+    reasons.push('NO neighbouring fires in past 7 days — this is a cold-start prediction based on weather, terrain, land cover, and anthropogenic features.');
+  }
+  if (p.stage_a_risk != null) {
+    reasons.push('Hurdle Stage A (presence classifier without Hawkes): ' + (Number(p.stage_a_risk) * 100).toFixed(1) + '%.');
+  }
+  if (p.calibrated_risk != null) {
+    reasons.push('Calibrated ignition probability (isotonic): ' + (Number(p.calibrated_risk) * 100).toFixed(1) + '% true rate.');
+  }
+  whyBody.innerHTML = '<ul style="margin:0;padding-left:16px">' + reasons.map(function(r){return '<li style="margin-bottom:4px">' + r + '</li>';}).join('') + '</ul>';
+  tog.addEventListener('click', function() { why.classList.toggle('open'); });
+  why.appendChild(tog);
+  why.appendChild(whyBody);
+  body.appendChild(why);
+
+  // Stagger-reveal flyout children for a polished open
+  staggerReveal(body);
   flyout.classList.add('open');
 }
 
@@ -712,7 +786,16 @@ function loadModel() {
       items.forEach(function(i){
         var mc=document.createElement('div');mc.className='mcard';
         if(i[4])mc.style.border='1px solid '+i[4];
-        var ml=document.createElement('div');ml.className='ml';ml.textContent=i[0];mc.appendChild(ml);
+        var ml=document.createElement('div');ml.className='ml';ml.textContent=i[0];
+        // Optional 6th element = info-tooltip explaining the metric
+        if (i[5]) {
+          var tip = document.createElement('span');
+          tip.className = 'info-tip';
+          tip.setAttribute('data-tip', i[5]);
+          tip.textContent = '?';
+          ml.appendChild(tip);
+        }
+        mc.appendChild(ml);
         var mv=document.createElement('div');mv.className='mv';mv.style.color=i[3];mv.textContent=i[1];mc.appendChild(mv);
         var ms=document.createElement('div');ms.className='ms';ms.textContent=i[2];mc.appendChild(ms);
         g.appendChild(mc);
@@ -722,16 +805,22 @@ function loadModel() {
 
     H2('Performance at a Glance');
     metricGrid([
-      ['CRITICAL Precision','22%','1 in 5 CRITICALs is a real fire','var(--safe)'],
-      ['Recall @ Top 5%',(m.recall_top5pct_tiered*100).toFixed(1)+'%','Catches ~half of fires in patrol list','var(--accent)'],
-      ['ROC-AUC',String(m.roc_auc),'Ranking quality score','var(--t1)'],
+      ['CRITICAL Precision','22%','1 in 5 CRITICALs is a real fire','var(--safe)',null,
+        'Of all CRITICAL alerts dispatched, ~22% turn into a confirmed fire within 24h. Higher is better. The remaining 78% include burnt-area scars near patrol routes — still operationally useful.'],
+      ['Recall @ Top 5%',(m.recall_top5pct_tiered*100).toFixed(1)+'%','Catches ~half of fires in patrol list','var(--accent)',null,
+        'Of all real ignitions today, this fraction lands in the top-5% ranked cells (the patrol list). BA-tiered evaluation against MCD64A1 + FireCCI51 + S2-dNBR fused labels.'],
+      ['ROC-AUC',String(m.roc_auc),'Ranking quality score','var(--t1)',null,
+        'Probability that a random fire-cell ranks above a random no-fire cell. 0.5 = random, 1.0 = perfect. v17.5 hovers near the empirical ceiling for satellite + weather features alone.'],
     ]);
 
     H2('Known Weakness: New Outbreaks');
     metricGrid([
-      ['Quiet-Area Recall',(h.low_hawkes_recall*100).toFixed(1)+'%','Model struggles where no fires nearby','var(--crit)','var(--crit)'],
-      ['Active-Area Recall',(h.high_hawkes_recall*100).toFixed(1)+'%','Works well near fire fronts','var(--safe)'],
-      ['% Fires in Quiet Areas',(h.low_hawkes_pct_of_ignitions*100).toFixed(0)+'%','Most fires start where model is weakest','var(--watch)'],
+      ['Quiet-Area Recall',(h.low_hawkes_recall*100).toFixed(1)+'%','Model struggles where no fires nearby','var(--crit)','var(--crit)',
+        'Recall in cells with NO neighbouring fires in past 7 days (the "cold start" regime). 77% of all new fires start here, but the Hawkes signal is absent — so v17.5 is near-random. Treat these CRITICALs as low-confidence.'],
+      ['Active-Area Recall',(h.high_hawkes_recall*100).toFixed(1)+'%','Works well near fire fronts','var(--safe)',null,
+        'Recall in cells WITH neighbouring fires in past 7 days (the "fire contagion" regime). Hawkes self-excitation drives 74% of feature importance here, so v17.5 catches roughly 1 in 4 of these high-confidence fires.'],
+      ['% Fires in Quiet Areas',(h.low_hawkes_pct_of_ignitions*100).toFixed(0)+'%','Most fires start where model is weakest','var(--watch)',null,
+        'Of all annual ignitions, ~77% start in cells with NO neighbouring fires in past 7 days. This is the structural gap that visual-precursor experiments (VLM, CLIP, S2 deltas) all failed to close.'],
     ]);
 
     H2('When to Trust This Model');
@@ -1313,8 +1402,126 @@ function loadOpsBanner() {
       banner.appendChild(chip('rgba(30,41,59,.9)', '#fbbf24',
         counts.cold_start + ' COLD-START alerts — verify before dispatch'));
     }
+    // Typewriter reveal on first load for the first banner chip (visual polish)
+    setTimeout(typewriteFirstBannerChip, 200);
   }).catch(function(){});
 }
+
+// ====================================================================
+// Layer 2 + 3 + 4: Animations + interactive text helpers
+// ====================================================================
+
+function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+// Animate a number counting up from 0 to `target` over `duration` ms
+function animateCounter(el, target, duration, formatter) {
+  if (!el) return;
+  duration = duration || 700;
+  formatter = formatter || (function(v){ return Math.round(v).toLocaleString(); });
+  var start = performance.now();
+  function step(now) {
+    var p = Math.min(1, (now - start) / duration);
+    var v = easeOutQuart(p) * target;
+    el.textContent = formatter(v);
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = formatter(target);
+  }
+  requestAnimationFrame(step);
+}
+
+// Auto-animate any element with class="count" + data-target="<number>"
+function autoAnimateCounters(root) {
+  (root || document).querySelectorAll('.count[data-target]').forEach(function(el) {
+    var t = Number(el.getAttribute('data-target'));
+    if (!isFinite(t)) return;
+    animateCounter(el, t);
+  });
+}
+
+// Stagger-reveal children of an element
+function staggerReveal(parent) {
+  if (!parent) return;
+  Array.prototype.slice.call(parent.children).forEach(function(ch, i) {
+    ch.classList.remove('stagger-1','stagger-2','stagger-3','stagger-4','stagger-5');
+    ch.classList.add('stagger-' + Math.min(5, i + 1));
+  });
+}
+
+// Character-by-character typewriter reveal for the first banner chip.
+// Only runs once; subsequent reloads keep the banner static.
+var _typewriterDone = false;
+function typewriteFirstBannerChip() {
+  if (_typewriterDone) return;
+  var banner = document.getElementById('ops-banner');
+  if (!banner || !banner.firstChild) return;
+  var chip = banner.firstChild;
+  var full = chip.textContent;
+  if (!full) return;
+  chip.textContent = '';
+  var i = 0;
+  var iv = setInterval(function() {
+    chip.textContent = full.slice(0, ++i);
+    if (i >= full.length) { clearInterval(iv); _typewriterDone = true; }
+  }, 20);
+}
+
+// Help modal (opens on '?' keypress)
+function ensureHelpModal() {
+  if (document.getElementById('help-modal')) return;
+  var overlay = document.createElement('div');
+  overlay.id = 'help-modal';
+  overlay.className = 'modal-overlay';
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+  var modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.position = 'relative';
+  modal.innerHTML = '' +
+    '<div class="modal-close" id="help-close">&#x2715;</div>' +
+    '<h2>JwalaNetra v3 — Help</h2>' +
+    '<div class="hint">Keyboard: <b>?</b> toggle this help · <b>ESC</b> close flyout</div>' +
+    '<h3>Trust levels</h3>' +
+    '<dl>' +
+      '<dt>HIGH</dt><dd>Rank in top 1% AND ≥3 neighbouring fires in past 7 days. Validated ~30-58% precision. Dispatch immediately.</dd>' +
+      '<dt>MEDIUM</dt><dd>Rank in top 5%. Validated ~15% precision. Intensify patrol within 24-48h.</dd>' +
+      '<dt>COLD_START</dt><dd>High rank but NO recent nearby fires. Model is uncertain here (~6% precision). Verify via phone/VFPC before deploying.</dd>' +
+    '</dl>' +
+    '<h3>Layer controls</h3>' +
+    '<dl>' +
+      '<dt>Critical cells</dt><dd>Top ~0.5% rank; pulsing red circles on map</dd>' +
+      '<dt>Alert cells</dt><dd>Top 2% rank; orange circles</dd>' +
+      '<dt>Watch cells</dt><dd>Top 5% rank; yellow circles (smaller)</dd>' +
+      '<dt>Beat boundaries</dt><dd>9,000 MP forest-beat polygons as subtle green fills</dd>' +
+      '<dt>3D Terrain</dt><dd>NASA SRTM elevation model; enables pitch + sky atmospheric rendering. Heavier; opt-in.</dd>' +
+      '<dt>Globe view</dt><dd>MapLibre 5 globe projection. Disorients operators focused on MP only; opt-in.</dd>' +
+      '<dt>Pulse CRITICAL</dt><dd>Sine-wave animation on CRITICAL circles to draw the eye. Toggle off if distracting.</dd>' +
+    '</dl>' +
+    '<h3>Model version</h3>' +
+    '<dl>' +
+      '<dt>v17.5</dt><dd>Production default since 2026-04-19. Hurdle Stage A × v17 geometric blend (weight 0.7). +1.77pp low-Hawkes, +1.90pp cold-start vs raw v17 on 2025 hold-out.</dd>' +
+    '</dl>';
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+  document.getElementById('help-close').addEventListener('click', function() {
+    overlay.classList.remove('open');
+  });
+}
+document.addEventListener('keydown', function(e) {
+  // Ignore when focus is in an input/textarea
+  var tag = (document.activeElement || {}).tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+    ensureHelpModal();
+    document.getElementById('help-modal').classList.toggle('open');
+    e.preventDefault();
+  } else if (e.key === 'Escape') {
+    var fly = document.getElementById('flyout');
+    if (fly) fly.classList.remove('open');
+    var m = document.getElementById('help-modal');
+    if (m) m.classList.remove('open');
+  }
+});
 </script>
 </body>
 </html>
