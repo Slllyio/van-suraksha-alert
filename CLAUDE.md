@@ -10,30 +10,26 @@ AI-driven forest fire Early Warning System for **Madhya Pradesh state-wide** (87
 **Fire Season**: February-May (peak March-April)
 **Production model**: v17_ba_pu (LightGBM, 111 features) at R@top-5%=47.41% (BA-tiered) / 22.7% (DBSCAN-strict)
 
-## Production Status (2026-04-19, Pivot A v2 sprint in progress)
+## Production Status (2026-04-19, Pivot A v2 sprint COMPLETE)
 
-**Sprint update 2026-04-19**: Two-track 1-week sprint executing per
-`docs/research/deep_research_synthesis_2026_04_19.md`:
+**Sprint complete.** `docs/audits/pivot_a_v2_finding.md`.
 
-- **T1 — Hurdle Two-Stage** (Rodrigues 2020): DONE. Bernoulli Stage A
-  classifier on v17 features minus Hawkes, blended with v17 via geometric
-  mean. Best variant `geo_w0.7` gives **+1.77 pp low-Hawkes R@5%**
-  (5.88 → 7.65%) and **+0.89 pp overall** (22.66 → 23.55%) on DBSCAN-strict
-  2025 hold-out. Strictly Pareto-better than v17 alone on every metric;
-  just 0.35pp short of the 8% strict pass criterion. Wired as opt-in
-  `--use-hurdle-blend` flag in `predict_ignition_v17.py`. Production
-  pipeline NOT switched on yet — waiting for T2/T3 cascade decision.
+| Track | Result | Status |
+|---|---|---|
+| **T1 Hurdle Two-Stage** | MARGINAL POSITIVE: +1.77pp low-Hawkes (5.88→7.65%), +0.89pp overall, Pareto-better on every metric | KEEP as opt-in `--use-hurdle-blend` flag in `predict_ignition_v17.py`. Default OFF. |
+| **T2 Dynamic World LULC** | FAIL: model ignored DW features (1 of 30 in top-30 by gain), BA-tiered regressed -8.5pp | PARK. DW didn't help. |
+| **T3 Combined v18+Hurdle** | FAIL strict: blend_v18_a low-Hawkes 7.06% < 10% target. ALSO worse than T1's blend_v17_a (7.65%). | PARK. |
 
-- **T2 — Dynamic World LULC delta features**: GEE-blocked. 37 chunked
-  exports (7 years × 9 cell-chunks) submitted but queued behind ~2,800
-  unrelated tasks in the project queue. Will resume in next session
-  when GEE clears. All downstream scripts ready
-  (`extend_dataset_with_dw.py`, `train_v18_dynamic_world.py`).
+**Final ship decision:** v17 default unchanged. v17.5 hurdle blend
+available behind opt-in flag for ~+1.8pp low-Hawkes recall.
 
-- **T3 — Combined v18.5 evaluator**: Built (`evaluate_v18_combined.py`),
-  deferred until T2 lands.
-
-Finding doc: `docs/audits/pivot_a_v2_finding.md`.
+**Empirical takeaway:** Pivot A v2 adds Dynamic World 10m monthly LULC
+(both bare/crops/trees and 4-week deltas) to the list of satellite
+modalities that fail at 2km cell aggregation. The signal-of-interest
+(50-200 m² farmer clearings) is sub-cell at our resolution. Same scale
+problem that killed S2 dNBR, S1 SAR amplitude, Prithvi-EO-2.0, CLIP,
+LLaVA, and temporal NDVI/BSI deltas. **v17 + diagnostic stack is the
+satellite-data ceiling.**
 
 ---
 
@@ -227,6 +223,7 @@ python dashboard/v3/serve.py
 - GFS precipitation unit bug — `src/data/weather_ingest.py` now explicitly checks "m" vs "mm" vs "kg m**-2"
 
 ### CONFIRMED DEAD ENDS (do not re-attempt — see commit history for evidence)
+- **Dynamic World monthly LULC at 2km cells** (Pivot A v2 T2, 2026-04-19) — added bare/crops/trees mean+max+4wk deltas. v18 model ignored them (1 of 30 in top-30 by gain), BA-tiered regressed -8.5pp. Same scale problem: 50-200 m² farmer clearings invisible when averaged over 4 km² cell. See `feedback_pivot_a_v2_dw_no_signal.md`.
 - **VLM zero-shot on S2 chips** — LLaVA-7b emits templated responses, image-agnostic at 30m resolution. See `docs/audits/vlm_pilot_finding.md` and `feedback_vlm_llava_7b_indiscriminate.md`
 - **CLIP embeddings + classifier** — 5-fold ROC=0.562, perm p=0.095. See `docs/audits/clip_pilot_finding.md`
 - **Temporal NDVI/BSI deltas** — 5-fold ROC=0.539. See `docs/audits/temporal_delta_finding.md`

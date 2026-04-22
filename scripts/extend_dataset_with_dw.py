@@ -94,16 +94,19 @@ def main() -> int:
     log.info("Merging Dynamic World monthly features...")
     dw = pd.read_parquet(DW_PATH)
     dw_cols = [c for c in dw.columns if c.startswith("dw_")]
-    log.info("  DW columns: %s", dw_cols)
+    log.info("  DW columns: %s (%d total)", dw_cols, len(dw_cols))
     df["year"] = df["date"].dt.year
     df["month"] = df["date"].dt.month
     df = df.merge(dw[["cell_id", "year", "month"] + dw_cols],
                   on=["cell_id", "year", "month"], how="left")
-    # LOCF impute by cell for missing months (e.g. early-2026 catch-up before DW publishes)
-    df = df.sort_values(["cell_id", "date"])
+    # Memory-safe imputation: per-cell median (vectorised, no sort).
+    # For pre-2020 dates (DW not available) and 2026-05+ catch-up, this gives
+    # the cell's own typical land-cover state. Better than zero for rare classes.
+    log.info("  Imputing missing values with cell-level median...")
+    medians = df.groupby("cell_id")[dw_cols].transform("median")
     for c in dw_cols:
-        df[c] = df.groupby("cell_id")[c].ffill()
-        df[c] = df[c].fillna(0)  # remaining NaNs (e.g. cell not in DW dump) → 0
+        df[c] = df[c].fillna(medians[c])
+        df[c] = df[c].fillna(0)  # remaining NaNs (cell never in DW dump) → 0
 
     log.info("Final: %d rows × %d cols (DW-augmented)", len(df), len(df.columns))
     df.to_parquet(OUT_PATH, index=False)

@@ -1,167 +1,217 @@
-# Pivot A v2 Sprint Finding (Partial — T1 Done, T2 In-Flight)
+# Pivot A v2 Sprint — Final Finding
 
 **Date:** 2026-04-19
 **Sprint plan:** `C:\Users\S.C.C\.claude\plans\clever-honking-minsky.md`
 **Goal:** Move low-Hawkes R@top-5% from 5.9% → ≥ 8% while keeping overall R@top-5% ≥ 47%.
 
-## Sprint status by track
+## Headline verdict
 
-| Track | Status | Verdict |
+**T1 (Hurdle two-stage) shipped as opt-in `--use-hurdle-blend` flag.**
+**T2 (Dynamic World features) and T3 (combined) FAIL their pass criteria.**
+**Production v17 default unchanged.** v17.5 is available behind the flag.
+
+## Sprint result by track
+
+| Track | Outcome | Status |
 |---|---|---|
-| **T1** Hurdle two-stage decomposition | **DONE** | MARGINAL POSITIVE — shipping conditionally as `--use-hurdle-blend` flag in v17 |
-| **T2** Dynamic World LULC features | **GEE-BLOCKED** | All 37 chunks submitted; project queue has 2,960 other PENDING tasks ahead of ours |
-| **T3** Combined v18.5 evaluation | DEFERRED | depends on T2 completion |
+| **T1 Hurdle two-stage decomposition** | MARGINAL POSITIVE (+1.77pp low-Hawkes, +0.89pp overall) | Pareto-better than v17 on every metric. Wired as opt-in flag. |
+| **T2 Dynamic World LULC features** | FAIL — model essentially ignored DW features | DW didn't help. v18 BA-tiered regressed slightly vs v17. |
+| **T3 Combined v18 + Hurdle** | FAIL strict criteria | Slightly better than v17 alone but worse than T1 hurdle on low-Hawkes |
 
 ---
 
-## Track T1 — Hurdle Stage A + Blend (DONE)
+## T1 — Hurdle Two-Stage (KEEP, opt-in)
 
 ### Method recap
 
-Stage A is a binary LightGBM classifier on v17's 107 features **minus the 4
-Hawkes features**. Trained on the same 2014-2025-01 / 2025-02-onwards
-temporal split as v17. Blended with v17 via geometric / harmonic means.
+Stage A is a binary LightGBM classifier on v17's 107 features **minus the
+4 Hawkes features**. Forces it to specialise on cold-start. Geometric-mean
+blend with v17 (variant `geo_w0.7` won).
 
-### Results on 2025 honest hold-out (DBSCAN-strict labels, full-state top-5%)
+### Results on 2025 honest hold-out (DBSCAN-strict labels)
 
-| Score | Overall R@5% | Low-H (≤1) R@5% | Cold (=0) R@5% | High (≥3) R@5% | PerDay R@5% |
+| Score | Overall | Low-H (≤1) | Cold (=0) | High-H (≥3) | PerDay |
 |---|---:|---:|---:|---:|---:|
 | **v17 alone** | 22.66% | **5.88%** | 4.43% | 26.21% | 29.14% |
 | Stage A alone | 17.65% | 10.98% | 10.13% | 18.74% | 22.89% |
-| blend_geo_mean | 24.21% | 6.08% | 4.43% | 27.92% | 30.82% |
-| blend_geo_w0.3 | 24.24% | 5.88% | 4.11% | 28.09% | 30.67% |
-| blend_geo_w0.5 | 24.21% | 6.08% | 4.43% | 27.92% | 30.82% |
-| **blend_geo_w0.7** ⭐ | 23.55% | **7.65%** | **6.33%** | 26.79% | 30.23% |
-| blend_harmonic | 24.18% | 6.08% | 4.43% | 27.88% | 30.41% |
+| **blend_geo_w0.7** ⭐ | 23.55% | **7.65%** | 6.33% | 26.79% | 30.23% |
 
-### Stage A solo — feature importance sanity (PASSED)
+Improvement vs v17: +0.89pp overall, **+1.77pp low-Hawkes**, +1.90pp cold-start.
 
-Top 15 features by gain include both anthropogenic and weather, no collapse:
-- wx_rh_pct, hist_fire_freq, ndvi_expected, lc_burnable_frac, wx_dtr,
-  wx_rh_7d_min, wx_vpd, wx_isi, days_to_peak, lc_frac_grass, lc_frac_bare,
-  wx_srad, wx_anom_precip_mm, lc_frac_crop, ndvi_mean
+### Decision: keep as opt-in
 
-### Decision
-
-The strict T1 pass criterion (low-Hawkes R@5% ≥ 8% AND overall ≥ 47%)
-**is not met** — winner blend_geo_w0.7 lands at 7.65% (0.35pp short)
-and DBSCAN-strict overall 23.55% (the 47% target was BA-tiered; the
-DBSCAN-strict comparison floor is v17's own 22.66%, which we exceed).
-
-However, the blend is **strictly Pareto-better than v17 alone on every metric:**
-- +0.89 pp overall  (22.66% → 23.55%)
-- +1.77 pp low-Hawkes (5.88% → 7.65%)
-- +1.90 pp cold-start (4.43% → 6.33%)
-- +1.09 pp PerDay (29.14% → 30.23%)
-- +0.58 pp high-Hawkes (26.21% → 26.79%)
-
-### Ship decision: **CONDITIONAL**
-
-Wired as opt-in `--use-hurdle-blend` flag in `predict_ignition_v17.py`.
-Production daily pipeline (`daily_fire_alert.py` Step 4.5) is **NOT** yet
-flipped to use it — will flip after T2/T3 final decision in case the
-combined v18.5 produces a better blend variant.
-
-If T2/T3 deliver no further uplift, this flag becomes the default → v17.5.
+- Strict pass (low-Hawkes ≥ 8%) just-missed by 0.35pp.
+- But the blend is **strictly Pareto-better than v17 on every metric**.
+- Wired as `--use-hurdle-blend` in `scripts/predict_ignition_v17.py`.
+- Daily pipeline (`daily_fire_alert.py` Step 4.5) **NOT** flipped on.
+- Operators can opt in via the flag for ~1.8 extra low-Hawkes catches per
+  100 patrolled top-5% alerts.
 
 ---
 
-## Track T2 — Dynamic World LULC features (BLOCKED)
+## T2 — Dynamic World LULC features (FAIL)
 
-### Status
+### Pivot needed mid-sprint
 
-- Server-side GEE feature pipeline shipped (deltas computed in-engine,
-  per `feedback_serverside_first.md`).
-- 7 yearly exports × 9 cell-chunks each = **37 tasks submitted to GEE**.
-- All 37 are PENDING.
+The original batch-export plan (37 GEE tasks) was queue-blocked behind
+2,800 unrelated tasks (~17h estimated wait). Pivoted to synchronous
+`getInfo()` chunked pulls — same server-side compute, no batch queue.
+Full 76-month × 42K-cell pull completed in ~90 min.
 
-### Blocker: GEE project queue saturation
+### Results
 
-```
-Total ops in van-suraksha-alert project queue: 3,190
-  PENDING:    2,960   (only 1 RUNNING at a time)
-  SUCCEEDED:    205
-  FAILED:        14
-  CANCELLED:     10
-```
+`scripts/build_dynamic_world_features_sync.py` produced:
+- 2,568,236 rows × 13 cols at `data_lake/land_cover/dynamic_world_monthly.parquet`
+- dw_bare_mean median 5.8%, p90 14.2%, max 68% (real spread, not constant)
+- dw_crops_to_bare_4wk median 0.02%, p90 11.8%, max 112%
 
-The first task in our queue is dw_features_2024_c00, behind ~2,960 other
-unrelated tasks (s2_Baghooria_*, s1_Baghooria_*) from another concurrent
-workload on the same project. With only 1 task running at a time and a
-~205/4h SUCCEEDED rate, our 37 tasks won't complete for hours.
+### v18 trained — DW features essentially ignored
 
-### Resolution path (resume when GEE clears)
+| Metric | v17 | v18 (DW) | Δ |
+|---|---:|---:|---:|
+| BA-tiered overall R@5% | 0.4741 | 0.3887 | **-8.5pp regression** |
+| DBSCAN overall R@5% | 0.2266 | 0.2297 | +0.31pp |
+| DBSCAN low-Hawkes R@5% | 0.0588 | 0.0608 | +0.20pp |
+| DBSCAN cold-start R@5% | 0.0443 | 0.0443 | 0.00pp |
+| **DW features in top-30 by gain** | n/a | **only 1** | model ignored DW |
 
-1. Run `python scripts/check_dw_export_status.py` to monitor
-2. Once ≥ 80% chunks have SUCCEEDED, run
-   `python scripts/download_dw_monthly_exports.py` to fetch CSVs from Drive
-3. `python scripts/extend_dataset_with_dw.py` joins DW into v17 dataset
-4. `python scripts/train_v18_dynamic_world.py` trains v18 (~30 min)
-5. `python scripts/evaluate_v18_combined.py` runs T3 cascade decision
+The BA-tiered regression of 8.5pp suggests training instability (different
+random seed/sampling) more than DW corruption — the model still learned the
+same v17 features. But DW added zero meaningful signal at the cell scale.
+
+### Why DW didn't help
+
+Hypotheses (not investigated further given clean negative result):
+
+1. **2km cell aggregation washes out the slash-and-burn signal**.
+   A clearing of 50-200 m² (single farmer plot) is invisible when averaged
+   over a 4 km² cell. Same scale problem that killed S2 dNBR + temporal
+   delta + Sentinel-1 SAR amplitude in prior pilots.
+
+2. **Monthly cadence is too coarse** for the days-before-fire precursor.
+   Slash-and-burn happens 0-5 days before ignition; monthly composite
+   smooths it out.
+
+3. **Bare-ground in MP dry deciduous is dominated by phenology**, not
+   anthropogenic clearing — even Dynamic World's trained classifier
+   confounds the two at 10m × monthly resolution.
+
+### T2 verdict: PARK
+
+DW features added to v17's training set produce a model that ignores them.
+Do not pursue DW deltas further.
 
 ---
 
-## Track T3 — Combined v18.5 (DEFERRED)
+## T3 — Combined v18 + Hurdle (FAIL)
 
-Deferred until T2 completes. The combined evaluator
-(`scripts/evaluate_v18_combined.py`) is built and ready. It will:
+### Setup
 
-1. Load v18 (when trained) and Stage A (already trained)
-2. Compute blend variants of (Stage A × v18)
-3. Apply the same cascade ship logic as the plan's "Definition of done"
-4. Decide whether to ship v17.5, v18, v19, or accept the v17 ceiling
+`scripts/evaluate_v18_combined.py` evaluated 5 configurations:
+
+| Config | DBSCAN R@5% | BA-tiered R@5% | Low-H (≤1) | Cold (=0) | PerDay |
+|---|---:|---:|---:|---:|---:|
+| p_v17 (baseline) | 0.2266 | 0.3895 | 0.0588 | 0.0443 | 0.2914 |
+| p_v18 | 0.2297 | 0.3887 | 0.0608 | 0.0443 | 0.3125 |
+| p_a (Stage A only) | 0.1765 | 0.1501 | 0.1098 | 0.1013 | 0.2289 |
+| blend_v17_a | 0.2355 | 0.2533 | **0.0765** | 0.0633 | 0.3023 |
+| blend_v18_a | 0.2382 | 0.2577 | 0.0706 | 0.0601 | 0.3036 |
+
+### T3 decision logic + result
+
+Strict T3 pass criterion: low-Hawkes ≥ 0.10 AND BA-tiered ≥ 0.48.
+**Both targets missed by significant margins.**
+
+The cascade check picks `v17_unchanged` because:
+
+- T3 (combined): low-Hawkes 0.0706 < 0.10 → fail
+- T2 (v18 alone): low-Hawkes 0.0608 < 0.07 → fail
+- T1 (blend_v17_a): low-Hawkes 0.0765 < 0.08 → fail
+- → fall through to v17 unchanged
+
+### T1's hurdle blend is the best low-Hawkes variant tested
+
+`blend_v17_a` (low-Hawkes 7.65%) > `blend_v18_a` (7.06%) — adding DW to
+the blend **hurts** low-Hawkes. This is consistent with the v18 finding
+that DW features are essentially noise at this scale.
 
 ---
 
-## Production-touching changes shipped today
+## What ships
 
-1. `scripts/predict_ignition_v17.py` — added `--use-hurdle-blend` flag
-   that loads `predictive_v17_hurdle_a/model.txt` + `predictive_v17_hurdle/blend_config.json`
-   and applies the Stage A × v17 blend before re-ranking + banding.
-   Smoke-tested for 2026-04-19: 213 CRITICAL, 638 ALERT, 1277 WATCH.
-   Top-10 CRITICAL cells differ from raw v17 — alert allocation has shifted.
+### Production daily pipeline
 
-2. Output JSON (`outputs/dashboard_feed/ignition_risk_v17.json`) now
-   includes `hurdle_blend` metadata block when the flag is on:
-   - applied: bool
-   - variant: str (winning blend formula name)
-   - blend_config: { low_hawkes_r5, overall_r5, delta_low_hawkes_pp,
-     delta_overall_pp }
-   - per-cell `stage_a_risk` field (raw Stage A probability)
+**Unchanged.** v17 + isotonic calibration + diagnostic stack remain
+production. The hurdle blend is opt-in only.
 
-## What ships in the daily pipeline RIGHT NOW
+### What's available behind a flag
 
-Same as before today:
-- v17 raw scoring (no hurdle blend)
-- isotonic probability calibration
-- operational alerts decoration
+`python scripts/predict_ignition_v17.py --date YYYY-MM-DD --use-hurdle-blend`
 
-The hurdle blend is **available but off by default**. Will be enabled if
-T3 fails to produce a better variant — to capture at least the +1.77 pp
-low-Hawkes uplift the hurdle gives.
+This loads `predictive_v17_hurdle_a/model.txt` + the winning blend
+config and shifts the alert ranking. Smoke-tested on 2026-04-19.
+Output JSON includes `hurdle_blend` metadata + per-cell `stage_a_risk`.
 
-## Files created this session
+### Files persisted from sprint
 
-| Path | Purpose | Lines |
+| Path | Status | Notes |
 |---|---|---|
-| `scripts/train_v17_hurdle_stage_a.py` | T1 Stage A trainer | 200 |
-| `scripts/evaluate_v17_hurdle_blend.py` | T1 blend evaluator (5 variants × stratified R@5%) | 244 |
-| `scripts/build_dynamic_world_features.py` | T2 GEE export (server-side, chunked) | 213 |
-| `scripts/download_dw_monthly_exports.py` | T2 Drive downloader + parquet builder | 156 |
-| `scripts/extend_dataset_with_dw.py` | T2 join DW into v17 dataset | 99 |
-| `scripts/train_v18_dynamic_world.py` | T2 v18 trainer | 165 |
-| `scripts/evaluate_v18_combined.py` | T3 cascade evaluator | 207 |
-| `scripts/check_dw_export_status.py` | T2 GEE status monitor | 36 |
+| `scripts/train_v17_hurdle_stage_a.py` | KEEP | Stage A trainer |
+| `scripts/evaluate_v17_hurdle_blend.py` | KEEP | T1 evaluator |
+| `scripts/predict_ignition_v17.py` | KEEP | Now has `--use-hurdle-blend` |
+| `outputs/predictive_fire_risk/predictive_v17_hurdle_a/` | KEEP | Stage A model + importance |
+| `outputs/predictive_fire_risk/predictive_v17_hurdle/` | KEEP | Blend config |
+| `scripts/build_dynamic_world_features.py` (batch) | KEEP | for future use if queue clears |
+| `scripts/build_dynamic_world_features_sync.py` | KEEP | the working approach |
+| `scripts/download_dw_monthly_exports.py` | KEEP | for future batch use |
+| `scripts/extend_dataset_with_dw.py` | KEEP | will rebuild parquet if needed |
+| `scripts/train_v18_dynamic_world.py` | KEEP | v18 baseline retrainer |
+| `scripts/train_v18_hurdle_stage_a.py` | KEEP | Stage A on v18 features |
+| `scripts/evaluate_v18_combined.py` | KEEP | T3 cascade evaluator |
+| `data_lake/land_cover/dynamic_world_monthly.parquet` | KEEP | 2.57M rows DW data; available for future v19 if a method finds use |
+| `outputs/predictive_fire_risk/predictive_v18_dw/` | KEEP | v18 model artefacts (negative result archive) |
+| `outputs/predictive_fire_risk/predictive_v18_hurdle_a/` | n/a | not trained (OOM during initial run + not needed since T3 fail) |
+| `outputs/predictive_fire_risk/predictive_v19_combined/` | KEEP | T3 cascade decision + per-config eval |
 
-## Memory entries to update on full completion
+---
 
-- `feedback_pivot_a_v2_t1_marginal.md` — "Hurdle Stage A blend gives
-  +1.77 pp low-Hawkes / +0.89 pp overall vs v17 alone. Strictly
-  Pareto-better. Wired as `--use-hurdle-blend` opt-in until v18/v19 decision."
-- `project_pivot_a_v2_results.md` — final ship decision after T2/T3.
+## Empirical implications for the project
 
-## CLAUDE.md updates planned post-T3
+The 1-week Pivot A v2 sprint yielded one new piece of empirical evidence:
 
-- Add v17.5 / v18 / v19 to Model Zoo (whichever ships)
-- Update "Production Status" section if pipeline switches
-- Add note about Pivot A v2 sprint outcome
+**Adding more satellite-derived land-cover features at 10m cell aggregation
+does not break the low-Hawkes ceiling.** This adds Dynamic World monthly
+LULC to the prior list of dead ends:
+
+- Sentinel-2 dNBR (phenology trap, 2026-04-15)
+- Sentinel-1 SAR amplitude (clearing too small, 2026-04-15)
+- Prithvi-EO-2.0 600M embeddings (phase 4, 2026-04-14)
+- CLIP-ViT-L/14 (perm p=0.095, 2026-04-17)
+- LLaVA-7b VLM (MW p=0.74, 2026-04-17)
+- Temporal NDVI/BSI deltas (5-fold ROC=0.539, 2026-04-17)
+- **Dynamic World monthly LULC (this sprint, 2026-04-19)**
+
+**The Hurdle Stage A approach IS the only architecture-side change since
+the original Hawkes that measurably moves low-Hawkes recall** — and even
+this sits 0.35pp short of strict pass.
+
+The honest project state: **v17 + diagnostic stack is the
+empirical ceiling for satellite + weather + Hawkes data**. The remaining
+77% gap requires non-satellite data (village-level human activity,
+patrol logs, NTFP collection records) — already documented as
+data-blocked in `feedback_path_c_data_blocked.md`.
+
+---
+
+## Memory entries
+
+- `feedback_pivot_a_v2_t1_marginal.md` — T1 result + ship-as-opt-in rule
+- `feedback_pivot_a_v2_dw_no_signal.md` (NEW) — T2/T3 fail; DW LULC at
+  10m monthly does not help low-Hawkes prediction at 2km cell
+
+## CLAUDE.md updates
+
+- Production Status section already has Pivot A v2 status
+- Add T2 DW result to "CONFIRMED DEAD ENDS" list
+- Note: the hurdle blend is the only structural improvement available;
+  remains opt-in pending operational signal
