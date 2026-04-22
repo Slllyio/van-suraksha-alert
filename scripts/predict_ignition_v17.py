@@ -366,7 +366,7 @@ def main() -> int:
     for _, row in df[df["band"] > 0].sort_values("ignition_risk", ascending=False).iterrows():
         cid = row["cell_id"]
         if cid in cell_lookup:
-            banded_alerts.append({
+            alert = {
                 "cell_id": cid,
                 "lat": cell_lookup[cid]["centroid_lat"],
                 "lon": cell_lookup[cid]["centroid_lon"],
@@ -376,7 +376,10 @@ def main() -> int:
                 "band": BAND_NAMES[int(row["band"])],
                 "hawkes_n_recent_10km_7d": int(row["hawkes_n_recent_10km_7d"]),
                 "hawkes_lambda": float(row["hawkes_lambda"]),
-            })
+            }
+            if "stage_a_risk" in row:
+                alert["stage_a_risk"] = float(row["stage_a_risk"])
+            banded_alerts.append(alert)
 
     alerts_all_cells = [
         {"cell_id": cid, "ignition_risk": float(r)}

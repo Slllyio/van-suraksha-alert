@@ -127,10 +127,15 @@ def run_v17_ignition(target_date: str) -> bool:
         print(f"  SKIP: feature freshness check failed")
         return False
 
-    return run_step("v17 Ignition Model", [
+    # Hurdle Stage A blend applied by default as of 2026-04-19 (Pivot A v2 T1).
+    # Blend gives +1.77pp low-Hawkes / +0.89pp overall / +1.90pp cold-start
+    # vs raw v17 on the 2025 honest hold-out. Pareto-better on every metric.
+    # See docs/audits/pivot_a_v2_finding.md.
+    return run_step("v17 Ignition Model (+ Hurdle blend)", [
         PYTHON, "scripts/predict_ignition_v17.py",
         "--date", target_date,
         "--rank-window-days", "7",
+        "--use-hurdle-blend",
     ], timeout=300)
 
 

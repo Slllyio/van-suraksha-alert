@@ -10,18 +10,19 @@ AI-driven forest fire Early Warning System for **Madhya Pradesh state-wide** (87
 **Fire Season**: February-May (peak March-April)
 **Production model**: v17_ba_pu (LightGBM, 111 features) at R@top-5%=47.41% (BA-tiered) / 22.7% (DBSCAN-strict)
 
-## Production Status (2026-04-19, Pivot A v2 sprint COMPLETE)
+## Production Status (2026-04-19, Pivot A v2 sprint COMPLETE — v17.5 hurdle blend SHIPPED)
 
-**Sprint complete.** `docs/audits/pivot_a_v2_finding.md`.
+**Sprint complete + production switched.** `docs/audits/pivot_a_v2_finding.md`.
 
 | Track | Result | Status |
 |---|---|---|
-| **T1 Hurdle Two-Stage** | MARGINAL POSITIVE: +1.77pp low-Hawkes (5.88→7.65%), +0.89pp overall, Pareto-better on every metric | KEEP as opt-in `--use-hurdle-blend` flag in `predict_ignition_v17.py`. Default OFF. |
+| **T1 Hurdle Two-Stage** | +1.77pp low-Hawkes (5.88→7.65%), +0.89pp overall, +1.90pp cold-start, Pareto-better on every metric | **SHIPPED 2026-04-19**. `daily_fire_alert.py` Step 4.5 calls `predict_ignition_v17.py --use-hurdle-blend` by default. |
 | **T2 Dynamic World LULC** | FAIL: model ignored DW features (1 of 30 in top-30 by gain), BA-tiered regressed -8.5pp | PARK. DW didn't help. |
 | **T3 Combined v18+Hurdle** | FAIL strict: blend_v18_a low-Hawkes 7.06% < 10% target. ALSO worse than T1's blend_v17_a (7.65%). | PARK. |
 
-**Final ship decision:** v17 default unchanged. v17.5 hurdle blend
-available behind opt-in flag for ~+1.8pp low-Hawkes recall.
+**Final ship decision:** **v17.5 = v17 + Hurdle Stage A blend (geo_w0.7) is now production default.**
+Daily pipeline outputs ~140 CRITICAL / ~720 ALERT / ~1770 WATCH alerts (vs 213/638/1277 raw v17).
+Per-alert JSON has new `stage_a_risk` field; payload metadata has `hurdle_blend` block.
 
 **Empirical takeaway:** Pivot A v2 adds Dynamic World 10m monthly LULC
 (both bare/crops/trees and 4-week deltas) to the list of satellite
@@ -174,9 +175,9 @@ FIRE/
 
 | Model | Type | Best Metric | Status |
 |-------|------|-------------|--------|
-| **v17_ba_pu** | LightGBM, 111 feats, BA-tiered PU | **R@5%=47.41% (tiered) / 22.7% (DBSCAN)** | **PRODUCTION** |
-| v17_hurdle_a | Bernoulli, 107 feats (no Hawkes) | PR=0.024, R@5%=29% solo | T1 Stage A — opt-in via `--use-hurdle-blend` |
-| v17.5 hurdle blend (geo_w0.7) | v17 × Stage A blend | DBSCAN R@5% 23.55%, low-Hawkes 7.65% | Marginal positive, opt-in only |
+| **v17.5 hurdle blend** (geo_w0.7) | v17 × Stage A geometric blend | DBSCAN R@5% 23.55%, low-Hawkes 7.65%, +1.77pp vs v17 | **PRODUCTION (since 2026-04-19)** |
+| v17_ba_pu | LightGBM, 111 feats, BA-tiered PU | R@5%=47.41% (tiered) / 22.7% (DBSCAN) | Stage B (used inside v17.5 blend) |
+| v17_hurdle_a | Bernoulli, 107 feats (no Hawkes) | PR=0.024, R@5%=29% solo | Stage A (used inside v17.5 blend) |
 | v15 ensemble (v13×v14 geo-mean) | LightGBM ensemble | R@5%=40.45% | Predecessor (archive) |
 | v9 Hawkes | LightGBM + Hawkes self-excitation | R@5%=39.4% | First Hawkes breakthrough |
 | v8 DBSCAN ignition | LightGBM on DBSCAN-clustered ignitions | R@5%=28.1% | Ignition baseline |
