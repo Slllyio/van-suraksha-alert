@@ -508,6 +508,18 @@ class PortalHandler(SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     print(f"=== JwalaNetra v3 Unified Portal ===")
     print(f"Date: {TODAY}")
+    # Warm-load beat polygons (8,973 polygons, 188MB geojson) so the first
+    # /api/viirs-fires request doesn't timeout (pay the cold-start on startup
+    # instead of on the first operator click).
+    print("Warming beat polygon cache...", end=" ", flush=True)
+    import time as _time
+    _t0 = _time.time()
+    beats = _load_beat_polygons()
+    print(f"{len(beats) if beats is not None else 0} polygons loaded in {_time.time()-_t0:.1f}s")
+    # Also warm division-cells mapping for division overview endpoint
+    print("Warming cells-to-division map...", end=" ", flush=True)
+    _ = _get_cell_division("r0000_c0000")
+    print("done")
     print(f"Portal: http://localhost:{PORT}/v3/")
     print(f"APIs:   /api/ignition-v17, /api/division-overview, /api/model-transparency, /api/validation-log")
     server = HTTPServer(("", PORT), PortalHandler)
