@@ -30,6 +30,12 @@ scheduler:  ## Start daily EWS scheduler daemon
 test:  ## Run test suite
 	python -m pytest tests/ -v --tb=short
 
+ops-check:  ## Run static ops checks (fast, no portal required)
+	python scripts/ci_static_ops_checks.py
+
+ops-check-full:  ## Run full ops test harness (requires portal on :8790)
+	python scripts/test_operational_pipeline.py
+
 lint:  ## Run linting
 	python -m ruff check src/ scripts/
 	python -m pyright src/
