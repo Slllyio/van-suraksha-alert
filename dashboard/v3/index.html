@@ -193,6 +193,7 @@ th{color:var(--t3);font-size:11px;font-weight:600;text-transform:uppercase;lette
           <label class="layer-toggle"><input type="checkbox" checked data-band="CRITICAL"> Critical cells</label>
           <label class="layer-toggle"><input type="checkbox" checked data-band="ALERT"> Alert cells</label>
           <label class="layer-toggle"><input type="checkbox" checked data-band="WATCH"> Watch cells</label>
+          <label class="layer-toggle"><input type="checkbox" id="toggle-beats" checked> Beat boundaries</label>
         </div>
       </div>
     </div>
@@ -261,10 +262,22 @@ document.getElementById('flyout-close').addEventListener('click', function() {
 // Layer toggles
 document.querySelectorAll('.layer-toggle input').forEach(function(cb) {
   cb.addEventListener('change', function() {
-    S.bands[this.dataset.band] = this.checked;
-    updateFilter();
+    if (this.id === 'toggle-beats') {
+      toggleBeatLayers(this.checked);
+    } else {
+      S.bands[this.dataset.band] = this.checked;
+      updateFilter();
+    }
   });
 });
+
+function toggleBeatLayers(visible) {
+  if (!S.map) return;
+  var vis = visible ? 'visible' : 'none';
+  ['beats-fill', 'beats-line'].forEach(function(id) {
+    if (S.map.getLayer(id)) S.map.setLayoutProperty(id, 'visibility', vis);
+  });
+}
 
 function updateFilter() {
   if (!S.map || !S.map.getLayer('v17-layer')) return;
@@ -296,6 +309,22 @@ function initMap() {
   S.map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
   S.map.on('load', function() {
+    // Beat-boundary layer (same pattern as Tab 5 VIIRS map). Loads async;
+    // v17 layer goes on top of beats fills so alerts remain visible.
+    fetch('/api/beats-boundary').then(function(r){return r.json();}).then(function(geo){
+      if (geo.error) return;
+      S.map.addSource('beats', { type: 'geojson', data: geo });
+      S.map.addLayer({
+        id: 'beats-fill', type: 'fill', source: 'beats',
+        paint: { 'fill-color': '#22c55e', 'fill-opacity': 0.05 }
+      });
+      S.map.addLayer({
+        id: 'beats-line', type: 'line', source: 'beats',
+        paint: { 'line-color': '#22c55e', 'line-opacity': 0.25, 'line-width': 0.5 },
+        minzoom: 8
+      });
+    }).catch(function(){});
+
     S.map.addSource('v17', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
     S.map.addLayer({
       id: 'v17-layer', type: 'circle', source: 'v17',
