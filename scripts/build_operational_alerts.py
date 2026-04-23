@@ -40,6 +40,8 @@ V17_JSON = ROOT / "outputs" / "dashboard_feed" / "ignition_risk_v17.json"
 FWI_PARQUET = ROOT / "data_lake" / "fire_weather" / "fwi_daily.parquet"
 CELLS_CSV = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v6e_live" / "cells.csv"
 CLIMATOLOGY_PARQUET = ROOT / "data_lake" / "fire_weather" / "beat_fire_climatology.parquet"
+FIRMS_CONS_PARQUET = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "firms_mp_consolidated.parquet"
+FIRMS_NRT_PARQUET = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "nrt_7d.parquet"
 OUT_ALERTS = ROOT / "outputs" / "dashboard_feed" / "operational_alerts_v17.json"
 OUT_BRIEFINGS = ROOT / "outputs" / "dashboard_feed" / "division_briefings.json"
 
@@ -49,6 +51,18 @@ OUT_BRIEFINGS = ROOT / "outputs" / "dashboard_feed" / "division_briefings.json"
 CLIMATOLOGY_PERCENTILE_THRESHOLD = 0.90  # top 10% of beats per week
 CLIMATOLOGY_MIN_FIRES_5YR = 5             # absolute floor; ignore noise
 CLIMATOLOGY_PROMOTE_TO = "WATCH"          # never overwrite CRITICAL/ALERT
+
+# Fire-onset gate — gates BOTH coverage + climatology floors. Without it,
+# the floors fired during pre-season weeks (Feb 16-Mar 10 in 2026) when
+# zero fires occurred statewide, generating 54,296 wasted alerts (35 % of
+# the season's total) before any actual ignition. Gate logic:
+#   apply floors IF (>=1 forest fire in last FIRE_ONSET_WINDOW_DAYS)
+#                OR (current FFMC >= FIRE_ONSET_FFMC_OVERRIDE)
+# The FFMC override preserves the floor on the rare day-1-of-season case
+# where weather screams "extreme" but Hawkes is still silent.
+FIRE_ONSET_WINDOW_DAYS = 7
+FIRE_ONSET_MIN_FIRES = 1                 # any fire wakes the gate
+FIRE_ONSET_FFMC_OVERRIDE = 90.0          # always apply floor at Very High / Extreme
 
 # Budget caps (from validation analysis)
 STATEWIDE_CRITICAL_CAP = 130
@@ -315,6 +329,48 @@ def enforce_budget(
         result.append(alert)
 
     return result
+
+
+def is_fire_season_active(target: date, weather: WeatherContext) -> tuple[bool, str]:
+    """Return (active, reason) — gates both floors during pre-season.
+
+    Active when:
+      - >= FIRE_ONSET_MIN_FIRES forest fires occurred in the last
+        FIRE_ONSET_WINDOW_DAYS days (high-confidence FIRMS, MP statewide), OR
+      - current FFMC >= FIRE_ONSET_FFMC_OVERRIDE (weather override for the
+        rare extreme-weather-but-no-fires-yet edge case)
+
+    Reads firms_consolidated + firms_nrt union. Falls back to the FFMC
+    override if FIRMS parquets are unreadable (better to over-alert during
+    weather extremes than to silently suppress).
+    """
+    # Weather override (strongest signal)
+    if weather.ffmc >= FIRE_ONSET_FFMC_OVERRIDE:
+        return True, f"FFMC={weather.ffmc:.1f} >= {FIRE_ONSET_FFMC_OVERRIDE} override"
+
+    # FIRMS look-back
+    cutoff = pd.Timestamp(target) - pd.Timedelta(days=FIRE_ONSET_WINDOW_DAYS)
+    end = pd.Timestamp(target) - pd.Timedelta(days=1)
+    n_recent = 0
+    for path in (FIRMS_CONS_PARQUET, FIRMS_NRT_PARQUET):
+        if not path.exists():
+            continue
+        try:
+            df = pd.read_parquet(path, columns=["acq_date", "confidence"])
+        except Exception:
+            continue
+        df["acq_date"] = pd.to_datetime(df["acq_date"])
+        df["confidence"] = df["confidence"].astype(str).str.lower()
+        sub = df[(df["acq_date"] >= cutoff) & (df["acq_date"] <= end)
+                 & df["confidence"].isin({"h", "n", "high", "nominal"})]
+        n_recent += len(sub)
+    if n_recent >= FIRE_ONSET_MIN_FIRES:
+        return True, f"{n_recent} fires in past {FIRE_ONSET_WINDOW_DAYS}d"
+
+    return False, (
+        f"no fire-season activity (last {FIRE_ONSET_WINDOW_DAYS}d FIRMS={n_recent}, "
+        f"FFMC={weather.ffmc:.1f} < {FIRE_ONSET_FFMC_OVERRIDE})"
+    )
 
 
 def apply_division_coverage_floor(
@@ -680,21 +736,31 @@ def main() -> int:
     log.info("Budget enforcement: CRITICAL=%d (cap %d) demoted=%d",
              n_crit_raw, STATEWIDE_CRITICAL_CAP, n_demoted)
 
-    log.info("Applying per-division coverage floor (extreme=%s floor=%d/%d)...",
-             weather.is_extreme,
-             PER_DIVISION_CRITICAL_FLOOR,
-             PER_DIVISION_CRITICAL_FLOOR_EXTREME)
-    final_alerts, n_floor = apply_division_coverage_floor(
-        final_alerts, all_cells, cell_meta, weather.is_extreme, calendar_ctx,
-    )
-    log.info("Coverage floor: promoted %d cells to CRITICAL (DIVISION_FLOOR trust)", n_floor)
+    season_on, gate_reason = is_fire_season_active(target, weather)
+    log.info("Fire-season gate: %s (%s)",
+             "ACTIVE -- floors enabled" if season_on else "DORMANT -- floors suppressed",
+             gate_reason)
 
-    log.info("Applying climatology WATCH floor (top %.0f%% historical-burn beats)...",
-             CLIMATOLOGY_PERCENTILE_THRESHOLD * 100)
-    final_alerts, n_clim = apply_climatology_watch_floor(
-        final_alerts, all_cells, cell_meta, target,
-    )
-    log.info("Climatology floor: promoted %d cells to WATCH (CLIMATOLOGY_FLOOR trust)", n_clim)
+    n_floor = 0
+    n_clim = 0
+    if season_on:
+        log.info("Applying per-division coverage floor (extreme=%s floor=%d/%d)...",
+                 weather.is_extreme,
+                 PER_DIVISION_CRITICAL_FLOOR,
+                 PER_DIVISION_CRITICAL_FLOOR_EXTREME)
+        final_alerts, n_floor = apply_division_coverage_floor(
+            final_alerts, all_cells, cell_meta, weather.is_extreme, calendar_ctx,
+        )
+        log.info("Coverage floor: promoted %d cells to CRITICAL (DIVISION_FLOOR trust)", n_floor)
+
+        log.info("Applying climatology WATCH floor (top %.0f%% historical-burn beats)...",
+                 CLIMATOLOGY_PERCENTILE_THRESHOLD * 100)
+        final_alerts, n_clim = apply_climatology_watch_floor(
+            final_alerts, all_cells, cell_meta, target,
+        )
+        log.info("Climatology floor: promoted %d cells to WATCH (CLIMATOLOGY_FLOOR trust)", n_clim)
+    else:
+        log.info("(both floors skipped during pre-season — saves ~270 wasted alerts/day)")
 
     n_crit = sum(1 for a in final_alerts if a["budget_tier"] == "CRITICAL")
     n_alert = sum(1 for a in final_alerts if a["budget_tier"] == "ALERT")
