@@ -808,7 +808,7 @@ def _build_healthz() -> dict:
     sentinel = nrt_path.with_suffix(".lastrefresh")
     season_summary = SEASON_VALIDATION_DIR / "2026_season_summary.json"
     climatology_parquet = (
-        ROOT / "data_lake" / "fire_weather" / "climatology_watch_floor.parquet"
+        ROOT / "data_lake" / "fire_weather" / "beat_fire_climatology.parquet"
     )
 
     nrt_age_hours: float | None = None
