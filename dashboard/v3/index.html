@@ -1531,6 +1531,139 @@ function loadValidation() {
         s.n_unique_ignition_events + ' unique events \u00b7 ' +
         'Generated ' + (s.generated_at||'').slice(0,19);
       seasonHost.appendChild(srcRow);
+
+      // ---- Per Division (87) — backtest broken down by MP forest division ----
+      var divs = sd.per_division || [];
+      if (divs.length) {
+        var dvh = document.createElement('h3');
+        dvh.style.cssText = 'font-size:13px;margin:18px 0 6px;color:var(--t2);text-transform:uppercase;letter-spacing:1px';
+        dvh.textContent = 'Per Division ('+divs.length+')';
+        seasonHost.appendChild(dvh);
+
+        var filterState = { mode: 'all', showAll: false };
+        var chipBar = document.createElement('div');
+        chipBar.style.cssText = 'display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap';
+
+        var nAll = divs.length;
+        var nCaught = divs.filter(function(d){return (d.n_events_caught||0) > 0;}).length;
+        var nSilent = divs.filter(function(d){return (d.n_events_caught||0) === 0 && (d.n_critical_alerts||0) > 0;}).length;
+        var nFloorOnly = divs.filter(function(d){
+          var tot = d.n_critical_alerts||0, fl = d.n_critical_floor_promoted||0;
+          return fl > 0 && fl === tot;
+        }).length;
+
+        function pchip(id, label, count, color) {
+          var c = document.createElement('span');
+          var active = filterState.mode === id;
+          c.style.cssText = 'padding:4px 10px;border-radius:14px;border:1px solid '+(active?color:'var(--border)')+
+            ';background:'+(active?color+'22':'var(--raised)')+
+            ';color:'+(active?color:'var(--t2)')+
+            ';cursor:pointer;font-size:11px;font-weight:600;user-select:none;transition:var(--transition)';
+          c.textContent = label+' ('+count+')';
+          c.addEventListener('click', function(){
+            filterState.mode = id;
+            filterState.showAll = false;
+            renderDivTable();
+          });
+          return c;
+        }
+
+        var divTableHost = document.createElement('div');
+        divTableHost.id = 'div-validation-table-host';
+        seasonHost.appendChild(chipBar);
+        seasonHost.appendChild(divTableHost);
+
+        function pctColor(v) {
+          if (v == null || isNaN(v)) return 'var(--t3)';
+          if (v >= 0.10) return 'var(--safe)';
+          if (v > 0) return 'var(--watch)';
+          return 'var(--crit)';
+        }
+        function pctTxt(v) {
+          if (v == null || isNaN(v)) return '—';
+          return (Number(v) * 100).toFixed(1) + '%';
+        }
+
+        function applyFilter() {
+          return divs.filter(function(d){
+            var tot = d.n_critical_alerts||0, fl = d.n_critical_floor_promoted||0;
+            if (filterState.mode === 'caught') return (d.n_events_caught||0) > 0;
+            if (filterState.mode === 'silent') return (d.n_events_caught||0) === 0 && tot > 0;
+            if (filterState.mode === 'floor')  return fl > 0 && fl === tot;
+            return true;
+          });
+        }
+
+        function renderDivTable() {
+          while (chipBar.firstChild) chipBar.removeChild(chipBar.firstChild);
+          chipBar.appendChild(pchip('all', 'All', nAll, '#4f8cff'));
+          chipBar.appendChild(pchip('caught', 'Caught ≥1', nCaught, '#22c55e'));
+          chipBar.appendChild(pchip('silent', 'Silent (alerts but 0 catches)', nSilent, '#ef4444'));
+          chipBar.appendChild(pchip('floor', 'Floor-only', nFloorOnly, '#f59e0b'));
+
+          while (divTableHost.firstChild) divTableHost.removeChild(divTableHost.firstChild);
+          var allFiltered = applyFilter();
+          var rows = filterState.showAll ? allFiltered : allFiltered.slice(0, 30);
+
+          var t = document.createElement('table');
+          var thead = document.createElement('thead');
+          var hr = document.createElement('tr');
+          ['Division','CRIT alerts','Floor-promoted','Events caught',
+           'CRIT ↔ fire','Floor ↔ fire','CRIT precision','Floor precision'].forEach(function(h){
+            var th = document.createElement('th'); th.textContent = h; hr.appendChild(th);
+          });
+          thead.appendChild(hr); t.appendChild(thead);
+          var tb = document.createElement('tbody');
+          rows.forEach(function(d){
+            var tr = document.createElement('tr');
+            var tot = d.n_critical_alerts||0, fl = d.n_critical_floor_promoted||0;
+            if ((d.n_events_caught||0) === 0 && tot > 0) {
+              tr.style.background = 'rgba(239,68,68,0.06)';
+            } else if (fl > 0 && fl === tot) {
+              tr.style.background = 'rgba(245,158,11,0.06)';
+            } else if ((d.precision_critical||0) >= 0.10) {
+              tr.style.background = 'rgba(34,197,94,0.06)';
+            }
+            var cells = [
+              d.division,
+              tot.toLocaleString(),
+              fl.toLocaleString(),
+              (d.n_events_caught||0).toLocaleString(),
+              (d.n_critical_caught_event||0).toLocaleString(),
+              (d.n_floor_caught_event||0).toLocaleString(),
+              { txt: pctTxt(d.precision_critical), color: pctColor(d.precision_critical) },
+              { txt: pctTxt(d.precision_floor),    color: pctColor(d.precision_floor) },
+            ];
+            cells.forEach(function(v){
+              var td = document.createElement('td');
+              if (v && typeof v === 'object' && v.txt !== undefined) {
+                td.textContent = v.txt;
+                td.style.color = v.color;
+                td.style.fontWeight = '600';
+              } else {
+                td.textContent = v;
+              }
+              tr.appendChild(td);
+            });
+            tb.appendChild(tr);
+          });
+          t.appendChild(tb); divTableHost.appendChild(t);
+
+          if (allFiltered.length > 30) {
+            var btn = document.createElement('button');
+            btn.style.cssText = 'margin-top:8px;padding:6px 14px;border:1px solid var(--border);background:var(--raised);color:var(--t2);border-radius:6px;cursor:pointer;font-size:11px';
+            btn.textContent = filterState.showAll
+              ? 'Collapse to top 30'
+              : 'Show all '+allFiltered.length;
+            btn.addEventListener('click', function(){
+              filterState.showAll = !filterState.showAll;
+              renderDivTable();
+            });
+            divTableHost.appendChild(btn);
+          }
+        }
+        renderDivTable();
+      }
     }).catch(function(e){
       seasonHost.innerHTML = '<p style="color:var(--t3);font-size:12px">season-validation endpoint failed: '+(e&&e.message||e)+'</p>';
     });

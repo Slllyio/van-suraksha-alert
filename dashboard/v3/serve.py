@@ -303,12 +303,13 @@ def _load_division_briefings() -> dict:
 
 
 def _load_season_validation() -> dict:
-    """Return the 2026 season validation summary + per-trust-tier breakdown.
+    """Return the 2026 season validation summary + per-trust-tier + per-division.
 
     Reads:
-      outputs/validation_reports/2026_season_summary.json  — main summary
+      outputs/validation_reports/2026_season_summary.json   — main summary
       outputs/validation_reports/2026_per_trust_tier.csv    — 4 tier rows
       outputs/validation_reports/2026_per_day.csv           — daily timeline
+      outputs/validation_reports/2026_per_division.csv      — 87 division rows
 
     Portal Validation tab surfaces this to reconcile the "1 validation row in
     rolling parquet" situation with the full-season backtest.
@@ -316,18 +317,28 @@ def _load_season_validation() -> dict:
     summary_path = SEASON_VALIDATION_DIR / "2026_season_summary.json"
     tier_path = SEASON_VALIDATION_DIR / "2026_per_trust_tier.csv"
     day_path = SEASON_VALIDATION_DIR / "2026_per_day.csv"
+    div_path = SEASON_VALIDATION_DIR / "2026_per_division.csv"
     if not summary_path.exists():
         return {"error": "2026_season_summary.json not found — run "
                 "scripts/validate_2026_season.py first"}
 
+    def _records(df: pd.DataFrame) -> list[dict]:
+        # Cast to object first so None survives — in float columns pandas
+        # silently converts None back to NaN, which json.dumps emits as the
+        # invalid token "NaN" that browsers' JSON.parse rejects.
+        return df.astype(object).where(pd.notnull(df), None).to_dict(orient="records")
+
     out = {"summary": json.loads(summary_path.read_text())}
     if tier_path.exists():
-        df = pd.read_csv(tier_path)
-        # Replace any NaN with None for safe JSON
-        out["per_trust_tier"] = df.where(pd.notnull(df), None).to_dict(orient="records")
+        out["per_trust_tier"] = _records(pd.read_csv(tier_path))
     if day_path.exists():
-        df = pd.read_csv(day_path)
-        out["per_day"] = df.where(pd.notnull(df), None).to_dict(orient="records")
+        out["per_day"] = _records(pd.read_csv(day_path))
+    if div_path.exists():
+        df = pd.read_csv(div_path)
+        # Sort by absolute alert volume desc so the operator sees high-traffic
+        # divisions first; floor-only divisions (n_critical_alerts=0) drift to bottom.
+        df = df.sort_values("n_critical_alerts", ascending=False).reset_index(drop=True)
+        out["per_division"] = _records(df)
     return out
 
 
