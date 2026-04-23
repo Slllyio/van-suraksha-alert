@@ -50,6 +50,29 @@ CALIBRATION_PATH = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v17_b
 HURDLE_STAGE_A_MODEL = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v17_hurdle_a" / "model.txt"
 HURDLE_BLEND_CONFIG = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v17_hurdle" / "blend_config.json"
 
+# Live weather + per-beat history overrides (added 2026-04-23)
+FWI_DAILY_PARQUET = ROOT / "data_lake" / "fire_weather" / "fwi_daily.parquet"
+BEAT_CLIMATOLOGY_PARQUET = ROOT / "data_lake" / "fire_weather" / "beat_fire_climatology.parquet"
+
+# Per-beat-history boost: final_risk = blend_risk * (1 + BETA * percentile_in_week).
+# BETA=0.30 means top-percentile beats get a 30% bump; bottom-percentile beats get 0%.
+# Tuned to be material but not to overwrite the model's own ranking.
+BEAT_HISTORY_BOOST_BETA = 0.30
+
+# Map FWI parquet columns -> model wx_* feature names (10 directly available)
+FWI_TO_WX = {
+    "temp_c":   "wx_temp_c",
+    "rh_pct":   "wx_rh_pct",
+    "wind_kmh": "wx_wind_kmh",
+    "precip_mm": "wx_precip_mm",
+    "ffmc":     "wx_ffmc",
+    "dmc":      "wx_dmc",
+    "dc":       "wx_dc",
+    "isi":      "wx_isi",
+    "bui":      "wx_bui",
+    "fwi":      "wx_fwi",
+}
+
 
 def _load_hurdle_blend() -> tuple[lgb.Booster | None, dict | None]:
     """Returns (Stage A model, blend config) or (None, None) if missing."""
@@ -232,6 +255,114 @@ def compute_rank_bands(probs: np.ndarray, rolling_history: np.ndarray,
     return ranks, bands, meta
 
 
+def apply_live_weather_overrides(df: pd.DataFrame, target_date: pd.Timestamp) -> tuple[pd.DataFrame, dict]:
+    """Replace 10 stale wx_* columns in df with TODAY's FWI values.
+
+    The v8 base dataset is frozen at 2025-05-29. Without this override, every
+    prediction inherits ~11-month-stale weather. Replacing the 10 directly-
+    mappable columns with the live `fwi_daily.parquet` value for `target_date`
+    (or the most-recent prior date if missing) restores topical fire weather
+    inputs to the model. The 28 derived wx_* features (rolling means, anomalies,
+    soil moisture, LST) stay at v8 frozen values -- recomputing them needs a
+    weather raster we don't have fresh; this is a best-effort partial.
+
+    Returns (updated_df, override_meta) where override_meta documents what
+    was applied for the per-prediction JSON output.
+    """
+    if not FWI_DAILY_PARQUET.exists():
+        return df, {"applied": False, "reason": "fwi_daily.parquet missing"}
+    fwi = pd.read_parquet(FWI_DAILY_PARQUET)
+    fwi["date"] = pd.to_datetime(fwi["date"]).dt.date
+    target = target_date.date()
+    match = fwi[fwi["date"] == target]
+    if match.empty:
+        match = fwi[fwi["date"] <= target].tail(1)
+    if match.empty:
+        return df, {"applied": False, "reason": f"no FWI row at or before {target}"}
+    row = match.iloc[0]
+    fwi_date = row["date"]
+
+    overrides_applied = {}
+    deltas = {}
+    for fwi_col, wx_col in FWI_TO_WX.items():
+        if wx_col not in df.columns or fwi_col not in row.index:
+            continue
+        old_median = float(df[wx_col].median()) if df[wx_col].notna().any() else None
+        new_value = float(row[fwi_col])
+        df[wx_col] = new_value  # broadcast statewide value to all cells
+        overrides_applied[wx_col] = new_value
+        if old_median is not None:
+            deltas[wx_col] = round(new_value - old_median, 3)
+
+    return df, {
+        "applied": True,
+        "fwi_date_used": str(fwi_date),
+        "n_columns_overridden": len(overrides_applied),
+        "overrides": overrides_applied,
+        "deltas_vs_v8_frozen": deltas,
+        "note": ("28 derived wx_* columns (rolling means, soil, LST) still come "
+                 "from v8 frozen 2025-05-29 -- not recomputable without weather raster"),
+    }
+
+
+def apply_beat_history_boost(df: pd.DataFrame, cells: pd.DataFrame,
+                              target_date: pd.Timestamp) -> tuple[pd.DataFrame, dict]:
+    """Multiply ignition_risk by (1 + BETA * percentile_in_week) per cell's beat.
+
+    Looks up `beat_fire_climatology.parquet` for the target date's ISO week.
+    Cells whose beat has high historical fire frequency get a gentle boost
+    (BETA=0.30 means top-percentile beats get +30%, bottom-percentile +0%).
+    This injects a per-beat-history signal into the model output without
+    touching the model itself -- a post-prediction decoration in the same
+    spirit as the operational coverage + climatology floors.
+
+    Requires `cells` DataFrame to carry `division` and `beat` columns to
+    join against the climatology parquet.
+
+    Returns (updated_df, boost_meta).
+    """
+    if not BEAT_CLIMATOLOGY_PARQUET.exists():
+        return df, {"applied": False, "reason": "beat_fire_climatology.parquet missing"}
+    if "division" not in cells.columns or "beat" not in cells.columns:
+        return df, {"applied": False, "reason": "cells.csv lacks division/beat columns"}
+
+    clim = pd.read_parquet(BEAT_CLIMATOLOGY_PARQUET)
+    target_woy = int(pd.Timestamp(target_date).isocalendar().week)
+    week_clim = clim[clim["week_of_year"] == target_woy].copy()
+    if week_clim.empty:
+        return df, {"applied": False, "reason": f"no climatology rows for week {target_woy}"}
+
+    # Build per-cell percentile by joining cells -> beat -> climatology
+    cell_beat = cells[["cell_id", "division", "beat"]].copy()
+    cell_beat = cell_beat.rename(columns={"division": "Division", "beat": "Beat"})
+    cell_clim = cell_beat.merge(
+        week_clim[["Division", "Beat", "percentile_in_week"]],
+        on=["Division", "Beat"], how="left",
+    )
+    cell_clim["percentile_in_week"] = cell_clim["percentile_in_week"].fillna(0.0)
+    pct_lookup = dict(zip(cell_clim["cell_id"], cell_clim["percentile_in_week"]))
+
+    pcts = df["cell_id"].map(pct_lookup).fillna(0.0).to_numpy()
+    boost = 1.0 + BEAT_HISTORY_BOOST_BETA * pcts
+    df["beat_history_pctile"] = pcts
+    df["beat_history_boost"] = boost
+    pre_min, pre_max = float(df["ignition_risk"].min()), float(df["ignition_risk"].max())
+    df["ignition_risk"] = df["ignition_risk"] * boost
+    post_min, post_max = float(df["ignition_risk"].min()), float(df["ignition_risk"].max())
+
+    n_boosted = int((pcts > 0).sum())
+    return df, {
+        "applied": True,
+        "beta": BEAT_HISTORY_BOOST_BETA,
+        "week_of_year": target_woy,
+        "n_cells_with_history": n_boosted,
+        "n_cells_no_history": int(len(pcts) - n_boosted),
+        "max_boost": round(float(boost.max()), 3),
+        "pre_boost_risk_range": [round(pre_min, 4), round(pre_max, 4)],
+        "post_boost_risk_range": [round(post_min, 4), round(post_max, 4)],
+    }
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", default=None, help="Target prediction date (YYYY-MM-DD). Default: tomorrow.")
@@ -241,6 +372,12 @@ def main() -> int:
     ap.add_argument("--use-hurdle-blend", action="store_true",
                     help="Apply Hurdle Stage A blend (Pivot A v2 T1 winner). "
                          "Re-ranks cells by blend(Stage A × v17). Marginal positive in eval.")
+    ap.add_argument("--use-live-weather", action="store_true",
+                    help="Override 10 stale wx_* columns from v8 dataset (frozen 2025-05-29) "
+                         "with today's fwi_daily.parquet values. Recommended.")
+    ap.add_argument("--use-beat-history", action="store_true",
+                    help="Apply post-prediction multiplier from per-beat 5-year fire climatology. "
+                         "Boosts cells in historically-burning beats (BETA=0.30). Recommended.")
     args = ap.parse_args()
 
     target_date = pd.Timestamp(args.date) if args.date else pd.Timestamp(datetime.now().date() + timedelta(days=1))
@@ -279,6 +416,18 @@ def main() -> int:
         errors="ignore",
     )
     log.info("  %d base feature rows", len(base))
+
+    weather_meta = {"applied": False, "reason": "flag not set"}
+    if args.use_live_weather:
+        log.info("Applying live weather override (--use-live-weather)...")
+        base, weather_meta = apply_live_weather_overrides(base, target_date)
+        if weather_meta["applied"]:
+            log.info("  Overrode %d wx_* columns with FWI from %s",
+                     weather_meta["n_columns_overridden"], weather_meta["fwi_date_used"])
+            log.info("  Sample deltas vs v8: %s",
+                     {k: v for k, v in list(weather_meta["deltas_vs_v8_frozen"].items())[:5]})
+        else:
+            log.warning("  Skipped: %s", weather_meta["reason"])
 
     df = base.merge(hawkes_df, on="cell_id", how="left")
     for c in ["hawkes_lambda", "hawkes_lambda_log", "hawkes_n_recent_10km_7d"]:
@@ -335,6 +484,21 @@ def main() -> int:
         else:
             log.warning("--use-hurdle-blend requested but Stage A or blend_config missing; "
                         "falling back to raw v17 probs.")
+
+    # Per-beat history boost — applied AFTER hurdle blend, BEFORE banding,
+    # so the boosted scores drive both rank-bands and banded_alerts ordering.
+    beat_history_meta = {"applied": False, "reason": "flag not set"}
+    if args.use_beat_history:
+        log.info("Applying per-beat historical boost (--use-beat-history)...")
+        df, beat_history_meta = apply_beat_history_boost(df, cells, target_date)
+        if beat_history_meta["applied"]:
+            log.info("  Boosted %d cells with history (range -> %s); %d cells unchanged",
+                     beat_history_meta["n_cells_with_history"],
+                     beat_history_meta["post_boost_risk_range"],
+                     beat_history_meta["n_cells_no_history"])
+            probs = df["ignition_risk"].values  # downstream rank/band uses this
+        else:
+            log.warning("  Skipped: %s", beat_history_meta["reason"])
 
     calib_params = _load_calibration()
     if calib_params is not None:
@@ -396,6 +560,8 @@ def main() -> int:
         "n_cells_total": int(len(df)),
         "rank_calibration": rank_meta,
         "hurdle_blend": hurdle_meta,
+        "live_weather": weather_meta,
+        "beat_history_boost": beat_history_meta,
         "probability_calibration": (
             {k: calib_params[k] for k in ("method", "brier", "logloss",
                                           "baseline_brier", "n_calibration",

@@ -145,6 +145,8 @@ def run_v17_ignition(target_date: str) -> bool:
         "--date", target_date,
         "--rank-window-days", "7",
         "--use-hurdle-blend",
+        "--use-live-weather",      # added 2026-04-23: replace 11-mo-stale wx_* with FWI today
+        "--use-beat-history",      # added 2026-04-23: per-beat 5-yr history boost (BETA=0.30)
     ], timeout=300)
 
 

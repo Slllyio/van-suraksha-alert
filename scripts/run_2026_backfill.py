@@ -82,6 +82,7 @@ def run_one(d_str: str) -> tuple[str, bool, str]:
             r = subprocess.run(
                 [PYTHON, "scripts/predict_ignition_v17.py",
                  "--date", d_str, "--use-hurdle-blend",
+                 "--use-live-weather", "--use-beat-history",
                  "--output", str(pred_json)],
                 cwd=ROOT, capture_output=True, text=True, timeout=600,
             )
