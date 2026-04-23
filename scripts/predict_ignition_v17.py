@@ -10,8 +10,9 @@ Architecture: single-model LightGBM (no ensemble). 111 features = v8 base (84) +
 Hawkes (4) + GLCM (19) + Hydro (6). Features are identical to what v13/v14 used;
 the gain comes from the LABEL SET — BA-corroborated tiered positives.
 
-Mirrors `scripts/predict_ignition_v15.py` JSON schema so `daily_fire_alert.py`
-can swap models by switching which script it calls.
+Mirrors `scripts/archive/predict_ignition_v15.py` JSON schema so `daily_fire_alert.py`
+can swap models by switching which script it calls. (v15 was archived 2026-04-23
+along with v9 and other older variants — see scripts/archive/NOTES.md.)
 
 Usage:
   python scripts/predict_ignition_v17.py --date 2026-04-15
@@ -108,8 +109,9 @@ def compute_hawkes_for_date(target_date: pd.Timestamp, ign_df: pd.DataFrame, cel
                             params: dict) -> pd.DataFrame:
     """Compute Hawkes intensity for all cells on target date.
 
-    Identical logic to scripts/predict_ignition_v9.py and scripts/predict_ignition_v15.py —
-    duplicated here to keep production scripts self-contained.
+    Identical logic to scripts/archive/predict_ignition_v9.py and
+    scripts/archive/predict_ignition_v15.py — duplicated here to keep
+    production scripts self-contained.
     """
     tau_t = params["tau_t_days"]
     tau_s = params["tau_s_km"]
