@@ -187,9 +187,14 @@ def connect(extra: Iterable[TableSpec] = ()) -> duckdb.DuckDBPyConnection:
         if spec.format == "parquet":
             sql = f"CREATE OR REPLACE VIEW {spec.name} AS SELECT * FROM read_parquet('{path_str}')"
         elif spec.format == "csv":
+            # Explicit quote+escape handle beat names like "Ghoghal_F,V," that
+            # contain literal commas inside quoted fields. Default read_csv_auto
+            # was failing to parse these.
             sql = (
                 f"CREATE OR REPLACE VIEW {spec.name} AS "
-                f"SELECT * FROM read_csv_auto('{path_str}', header=true)"
+                f"SELECT * FROM read_csv('{path_str}', header=true, "
+                f"auto_detect=true, quote='\"', escape='\"', "
+                f"sample_size=-1, ignore_errors=false)"
             )
         else:
             n_skip += 1

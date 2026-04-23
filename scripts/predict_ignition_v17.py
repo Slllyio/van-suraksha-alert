@@ -52,7 +52,9 @@ HURDLE_BLEND_CONFIG = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v1
 
 # Live weather + per-beat history overrides (added 2026-04-23)
 FWI_DAILY_PARQUET = ROOT / "data_lake" / "fire_weather" / "fwi_daily.parquet"
+SOIL_DAILY_PARQUET = ROOT / "data_lake" / "fire_weather" / "soil_daily.parquet"
 BEAT_CLIMATOLOGY_PARQUET = ROOT / "data_lake" / "fire_weather" / "beat_fire_climatology.parquet"
+ERA5_PER_DIVISION_PARQUET = ROOT / "data_lake" / "fire_weather" / "era5_per_division_daily.parquet"
 
 # Per-beat-history boost: final_risk = blend_risk * (1 + BETA * percentile_in_week).
 # BETA=0.30 means top-percentile beats get a 30% bump; bottom-percentile beats get 0%.
@@ -71,6 +73,33 @@ FWI_TO_WX = {
     "isi":      "wx_isi",
     "bui":      "wx_bui",
     "fwi":      "wx_fwi",
+}
+
+# Map ERA5 per-division (Open-Meteo) columns -> model wx_* feature names.
+# These cover the 21 derived wx_* features that FWI alone can't provide
+# (rolling 7d/14d/30d aggregates, anomalies, soil moisture, srad, VPD).
+ERA5_TO_WX = {
+    "air_temp_c":          "wx_temp_c",
+    "rh_pct":              "wx_rh_pct",
+    "wind_kmh_max":        "wx_wind_kmh",
+    "precip_mm":           "wx_precip_mm",
+    "precip_7d":           "wx_precip_7d",
+    "precip_14d":          "wx_precip_14d",
+    "precip_30d":          "wx_precip_30d",
+    "consecutive_dry":     "wx_consecutive_dry",
+    "temp_7d_mean":        "wx_temp_7d_mean",
+    "rh_7d_min":           "wx_rh_7d_min",
+    "wind_7d_max":         "wx_wind_7d_max",
+    "vpd_kpa":             "wx_vpd",
+    "vpd_7d_max":          "wx_vpd_7d_max",
+    "dtr":                 "wx_dtr",
+    "temp_anom":           "wx_anom_temp_c",
+    "rh_anom":             "wx_anom_rh_pct",
+    "wind_anom":           "wx_anom_wind_kmh",
+    "precip_anom":         "wx_anom_precip_mm",
+    "soil_moisture_0_7cm": "wx_sm_surface",
+    "soil_moisture_7_28cm": "wx_sm_rootzone",
+    "srad_mj":             "wx_srad",
 }
 
 
@@ -255,16 +284,23 @@ def compute_rank_bands(probs: np.ndarray, rolling_history: np.ndarray,
     return ranks, bands, meta
 
 
-def apply_live_weather_overrides(df: pd.DataFrame, target_date: pd.Timestamp) -> tuple[pd.DataFrame, dict]:
-    """Replace 10 stale wx_* columns in df with TODAY's FWI values.
+def apply_live_weather_overrides(df: pd.DataFrame, cells: pd.DataFrame,
+                                  target_date: pd.Timestamp) -> tuple[pd.DataFrame, dict]:
+    """Replace stale wx_* columns in df with live values from FWI + ERA5 sources.
 
-    The v8 base dataset is frozen at 2025-05-29. Without this override, every
-    prediction inherits ~11-month-stale weather. Replacing the 10 directly-
-    mappable columns with the live `fwi_daily.parquet` value for `target_date`
-    (or the most-recent prior date if missing) restores topical fire weather
-    inputs to the model. The 28 derived wx_* features (rolling means, anomalies,
-    soil moisture, LST) stay at v8 frozen values -- recomputing them needs a
-    weather raster we don't have fresh; this is a best-effort partial.
+    Two-stage override:
+      Stage 1 (statewide FWI): 10 wx_* columns from `fwi_daily.parquet`
+              (single statewide value broadcast to all cells)
+      Stage 2 (per-division ERA5): 21 wx_* columns from
+              `era5_per_division_daily.parquet`, joined on `division`
+              for spatial variation.
+
+    The v8 base dataset is frozen at 2025-05-29 -- without these overrides
+    every 2026 prediction inherits 11-month-stale weather. Combined the two
+    overrides cover 31 of the 38 wx_* columns. The 7 still-frozen columns
+    (wx_fuel_dryness, wx_heat_streak, wx_lst, wx_lst_7d_max,
+    wx_lst_air_diff, wx_sm_*_7d_min, wx_sm_*_30d, wx_sm_anomaly) need
+    different data sources and stay at v8 frozen values for now.
 
     Returns (updated_df, override_meta) where override_meta documents what
     was applied for the per-prediction JSON output.
@@ -282,26 +318,181 @@ def apply_live_weather_overrides(df: pd.DataFrame, target_date: pd.Timestamp) ->
     row = match.iloc[0]
     fwi_date = row["date"]
 
-    overrides_applied = {}
-    deltas = {}
+    # ---- Stage 1: statewide FWI override (10 columns) ----
+    fwi_overrides = {}
+    fwi_deltas = {}
     for fwi_col, wx_col in FWI_TO_WX.items():
         if wx_col not in df.columns or fwi_col not in row.index:
             continue
         old_median = float(df[wx_col].median()) if df[wx_col].notna().any() else None
         new_value = float(row[fwi_col])
         df[wx_col] = new_value  # broadcast statewide value to all cells
-        overrides_applied[wx_col] = new_value
+        fwi_overrides[wx_col] = new_value
         if old_median is not None:
-            deltas[wx_col] = round(new_value - old_median, 3)
+            fwi_deltas[wx_col] = round(new_value - old_median, 3)
 
+    # ---- Stage 1b: FWI-derived rolling stats (7 cols, computed on the fly) ----
+    # Uses the full fwi_daily history to compute precip rolls + temp/RH/wind
+    # rolling stats + VPD via Magnus formula. These would normally come from
+    # the v8 frozen dataset and ERA5 per-cell -- this is a statewide stand-in
+    # that's still much fresher than v8's 2025-05-29 frozen values.
+    fwi_rolling_overrides = {}
+    fwi_history = fwi[fwi["date"] <= target].sort_values("date").reset_index(drop=True)
+    if len(fwi_history) >= 7:
+        # Precip rolling sums (last 7d/14d/30d ending at target)
+        for window, wx_col in [(7, "wx_precip_7d"), (14, "wx_precip_14d"), (30, "wx_precip_30d")]:
+            if wx_col in df.columns:
+                v = float(fwi_history.tail(window)["precip_mm"].sum())
+                df[wx_col] = v
+                fwi_rolling_overrides[wx_col] = round(v, 3)
+
+        # Temperature 7d mean
+        if "wx_temp_7d_mean" in df.columns:
+            v = float(fwi_history.tail(7)["temp_c"].mean())
+            df["wx_temp_7d_mean"] = v
+            fwi_rolling_overrides["wx_temp_7d_mean"] = round(v, 3)
+
+        # RH 7d min
+        if "wx_rh_7d_min" in df.columns:
+            v = float(fwi_history.tail(7)["rh_pct"].min())
+            df["wx_rh_7d_min"] = v
+            fwi_rolling_overrides["wx_rh_7d_min"] = round(v, 3)
+
+        # Wind 7d max
+        if "wx_wind_7d_max" in df.columns:
+            v = float(fwi_history.tail(7)["wind_kmh"].max())
+            df["wx_wind_7d_max"] = v
+            fwi_rolling_overrides["wx_wind_7d_max"] = round(v, 3)
+
+        # VPD via Magnus formula at target_date conditions
+        if "wx_vpd" in df.columns:
+            t = float(row["temp_c"])
+            rh = float(row["rh_pct"])
+            es = 0.6108 * np.exp(17.27 * t / (t + 237.3))
+            vpd = float(es * (1 - rh / 100))
+            df["wx_vpd"] = vpd
+            fwi_rolling_overrides["wx_vpd"] = round(vpd, 4)
+
+        # VPD 7d max (compute per day, take max)
+        if "wx_vpd_7d_max" in df.columns and len(fwi_history) >= 7:
+            recent = fwi_history.tail(7).copy()
+            es_arr = 0.6108 * np.exp(17.27 * recent["temp_c"] / (recent["temp_c"] + 237.3))
+            vpd_arr = es_arr * (1 - recent["rh_pct"] / 100)
+            v = float(vpd_arr.max())
+            df["wx_vpd_7d_max"] = v
+            fwi_rolling_overrides["wx_vpd_7d_max"] = round(v, 4)
+
+        # Consecutive dry days (count back from target)
+        if "wx_consecutive_dry" in df.columns:
+            recent = fwi_history.tail(60)["precip_mm"].iloc[::-1].to_numpy()  # reverse
+            n = 0
+            for p in recent:
+                if p > 0.5:
+                    break
+                n += 1
+            df["wx_consecutive_dry"] = float(n)
+            fwi_rolling_overrides["wx_consecutive_dry"] = n
+
+    # ---- Stage 1c: soil_daily.parquet override (2 cols) ----
+    soil_overrides = {}
+    soil_meta = {"applied": False}
+    if SOIL_DAILY_PARQUET.exists():
+        try:
+            soil = pd.read_parquet(SOIL_DAILY_PARQUET)
+            soil["date"] = pd.to_datetime(soil["date"]).dt.date
+            soil_match = soil[soil["date"] == target]
+            if soil_match.empty:
+                soil_match = soil[soil["date"] <= target].tail(1)
+            if not soil_match.empty:
+                srow = soil_match.iloc[0]
+                if "wx_sm_surface" in df.columns and "soil_moisture_0_to_7cm_mean" in srow.index:
+                    df["wx_sm_surface"] = float(srow["soil_moisture_0_to_7cm_mean"])
+                    soil_overrides["wx_sm_surface"] = round(float(srow["soil_moisture_0_to_7cm_mean"]), 4)
+                if "wx_sm_rootzone" in df.columns and "soil_moisture_7_to_28cm_mean" in srow.index:
+                    df["wx_sm_rootzone"] = float(srow["soil_moisture_7_to_28cm_mean"])
+                    soil_overrides["wx_sm_rootzone"] = round(float(srow["soil_moisture_7_to_28cm_mean"]), 4)
+                if "wx_sm_anomaly" in df.columns and "soil_moisture_anomaly" in srow.index:
+                    df["wx_sm_anomaly"] = float(srow["soil_moisture_anomaly"])
+                    soil_overrides["wx_sm_anomaly"] = round(float(srow["soil_moisture_anomaly"]), 4)
+                soil_meta = {"applied": True, "soil_date_used": str(srow["date"]),
+                             "n_columns_overridden": len(soil_overrides),
+                             "overrides": soil_overrides}
+        except Exception as exc:
+            soil_meta = {"applied": False, "reason": f"soil load failed: {exc}"}
+
+    # ---- Stage 2: per-division ERA5 override (up to 21 columns) ----
+    era5_meta = {"applied": False, "reason": "era5_per_division_daily.parquet missing"}
+    if ERA5_PER_DIVISION_PARQUET.exists():
+        try:
+            era5 = pd.read_parquet(ERA5_PER_DIVISION_PARQUET)
+            era5["date"] = pd.to_datetime(era5["date"]).dt.date
+            era5_today = era5[era5["date"] == target]
+            if era5_today.empty:
+                era5_today = era5[era5["date"] <= target]
+                era5_today = era5_today.sort_values("date").groupby("division").tail(1)
+            era5_today = era5_today.set_index("division")
+        except Exception as exc:
+            era5_meta = {"applied": False, "reason": f"era5 load failed: {exc}"}
+            era5_today = None
+
+        if era5_today is not None and len(era5_today) > 0:
+            # Merge cell -> division -> ERA5 row
+            cell_to_div = dict(zip(cells["cell_id"].astype(str),
+                                   cells["division"].astype(str)))
+            df["_division"] = df["cell_id"].map(cell_to_div)
+
+            era5_overrides = []
+            era5_n_cells_updated = 0
+            for era5_col, wx_col in ERA5_TO_WX.items():
+                if wx_col not in df.columns or era5_col not in era5_today.columns:
+                    continue
+                era5_col_lookup = era5_today[era5_col].to_dict()
+                new_vals = df["_division"].map(era5_col_lookup)
+                # Only override cells whose division has ERA5 data
+                mask = new_vals.notna()
+                if mask.any():
+                    df.loc[mask, wx_col] = new_vals[mask].astype(float)
+                    era5_overrides.append(wx_col)
+                    era5_n_cells_updated = max(era5_n_cells_updated, int(mask.sum()))
+            df = df.drop(columns=["_division"])
+
+            era5_meta = {
+                "applied": True,
+                "era5_date_used": str(era5_today["date"].iloc[0])
+                                  if "date" in era5_today.columns
+                                  else str(target),
+                "n_columns_overridden": len(era5_overrides),
+                "n_cells_updated_per_col_max": era5_n_cells_updated,
+                "n_divisions_in_era5_table": int(len(era5_today)),
+                "columns": era5_overrides,
+            }
+
+    n_total = (len(fwi_overrides) + len(fwi_rolling_overrides) + len(soil_overrides)
+               + (era5_meta.get("n_columns_overridden", 0) if era5_meta.get("applied") else 0))
     return df, {
         "applied": True,
-        "fwi_date_used": str(fwi_date),
-        "n_columns_overridden": len(overrides_applied),
-        "overrides": overrides_applied,
-        "deltas_vs_v8_frozen": deltas,
-        "note": ("28 derived wx_* columns (rolling means, soil, LST) still come "
-                 "from v8 frozen 2025-05-29 -- not recomputable without weather raster"),
+        "fwi_stage": {
+            "fwi_date_used": str(fwi_date),
+            "n_columns_overridden": len(fwi_overrides),
+            "overrides": fwi_overrides,
+            "deltas_vs_v8_frozen": fwi_deltas,
+        },
+        "fwi_rolling_stage": {
+            "applied": bool(fwi_rolling_overrides),
+            "n_columns_overridden": len(fwi_rolling_overrides),
+            "overrides": fwi_rolling_overrides,
+            "note": ("derived from fwi_daily.parquet history; statewide values "
+                     "broadcast to all cells (no per-cell weather raster needed)"),
+        },
+        "soil_stage": soil_meta,
+        "era5_stage": era5_meta,
+        "n_total_wx_columns_overridden": n_total,
+        "note": (
+            f"Coverage: {n_total} wx_* columns from live data. "
+            "Still frozen at v8 2025-05-29: wx_fuel_dryness, wx_heat_streak, "
+            "wx_lst*, wx_sm_*_7d_min, wx_sm_*_30d (these need a per-cell "
+            "weather raster + LST source not currently available)."
+        ),
     }
 
 
@@ -420,14 +611,21 @@ def main() -> int:
     weather_meta = {"applied": False, "reason": "flag not set"}
     if args.use_live_weather:
         log.info("Applying live weather override (--use-live-weather)...")
-        base, weather_meta = apply_live_weather_overrides(base, target_date)
-        if weather_meta["applied"]:
-            log.info("  Overrode %d wx_* columns with FWI from %s",
-                     weather_meta["n_columns_overridden"], weather_meta["fwi_date_used"])
-            log.info("  Sample deltas vs v8: %s",
-                     {k: v for k, v in list(weather_meta["deltas_vs_v8_frozen"].items())[:5]})
+        base, weather_meta = apply_live_weather_overrides(base, cells, target_date)
+        if weather_meta.get("applied"):
+            fwi_stage = weather_meta.get("fwi_stage", {})
+            era5_stage = weather_meta.get("era5_stage", {})
+            log.info("  FWI stage:  %d cols from %s",
+                     fwi_stage.get("n_columns_overridden", 0),
+                     fwi_stage.get("fwi_date_used", "?"))
+            if era5_stage.get("applied"):
+                log.info("  ERA5 stage: %d cols across %d divisions",
+                         era5_stage.get("n_columns_overridden", 0),
+                         era5_stage.get("n_divisions_in_era5_table", 0))
+            else:
+                log.info("  ERA5 stage: skipped (%s)", era5_stage.get("reason", "?"))
         else:
-            log.warning("  Skipped: %s", weather_meta["reason"])
+            log.warning("  Skipped: %s", weather_meta.get("reason"))
 
     df = base.merge(hawkes_df, on="cell_id", how="left")
     for c in ["hawkes_lambda", "hawkes_lambda_log", "hawkes_n_recent_10km_7d"]:
