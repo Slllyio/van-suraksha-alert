@@ -10,6 +10,7 @@ Usage:
 from __future__ import annotations
 
 import json
+import logging
 import os
 import threading
 import time
@@ -21,6 +22,13 @@ from urllib.parse import parse_qs, urlparse
 
 import numpy as np
 import pandas as pd
+
+# Module-level logger. The portal is launched directly (`python serve.py`),
+# so a basicConfig is set in __main__; a NullHandler-style fallback keeps
+# `log.*` safe when the module is imported elsewhere (e.g. unit tests).
+log = logging.getLogger("v3.serve")
+if not log.handlers:
+    log.addHandler(logging.NullHandler())
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 DASHBOARD_DIR = ROOT / "dashboard"
@@ -44,6 +52,21 @@ _RESPONSE_LOCK = threading.Lock()
 
 PORT = 8790
 TODAY = datetime.now().strftime("%Y-%m-%d")
+
+# Wall-clock start of this portal process. Used by /api/healthz to report
+# uptime. Set at import time so it remains stable across requests.
+_PORTAL_START_S = time.time()
+
+# Projected CRS for spatial joins. EPSG:32644 = UTM zone 44N, covers MP from
+# ~78°E westward (Guna pilot region 76.45-77.85°E). Geopandas/shapely operate
+# in linear meters here, so `max_distance` is in METERS — not degrees — which
+# silences the `sjoin_nearest` geographic-CRS UserWarning and is correct
+# anywhere on the globe (degrees are non-uniform north of the equator).
+_PROJECTED_CRS = "EPSG:32644"
+# 0.003 degrees ≈ 333 m at MP latitudes (~24°N). Pin to 333 m exactly so the
+# tolerance stays stable even if the AOI extends north or the CRS changes.
+_FIRE_BEAT_TOLERANCE_M = 333.0
+_BEATS_PROJECTED = None  # cached projected beats GeoDataFrame
 
 
 def _load_v17_predictions(date_str: str | None = None) -> dict:
@@ -190,6 +213,24 @@ def _load_beat_polygons():
     return _BEAT_POLYGONS
 
 
+def _load_beat_polygons_projected():
+    """Return beats reprojected to a metric CRS (EPSG:32644 / UTM 44N).
+
+    Cached on first call to avoid the ~2-3 s reprojection of 8,973 polygons.
+    Used by `_clip_fires_to_forest` so that `sjoin_nearest(max_distance=...)`
+    operates in meters, eliminating the `Geometry is in a geographic CRS`
+    UserWarning that geopandas emits for any sjoin_nearest on EPSG:4326.
+    """
+    global _BEATS_PROJECTED
+    if _BEATS_PROJECTED is not None:
+        return _BEATS_PROJECTED
+    beats = _load_beat_polygons()
+    if beats is None or len(beats) == 0:
+        return None
+    _BEATS_PROJECTED = beats.to_crs(_PROJECTED_CRS)
+    return _BEATS_PROJECTED
+
+
 def _clip_fires_to_forest(df: pd.DataFrame) -> pd.DataFrame:
     """Keep only FIRMS detections that fall INSIDE forest beat polygons.
 
@@ -210,17 +251,24 @@ def _clip_fires_to_forest(df: pd.DataFrame) -> pd.DataFrame:
 
     Pass 1 wins on conflict via drop_duplicates(keep='first'). Pass 2 only
     contributes detections that Pass 1 left out.
+
+    CRS handling: both `gdf` and the beats subset are reprojected to
+    EPSG:32644 (UTM zone 44N, meters) before `sjoin_nearest` so that
+    `max_distance` is interpreted in meters (333 m) rather than degrees
+    (0.003°, only approximately equivalent at MP latitudes). This
+    eliminates the geopandas UserWarning and is correct anywhere on the
+    globe.
     """
-    beats = _load_beat_polygons()
-    if beats is None or len(beats) == 0:
+    beats_proj = _load_beat_polygons_projected()
+    if beats_proj is None or len(beats_proj) == 0:
         return df
     import geopandas as gpd
     from shapely.geometry import Point
     gdf = gpd.GeoDataFrame(
         df, geometry=[Point(lon, lat) for lat, lon in zip(df["latitude"], df["longitude"])],
         crs="EPSG:4326",
-    )
-    beats_subset = beats[["Division", "Range", "Beat", "geometry"]]
+    ).to_crs(_PROJECTED_CRS)
+    beats_subset = beats_proj[["Division", "Range", "Beat", "geometry"]]
 
     # Pass 1: strict containment
     inside = gpd.sjoin(
@@ -229,10 +277,11 @@ def _clip_fires_to_forest(df: pd.DataFrame) -> pd.DataFrame:
     inside["_pass"] = 1
     inside["_dist"] = 0.0
 
-    # Pass 2: near-edge tolerance for pixels just outside (FIRMS quantization)
+    # Pass 2: near-edge tolerance for pixels just outside (FIRMS quantization).
+    # max_distance now in METERS (CRS is projected), not degrees.
     edge = gpd.sjoin_nearest(
         gdf, beats_subset, how="inner",
-        max_distance=0.003, distance_col="_dist",
+        max_distance=_FIRE_BEAT_TOLERANCE_M, distance_col="_dist",
     )
     edge["_pass"] = 2
 
@@ -293,26 +342,65 @@ def _refresh_firms_nrt(nrt_path: Path) -> None:
     # tightened sometime in 2025). Chunk into two 5-day calls to cover ~10 days
     # so we always overlap the previous cache and don't drop a day.
     chunks = [today - timedelta(days=4), today - timedelta(days=9)]
-    frames = []
+    frames: list[pd.DataFrame] = []
+    n_success = 0
+    n_attempted = 0
     for src in ("VIIRS_SNPP_NRT", "VIIRS_NOAA20_NRT"):
         for chunk_start in chunks:
+            n_attempted += 1
             url = f"{_FIRMS_API}/{api_key}/{src}/{_MP_BBOX}/5/{chunk_start.isoformat()}"
+            # Truncate the URL for logs — last 50 chars strips the api_key
+            # (which is always mid-URL) while preserving the date + source,
+            # keeping operator logs clean of secrets.
+            url_tail = url[-50:]
+            status = "?"
+            body_len = 0
+            n_rows = 0
             try:
                 resp = requests.get(url, timeout=30)
+                status = str(resp.status_code)
+                body_len = len(resp.text or "")
                 if resp.status_code != 200 or not resp.text or "Invalid" in resp.text[:200]:
+                    log.warning(
+                        "firms_nrt src=%s status=%s body_len=%d rows=0 url=...%s",
+                        src, status, body_len, url_tail,
+                    )
                     continue
                 df = pd.read_csv(io.StringIO(resp.text))
                 if df.empty or "latitude" not in df.columns:
+                    log.warning(
+                        "firms_nrt src=%s status=%s body_len=%d rows=0 (empty_or_malformed) url=...%s",
+                        src, status, body_len, url_tail,
+                    )
                     continue
                 df["instrument"] = "VIIRS"
+                n_rows = len(df)
                 frames.append(df)
-            except Exception:
+                n_success += 1
+                log.info(
+                    "firms_nrt src=%s status=%s body_len=%d rows=%d url=...%s",
+                    src, status, body_len, n_rows, url_tail,
+                )
+            except Exception as exc:
+                log.warning(
+                    "firms_nrt src=%s status=ERR body_len=0 rows=0 err=%s url=...%s",
+                    src, type(exc).__name__, url_tail,
+                )
                 continue
 
     if not frames:
         # Touch sentinel anyway so a continuous outage doesn't hammer the API
+        log.warning(
+            "firms_nrt: ALL %d source attempts failed — sentinel touched, no cache update",
+            n_attempted,
+        )
         sentinel.touch()
         return
+
+    log.info(
+        "firms_nrt: %d of %d source attempts succeeded, %d total new rows before dedupe",
+        n_success, n_attempted, sum(len(f) for f in frames),
+    )
 
     new = pd.concat(frames, ignore_index=True)
     new["acq_date"] = pd.to_datetime(new["acq_date"])
@@ -461,6 +549,39 @@ def _load_season_validation() -> dict:
     out = {"summary": json.loads(summary_path.read_text())}
     if tier_path.exists():
         out["per_trust_tier"] = _records(pd.read_csv(tier_path))
+    else:
+        out["per_trust_tier"] = []
+
+    # Augment with the new CLIMATOLOGY_FLOOR tier — it post-dates the season
+    # backtest CSV so it doesn't appear in the on-disk per_trust_tier file.
+    # Read today's operational alerts JSON and synthesize a row from the
+    # actual climatology_floor cell count, so the portal frontend can render
+    # the tier alongside the historical tiers without throwing on a missing
+    # entry. Tagged `_synthetic: true` so the UI can flag it as
+    # "live count, not season-validated".
+    try:
+        existing_tiers = {row.get("trust_tier") for row in out["per_trust_tier"]}
+        if "CLIMATOLOGY_FLOOR" not in existing_tiers and OPERATIONAL_ALERTS.exists():
+            ops = json.loads(OPERATIONAL_ALERTS.read_text())
+            n_clim = sum(
+                1 for a in ops.get("alerts", [])
+                if a.get("trust_level") == "CLIMATOLOGY_FLOOR"
+                or a.get("climatology_floor") is True
+            )
+            if n_clim > 0:
+                out["per_trust_tier"].append({
+                    "trust_tier": "CLIMATOLOGY_FLOOR",
+                    "n_alerts": int(n_clim),
+                    "n_alerts_caught_event": None,
+                    "precision": None,
+                    "n_events_caught_by_this_tier": None,
+                    "median_match_offset_km": None,
+                    "_synthetic": True,
+                })
+    except Exception as exc:
+        # Augmentation is best-effort; never break the endpoint over it.
+        log.warning("season-validation augment failed: %s: %s", type(exc).__name__, exc)
+
     if day_path.exists():
         out["per_day"] = _records(pd.read_csv(day_path))
     if div_path.exists():
@@ -665,6 +786,59 @@ def _build_validation_log() -> dict:
         return {"rows": [], "n_days": 0}
 
 
+def _build_healthz() -> dict:
+    """Liveness + critical-artefact summary for ops dashboards / cron probes.
+
+    Returns:
+      ok                          : True iff every CRITICAL artefact exists
+                                    (beat polygons + at least one of cons/nrt FIRMS).
+      portal_uptime_s             : seconds since this process started.
+      beat_polygons_loaded        : True iff the warm-load completed and the cache
+                                    is populated.
+      firms_nrt_age_hours         : hours since the .lastrefresh sentinel was
+                                    touched (None if absent).
+      firms_nrt_max_date          : latest acq_date in nrt_7d.parquet (None if
+                                    absent / unreadable).
+      season_validation_present   : True iff 2026_season_summary.json exists.
+      climatology_parquet_present : True iff the climatology floor parquet
+                                    consumed by build_operational_alerts.py exists.
+    """
+    nrt_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "nrt_7d.parquet"
+    cons_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "firms_mp_consolidated.parquet"
+    sentinel = nrt_path.with_suffix(".lastrefresh")
+    season_summary = SEASON_VALIDATION_DIR / "2026_season_summary.json"
+    climatology_parquet = (
+        ROOT / "data_lake" / "fire_weather" / "climatology_watch_floor.parquet"
+    )
+
+    nrt_age_hours: float | None = None
+    if sentinel.exists():
+        nrt_age_hours = round((time.time() - sentinel.stat().st_mtime) / 3600.0, 2)
+
+    nrt_max_date: str | None = None
+    if nrt_path.exists():
+        try:
+            nrt_df = pd.read_parquet(nrt_path, columns=["acq_date"])
+            if len(nrt_df):
+                nrt_max_date = str(pd.to_datetime(nrt_df["acq_date"]).max())[:10]
+        except Exception as exc:
+            log.warning("healthz: could not read nrt parquet: %s", exc)
+
+    beat_polygons_loaded = _BEAT_POLYGONS is not None and len(_BEAT_POLYGONS) > 0
+    firms_present = nrt_path.exists() or cons_path.exists()
+    ok = bool(beat_polygons_loaded and firms_present)
+
+    return {
+        "ok": ok,
+        "portal_uptime_s": int(time.time() - _PORTAL_START_S),
+        "beat_polygons_loaded": beat_polygons_loaded,
+        "firms_nrt_age_hours": nrt_age_hours,
+        "firms_nrt_max_date": nrt_max_date,
+        "season_validation_present": season_summary.exists(),
+        "climatology_parquet_present": climatology_parquet.exists(),
+    }
+
+
 class PortalHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed = urlparse(self.path)
@@ -718,6 +892,8 @@ class PortalHandler(SimpleHTTPRequestHandler):
             self._send_json(_load_json_feed(CALIB_CURVE, "calibrate_v17"))
         elif path == "/api/soil-pulse":
             self._send_json(_load_soil_pulse())
+        elif path == "/api/healthz":
+            self._send_json(_build_healthz())
         else:
             super().do_GET()
 
@@ -776,6 +952,14 @@ class PortalHandler(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    # Wire the module-level `log` to stdout so operator-visible events from
+    # _refresh_firms_nrt, healthz, etc. land in tmp/v3.log when the portal is
+    # launched via `python dashboard/v3/serve.py >tmp/v3.log 2>&1`.
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+        datefmt="%H:%M:%S",
+    )
     print(f"=== JwalaNetra v3 Unified Portal ===")
     print(f"Date: {TODAY}")
     # Warm-load beat polygons (8,973 polygons, 188MB geojson) so the first
