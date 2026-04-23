@@ -393,16 +393,21 @@ def apply_live_weather_overrides(df: pd.DataFrame, cells: pd.DataFrame,
             df["wx_consecutive_dry"] = float(n)
             fwi_rolling_overrides["wx_consecutive_dry"] = n
 
-    # ---- Stage 1c: soil_daily.parquet override (2 cols) ----
+    # ---- Stage 1c: soil_daily.parquet override (2-5 cols incl rolling) ----
     soil_overrides = {}
     soil_meta = {"applied": False}
     if SOIL_DAILY_PARQUET.exists():
         try:
             soil = pd.read_parquet(SOIL_DAILY_PARQUET)
-            soil["date"] = pd.to_datetime(soil["date"]).dt.date
-            soil_match = soil[soil["date"] == target]
+            soil["date"] = pd.to_datetime(soil["date"])
+            # Compute rolling stats BEFORE filtering to target, then look up target row
+            soil = soil.sort_values("date").reset_index(drop=True)
+            soil["_sm_surface_7d_min"] = soil["soil_moisture_0_to_7cm_mean"].rolling(7, min_periods=1).min()
+            soil["_sm_rootzone_7d_min"] = soil["soil_moisture_7_to_28cm_mean"].rolling(7, min_periods=1).min()
+            soil["_sm_surface_30d"] = soil["soil_moisture_0_to_7cm_mean"].rolling(30, min_periods=1).mean()
+            soil_match = soil[soil["date"].dt.date == target]
             if soil_match.empty:
-                soil_match = soil[soil["date"] <= target].tail(1)
+                soil_match = soil[soil["date"].dt.date <= target].tail(1)
             if not soil_match.empty:
                 srow = soil_match.iloc[0]
                 if "wx_sm_surface" in df.columns and "soil_moisture_0_to_7cm_mean" in srow.index:
@@ -414,11 +419,83 @@ def apply_live_weather_overrides(df: pd.DataFrame, cells: pd.DataFrame,
                 if "wx_sm_anomaly" in df.columns and "soil_moisture_anomaly" in srow.index:
                     df["wx_sm_anomaly"] = float(srow["soil_moisture_anomaly"])
                     soil_overrides["wx_sm_anomaly"] = round(float(srow["soil_moisture_anomaly"]), 4)
-                soil_meta = {"applied": True, "soil_date_used": str(srow["date"]),
+                # Rolling stats (new)
+                if "wx_sm_surface_7d_min" in df.columns:
+                    v = float(srow["_sm_surface_7d_min"])
+                    df["wx_sm_surface_7d_min"] = v
+                    soil_overrides["wx_sm_surface_7d_min"] = round(v, 4)
+                if "wx_sm_rootzone_7d_min" in df.columns:
+                    v = float(srow["_sm_rootzone_7d_min"])
+                    df["wx_sm_rootzone_7d_min"] = v
+                    soil_overrides["wx_sm_rootzone_7d_min"] = round(v, 4)
+                if "wx_sm_surface_30d" in df.columns:
+                    v = float(srow["_sm_surface_30d"])
+                    df["wx_sm_surface_30d"] = v
+                    soil_overrides["wx_sm_surface_30d"] = round(v, 4)
+                soil_meta = {"applied": True,
+                             "soil_date_used": str(srow["date"].date() if hasattr(srow["date"], "date") else srow["date"]),
                              "n_columns_overridden": len(soil_overrides),
                              "overrides": soil_overrides}
         except Exception as exc:
             soil_meta = {"applied": False, "reason": f"soil load failed: {exc}"}
+
+    # ---- Stage 1d: FWI-derived anomalies + heat_streak (5 more cols) ----
+    # Anomaly = today's value minus same-day-of-year mean across available history.
+    # With only 2025 + partial 2026 FWI data, the "climatology" is 1-1.5 years --
+    # thin but still better than using the v8 frozen value which was computed at
+    # one specific date (2025-05-29).
+    fwi_anom_overrides = {}
+    if len(fwi_history) >= 30:
+        fwi_hist = fwi_history.copy()
+        # fwi["date"] was converted to datetime.date earlier; need datetime
+        # to access .dt accessor for dayofyear
+        fwi_hist["doy"] = pd.to_datetime(fwi_hist["date"]).dt.dayofyear
+        target_doy = int(target_date.dayofyear)
+        # Build mean-by-DOY clim from all years we have
+        clim = fwi_hist.groupby("doy").agg(
+            temp_clim=("temp_c", "mean"),
+            rh_clim=("rh_pct", "mean"),
+            wind_clim=("wind_kmh", "mean"),
+            precip_clim=("precip_mm", "mean"),
+        ).reset_index()
+        clim_row = clim[clim["doy"] == target_doy]
+        if not clim_row.empty:
+            c = clim_row.iloc[0]
+            if "wx_anom_temp_c" in df.columns:
+                v = float(row["temp_c"]) - float(c["temp_clim"])
+                df["wx_anom_temp_c"] = v
+                fwi_anom_overrides["wx_anom_temp_c"] = round(v, 3)
+            if "wx_anom_rh_pct" in df.columns:
+                v = float(row["rh_pct"]) - float(c["rh_clim"])
+                df["wx_anom_rh_pct"] = v
+                fwi_anom_overrides["wx_anom_rh_pct"] = round(v, 3)
+            if "wx_anom_wind_kmh" in df.columns:
+                v = float(row["wind_kmh"]) - float(c["wind_clim"])
+                df["wx_anom_wind_kmh"] = v
+                fwi_anom_overrides["wx_anom_wind_kmh"] = round(v, 3)
+            if "wx_anom_precip_mm" in df.columns:
+                v = float(row["precip_mm"]) - float(c["precip_clim"])
+                df["wx_anom_precip_mm"] = v
+                fwi_anom_overrides["wx_anom_precip_mm"] = round(v, 3)
+
+        # 30-day precip deficit = observed 30d sum - climatological 30d sum
+        if "wx_precip_deficit_30d" in df.columns and "wx_precip_30d" in df.columns:
+            precip_30d_obs = float(fwi_history.tail(30)["precip_mm"].sum())
+            precip_clim_30d_sum = float(clim.tail(30)["precip_clim"].sum()) if len(clim) >= 30 else 0.0
+            v = precip_30d_obs - precip_clim_30d_sum
+            df["wx_precip_deficit_30d"] = v
+            fwi_anom_overrides["wx_precip_deficit_30d"] = round(v, 3)
+
+        # Heat streak: consecutive days with mean temp > 35°C from target back
+        if "wx_heat_streak" in df.columns:
+            recent = fwi_history.tail(30)["temp_c"].iloc[::-1].to_numpy()
+            n = 0
+            for t in recent:
+                if t < 35:
+                    break
+                n += 1
+            df["wx_heat_streak"] = float(n)
+            fwi_anom_overrides["wx_heat_streak"] = n
 
     # ---- Stage 2: per-division ERA5 override (up to 21 columns) ----
     era5_meta = {"applied": False, "reason": "era5_per_division_daily.parquet missing"}
@@ -468,6 +545,7 @@ def apply_live_weather_overrides(df: pd.DataFrame, cells: pd.DataFrame,
             }
 
     n_total = (len(fwi_overrides) + len(fwi_rolling_overrides) + len(soil_overrides)
+               + len(fwi_anom_overrides)
                + (era5_meta.get("n_columns_overridden", 0) if era5_meta.get("applied") else 0))
     return df, {
         "applied": True,
@@ -484,14 +562,21 @@ def apply_live_weather_overrides(df: pd.DataFrame, cells: pd.DataFrame,
             "note": ("derived from fwi_daily.parquet history; statewide values "
                      "broadcast to all cells (no per-cell weather raster needed)"),
         },
+        "fwi_anomaly_stage": {
+            "applied": bool(fwi_anom_overrides),
+            "n_columns_overridden": len(fwi_anom_overrides),
+            "overrides": fwi_anom_overrides,
+            "note": ("anomalies vs same-DOY mean across available FWI history "
+                     "(~1.5 yrs) + heat streak + 30d precip deficit"),
+        },
         "soil_stage": soil_meta,
         "era5_stage": era5_meta,
         "n_total_wx_columns_overridden": n_total,
         "note": (
             f"Coverage: {n_total} wx_* columns from live data. "
-            "Still frozen at v8 2025-05-29: wx_fuel_dryness, wx_heat_streak, "
-            "wx_lst*, wx_sm_*_7d_min, wx_sm_*_30d (these need a per-cell "
-            "weather raster + LST source not currently available)."
+            "Still frozen at v8 2025-05-29: wx_fuel_dryness, wx_dtr, "
+            "wx_lst*, wx_srad, wx_srad_7d (need per-cell daily max/min temp "
+            "+ LST + solar radiation; only ERA5 ingest can close these)."
         ),
     }
 
