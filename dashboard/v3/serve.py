@@ -10,9 +10,11 @@ Usage:
 from __future__ import annotations
 
 import json
+import os
 import threading
+import time
 from collections import defaultdict
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -189,7 +191,26 @@ def _load_beat_polygons():
 
 
 def _clip_fires_to_forest(df: pd.DataFrame) -> pd.DataFrame:
-    """Spatial join fires to beat polygons — keep only fires inside forest beats."""
+    """Keep only FIRMS detections that fall INSIDE forest beat polygons.
+
+    Previous implementation used `sjoin_nearest(max_distance=0.02)` — a
+    2.2 km halo that swept in farmland adjacent to forest. User reported
+    fires rendering on Bhopal / Indore on the portal map.
+
+    New strategy:
+      Pass 1 — STRICT `predicate="within"`: fire centroid is geometrically
+               inside a forest beat polygon. No buffer. This is the
+               operational definition of "forest fire" the portal should
+               surface to forest officers.
+      Pass 2 — EDGE-TOLERANT `sjoin_nearest(max_distance=0.003)`: a
+               ~330 m buffer (half a FIRMS VIIRS scan-width of 750 m,
+               adjusted for nominal pixel center quantization) recovers
+               legitimate forest-edge fires that fell just outside the
+               polygon due to shapefile simplification.
+
+    Pass 1 wins on conflict via drop_duplicates(keep='first'). Pass 2 only
+    contributes detections that Pass 1 left out.
+    """
     beats = _load_beat_polygons()
     if beats is None or len(beats) == 0:
         return df
@@ -199,16 +220,120 @@ def _clip_fires_to_forest(df: pd.DataFrame) -> pd.DataFrame:
         df, geometry=[Point(lon, lat) for lat, lon in zip(df["latitude"], df["longitude"])],
         crs="EPSG:4326",
     )
-    joined = gpd.sjoin_nearest(
-        gdf, beats[["Division", "Range", "Beat", "geometry"]],
-        how="inner", max_distance=0.02, distance_col="_dist",
+    beats_subset = beats[["Division", "Range", "Beat", "geometry"]]
+
+    # Pass 1: strict containment
+    inside = gpd.sjoin(
+        gdf, beats_subset, how="inner", predicate="within",
     )
-    joined = joined.sort_values("_dist").drop_duplicates(
+    inside["_pass"] = 1
+    inside["_dist"] = 0.0
+
+    # Pass 2: near-edge tolerance for pixels just outside (FIRMS quantization)
+    edge = gpd.sjoin_nearest(
+        gdf, beats_subset, how="inner",
+        max_distance=0.003, distance_col="_dist",
+    )
+    edge["_pass"] = 2
+
+    combined = pd.concat([inside, edge], ignore_index=True)
+    combined = combined.sort_values(["_pass", "_dist"]).drop_duplicates(
+        subset=["latitude", "longitude", "acq_date", "acq_time"], keep="first",
+    )
+    drop_cols = [c for c in ["geometry", "index_right", "_dist", "_pass"] if c in combined.columns]
+    return pd.DataFrame(combined.drop(columns=drop_cols))
+
+
+_NRT_REFRESH_THROTTLE_S = 21600  # 6 h — FIRMS NRT publishes ~3-hourly, no point spamming
+_MP_BBOX = "74,21,83,27"  # west,south,east,north
+_FIRMS_API = "https://firms.modaps.eosdis.nasa.gov/api/area/csv"
+
+
+def _read_dotenv_value(key: str) -> str | None:
+    """Read a single key from .env (handles UTF-8 BOM + CRLF)."""
+    env = ROOT / ".env"
+    if not env.exists():
+        return None
+    try:
+        txt = env.read_bytes().decode("utf-8", errors="ignore")
+    except OSError:
+        return None
+    import re
+    m = re.search(rf"{re.escape(key)}\s*=\s*([\w\-]+)", txt)
+    return m.group(1) if m else None
+
+
+def _refresh_firms_nrt(nrt_path: Path) -> None:
+    """Pull last 10 days of FIRMS VIIRS NRT and merge into nrt_7d.parquet.
+
+    Throttled to once per 6 h via the parquet's neighbouring `.lastrefresh`
+    sentinel file. NASA FIRMS NRT updates roughly every 3 h after satellite
+    overpass, so 6 h is a comfortable cadence that respects the 5,000 tx /
+    10 min API limit.
+
+    No-op if FIRMS_MAP_KEY isn't set anywhere reachable.
+    """
+    sentinel = nrt_path.with_suffix(".lastrefresh")
+    now = time.time()
+    if sentinel.exists() and (now - sentinel.stat().st_mtime) < _NRT_REFRESH_THROTTLE_S:
+        return  # cache fresh
+
+    api_key = (
+        os.environ.get("FIRMS_MAP_KEY")
+        or _read_dotenv_value("FIRMS_MAP_KEY")
+    )
+    if not api_key:
+        return  # nothing we can do
+
+    import requests
+    import io
+
+    today = date.today()
+    # FIRMS NRT API caps day_range at [1..5] for NRT sources (was 10 historically;
+    # tightened sometime in 2025). Chunk into two 5-day calls to cover ~10 days
+    # so we always overlap the previous cache and don't drop a day.
+    chunks = [today - timedelta(days=4), today - timedelta(days=9)]
+    frames = []
+    for src in ("VIIRS_SNPP_NRT", "VIIRS_NOAA20_NRT"):
+        for chunk_start in chunks:
+            url = f"{_FIRMS_API}/{api_key}/{src}/{_MP_BBOX}/5/{chunk_start.isoformat()}"
+            try:
+                resp = requests.get(url, timeout=30)
+                if resp.status_code != 200 or not resp.text or "Invalid" in resp.text[:200]:
+                    continue
+                df = pd.read_csv(io.StringIO(resp.text))
+                if df.empty or "latitude" not in df.columns:
+                    continue
+                df["instrument"] = "VIIRS"
+                frames.append(df)
+            except Exception:
+                continue
+
+    if not frames:
+        # Touch sentinel anyway so a continuous outage doesn't hammer the API
+        sentinel.touch()
+        return
+
+    new = pd.concat(frames, ignore_index=True)
+    new["acq_date"] = pd.to_datetime(new["acq_date"])
+
+    # Merge with whatever's already on disk; keep first occurrence on dupes
+    if nrt_path.exists():
+        try:
+            existing = pd.read_parquet(nrt_path)
+            existing["acq_date"] = pd.to_datetime(existing["acq_date"])
+            merged = pd.concat([existing, new], ignore_index=True)
+        except Exception:
+            merged = new
+    else:
+        merged = new
+
+    merged = merged.drop_duplicates(
         subset=["latitude", "longitude", "acq_date", "acq_time"], keep="first"
     )
-    drop_cols = [c for c in ["geometry", "index_right", "_dist"] if c in joined.columns]
-    result = pd.DataFrame(joined.drop(columns=drop_cols))
-    return result
+    nrt_path.parent.mkdir(parents=True, exist_ok=True)
+    merged.to_parquet(nrt_path, index=False)
+    sentinel.touch()
 
 
 def _build_viirs_fires(date_from: str | None = None, date_to: str | None = None) -> dict:
@@ -216,6 +341,9 @@ def _build_viirs_fires(date_from: str | None = None, date_to: str | None = None)
     fires = []
     nrt_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "nrt_7d.parquet"
     cons_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "firms_mp_consolidated.parquet"
+
+    # Refresh NRT cache from NASA before serving (throttled to 6h)
+    _refresh_firms_nrt(nrt_path)
 
     if nrt_path.exists():
         nrt = pd.read_parquet(nrt_path)
@@ -253,7 +381,9 @@ def _build_viirs_fires(date_from: str | None = None, date_to: str | None = None)
                  "confidence", "bright_ti4", "satellite", "source", "frp",
                  "Division", "Range", "Beat"]
     available = [c for c in keep_cols if c in df.columns]
-    df = df[available].head(5000)
+    # Cap for payload sanity — strict forest clip typically yields ~9k for a
+    # 7-day MP-wide window; 10k cap leaves headroom for peak-week spikes.
+    df = df[available].head(10000)
 
     records = []
     for _, r in df.iterrows():
