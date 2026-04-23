@@ -272,10 +272,11 @@ th{color:var(--t3);font-size:11px;font-weight:600;text-transform:uppercase;lette
   <div id="pane-viirs" class="pane">
     <div style="width:340px;background:var(--surface);border-right:1px solid var(--border);padding:16px;overflow-y:auto;flex-shrink:0">
       <div class="side-label">Date Range</div>
-      <div style="display:flex;gap:6px;margin-bottom:12px">
-        <input type="date" id="viirs-from" style="flex:1;background:var(--raised);border:1px solid var(--border);color:var(--t1);padding:6px 8px;border-radius:6px;font-size:12px" value="2026-04-07">
-        <input type="date" id="viirs-to" style="flex:1;background:var(--raised);border:1px solid var(--border);color:var(--t1);padding:6px 8px;border-radius:6px;font-size:12px" value="2026-04-07">
+      <div style="display:flex;gap:6px;margin-bottom:6px">
+        <input type="date" id="viirs-from" style="flex:1;background:var(--raised);border:1px solid var(--border);color:var(--t1);padding:6px 8px;border-radius:6px;font-size:12px">
+        <input type="date" id="viirs-to" style="flex:1;background:var(--raised);border:1px solid var(--border);color:var(--t1);padding:6px 8px;border-radius:6px;font-size:12px">
       </div>
+      <div id="viirs-extent-info" style="font-size:10px;color:var(--t3);margin-bottom:10px;line-height:1.4"></div>
       <button onclick="loadVIIRS()" style="width:100%;padding:8px;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;margin-bottom:14px">Load Fires</button>
       <div class="side-label">VIIRS / MODIS Detections</div>
       <div class="risk-card alrt animate-in" style="border-color:var(--crit)">
@@ -1708,20 +1709,76 @@ function loadValidation() {
 
 // VIIRS FIRES
 var viirsMap = null;
+var viirsLatestDate = null;  // FIRMS data extent ceiling — populated from first API response
+
+function shiftDate(iso, days) {
+  var d = new Date(iso + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
 function loadVIIRS() {
-  var fromDate = document.getElementById('viirs-from').value;
-  var toDate = document.getElementById('viirs-to').value;
+  var fromI = document.getElementById('viirs-from');
+  var toI = document.getElementById('viirs-to');
+  var fromDate = fromI.value;
+  var toDate = toI.value;
   var url = '/api/viirs-fires';
   if (fromDate && toDate) url += '?from=' + fromDate + '&to=' + toDate;
   else if (fromDate) url += '?from=' + fromDate;
   fetch(url).then(function(r){return r.json()}).then(function(data) {
-    document.getElementById('viirs-total').textContent = data.n_fires;
-    document.getElementById('viirs-range').textContent = data.date_range || data.latest_date;
+    // FIRMS extent learned from first API call — clamp date pickers so the
+    // user can't silently pick a date past the cutoff and see an empty map
+    // with no explanation.
+    var firstDiscovery = false;
+    if (data.latest_date && !viirsLatestDate) {
+      viirsLatestDate = data.latest_date;
+      fromI.max = viirsLatestDate;
+      toI.max = viirsLatestDate;
+      // First load: if user hasn't typed anything, default to last 7 days
+      // and re-fetch — the response above used a single latest date, but
+      // the user expects the 7-day window the inputs now show.
+      if (!fromDate || !toDate) {
+        toI.value = viirsLatestDate;
+        fromI.value = shiftDate(viirsLatestDate, -6);
+        firstDiscovery = true;
+      }
+      var ext = document.getElementById('viirs-extent-info');
+      if (ext) ext.innerHTML = 'FIRMS data available through <b>' + viirsLatestDate +
+        '</b>. Pick any range up to that date.';
+    }
+    if (firstDiscovery) {
+      loadVIIRS();
+      return;  // skip rendering this single-day response — recursive call will render the 7-day one
+    }
+
+    var nFires = data.n_fires || 0;
+    document.getElementById('viirs-total').textContent = nFires;
+    document.getElementById('viirs-range').textContent = data.date_range ||
+      data.latest_date || 'Select dates and click Load';
+
     var clipEl = document.getElementById('viirs-clip-info');
-    if (data.n_clipped > 0) {
-      clipEl.textContent = 'Clipped to forest beats: ' + data.n_clipped + ' non-forest fires removed (of ' + data.n_before_clip + ' total)';
+    if (nFires === 0) {
+      // Loud empty-state — the previous "All detections within forest beats"
+      // string was misleading because there were ZERO total detections, not
+      // "all of zero are forest". Tell the user WHY.
+      var msg;
+      if (fromDate && fromDate > (viirsLatestDate || '0000')) {
+        msg = '⚠ No FIRMS data after ' + viirsLatestDate +
+              '. Pick an earlier date.';
+      } else if (fromDate && toDate && fromDate > toDate) {
+        msg = '⚠ "From" date is after "To" date. Swap them.';
+      } else {
+        msg = 'No fires detected in this window. Try widening the range or moving it earlier.';
+      }
+      clipEl.textContent = msg;
+      clipEl.style.color = 'var(--watch)';
+    } else if (data.n_clipped > 0) {
+      clipEl.textContent = 'Clipped to forest beats: ' + data.n_clipped +
+        ' non-forest fires removed (of ' + data.n_before_clip + ' total)';
+      clipEl.style.color = 'var(--t3)';
     } else {
       clipEl.textContent = 'All detections within forest beats';
+      clipEl.style.color = 'var(--t3)';
     }
 
     // Fire list sidebar
