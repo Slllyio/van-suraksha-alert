@@ -39,8 +39,16 @@ ROOT = Path(__file__).resolve().parents[1]
 V17_JSON = ROOT / "outputs" / "dashboard_feed" / "ignition_risk_v17.json"
 FWI_PARQUET = ROOT / "data_lake" / "fire_weather" / "fwi_daily.parquet"
 CELLS_CSV = ROOT / "outputs" / "predictive_fire_risk" / "predictive_v6e_live" / "cells.csv"
+CLIMATOLOGY_PARQUET = ROOT / "data_lake" / "fire_weather" / "beat_fire_climatology.parquet"
 OUT_ALERTS = ROOT / "outputs" / "dashboard_feed" / "operational_alerts_v17.json"
 OUT_BRIEFINGS = ROOT / "outputs" / "dashboard_feed" / "division_briefings.json"
+
+# Climatology floor — beats with historically high fire counts at this
+# week-of-year get an auto-WATCH band even if v17.5 is silent. Closes the
+# 1,271-blind-spot-beat gap surfaced by 2026_BLIND_SPOTS.md.
+CLIMATOLOGY_PERCENTILE_THRESHOLD = 0.90  # top 10% of beats per week
+CLIMATOLOGY_MIN_FIRES_5YR = 5             # absolute floor; ignore noise
+CLIMATOLOGY_PROMOTE_TO = "WATCH"          # never overwrite CRITICAL/ALERT
 
 # Budget caps (from validation analysis)
 STATEWIDE_CRITICAL_CAP = 130
@@ -423,6 +431,127 @@ def _floor_action_text(division: str) -> str:
     )
 
 
+def _climatology_action_text(division: str, beat: str, n_yrs: int, mean_fires: float) -> str:
+    return (
+        f"Climatology floor: {division}/{beat} historically burned "
+        f"~{mean_fires:.0f} fires this week-of-year ({n_yrs}/5 past years had "
+        "fires here). v17.5 issued no alert here today; flagging as WATCH so "
+        "patrol awareness is non-zero. Lower-confidence than model alerts — "
+        "use for prevention, not dispatch."
+    )
+
+
+def apply_climatology_watch_floor(
+    alerts: list[dict[str, Any]],
+    all_cells: list[dict[str, Any]],
+    cell_meta: dict[str, dict[str, str]],
+    target_date: date,
+) -> tuple[list[dict[str, Any]], int]:
+    """Promote historically-fire-prone beats to WATCH band.
+
+    Reads `data_lake/fire_weather/beat_fire_climatology.parquet` (built by
+    `scripts/build_beat_fire_climatology.py`) and for each beat where:
+      - percentile_in_week >= CLIMATOLOGY_PERCENTILE_THRESHOLD (top 10%)
+      - total_fires (5-year sum) >= CLIMATOLOGY_MIN_FIRES_5YR
+      - the beat has NO alert in the current operational set
+    promote one cell from that beat to WATCH band, tagged
+    `trust_level='CLIMATOLOGY_FLOOR'` and `climatology_floor=True`.
+
+    Closes the persistent blind-spot beats found in 2026_BLIND_SPOTS.md
+    (Rewa/Kakredi_West, Damoh/Ghoghra, Singrauli/Suidih, etc.) by
+    leveraging the FACT that they burn at this week-of-year every year.
+
+    Returns (updated_alerts_list, n_promoted).
+    """
+    if not CLIMATOLOGY_PARQUET.exists():
+        log.warning("Climatology parquet missing — skipping climatology floor. "
+                    "Run scripts/build_beat_fire_climatology.py first.")
+        return alerts, 0
+
+    try:
+        clim = pd.read_parquet(CLIMATOLOGY_PARQUET)
+    except Exception as e:
+        log.warning("Failed to load climatology parquet: %s", e)
+        return alerts, 0
+
+    target_woy = pd.Timestamp(target_date).isocalendar().week
+    week_clim = clim[
+        (clim["week_of_year"] == int(target_woy))
+        & (clim["percentile_in_week"] >= CLIMATOLOGY_PERCENTILE_THRESHOLD)
+        & (clim["total_fires"] >= CLIMATOLOGY_MIN_FIRES_5YR)
+    ]
+    if len(week_clim) == 0:
+        return alerts, 0
+
+    # Tally beats already covered by alerts (any band)
+    covered_beats: set[tuple[str, str]] = set()
+    cells_in_alerts: set[str] = set()
+    for a in alerts:
+        div = (a.get("division") or "").strip()
+        beat = (a.get("beat") or "").strip()
+        if div and beat:
+            covered_beats.add((div, beat))
+        cells_in_alerts.add(a["cell_id"])
+
+    # Index all_cells by (Division, Beat) so we can pick a representative cell
+    # to promote. all_cells records carry only cell_id+ignition_risk; lat/lon
+    # + division/beat come from cell_meta.
+    cells_by_beat: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for c in all_cells:
+        meta = cell_meta.get(c["cell_id"], {})
+        div = meta.get("division", "")
+        beat = meta.get("beat", "")
+        if div and beat:
+            cells_by_beat.setdefault((div, beat), []).append(c)
+
+    n_promoted = 0
+    for _, row in week_clim.iterrows():
+        key = (str(row["Division"]), str(row["Beat"]))
+        if key in covered_beats:
+            continue  # already has an alert; respect model
+        candidates = cells_by_beat.get(key, [])
+        if not candidates:
+            continue  # no cell covers this beat in the v17 grid
+        # Pick the highest-ranked candidate (best the model could say)
+        best = max(candidates, key=lambda c: c.get("rank", 0))
+        cid = best["cell_id"]
+        if cid in cells_in_alerts:
+            continue
+        meta = cell_meta.get(cid, {})
+        new_alert = {
+            **best,
+            "lat": meta.get("lat", best.get("lat")),
+            "lon": meta.get("lon", best.get("lon")),
+            "band": CLIMATOLOGY_PROMOTE_TO,
+            "division": str(row["Division"]),
+            "range": meta.get("range", str(row.get("Range", ""))),
+            "beat": str(row["Beat"]),
+            "trust_level": "CLIMATOLOGY_FLOOR",
+            "is_cold_start": False,
+            "action": "AWARENESS",
+            "action_text": _climatology_action_text(
+                str(row["Division"]), str(row["Beat"]),
+                int(row["n_years_with_fire"]),
+                float(row["mean_fires_per_year"]),
+            ),
+            "weather_escalated": False,
+            "calendar_flags": [],
+            "budget_tier": CLIMATOLOGY_PROMOTE_TO,
+            "budget_demoted": False,
+            "floor_promoted": False,
+            "climatology_floor": True,
+            "climatology_n_years_with_fire": int(row["n_years_with_fire"]),
+            "climatology_mean_fires_per_year": float(row["mean_fires_per_year"]),
+            "climatology_percentile": float(row["percentile_in_week"]),
+        }
+        alerts.append(new_alert)
+        cells_in_alerts.add(cid)
+        covered_beats.add(key)
+        n_promoted += 1
+
+    return alerts, n_promoted
+
+
 def build_division_briefings(
     alerts: list[dict[str, Any]],
     weather: WeatherContext,
@@ -560,6 +689,13 @@ def main() -> int:
     )
     log.info("Coverage floor: promoted %d cells to CRITICAL (DIVISION_FLOOR trust)", n_floor)
 
+    log.info("Applying climatology WATCH floor (top %.0f%% historical-burn beats)...",
+             CLIMATOLOGY_PERCENTILE_THRESHOLD * 100)
+    final_alerts, n_clim = apply_climatology_watch_floor(
+        final_alerts, all_cells, cell_meta, target,
+    )
+    log.info("Climatology floor: promoted %d cells to WATCH (CLIMATOLOGY_FLOOR trust)", n_clim)
+
     n_crit = sum(1 for a in final_alerts if a["budget_tier"] == "CRITICAL")
     n_alert = sum(1 for a in final_alerts if a["budget_tier"] == "ALERT")
     n_watch = sum(1 for a in final_alerts if a["budget_tier"] == "WATCH")
@@ -567,10 +703,11 @@ def main() -> int:
     n_medium = sum(1 for a in final_alerts if a["trust_level"] == "MEDIUM")
     n_cold_start = sum(1 for a in final_alerts if a["is_cold_start"])
     n_floor_tier = sum(1 for a in final_alerts if a.get("floor_promoted"))
-    log.info("Final: CRITICAL=%d (base=%d floor=%d) ALERT=%d WATCH=%d",
-             n_crit, n_crit_raw, n_floor_tier, n_alert, n_watch)
-    log.info("Trust tiers: HIGH=%d MEDIUM=%d COLD_START=%d DIVISION_FLOOR=%d",
-             n_high_trust, n_medium, n_cold_start, n_floor_tier)
+    n_clim_tier = sum(1 for a in final_alerts if a.get("climatology_floor"))
+    log.info("Final: CRITICAL=%d (base=%d coverage_floor=%d) ALERT=%d WATCH=%d (climatology_floor=%d)",
+             n_crit, n_crit_raw, n_floor_tier, n_alert, n_watch, n_clim_tier)
+    log.info("Trust tiers: HIGH=%d MEDIUM=%d COLD_START=%d DIVISION_FLOOR=%d CLIMATOLOGY_FLOOR=%d",
+             n_high_trust, n_medium, n_cold_start, n_floor_tier, n_clim_tier)
 
     output = {
         "model": raw.get("model", "v17_ba_pu"),
@@ -587,6 +724,7 @@ def main() -> int:
             "cold_start": n_cold_start,
             "division_floor_promoted": n_floor_tier,
             "critical_base": n_crit_raw,
+            "climatology_floor_promoted": n_clim_tier,
         },
         "weather_context": asdict(weather),
         "calendar_context": asdict(calendar_ctx),
