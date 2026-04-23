@@ -55,6 +55,7 @@ FWI_DAILY_PARQUET = ROOT / "data_lake" / "fire_weather" / "fwi_daily.parquet"
 SOIL_DAILY_PARQUET = ROOT / "data_lake" / "fire_weather" / "soil_daily.parquet"
 BEAT_CLIMATOLOGY_PARQUET = ROOT / "data_lake" / "fire_weather" / "beat_fire_climatology.parquet"
 ERA5_PER_DIVISION_PARQUET = ROOT / "data_lake" / "fire_weather" / "era5_per_division_daily.parquet"
+ERA5_CDS_PER_CELL_PARQUET = ROOT / "data_lake" / "fire_weather" / "era5_cds_per_cell_daily.parquet"
 
 # Per-beat-history boost: final_risk = blend_risk * (1 + BETA * percentile_in_week).
 # BETA=0.30 means top-percentile beats get a 30% bump; bottom-percentile beats get 0%.
@@ -544,9 +545,58 @@ def apply_live_weather_overrides(df: pd.DataFrame, cells: pd.DataFrame,
                 "columns": era5_overrides,
             }
 
+    # ---- Stage 1e: per-cell ERA5-CDS override (up to 7 final frozen cols) ----
+    # Reads scripts/ingest_era5_cds.py output. Per-cell nearest-grid sampling
+    # so different cells in the same division see different temp_max/min/srad/
+    # skin_temp values. Covers wx_dtr, wx_srad, wx_srad_7d, wx_lst, wx_lst_7d_max,
+    # wx_lst_air_diff -- the 6 final frozen columns Open-Meteo + FWI couldn't fill.
+    era5_cds_meta = {"applied": False, "reason": "era5_cds_per_cell_daily.parquet missing"}
+    if ERA5_CDS_PER_CELL_PARQUET.exists():
+        try:
+            cds = pd.read_parquet(ERA5_CDS_PER_CELL_PARQUET)
+            cds["date"] = pd.to_datetime(cds["date"]).dt.date
+            cds_today = cds[cds["date"] == target]
+            if cds_today.empty:
+                # Fallback: most recent per cell on-or-before target
+                cds_today = cds[cds["date"] <= target]
+                cds_today = cds_today.sort_values("date").groupby("cell_id").tail(1)
+            cds_today = cds_today.set_index("cell_id")
+
+            cds_overrides = []
+            n_cells_updated = 0
+            mapping = {
+                "dtr":              "wx_dtr",
+                "srad_mj":          "wx_srad",
+                "srad_7d":          "wx_srad_7d",
+                "skin_temp_max":    "wx_lst",
+                "skin_temp_7d_max": "wx_lst_7d_max",
+                "lst_air_diff":     "wx_lst_air_diff",
+            }
+            for cds_col, wx_col in mapping.items():
+                if wx_col not in df.columns or cds_col not in cds_today.columns:
+                    continue
+                lookup = cds_today[cds_col].to_dict()
+                new_vals = df["cell_id"].map(lookup)
+                mask = new_vals.notna()
+                if mask.any():
+                    df.loc[mask, wx_col] = new_vals[mask].astype(float)
+                    cds_overrides.append(wx_col)
+                    n_cells_updated = max(n_cells_updated, int(mask.sum()))
+
+            era5_cds_meta = {
+                "applied": True,
+                "n_columns_overridden": len(cds_overrides),
+                "n_cells_updated_per_col_max": n_cells_updated,
+                "n_cells_in_cds_table": int(len(cds_today)),
+                "columns": cds_overrides,
+            }
+        except Exception as exc:
+            era5_cds_meta = {"applied": False, "reason": f"era5-cds load failed: {exc}"}
+
     n_total = (len(fwi_overrides) + len(fwi_rolling_overrides) + len(soil_overrides)
                + len(fwi_anom_overrides)
-               + (era5_meta.get("n_columns_overridden", 0) if era5_meta.get("applied") else 0))
+               + (era5_meta.get("n_columns_overridden", 0) if era5_meta.get("applied") else 0)
+               + (era5_cds_meta.get("n_columns_overridden", 0) if era5_cds_meta.get("applied") else 0))
     return df, {
         "applied": True,
         "fwi_stage": {
@@ -571,12 +621,12 @@ def apply_live_weather_overrides(df: pd.DataFrame, cells: pd.DataFrame,
         },
         "soil_stage": soil_meta,
         "era5_stage": era5_meta,
+        "era5_cds_stage": era5_cds_meta,
         "n_total_wx_columns_overridden": n_total,
         "note": (
             f"Coverage: {n_total} wx_* columns from live data. "
-            "Still frozen at v8 2025-05-29: wx_fuel_dryness, wx_dtr, "
-            "wx_lst*, wx_srad, wx_srad_7d (need per-cell daily max/min temp "
-            "+ LST + solar radiation; only ERA5 ingest can close these)."
+            "Last frozen column: wx_fuel_dryness (needs original v17 formula "
+            "reverse-engineered). Everything else now ERA5 or FWI-derived."
         ),
     }
 
@@ -700,15 +750,23 @@ def main() -> int:
         if weather_meta.get("applied"):
             fwi_stage = weather_meta.get("fwi_stage", {})
             era5_stage = weather_meta.get("era5_stage", {})
-            log.info("  FWI stage:  %d cols from %s",
+            era5_cds_stage = weather_meta.get("era5_cds_stage", {})
+            n_total = weather_meta.get("n_total_wx_columns_overridden", 0)
+            log.info("  Live weather: %d total wx_* cols overridden", n_total)
+            log.info("    FWI stage:  %d cols from %s",
                      fwi_stage.get("n_columns_overridden", 0),
                      fwi_stage.get("fwi_date_used", "?"))
             if era5_stage.get("applied"):
-                log.info("  ERA5 stage: %d cols across %d divisions",
+                log.info("    ERA5 per-div: %d cols across %d divisions",
                          era5_stage.get("n_columns_overridden", 0),
                          era5_stage.get("n_divisions_in_era5_table", 0))
-            else:
-                log.info("  ERA5 stage: skipped (%s)", era5_stage.get("reason", "?"))
+            if era5_cds_stage.get("applied"):
+                log.info("    ERA5-CDS per-cell: %d cols across %d cells",
+                         era5_cds_stage.get("n_columns_overridden", 0),
+                         era5_cds_stage.get("n_cells_in_cds_table", 0))
+            elif era5_cds_stage.get("reason"):
+                log.info("    ERA5-CDS stage: skipped (%s)",
+                         era5_cds_stage.get("reason", "?"))
         else:
             log.warning("  Skipped: %s", weather_meta.get("reason"))
 
