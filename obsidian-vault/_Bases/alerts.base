@@ -1,0 +1,71 @@
+filters:
+  and:
+    - file.inFolder("02-Operations/Daily")
+    - file.hasTag("alerts")
+
+properties:
+  file.name:
+    displayName: Date
+  critical:
+    displayName: 🔴 Critical
+  alert:
+    displayName: 🟠 Alert
+  watch:
+    displayName: 🟡 Watch
+  total-alerts:
+    displayName: Total
+  fwi-max:
+    displayName: FWI peak
+  fwi-label:
+    displayName: Severity
+  trust-tier:
+    displayName: Trust
+  status:
+    displayName: Status
+
+views:
+  - type: table
+    name: All daily briefs
+    order:
+      - file.name
+      - critical
+      - alert
+      - watch
+      - total-alerts
+      - fwi-max
+      - fwi-label
+      - trust-tier
+      - status
+    sort:
+      - property: file.name
+        direction: DESC
+
+  - type: table
+    name: Recent CRITICAL days
+    filters:
+      and:
+        - critical > 100
+    order:
+      - file.name
+      - critical
+      - alert
+      - fwi-max
+      - fwi-label
+    sort:
+      - property: critical
+        direction: DESC
+
+  - type: table
+    name: Extreme fire weather
+    filters:
+      and:
+        - fwi-max > 60
+    order:
+      - file.name
+      - fwi-max
+      - fwi-label
+      - critical
+      - total-alerts
+    sort:
+      - property: fwi-max
+        direction: DESC
