@@ -1,0 +1,356 @@
+import { Info, AlertTriangle } from 'lucide-react';
+import { motion, staggerContainer, fadeUp, useAccessibleVariants, transitions } from '../lib/motion';
+import { colors, chartColors, fontFamily } from '../designTokens';
+import StatusBadge from '../components/StatusBadge';
+import PlotlyChart from '../components/PlotlyChart';
+
+const KPIS = [
+  { label: 'Recall @ top-5%', value: '45.5', unit: '%', ctx: '(unique events)' },
+  { label: 'Precision (CRIT)', value: '3.2',  unit: '%', ctx: '(low tier)' },
+  { label: 'R @ top-5% (BA tiered)', value: '47.4', unit: '%', ctx: '(labeled)' },
+  { label: 'Coverage', value: '87 / 87', unit: '',  ctx: 'divisions' },
+  { label: 'Low-Hawkes R', value: '7.65', unit: '%', ctx: '(cold-start)' },
+  { label: 'Daily volume', value: '~140', unit: '',  ctx: 'CRITICAL / day' },
+];
+
+const FEATURE_IMPORTANCE = [
+  { name: 'Hawkes λ (self-excite)', gain: 74 },
+  { name: 'FWI · 7d rolling',       gain: 42 },
+  { name: 'Tree cover loss (5y)',   gain: 31 },
+  { name: 'VPD anomaly · 3d',       gain: 28 },
+  { name: 'Distance to road',       gain: 24 },
+  { name: 'Population · 1km',       gain: 21 },
+  { name: 'Elevation',              gain: 17 },
+  { name: 'Slope · aspect',         gain: 14 },
+  { name: 'Beat history prior',     gain: 12 },
+  { name: 'Soil moisture · 10cm',   gain:  9 },
+];
+
+const TRUST_TIERS = [
+  {
+    tier: 'HIGH',
+    band: 'confirmed' as const,
+    body: 'High-Hawkes cells near recent ignitions. 25.5% R@5% in this regime. Act confidently.',
+  },
+  {
+    tier: 'MEDIUM',
+    band: 'watch' as const,
+    body: 'Active fire weather but low prior activity. Cross-check with local patrol before dispatch.',
+  },
+  {
+    tier: 'LOW',
+    band: 'critical' as const,
+    body: 'Cold-start region (low-Hawkes). Only 7.65% R@5% here. Use as awareness, not dispatch trigger.',
+  },
+];
+
+export default function ModelCardTab() {
+  const container = useAccessibleVariants(staggerContainer(0.05));
+  const item = useAccessibleVariants(fadeUp);
+
+  return (
+    <div
+      style={{
+        padding: '32px 48px',
+        overflowY: 'auto',
+        height: '100%',
+        maxWidth: 960,
+        margin: '0 auto',
+      }}
+    >
+      <motion.div variants={container} initial="hidden" animate="visible">
+        <motion.header variants={item} style={{ marginBottom: 32 }}>
+          <div
+            className="micro"
+            style={{ color: colors.text.tertiary, marginBottom: 6 }}
+          >
+            Model transparency
+          </div>
+          <h1 style={{ fontSize: 28, fontWeight: 500, letterSpacing: '-0.02em' }}>
+            v17.5 — LightGBM × Hurdle blend
+          </h1>
+          <p style={{ marginTop: 8, color: colors.text.secondary, maxWidth: 640, lineHeight: 1.6 }}>
+            Production fire-ignition forecaster since 2026-04-19. Trained on 111 features
+            combining Hawkes self-excitation, fire-weather indices, static terrain,
+            and 5-year FIRMS detection history.
+          </p>
+        </motion.header>
+
+        <motion.section variants={item} style={{ marginBottom: 40 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 500, marginBottom: 14 }}>Honest metrics</h2>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gap: 14,
+            }}
+          >
+            {KPIS.map((k) => (
+              <motion.div
+                key={k.label}
+                variants={item}
+                whileHover={{ backgroundColor: colors.bg.raised }}
+                transition={transitions.fast}
+                style={{
+                  background: colors.bg.surface,
+                  border: `1px solid ${colors.border.subtle}`,
+                  borderRadius: 12,
+                  padding: '18px 16px',
+                  textAlign: 'center',
+                }}
+              >
+                <div
+                  className="mono"
+                  style={{ fontSize: 30, fontWeight: 500, color: colors.text.primary }}
+                >
+                  {k.value}
+                  <span style={{ fontSize: 14, color: colors.text.tertiary, marginLeft: 2 }}>
+                    {k.unit}
+                  </span>
+                </div>
+                <div className="micro" style={{ marginTop: 4 }}>{k.label}</div>
+                <div style={{ fontSize: 11, color: colors.text.tertiary, marginTop: 6 }}>
+                  {k.ctx}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        <motion.section variants={item} style={{ marginBottom: 40 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 500, marginBottom: 14 }}>
+            Known weaknesses
+          </h2>
+          <motion.div
+            variants={item}
+            style={{
+              background: colors.fire.critical.bg,
+              border: `1px solid ${colors.fire.critical.border}`,
+              borderRadius: 12,
+              padding: 18,
+              display: 'flex',
+              gap: 14,
+              alignItems: 'flex-start',
+            }}
+          >
+            <AlertTriangle size={20} color={colors.fire.critical.fg} style={{ flexShrink: 0, marginTop: 2 }} />
+            <div style={{ fontSize: 13, color: colors.text.secondary, lineHeight: 1.6 }}>
+              <strong style={{ color: colors.text.primary }}>Cold-start blind spot:</strong>{' '}
+              the model excels at fire <em>contagion</em> (Hawkes-driven, 25.5% R@5% in high-activity regions)
+              but is near-random on <em>new outbreaks</em> in quiet regions (5.9% R@5%). 77% of fires actually
+              start in low-Hawkes cells. Use with <StatusBadge band="info" label="CLIMATOLOGY" size="sm" /> floor
+              decoration as a fallback.
+            </div>
+          </motion.div>
+        </motion.section>
+
+        <motion.section variants={item} style={{ marginBottom: 40 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 500, marginBottom: 14 }}>
+            When to trust each alert
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {TRUST_TIERS.map((t) => (
+              <motion.div
+                key={t.tier}
+                variants={item}
+                style={{
+                  background: colors.bg.raised,
+                  border: `1px solid ${colors.border.subtle}`,
+                  borderLeft: `3px solid ${colors.fire[t.band].fg}`,
+                  borderRadius: 10,
+                  padding: 16,
+                  fontSize: 13,
+                  color: colors.text.secondary,
+                  lineHeight: 1.6,
+                }}
+              >
+                <strong style={{ color: colors.text.primary }}>{t.tier} trust:</strong>{' '}
+                {t.body}
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        <motion.section variants={item} style={{ marginBottom: 40 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 500, marginBottom: 14 }}>
+            Recall trend &amp; forecast
+          </h2>
+          <div
+            style={{
+              background: colors.bg.surface,
+              border: `1px solid ${colors.border.subtle}`,
+              borderRadius: 12,
+              padding: '18px 12px 8px',
+            }}
+          >
+            <PlotlyChart
+              data={buildForecastTraces()}
+              height={300}
+              layout={{
+                showlegend: true,
+                legend: { orientation: 'h', y: 1.18, x: 0 },
+                xaxis: {
+                  title: {
+                    text: 'Date',
+                    font: { family: fontFamily.ui },
+                  },
+                },
+                yaxis: {
+                  title: {
+                    text: 'Recall @ top-5% (%)',
+                    font: { family: fontFamily.ui },
+                  },
+                  range: [0, 55],
+                },
+              }}
+            />
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              marginTop: 12,
+              fontSize: 12,
+              color: colors.text.tertiary,
+            }}
+          >
+            <Info size={14} />
+            Blue line is observed daily recall. Orange dashed is the projected trend;
+            shaded band is 95% CI. Hover any point for exact values.
+          </div>
+        </motion.section>
+
+        <motion.section variants={item}>
+          <h2 style={{ fontSize: 18, fontWeight: 500, marginBottom: 14 }}>Feature importance</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {FEATURE_IMPORTANCE.map((f) => (
+              <motion.div
+                key={f.name}
+                variants={item}
+                style={{ display: 'flex', alignItems: 'center', gap: 10 }}
+              >
+                <span
+                  className="mono"
+                  style={{
+                    fontSize: 12,
+                    color: colors.text.secondary,
+                    width: 190,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {f.name}
+                </span>
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${f.gain}%` }}
+                  transition={{ duration: 0.6, ease: [0.2, 0, 0, 1] }}
+                  style={{
+                    height: 22,
+                    borderRadius: 6,
+                    background: `linear-gradient(90deg, ${colors.accent.pressed}, ${colors.accent.base})`,
+                    flex: 1,
+                    maxWidth: 'calc(100% - 240px)',
+                  }}
+                />
+                <span
+                  className="mono"
+                  style={{ fontSize: 11, color: colors.text.tertiary, minWidth: 44, textAlign: 'right' }}
+                >
+                  {f.gain}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              marginTop: 16,
+              fontSize: 12,
+              color: colors.text.tertiary,
+            }}
+          >
+            <Info size={14} />
+            Gain values are relative; sum across all features = 100.
+          </div>
+        </motion.section>
+      </motion.div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Synthetic recall history + 7-day forecast with 95% CI band. Replace with
+// live /api/v17-recall-history data once the backend endpoint exists.
+// ---------------------------------------------------------------------------
+function buildForecastTraces() {
+  const actualDates = [
+    '2026-04-16', '2026-04-17', '2026-04-18', '2026-04-19',
+    '2026-04-20', '2026-04-21', '2026-04-22',
+  ];
+  const actualY = [21.1, 20.8, 24.1, 22.0, 28.9, 32.7, 29.8];
+
+  const forecastDates = [
+    '2026-04-22', '2026-04-23', '2026-04-24', '2026-04-25',
+    '2026-04-26', '2026-04-27', '2026-04-28', '2026-04-29',
+  ];
+  const forecastY = [29.8, 30.4, 31.1, 31.6, 31.9, 32.1, 32.2, 32.3];
+  const upper = forecastY.map((y) => y + 4.5);
+  const lower = forecastY.map((y) => y - 4.5);
+
+  return [
+    // 95% CI band — upper
+    {
+      type: 'scatter' as const,
+      mode: 'lines' as const,
+      name: '95% CI upper',
+      x: forecastDates,
+      y: upper,
+      line: { color: 'transparent' },
+      showlegend: false,
+      hoverinfo: 'skip' as const,
+    },
+    // 95% CI band — lower (fills to the upper trace above)
+    {
+      type: 'scatter' as const,
+      mode: 'lines' as const,
+      name: '95% CI',
+      x: forecastDates,
+      y: lower,
+      line: { color: 'transparent' },
+      fill: 'tonexty' as const,
+      fillcolor: chartColors.confidence,
+      hoverinfo: 'skip' as const,
+    },
+    // Actual (solid blue)
+    {
+      type: 'scatter' as const,
+      mode: 'lines+markers' as const,
+      name: 'Observed',
+      x: actualDates,
+      y: actualY,
+      line: { color: chartColors.actual, width: 2 },
+      marker: { size: 6, color: chartColors.actual },
+      hovertemplate: '<b>%{x}</b><br>Observed: %{y:.1f}%<extra></extra>',
+    },
+    // Forecast (dashed orange)
+    {
+      type: 'scatter' as const,
+      mode: 'lines' as const,
+      name: 'Forecast',
+      x: forecastDates,
+      y: forecastY,
+      line: {
+        color: chartColors.forecast,
+        width: 2,
+        dash: 'dash' as const,
+      },
+      hovertemplate: '<b>%{x}</b><br>Forecast: %{y:.1f}%<extra></extra>',
+    },
+  ];
+}
+
