@@ -1,7 +1,7 @@
 // MapFlyout — right-edge sliding detail panel for a selected v17 ignition cell.
 // Built on the existing design tokens + StatusBadge/ConfidenceTier primitives.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   X,
   ChevronRight,
@@ -80,6 +80,17 @@ const ACTIONS: {
 export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
   const [whyOpen, setWhyOpen] = useState(true);
   const slideVariants = useAccessibleVariants(slideInRight);
+
+  // Dismiss on Escape for officer-tablet keyboard workflows (Apple HIG
+  // `escape-routes` rule). Only active while a cell is selected.
+  useEffect(() => {
+    if (!cell) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [cell, onClose]);
 
   return (
     <AnimatePresence>

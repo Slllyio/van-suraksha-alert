@@ -194,6 +194,56 @@ button {
   }
 }
 
+/* ---- Responsive breakpoints ----
+   Below 900px the Live Map sidebar stacks above the map instead of sitting
+   beside it. The tab bar also wraps to a second row on very narrow screens.
+   Designed for the field-tablet case (iPad Mini portrait ≈ 768px). */
+@media (max-width: 900px) {
+  body { font-size: 13px; }
+  /* Live Map layout — flip row → column so the sidebar is on top */
+  main > div[role='tabpanel'] > div[style*='display: flex'] {
+    flex-direction: column !important;
+  }
+  /* Sidebar narrows + becomes scrollable horizontally for risk cards */
+  aside[style*='width'] {
+    width: 100% !important;
+    max-height: 260px;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+  aside[style*='width'] > * {
+    min-width: 240px;
+    flex-shrink: 0;
+  }
+  /* Header tabs wrap onto a second row */
+  header[role] + *, header nav {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 640px) {
+  /* On phones hide the right-aligned header tools (Bell, Help, clock) +
+   * shrink the tab bar padding so all 5 tabs fit the 375px viewport. */
+  header > div:last-child {
+    display: none !important;
+  }
+  header nav[role='tablist'] {
+    padding: 2px !important;
+    gap: 2px !important;
+  }
+  header nav[role='tablist'] button[role='tab'] {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+  }
+  header nav[role='tablist'] button[role='tab'] span {
+    display: none;
+  }
+  /* Table cells tighten so the 7-col validation table doesn't overflow */
+  th, td { padding: 8px 10px !important; font-size: 12px !important; }
+}
+
 /* ---- Skip-to-main (a11y) ---- */
 .skip-link {
   position: absolute;
