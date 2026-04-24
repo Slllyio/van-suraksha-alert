@@ -75,7 +75,7 @@ paths:
       summary: 87 forest divisions with alert counts + trust tiers
       responses:
         "200":
-          description: Enveloped list
+          description: Enveloped summary (data is an object, not a list)
           content:
             application/json:
               schema:
@@ -83,8 +83,13 @@ paths:
                 required: [data]
                 properties:
                   data:
-                    type: array
-                    items: { $ref: "#/components/schemas/DivisionSummary" }
+                    type: object
+                    properties:
+                      divisions:
+                        type: array
+                        items: { $ref: "#/components/schemas/DivisionSummary" }
+                      total_divisions: { type: integer }
+                      updated_at: { type: string, format: date-time }
                   meta:
                     type: object
                     properties: { total: { type: integer } }
@@ -92,17 +97,37 @@ paths:
   /api/v2/season-validation:
     get:
       summary: Rolling 2026 season recall × observed fires
+      description: |
+        Returns a **nested report object**, not a flat list.  The live server
+        groups stats under `summary`, `per_day`, `per_trust_tier`, and
+        `per_division`.  Clients that want a flat per-day list should read
+        `data.per_day`.
       responses:
         "200":
-          description: Enveloped rolling validation rows
+          description: Enveloped rolling validation report
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   data:
-                    type: array
-                    items: { $ref: "#/components/schemas/ValidationRow" }
+                    type: object
+                    properties:
+                      summary:
+                        type: object
+                        description: Season-wide aggregates.
+                      per_day:
+                        type: array
+                        description: One row per day — key recall metric is `recall_any_band`.
+                        items: { $ref: "#/components/schemas/ValidationRow" }
+                      per_trust_tier:
+                        type: object
+                        description: Recall × precision broken down by HIGH/MEDIUM/LOW.
+                      per_division:
+                        type: array
+                        description: Per-division aggregate stats.
+                        items:
+                          type: object
                   meta:
                     type: object
                     properties: { total: { type: integer } }
@@ -111,7 +136,22 @@ paths:
     get:
       summary: Field validation log (operator actions vs predictions)
       responses:
-        "200": { description: Enveloped list }
+        "200":
+          description: Enveloped rows (impl returns `data.rows` not bare list)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      rows:
+                        type: array
+                        items:
+                          type: object
+                  meta:
+                    type: object
 
   /api/v2/model-transparency:
     get:
@@ -130,13 +170,32 @@ paths:
     get:
       summary: Per-division blind-spot analysis (where recall drops)
       responses:
-        "200": { description: Enveloped blind-spot report }
+        "200":
+          description: Enveloped blind-spot report (shape may evolve)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    additionalProperties: true
 
   /api/v2/latest-alert:
     get:
       summary: Most recent NRT detection bundle
       responses:
-        "200": { description: Enveloped alert payload }
+        "200":
+          description: Enveloped alert payload (shape may evolve)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    additionalProperties: true
+                  meta: { type: object, additionalProperties: true }
 
   /api/v2/viirs-fires:
     get:
@@ -170,10 +229,11 @@ paths:
                       n_clipped: { type: integer }
                       latest_date: { type: string, format: date }
                       date_range:
-                        type: object
-                        properties:
-                          from: { type: string, format: date }
-                          to: { type: string, format: date }
+                        type: string
+                        description: |
+                          Human-readable range like `"2026-04-17 to 2026-04-24"`.
+                          The live server emits a string, not a `{from, to}` object.
+                        example: "2026-04-17 to 2026-04-24"
 
   /api/v2/beats-boundary:
     get:
@@ -204,19 +264,53 @@ paths:
           name: date
           schema: { type: string, format: date }
       responses:
-        "200": { description: Enveloped alert list }
+        "200":
+          description: Enveloped alert payload with counts + weather/calendar context
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      counts: { type: object, additionalProperties: { type: integer } }
+                      weather_context: { type: object, additionalProperties: true }
+                      calendar_context: { type: object, additionalProperties: true }
+                      alerts:
+                        type: array
+                        items: { type: object, additionalProperties: true }
+                  meta: { type: object, additionalProperties: true }
 
   /api/v2/division-briefings:
     get:
       summary: Per-division human-readable briefings
       responses:
-        "200": { description: Enveloped briefing map }
+        "200":
+          description: Enveloped briefing map (keys are division names)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    additionalProperties: true
 
   /api/v2/field-responses:
     get:
       summary: Operator response rollup
       responses:
-        "200": { description: Enveloped summary }
+        "200":
+          description: Enveloped summary (aggregate counts per action)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    additionalProperties: true
     post:
       summary: Record an operator response to an alert
       description: |
@@ -328,9 +422,12 @@ components:
 
     DivisionSummary:
       type: object
-      required: [division]
+      description: |
+        Live server uses field `name` as the division identifier (not `division`).
+        Both are documented so clients can fall back gracefully.
       properties:
-        division: { type: string }
+        name: { type: string, description: "Canonical field returned by the server." }
+        division: { type: string, description: "Alias — not emitted by current impl, kept for older clients." }
         critical: { type: integer }
         alert: { type: integer }
         watch: { type: integer }
@@ -342,13 +439,17 @@ components:
 
     ValidationRow:
       type: object
-      required: [date, predicted, observed, caught, recall_pct]
+      description: |
+        Per-day validation stat as emitted by `/api/v2/season-validation`.
+        Live server uses `recall_any_band` (not `recall_pct`); both documented
+        so clients can normalize.
       properties:
         date: { type: string, format: date }
         predicted: { type: integer }
         observed: { type: integer }
         caught: { type: integer }
-        recall_pct: { type: number }
+        recall_any_band: { type: number, description: "Canonical recall field in live impl." }
+        recall_pct: { type: number, description: "Alias, not emitted by current impl." }
         trust:
           type: string
           enum: [HIGH, MEDIUM, LOW]
@@ -356,8 +457,13 @@ components:
 
     ModelTransparency:
       type: object
+      description: |
+        Note: the live server returns the model tag under the field `model`
+        (not `model_version`). Both names are included below for clients that
+        normalize.
       properties:
-        model_version: { type: string, example: "v17.5" }
+        model: { type: string, example: "v17.5", description: "Canonical field returned by the server." }
+        model_version: { type: string, example: "v17.5", description: "DEPRECATED alias — not emitted by current impl." }
         recall_top5_pct: { type: number }
         precision_critical_pct: { type: number }
         per_division_coverage:
@@ -435,4 +541,10 @@ components:
                   Division: { type: string }
                   Range: { type: string }
                   Beat: { type: string }
-              geometry: { type: object }
+              geometry:
+                type: object
+                description: |
+                  RFC 7946 GeoJSON geometry. Typed as open object so
+                  `openapi-typescript` emits `Record<string, unknown>` rather
+                  than the restrictive `Record<string, never>`.
+                additionalProperties: true

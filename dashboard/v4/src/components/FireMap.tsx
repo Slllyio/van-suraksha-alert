@@ -52,6 +52,14 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const deckRef = useRef<Deck | null>(null);
+  const overlayCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  // Hold the latest onCellClick so the mount-only map.on('click') handler
+  // always sees the freshest callback (avoids stale closure — frontend
+  // review CRIT #1).
+  const onCellClickRef = useRef(onCellClick);
+  useEffect(() => {
+    onCellClickRef.current = onCellClick;
+  }, [onCellClick]);
 
   // Animation tick — drives the pulsing rings on CRITICAL markers.
   // Cycles 0 → 1 every 1.6 s (rebuilt every 50 ms → ~32 rebuilds/cycle).
@@ -131,7 +139,8 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
           return [r, g, b, 255];
         },
         onClick: (info: PickingInfo) => {
-          if (info.object && onCellClick) onCellClick(info.object as V17Cell);
+          const cb = onCellClickRef.current;
+          if (info.object && cb) cb(info.object as V17Cell);
         },
         updateTriggers: {
           getFillColor: cells.length,
@@ -156,7 +165,7 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
         lineWidthMinPixels: 0.5,
       }),
     ],
-    [cells, criticalCells, viirs, beats, pulse, onCellClick],
+    [cells, criticalCells, viirs, beats, pulse],
   );
 
   // Mount MapLibre + Deck once
@@ -173,6 +182,8 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
     mapRef.current = map;
 
     map.once('load', () => {
+      // Guard: component may have unmounted between `new Map` and 'load'.
+      if (!containerRef.current) return;
       // Create an overlay canvas inside the map container for deck.gl
       const overlay = document.createElement('canvas');
       overlay.style.position = 'absolute';
@@ -181,7 +192,8 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
       overlay.style.width = '100%';
       overlay.style.height = '100%';
       overlay.style.pointerEvents = 'none';
-      containerRef.current!.appendChild(overlay);
+      containerRef.current.appendChild(overlay);
+      overlayCanvasRef.current = overlay;
 
       const deck = new Deck({
         canvas: overlay,
@@ -209,21 +221,31 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
       map.on('move', syncDeck);
       syncDeck();
 
-      // Route clicks through MapLibre to deck.gl for picking
+      // Route clicks through MapLibre to deck.gl for picking. Dereferencing
+      // the ref each fire keeps the handler in sync with re-renders that
+      // change onCellClick.
       map.on('click', (e) => {
         const picked = deck.pickObject({
           x: e.point.x,
           y: e.point.y,
           radius: 8,
         });
-        if (picked?.object && onCellClick) {
-          onCellClick(picked.object as V17Cell);
+        const cb = onCellClickRef.current;
+        if (picked?.object && cb) {
+          cb(picked.object as V17Cell);
         }
       });
     });
 
     return () => {
       deckRef.current?.finalize();
+      // Unconditionally remove the overlay canvas — the 'load' event may
+      // never have fired (CRIT #2: leak if component unmounts during load).
+      const overlay = overlayCanvasRef.current;
+      if (overlay && overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+      }
+      overlayCanvasRef.current = null;
       mapRef.current?.remove();
       deckRef.current = null;
       mapRef.current = null;

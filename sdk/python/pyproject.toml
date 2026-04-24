@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "jwalanetra-sdk"
+version = "0.1.0"
+description = "Thin Python client for the JwalaNetra v2 Portal API (MP Forest Fire EWS)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Private — not for distribution" }
+authors = [{ name = "FIRE Project" }]
+
+# Zero runtime dependencies — uses only Python stdlib (urllib.request)
+dependencies = []
+
+[project.optional-dependencies]
+# typing_extensions is required only on Python <3.11 for NotRequired
+typing = ["typing_extensions>=4.0; python_version<'3.11'"]
+dev = [
+    "pytest>=8.0",
+    "mypy>=1.10",
+    "ruff>=0.4",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["jwalanetra*"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "ANN"]
+ignore = ["ANN101", "ANN102"]

@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import threading
 import time
 from collections import defaultdict
@@ -67,6 +68,22 @@ _PROJECTED_CRS = "EPSG:32644"
 # tolerance stays stable even if the AOI extends north or the CRS changes.
 _FIRE_BEAT_TOLERANCE_M = 333.0
 _BEATS_PROJECTED = None  # cached projected beats GeoDataFrame
+
+
+_ISO_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _valid_iso_date(value: str) -> bool:
+    """Accept only strict YYYY-MM-DD strings. Guards against path-traversal
+    attempts (e.g. ``../../etc/passwd``) and SQL/filename injection via
+    ``date`` / ``from`` / ``to`` query parameters."""
+    if not isinstance(value, str) or not _ISO_DATE_RE.match(value):
+        return False
+    try:
+        datetime.strptime(value, "%Y-%m-%d")
+    except ValueError:
+        return False
+    return True
 
 
 def _load_v17_predictions(date_str: str | None = None) -> dict:
@@ -898,6 +915,14 @@ class PortalHandler(SimpleHTTPRequestHandler):
         # See dashboard/v3/openapi.yaml for the contract. Backward-compat: the
         # unversioned /api/* paths above remain unchanged.
         elif path == "/api/v2/ignition-v17":
+            date = qs.get("date", [None])[0]
+            if date is not None and not _valid_iso_date(date):
+                self._send_v2_error(
+                    "invalid_date",
+                    "date must be YYYY-MM-DD",
+                    status=400,
+                )
+                return
             self._serve_v2_ignition(qs)
         elif path == "/api/v2/latest-alert":
             self._send_v2(_load_latest_alert(), meta={"source": "nrt_alert_pipeline"})
@@ -922,6 +947,14 @@ class PortalHandler(SimpleHTTPRequestHandler):
         elif path == "/api/v2/viirs-fires":
             date_from = qs.get("from", [None])[0]
             date_to = qs.get("to", [None])[0]
+            for name, val in (("from", date_from), ("to", date_to)):
+                if val is not None and not _valid_iso_date(val):
+                    self._send_v2_error(
+                        "invalid_date",
+                        f"{name} must be YYYY-MM-DD",
+                        status=400,
+                    )
+                    return
             self._serve_v2_viirs(date_from, date_to)
         elif path == "/api/v2/operational-alerts":
             rows = _load_operational_alerts(qs.get("date", [None])[0])

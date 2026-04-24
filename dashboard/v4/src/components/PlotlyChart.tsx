@@ -86,17 +86,19 @@ export default function PlotlyChart({
     ...layout,
     transition: { duration: 700, easing: 'cubic-in-out' },
   };
+  // Keyframes live in theme.css to avoid injecting a new <style> tag on
+  // every render (frontend review CRIT #3). Class name `plotly-reveal`
+  // drives the clip-path inset reveal on mount.
   return (
     <div
+      className="plotly-reveal"
       style={{
         position: 'relative',
         width: '100%',
         height,
         overflow: 'hidden',
-        animation: 'plotlyReveal 900ms cubic-bezier(0.22, 1, 0.36, 1) both',
       }}
     >
-      <style>{plotlyRevealKeyframes}</style>
       <Plot
         {...rest}
         layout={animatedLayout}
@@ -107,17 +109,3 @@ export default function PlotlyChart({
     </div>
   );
 }
-
-const plotlyRevealKeyframes = `
-@keyframes plotlyReveal {
-  0%   { clip-path: inset(0 100% 0 0); opacity: 0.4; }
-  50%  { opacity: 1; }
-  100% { clip-path: inset(0 0 0 0);    opacity: 1; }
-}
-@media (prefers-reduced-motion: reduce) {
-  @keyframes plotlyReveal {
-    from { opacity: 0.6; }
-    to   { opacity: 1; }
-  }
-}
-`;

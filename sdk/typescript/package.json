@@ -1,0 +1,30 @@
+{
+  "name": "@jwalanetra/sdk",
+  "version": "0.1.0",
+  "description": "Zero-dependency TypeScript client for the JwalaNetra v2 Forest Fire EWS Portal API",
+  "type": "module",
+  "private": true,
+  "main": "./client.ts",
+  "types": "./types.ts",
+  "exports": {
+    ".": {
+      "types": "./types.ts",
+      "default": "./client.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "fire-ews",
+    "jwalanetra",
+    "madhya-pradesh",
+    "forest-fire",
+    "openapi",
+    "sdk"
+  ],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
