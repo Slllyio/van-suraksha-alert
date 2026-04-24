@@ -2,23 +2,18 @@
 // fire-EWS color palette. We use plotly.js-dist-min via the factory so we
 // avoid pulling the full 3 MB plotly.js bundle.
 
-import * as factoryModule from 'react-plotly.js/factory';
-// @ts-expect-error — plotly.js-dist-min has no bundled types; the factory
-// accepts the runtime module.
-import Plotly from 'plotly.js-dist-min';
+import PlotDefault from 'react-plotly.js';
 import type { PlotParams } from 'react-plotly.js';
 import type { Layout, Config } from 'plotly.js';
 import { colors, chartColors, fontFamily } from '../designTokens';
 
-// The factory module is published as CommonJS; Vite wraps it inside a
-// `{ default: fn }` namespace shim, but some environments expose the function
-// directly. Handle both.
-const createPlotlyComponent =
-  (factoryModule as unknown as { default?: unknown }).default ?? factoryModule;
-
-const Plot = (createPlotlyComponent as (p: typeof Plotly) => React.ComponentType<PlotParams>)(
-  Plotly,
-);
+// Vite's CJS-interop for react-plotly.js ships the module's `exports` object
+// (with `__esModule: true` and `default: <Component>`) as the default import.
+// Unwrap: if it's already a component, use it; otherwise reach into `.default`.
+const Plot = (typeof PlotDefault === 'function'
+  ? PlotDefault
+  : (PlotDefault as unknown as { default: React.ComponentType<PlotParams> }).default
+) as React.ComponentType<PlotParams>;
 
 export type PlotlyChartProps = Omit<PlotParams, 'layout' | 'config'> & {
   /** Height in px. Width always stretches to parent. */

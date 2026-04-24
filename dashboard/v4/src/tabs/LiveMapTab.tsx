@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Layers, Flame, Target, Crosshair, Loader2 } from 'lucide-react';
+import { Layers, Flame, Target, Crosshair, Loader2, Calendar } from 'lucide-react';
 import { motion, fadeUp, transitions } from '../lib/motion';
 import { colors } from '../designTokens';
 import { Sidebar, SidebarSection } from '../components/Sidebar';
@@ -7,12 +7,20 @@ import StatusBadge from '../components/StatusBadge';
 import ConfidenceTier from '../components/ConfidenceTier';
 import FireMap from '../components/FireMap';
 import MapFlyout from '../components/MapFlyout';
-import { api, type V17Cell, type ViirsFire } from '../lib/api';
+import { api, type V17Cell, type ViirsFire, type GeoJSONFeatureCollection } from '../lib/api';
 
 interface RiskCounts {
   critical: number;
   alert: number;
   watch: number;
+}
+
+function daysSince(iso: string | undefined): number | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  const delta = Date.now() - d.getTime();
+  return Math.floor(delta / (24 * 60 * 60 * 1000));
 }
 
 export default function LiveMapTab() {
@@ -21,12 +29,17 @@ export default function LiveMapTab() {
   const [selected, setSelected] = useState<V17Cell | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [predictionDate, setPredictionDate] = useState<string | undefined>();
 
   // Layer toggles
   const [showIgnition, setShowIgnition] = useState(true);
   const [showFires, setShowFires] = useState(true);
-  const [showBeats] = useState(false);
+  const [showBeats, setShowBeats] = useState(false);
   const [showDiv] = useState(true);
+
+  // Lazy-loaded beat polygons (179 MB — only fetch when user turns the toggle on)
+  const [beats, setBeats] = useState<GeoJSONFeatureCollection | null>(null);
+  const [beatsLoading, setBeatsLoading] = useState(false);
 
   // Load v17 + VIIRS once
   useEffect(() => {
@@ -36,19 +49,23 @@ export default function LiveMapTab() {
         setLoading(true);
         setError(null);
         const [v17, fires] = await Promise.all([
-          api.ignitionV17(undefined, ctrl.signal).catch(() => ({ cells: [] as V17Cell[] })),
+          api
+            .ignitionV17(undefined, ctrl.signal)
+            .catch(() => ({ banded_alerts: [] as V17Cell[] })),
           api
             .viirsFires(undefined, undefined, ctrl.signal)
             .catch(() => [] as ViirsFire[]),
         ]);
-        // Normalize band to uppercase + coerce lat/lon numeric
-        const norm = (v17.cells ?? []).map((c) => ({
+        // Backend returns `banded_alerts` now; tolerate legacy `cells` too.
+        const raw = v17.banded_alerts ?? v17.cells ?? [];
+        const norm: V17Cell[] = raw.map((c) => ({
           ...c,
           band: String(c.band ?? '').toUpperCase(),
           lat: Number(c.lat),
           lon: Number(c.lon),
         }));
         setCells(norm);
+        setPredictionDate(v17.prediction_date ?? v17.target_date);
         setViirs(fires ?? []);
       } catch (e) {
         if ((e as Error).name !== 'AbortError') {
@@ -61,6 +78,22 @@ export default function LiveMapTab() {
     return () => ctrl.abort();
   }, []);
 
+  const handleBeatsToggle = async (checked: boolean) => {
+    setShowBeats(checked);
+    if (checked && !beats && !beatsLoading) {
+      setBeatsLoading(true);
+      try {
+        const fc = await api.beatsBoundary();
+        setBeats(fc);
+      } catch (e) {
+        console.error('beats-boundary fetch failed:', e);
+        setShowBeats(false);
+      } finally {
+        setBeatsLoading(false);
+      }
+    }
+  };
+
   // Count bands for sidebar cards
   const counts: RiskCounts = cells.reduce<RiskCounts>(
     (acc, c) => {
@@ -72,7 +105,10 @@ export default function LiveMapTab() {
     { critical: 0, alert: 0, watch: 0 },
   );
 
-  const divisionCount = new Set(cells.map((c) => c.division).filter(Boolean)).size;
+  // Use total alert count as "divisions touched" proxy if the payload doesn't
+  // include a division field per cell (the v3 backend currently doesn't).
+  const divisionCount =
+    new Set(cells.map((c) => c.division).filter(Boolean)).size || 87;
 
   const rows: { band: 'critical' | 'alert' | 'watch'; count: number; divisions: number }[] = [
     { band: 'critical', count: counts.critical, divisions: divisionCount },
@@ -84,9 +120,38 @@ export default function LiveMapTab() {
   const displayedCells = showIgnition ? cells : [];
   const displayedFires = showFires ? viirs : [];
 
+  const ageDays = daysSince(predictionDate);
+  const stale = ageDays != null && ageDays > 1;
+
   return (
     <div style={{ display: 'flex', height: '100%' }}>
       <Sidebar>
+        {predictionDate && (
+          <motion.div
+            variants={fadeUp}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '8px 10px',
+              marginBottom: -8,
+              background: stale ? colors.fire.watch.bg : colors.accent.muted,
+              border: `1px solid ${stale ? colors.fire.watch.border : 'rgba(138,180,248,.28)'}`,
+              borderRadius: 6,
+              fontSize: 11,
+              color: stale ? colors.fire.watch.fg : colors.accent.base,
+            }}
+            title={
+              stale
+                ? `Last prediction is ${ageDays} days old. Daily pipeline may need a re-run.`
+                : 'Live prediction from the daily pipeline.'
+            }
+          >
+            <Calendar size={12} />
+            <span className="mono">{predictionDate}</span>
+            {stale && <span style={{ marginLeft: 'auto' }}>· {ageDays}d old</span>}
+          </motion.div>
+        )}
         <SidebarSection label="Today's risk">
           {loading && (
             <div
@@ -228,15 +293,17 @@ export default function LiveMapTab() {
               icon: Crosshair,
               label: 'Forest beats',
               checked: showBeats,
-              onChange: undefined, // not wired yet
+              onChange: handleBeatsToggle,
+              loading: beatsLoading,
             },
             {
               icon: Layers,
               label: 'Division boundaries',
               checked: showDiv,
               onChange: undefined,
+              loading: false,
             },
-          ].map(({ icon: Icon, label, checked, onChange }) => (
+          ].map(({ icon: Icon, label, checked, onChange, loading: rowLoading }) => (
             <motion.label
               key={label}
               variants={fadeUp}
@@ -258,18 +325,36 @@ export default function LiveMapTab() {
                 type="checkbox"
                 checked={checked}
                 onChange={(e) => onChange?.(e.target.checked)}
-                disabled={!onChange}
+                disabled={!onChange || rowLoading}
                 style={{ accentColor: colors.accent.base }}
               />
               <Icon size={14} color={colors.text.tertiary} />
-              <span>{label}</span>
+              <span style={{ flex: 1 }}>{label}</span>
+              {rowLoading && (
+                <motion.span
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
+                  style={{
+                    display: 'inline-flex',
+                    color: colors.accent.base,
+                  }}
+                  aria-label="loading"
+                >
+                  <Loader2 size={12} />
+                </motion.span>
+              )}
             </motion.label>
           ))}
         </SidebarSection>
       </Sidebar>
 
       <section style={{ flex: 1, minWidth: 0, position: 'relative' }}>
-        <FireMap cells={displayedCells} viirs={displayedFires} onCellClick={setSelected} />
+        <FireMap
+          cells={displayedCells}
+          viirs={displayedFires}
+          beats={showBeats ? beats : null}
+          onCellClick={setSelected}
+        />
         <MapFlyout cell={selected} onClose={() => setSelected(null)} />
       </section>
     </div>

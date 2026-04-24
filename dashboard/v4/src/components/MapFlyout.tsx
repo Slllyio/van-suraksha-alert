@@ -169,14 +169,21 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
               icon={MapPin}
               value={`${cell.lat.toFixed(4)}° N, ${cell.lon.toFixed(4)}° E`}
             />
-            {typeof cell.risk_score === 'number' && (
-              <KV label="Risk score" value={cell.risk_score.toFixed(3)} />
-            )}
+            {(() => {
+              const risk =
+                cell.risk_score ?? cell.calibrated_risk ?? cell.ignition_risk;
+              return typeof risk === 'number' ? (
+                <KV label="Risk score" value={risk.toFixed(3)} />
+              ) : null;
+            })()}
             {typeof cell.stage_a_risk === 'number' && (
               <KV label="Stage A" value={cell.stage_a_risk.toFixed(3)} />
             )}
             {typeof cell.hawkes_lambda === 'number' && (
-              <KV label="Hawkes λ" value={cell.hawkes_lambda.toFixed(3)} />
+              <KV label="Hawkes λ" value={cell.hawkes_lambda.toFixed(4)} />
+            )}
+            {typeof cell.rank === 'number' && (
+              <KV label="Rank" value={cell.rank.toFixed(3)} />
             )}
           </section>
 

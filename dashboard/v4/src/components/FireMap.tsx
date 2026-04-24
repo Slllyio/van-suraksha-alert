@@ -4,10 +4,10 @@
 import { useEffect, useMemo, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import { Deck } from 'deck.gl';
-import { ScatterplotLayer } from '@deck.gl/layers';
+import { ScatterplotLayer, GeoJsonLayer } from '@deck.gl/layers';
 import type { PickingInfo, Layer } from '@deck.gl/core';
 import { colors } from '../designTokens';
-import type { V17Cell, ViirsFire } from '../lib/api';
+import type { V17Cell, ViirsFire, GeoJSONFeatureCollection } from '../lib/api';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const INITIAL_VIEW = {
@@ -25,6 +25,9 @@ const MAP_STYLE =
 interface FireMapProps {
   cells: V17Cell[];
   viirs: ViirsFire[];
+  /** Optional MP forest-beats GeoJSON (MultiPolygon features). When null, the
+   *  beats layer is not rendered. */
+  beats?: GeoJSONFeatureCollection | null;
   onCellClick?: (cell: V17Cell) => void;
 }
 
@@ -44,7 +47,7 @@ function bandRadius(band: string, risk?: number): number {
   return base * weight;
 }
 
-export default function FireMap({ cells, viirs, onCellClick }: FireMapProps) {
+export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const deckRef = useRef<Deck | null>(null);
@@ -52,6 +55,23 @@ export default function FireMap({ cells, viirs, onCellClick }: FireMapProps) {
   // Build deck.gl layer list (memoized — rebuilt only when data changes)
   const layers: Layer[] = useMemo(
     () => [
+      // Beats polygon overlay (rendered UNDER the scatter so markers stay on top)
+      ...(beats
+        ? [
+            new GeoJsonLayer({
+              id: 'beats-boundary',
+              data: beats as unknown as GeoJSON.FeatureCollection,
+              pickable: false,
+              stroked: true,
+              filled: true,
+              lineWidthUnits: 'pixels',
+              lineWidthMinPixels: 0.5,
+              getFillColor: [148, 163, 184, 10],
+              getLineColor: [148, 163, 184, 60],
+              getLineWidth: 1,
+            }),
+          ]
+        : []),
       // v17 ignition cells — scatterplot circles
       new ScatterplotLayer<V17Cell>({
         id: 'ignition-cells',
@@ -97,7 +117,7 @@ export default function FireMap({ cells, viirs, onCellClick }: FireMapProps) {
         lineWidthMinPixels: 1,
       }),
     ],
-    [cells, viirs, onCellClick],
+    [cells, viirs, beats, onCellClick],
   );
 
   // Mount MapLibre + Deck once

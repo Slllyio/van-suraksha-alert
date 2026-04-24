@@ -8,19 +8,45 @@ export interface V17Cell {
   lon: number;
   band: 'CRITICAL' | 'ALERT' | 'WATCH' | string;
   risk_score?: number;
+  ignition_risk?: number;
+  calibrated_risk?: number;
+  rank?: number;
   trust_tier?: 'HIGH' | 'MEDIUM' | 'LOW';
   stage_a_risk?: number;
   division?: string;
   hawkes_lambda?: number;
+  hawkes_n_recent_10km_7d?: number;
   [key: string]: unknown;
 }
 
 export interface V17Payload {
+  /** Actual alert key returned by the v3 backend. Older shape used `cells`;
+   *  we support both by reading `banded_alerts ?? cells`. */
+  banded_alerts?: V17Cell[];
+  cells?: V17Cell[];
   target_date?: string;
+  prediction_date?: string;
   generated_at?: string;
-  cells: V17Cell[];
+  n_cells_total?: number;
+  model?: string;
+  legacy_top_pct?: {
+    top_pct?: number;
+    threshold?: number;
+    n_cells?: number;
+  };
+  hurdle_blend?: Record<string, unknown>;
+  metrics_on_validation?: Record<string, unknown>;
   meta?: Record<string, unknown>;
 }
+
+export type GeoJSONFeatureCollection = {
+  type: 'FeatureCollection';
+  features: Array<{
+    type: 'Feature';
+    properties?: Record<string, unknown>;
+    geometry: unknown;
+  }>;
+};
 
 export interface DivisionSummary {
   division: string;
@@ -94,6 +120,11 @@ export const api = {
 
   healthz: (signal?: AbortSignal) =>
     getJSON<{ ok: boolean; checks?: Record<string, unknown> }>('/api/healthz', signal),
+
+  /** 179 MB GeoJSON of all 8,973 MP forest beats. Backend serves from a
+   *  cached file; browser receives gzipped. Call once and cache in memory. */
+  beatsBoundary: (signal?: AbortSignal) =>
+    getJSON<GeoJSONFeatureCollection>('/api/beats-boundary', signal),
 };
 
 // Generic hook-friendly wrapper
