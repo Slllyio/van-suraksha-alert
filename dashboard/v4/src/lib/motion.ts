@@ -6,13 +6,24 @@ import {
   motion,
   AnimatePresence,
   useReducedMotion,
+  useMotionValue,
+  useTransform,
+  animate,
   type Transition,
   type Variants,
+  type MotionValue,
 } from 'framer-motion';
 import { duration, ease, spring, stagger } from '../designTokens';
 
-export { motion, AnimatePresence, useReducedMotion };
-export type { Transition, Variants };
+export {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useMotionValue,
+  useTransform,
+  animate,
+};
+export type { Transition, Variants, MotionValue };
 
 // ---- Ready-made transitions ----
 

@@ -19,6 +19,7 @@ import {
   useAccessibleVariants,
 } from './lib/motion';
 import { colors, layout as layoutTokens } from './designTokens';
+import { playCue, hapticTap } from './lib/feedback';
 import LiveMapTab from './tabs/LiveMapTab';
 import DivisionsTab from './tabs/DivisionsTab';
 import ModelCardTab from './tabs/ModelCardTab';
@@ -55,29 +56,67 @@ export default function App() {
           justifyContent: 'space-between',
           padding: `0 ${layoutTokens.cardPadding} 0 20px`,
           height: layoutTokens.headerHeight,
-          background: colors.bg.surface,
+          background: `linear-gradient(90deg, ${colors.bg.surface} 0%, #1a2d4a 40%, ${colors.bg.surface} 100%)`,
+          backgroundSize: '200% 100%',
           borderBottom: `1px solid ${colors.border.subtle}`,
           gap: 16,
           flexShrink: 0,
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* Ambient atmosphere glow sweeping slowly across the header */}
+        <motion.div
+          aria-hidden
+          animate={{ backgroundPosition: ['0% 0%', '100% 0%', '0% 0%'] }}
+          transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `radial-gradient(600px circle at 30% 50%, ${colors.accent.muted} 0%, transparent 50%)`,
+            backgroundSize: '200% 100%',
+            pointerEvents: 'none',
+            opacity: 0.7,
+          }}
+        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, position: 'relative', zIndex: 1 }}>
           <motion.div
-            initial={{ rotate: -20, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            transition={transitions.springGentle}
+            initial={{ rotate: -20, opacity: 0, scale: 0.5 }}
+            animate={{
+              rotate: 0,
+              opacity: 1,
+              scale: 1,
+              boxShadow: [
+                `0 0 0 0 ${colors.fire.critical.border}`,
+                `0 0 0 6px rgba(239, 68, 68, 0)`,
+                `0 0 0 0 ${colors.fire.critical.border}`,
+              ],
+            }}
+            transition={{
+              rotate: transitions.springGentle,
+              opacity: transitions.springGentle,
+              scale: transitions.springGentle,
+              boxShadow: { duration: 2.4, repeat: Infinity, ease: 'easeOut' },
+            }}
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 32,
-              height: 32,
-              borderRadius: 8,
+              width: 34,
+              height: 34,
+              borderRadius: 10,
               background: colors.fire.critical.bg,
               border: `1px solid ${colors.fire.critical.border}`,
             }}
           >
-            <Flame size={18} color={colors.fire.critical.fg} strokeWidth={2.4} />
+            {/* Breathing flame — subtle scale loop */}
+            <motion.div
+              animate={{ scale: [1, 1.12, 1], rotate: [0, -3, 3, 0] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ display: 'inline-flex' }}
+            >
+              <Flame size={18} color={colors.fire.critical.fg} strokeWidth={2.4} />
+            </motion.div>
           </motion.div>
           <div>
             <h1 style={{ fontSize: 17, lineHeight: 1.1 }}>
@@ -108,36 +147,62 @@ export default function App() {
           role="tablist"
           aria-label="Portal sections"
         >
-          {TABS.map(({ id, label, Icon }) => (
-            <motion.button
-              key={id}
-              role="tab"
-              aria-selected={tab === id}
-              aria-controls={`panel-${id}`}
-              variants={fadeUp}
-              onClick={() => setTab(id)}
-              whileTap={{ scale: 0.97 }}
-              transition={transitions.fast}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                padding: '8px 14px',
-                borderRadius: 999,
-                background: tab === id ? colors.accent.muted : 'transparent',
-                color: tab === id ? colors.accent.base : colors.text.tertiary,
-                fontSize: 13,
-                fontWeight: 500,
-                letterSpacing: '0.01em',
-                cursor: 'pointer',
-                transition:
-                  'background var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard)',
-              }}
-            >
-              <Icon size={14} />
-              <span>{label}</span>
-            </motion.button>
-          ))}
+          {TABS.map(({ id, label, Icon }) => {
+            const active = tab === id;
+            return (
+              <motion.button
+                key={id}
+                role="tab"
+                aria-selected={active}
+                aria-controls={`panel-${id}`}
+                variants={fadeUp}
+                onClick={() => {
+                  if (tab !== id) {
+                    setTab(id);
+                    playCue('tab');
+                    hapticTap(8);
+                  }
+                }}
+                whileHover={!active ? { color: colors.text.primary } : undefined}
+                whileTap={{ scale: 0.95 }}
+                transition={transitions.fast}
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  padding: '8px 16px',
+                  borderRadius: 999,
+                  background: 'transparent',
+                  color: active ? colors.accent.base : colors.text.tertiary,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  letterSpacing: '0.01em',
+                  cursor: 'pointer',
+                  zIndex: 1,
+                }}
+              >
+                {active && (
+                  <motion.span
+                    layoutId="active-tab-pill"
+                    aria-hidden
+                    transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      borderRadius: 999,
+                      background: `linear-gradient(120deg, ${colors.accent.muted}, rgba(138,180,248,.28), ${colors.accent.muted})`,
+                      backgroundSize: '200% 100%',
+                      border: `1px solid rgba(138,180,248,.36)`,
+                      zIndex: -1,
+                    }}
+                  />
+                )}
+                <Icon size={14} />
+                <span>{label}</span>
+              </motion.button>
+            );
+          })}
         </motion.nav>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

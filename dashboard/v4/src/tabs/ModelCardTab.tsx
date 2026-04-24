@@ -3,14 +3,24 @@ import { motion, staggerContainer, fadeUp, useAccessibleVariants, transitions } 
 import { colors, chartColors, fontFamily } from '../designTokens';
 import StatusBadge from '../components/StatusBadge';
 import PlotlyChart from '../components/PlotlyChart';
+import CountUp from '../components/CountUp';
 
-const KPIS = [
-  { label: 'Recall @ top-5%', value: '45.5', unit: '%', ctx: '(unique events)' },
-  { label: 'Precision (CRIT)', value: '3.2',  unit: '%', ctx: '(low tier)' },
-  { label: 'R @ top-5% (BA tiered)', value: '47.4', unit: '%', ctx: '(labeled)' },
-  { label: 'Coverage', value: '87 / 87', unit: '',  ctx: 'divisions' },
-  { label: 'Low-Hawkes R', value: '7.65', unit: '%', ctx: '(cold-start)' },
-  { label: 'Daily volume', value: '~140', unit: '',  ctx: 'CRITICAL / day' },
+const KPIS: {
+  label: string;
+  num?: number;
+  decimals?: number;
+  prefix?: string;
+  suffix?: string;
+  literal?: string;
+  ctx: string;
+  accent: keyof typeof colors.fire | 'accent';
+}[] = [
+  { label: 'Recall @ top-5%',        num: 45.5, decimals: 1, suffix: '%',                ctx: '(unique events)', accent: 'confirmed' },
+  { label: 'Precision (CRIT)',       num: 3.2,  decimals: 1, suffix: '%',                ctx: '(low tier)',      accent: 'critical'  },
+  { label: 'R @ top-5% (BA tiered)', num: 47.4, decimals: 1, suffix: '%',                ctx: '(labeled)',       accent: 'confirmed' },
+  { label: 'Coverage',               literal: '87 / 87',                                 ctx: 'divisions',       accent: 'accent'    },
+  { label: 'Low-Hawkes R',           num: 7.65, decimals: 2, suffix: '%',                ctx: '(cold-start)',    accent: 'alert'     },
+  { label: 'Daily volume',           num: 140,  decimals: 0, prefix: '~', suffix: '',    ctx: 'CRITICAL / day',  accent: 'critical'  },
 ];
 
 const FEATURE_IMPORTANCE = [
@@ -81,39 +91,92 @@ export default function ModelCardTab() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
               gap: 14,
             }}
           >
-            {KPIS.map((k) => (
-              <motion.div
-                key={k.label}
-                variants={item}
-                whileHover={{ backgroundColor: colors.bg.raised }}
-                transition={transitions.fast}
-                style={{
-                  background: colors.bg.surface,
-                  border: `1px solid ${colors.border.subtle}`,
-                  borderRadius: 12,
-                  padding: '18px 16px',
-                  textAlign: 'center',
-                }}
-              >
-                <div
-                  className="mono"
-                  style={{ fontSize: 30, fontWeight: 500, color: colors.text.primary }}
+            {KPIS.map((k) => {
+              const accentColor =
+                k.accent === 'accent'
+                  ? colors.accent.base
+                  : colors.fire[k.accent].fg;
+              const accentGlow =
+                k.accent === 'accent'
+                  ? colors.accent.muted
+                  : colors.fire[k.accent].bg;
+              return (
+                <motion.div
+                  key={k.label}
+                  variants={item}
+                  whileHover={{
+                    y: -3,
+                    boxShadow: `0 12px 40px ${accentGlow}, 0 0 0 1px ${accentColor}40`,
+                  }}
+                  transition={transitions.base}
+                  style={{
+                    position: 'relative',
+                    overflow: 'hidden',
+                    background: `linear-gradient(145deg, ${colors.bg.surface} 0%, ${colors.bg.raised} 100%)`,
+                    border: `1px solid ${colors.border.subtle}`,
+                    borderRadius: 14,
+                    padding: '22px 18px',
+                    textAlign: 'center',
+                  }}
                 >
-                  {k.value}
-                  <span style={{ fontSize: 14, color: colors.text.tertiary, marginLeft: 2 }}>
-                    {k.unit}
-                  </span>
-                </div>
-                <div className="micro" style={{ marginTop: 4 }}>{k.label}</div>
-                <div style={{ fontSize: 11, color: colors.text.tertiary, marginTop: 6 }}>
-                  {k.ctx}
-                </div>
-              </motion.div>
-            ))}
+                  {/* Corner glow in the accent color */}
+                  <div
+                    aria-hidden
+                    style={{
+                      position: 'absolute',
+                      top: -50,
+                      right: -50,
+                      width: 140,
+                      height: 140,
+                      background: `radial-gradient(circle, ${accentGlow} 0%, transparent 65%)`,
+                      pointerEvents: 'none',
+                      opacity: 0.7,
+                    }}
+                  />
+                  <div
+                    className="mono"
+                    style={{
+                      position: 'relative',
+                      fontSize: 40,
+                      fontWeight: 600,
+                      color: accentColor,
+                      lineHeight: 1,
+                      letterSpacing: '-0.02em',
+                      textShadow: `0 0 24px ${accentGlow}`,
+                    }}
+                  >
+                    {k.literal ? (
+                      <span>{k.literal}</span>
+                    ) : (
+                      <CountUp
+                        value={k.num ?? 0}
+                        decimals={k.decimals ?? 0}
+                        prefix={k.prefix}
+                        suffix={k.suffix}
+                        duration={1.8}
+                      />
+                    )}
+                  </div>
+                  <div className="micro" style={{ marginTop: 10, position: 'relative' }}>
+                    {k.label}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: colors.text.tertiary,
+                      marginTop: 6,
+                      position: 'relative',
+                    }}
+                  >
+                    {k.ctx}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.section>
 

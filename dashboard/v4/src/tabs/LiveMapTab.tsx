@@ -7,6 +7,9 @@ import StatusBadge from '../components/StatusBadge';
 import ConfidenceTier from '../components/ConfidenceTier';
 import FireMap from '../components/FireMap';
 import MapFlyout from '../components/MapFlyout';
+import CountUp from '../components/CountUp';
+import FloatingParticles from '../components/FloatingParticles';
+import { playCue, hapticTap } from '../lib/feedback';
 import { api, type V17Cell, type ViirsFire, type GeoJSONFeatureCollection } from '../lib/api';
 
 interface RiskCounts {
@@ -48,13 +51,13 @@ export default function LiveMapTab() {
       try {
         setLoading(true);
         setError(null);
-        const [v17, fires] = await Promise.all([
+        const [v17, viirsResp] = await Promise.all([
           api
             .ignitionV17(undefined, ctrl.signal)
             .catch(() => ({ banded_alerts: [] as V17Cell[] })),
           api
             .viirsFires(undefined, undefined, ctrl.signal)
-            .catch(() => [] as ViirsFire[]),
+            .catch(() => ({ fires: [] as ViirsFire[] })),
         ]);
         // Backend returns `banded_alerts` now; tolerate legacy `cells` too.
         const raw = v17.banded_alerts ?? v17.cells ?? [];
@@ -66,7 +69,13 @@ export default function LiveMapTab() {
         }));
         setCells(norm);
         setPredictionDate(v17.prediction_date ?? v17.target_date);
-        setViirs(fires ?? []);
+        // Backend wraps fires under { fires: [...] } — unwrap + coerce numerics
+        const firesList: ViirsFire[] = (viirsResp.fires ?? []).map((f) => ({
+          ...f,
+          lat: Number(f.lat),
+          lon: Number(f.lon),
+        }));
+        setViirs(firesList);
       } catch (e) {
         if ((e as Error).name !== 'AbortError') {
           setError((e as Error).message);
@@ -191,75 +200,118 @@ export default function LiveMapTab() {
           )}
           {!loading &&
             !error &&
-            rows.map((row, i) => (
-              <motion.div
-                key={row.band}
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-                custom={i}
-                whileHover={{ y: -1, backgroundColor: colors.bg.overlay }}
-                transition={transitions.fast}
-                style={{
-                  background: colors.bg.raised,
-                  border: `1px solid ${colors.border.subtle}`,
-                  borderLeft: `3px solid ${colors.fire[row.band].fg}`,
-                  borderRadius: 8,
-                  padding: '12px 14px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 8,
-                  cursor: 'pointer',
-                }}
-              >
-                <div
+            rows.map((row, i) => {
+              const bandColor = colors.fire[row.band].fg;
+              const bandBg = colors.fire[row.band].bg;
+              return (
+                <motion.div
+                  key={row.band}
+                  variants={fadeUp}
+                  initial="hidden"
+                  animate="visible"
+                  custom={i}
+                  whileHover={{
+                    y: -2,
+                    boxShadow: `0 8px 24px ${bandBg}, 0 0 0 1px ${colors.fire[row.band].border}`,
+                  }}
+                  transition={transitions.base}
                   style={{
+                    position: 'relative',
+                    overflow: 'hidden',
+                    background: `linear-gradient(135deg, ${colors.bg.raised} 0%, ${colors.bg.surface} 100%)`,
+                    border: `1px solid ${colors.border.subtle}`,
+                    borderLeft: `3px solid ${bandColor}`,
+                    borderRadius: 10,
+                    padding: '14px 16px',
                     display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
+                    flexDirection: 'column',
+                    gap: 8,
+                    cursor: 'pointer',
                   }}
                 >
-                  <StatusBadge
-                    band={row.band}
-                    size="sm"
-                    pulse={row.band === 'critical' && row.count > 0}
+                  {/* Ambient colored glow in the corner */}
+                  <div
+                    aria-hidden
+                    style={{
+                      position: 'absolute',
+                      top: -40,
+                      right: -40,
+                      width: 120,
+                      height: 120,
+                      background: `radial-gradient(circle, ${bandBg} 0%, transparent 70%)`,
+                      pointerEvents: 'none',
+                      opacity: 0.8,
+                    }}
                   />
-                  <motion.span
-                    className="mono"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.1 + i * 0.05 }}
-                    style={{ fontSize: 20, fontWeight: 500, color: colors.text.primary }}
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      position: 'relative',
+                    }}
                   >
-                    {row.count.toLocaleString()}
-                  </motion.span>
-                </div>
-                <div style={{ fontSize: 11, color: colors.text.tertiary }}>
-                  {row.divisions > 0
-                    ? `across ${row.divisions} / 87 divisions`
-                    : '— no data —'}
-                </div>
-              </motion.div>
-            ))}
+                    <StatusBadge
+                      band={row.band}
+                      size="sm"
+                      pulse={row.band === 'critical' && row.count > 0}
+                    />
+                    <motion.span
+                      className="mono"
+                      initial={{ opacity: 0, scale: 0.7 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        delay: 0.2 + i * 0.08,
+                        type: 'spring',
+                        stiffness: 260,
+                        damping: 20,
+                      }}
+                      style={{
+                        fontSize: 28,
+                        fontWeight: 600,
+                        color: bandColor,
+                        lineHeight: 1,
+                        textShadow: `0 0 20px ${bandBg}`,
+                      }}
+                    >
+                      <CountUp value={row.count} duration={1.4} />
+                    </motion.span>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: colors.text.tertiary,
+                      position: 'relative',
+                    }}
+                  >
+                    {row.divisions > 0
+                      ? `across ${row.divisions} / 87 divisions`
+                      : '— no data —'}
+                  </div>
+                </motion.div>
+              );
+            })}
         </SidebarSection>
 
         <SidebarSection label="Model confidence">
-          <div
+          <motion.div
+            whileHover={{
+              borderColor: 'rgba(129, 201, 149, 0.42)',
+              boxShadow: '0 0 24px rgba(129, 201, 149, 0.18)',
+            }}
+            transition={transitions.base}
             style={{
-              background: colors.bg.raised,
+              background: `linear-gradient(135deg, ${colors.bg.raised} 0%, ${colors.bg.surface} 100%)`,
               border: `1px solid ${colors.border.subtle}`,
-              borderRadius: 8,
-              padding: 14,
+              borderRadius: 12,
+              padding: 18,
               textAlign: 'center',
+              position: 'relative',
+              overflow: 'hidden',
             }}
           >
-            <div
-              className="mono"
-              style={{ fontSize: 28, fontWeight: 500, color: colors.text.primary }}
-            >
-              22.8<span style={{ fontSize: 14, color: colors.text.tertiary }}>%</span>
-            </div>
-            <div className="micro" style={{ marginTop: 4 }}>
+            <ConfidenceRing value={22.8} />
+            <div className="micro" style={{ marginTop: 10 }}>
               pixel-level recall
             </div>
             <div
@@ -267,12 +319,12 @@ export default function LiveMapTab() {
                 display: 'flex',
                 justifyContent: 'center',
                 gap: 4,
-                marginTop: 10,
+                marginTop: 12,
               }}
             >
               <ConfidenceTier tier="HIGH" size="sm" />
             </div>
-          </div>
+          </motion.div>
         </SidebarSection>
 
         <SidebarSection label="Layers">
@@ -353,10 +405,76 @@ export default function LiveMapTab() {
           cells={displayedCells}
           viirs={displayedFires}
           beats={showBeats ? beats : null}
-          onCellClick={setSelected}
+          onCellClick={(cell) => {
+            setSelected(cell);
+            const isCritical =
+              typeof cell.band === 'string' && cell.band.toUpperCase() === 'CRITICAL';
+            playCue(isCritical ? 'alert' : 'open');
+            hapticTap(isCritical ? [20, 40, 20] : 15);
+          }}
         />
-        <MapFlyout cell={selected} onClose={() => setSelected(null)} />
+        <FloatingParticles count={36} />
+        <MapFlyout
+          cell={selected}
+          onClose={() => {
+            setSelected(null);
+            playCue('close');
+          }}
+        />
       </section>
+    </div>
+  );
+}
+
+function ConfidenceRing({ value }: { value: number }) {
+  // value is 0-100
+  const r = 34;
+  const c = 2 * Math.PI * r;
+  const pct = Math.max(0, Math.min(100, value)) / 100;
+  return (
+    <div style={{ position: 'relative', width: 84, height: 84, margin: '0 auto' }}>
+      <svg width={84} height={84} viewBox="0 0 84 84">
+        {/* Track */}
+        <circle
+          cx={42}
+          cy={42}
+          r={r}
+          fill="none"
+          stroke={colors.border.subtle}
+          strokeWidth={6}
+        />
+        {/* Progress arc — animated from 0 to pct */}
+        <motion.circle
+          cx={42}
+          cy={42}
+          r={r}
+          fill="none"
+          stroke={colors.fire.confirmed.fg}
+          strokeWidth={6}
+          strokeLinecap="round"
+          transform="rotate(-90 42 42)"
+          strokeDasharray={c}
+          initial={{ strokeDashoffset: c }}
+          animate={{ strokeDashoffset: c * (1 - pct) }}
+          transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+          style={{ filter: `drop-shadow(0 0 6px ${colors.fire.confirmed.bg})` }}
+        />
+      </svg>
+      <div
+        className="mono"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 22,
+          fontWeight: 600,
+          color: colors.text.primary,
+        }}
+      >
+        <CountUp value={value} duration={1.4} decimals={1} suffix="%" />
+      </div>
     </div>
   );
 }

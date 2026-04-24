@@ -82,9 +82,24 @@ export interface ViirsFire {
   lat: number;
   lon: number;
   date: string;
+  time?: string;
   brightness?: number;
   confidence?: string;
+  satellite?: string;
+  source?: string;
+  division?: string;
+  range?: string;
+  beat?: string;
   frp?: number;
+}
+
+export interface ViirsResponse {
+  fires: ViirsFire[];
+  n_fires?: number;
+  n_before_clip?: number;
+  n_clipped?: number;
+  date_range?: { from?: string; to?: string };
+  latest_date?: string;
 }
 
 async function getJSON<T>(path: string, signal?: AbortSignal): Promise<T> {
@@ -115,7 +130,7 @@ export const api = {
     const qs = new URLSearchParams();
     if (from) qs.set('from', from);
     if (to) qs.set('to', to);
-    return getJSON<ViirsFire[]>(`/api/viirs-fires?${qs.toString()}`, signal);
+    return getJSON<ViirsResponse>(`/api/viirs-fires?${qs.toString()}`, signal);
   },
 
   healthz: (signal?: AbortSignal) =>

@@ -1,13 +1,33 @@
-import { useState } from 'react';
-import { Calendar, Download } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Calendar, Download, Loader2 } from 'lucide-react';
 import { motion, fadeUp, transitions, useAccessibleVariants } from '../lib/motion';
 import { colors } from '../designTokens';
 import StatusBadge from '../components/StatusBadge';
+import CountUp from '../components/CountUp';
+
+import { api } from '../lib/api';
 
 export default function ViirsTab() {
   const [from, setFrom] = useState('2026-04-17');
   const [to, setTo] = useState('2026-04-24');
+  const [firesCount, setFiresCount] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
   const item = useAccessibleVariants(fadeUp);
+
+  const loadFires = async () => {
+    setLoading(true);
+    try {
+      const resp = await api.viirsFires(from, to);
+      setFiresCount(resp.n_fires ?? resp.fires?.length ?? 0);
+    } catch {
+      setFiresCount(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Auto-load on first mount
+  useEffect(() => { loadFires(); /* eslint-disable-next-line */ }, []);
 
   return (
     <div
@@ -55,6 +75,8 @@ export default function ViirsTab() {
           <DateField label="From" value={from} onChange={setFrom} />
           <DateField label="To" value={to} onChange={setTo} />
           <motion.button
+            onClick={loadFires}
+            disabled={loading}
             whileHover={{ backgroundColor: colors.accent.hover }}
             whileTap={{ scale: 0.97 }}
             transition={transitions.fast}
@@ -66,13 +88,24 @@ export default function ViirsTab() {
               fontSize: 13,
               fontWeight: 500,
               letterSpacing: '0.01em',
-              cursor: 'pointer',
+              cursor: loading ? 'wait' : 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: 6,
+              opacity: loading ? 0.6 : 1,
             }}
           >
-            <Calendar size={14} />
+            {loading ? (
+              <motion.span
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
+                style={{ display: 'inline-flex' }}
+              >
+                <Loader2 size={14} />
+              </motion.span>
+            ) : (
+              <Calendar size={14} />
+            )}
             Load detections
           </motion.button>
           <motion.button
@@ -112,15 +145,30 @@ export default function ViirsTab() {
             animate={{ scale: 1, opacity: 1 }}
             transition={transitions.slow}
           >
-            <div className="mono" style={{ fontSize: 40, fontWeight: 500, color: colors.text.primary }}>
-              297
+            <div
+              className="mono"
+              style={{
+                fontSize: 56,
+                fontWeight: 600,
+                color: colors.fire.confirmed.fg,
+                textShadow: `0 0 24px ${colors.fire.confirmed.bg}`,
+                lineHeight: 1,
+                letterSpacing: '-0.02em',
+              }}
+            >
+              {firesCount === null ? '—' : <CountUp value={firesCount} duration={1.6} />}
             </div>
-            <div className="micro" style={{ marginTop: 4 }}>forest-clipped fire pixels</div>
+            <div className="micro" style={{ marginTop: 10 }}>forest-clipped fire pixels</div>
             <div style={{ marginTop: 14, color: colors.text.tertiary, fontSize: 12 }}>
-              (placeholder) — connect <span className="mono">GET /api/viirs-fires?from=&amp;to=</span> to show map + table
+              FIRMS VIIRS NRT · spatial-joined to MP beat polygons (~75% of raw pixels removed)
             </div>
             <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
-              <StatusBadge band="confirmed" label="CONFIRMED" count={297} size="sm" />
+              <StatusBadge
+                band="confirmed"
+                label="CONFIRMED"
+                count={firesCount ?? undefined}
+                size="sm"
+              />
               <StatusBadge band="info" label="FOREST-CLIPPED" size="sm" />
             </div>
           </motion.div>

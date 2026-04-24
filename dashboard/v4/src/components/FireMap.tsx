@@ -1,7 +1,7 @@
 // FireMap — MapLibre basemap (dark) + deck.gl layers for v17 ignition cells and
 // FIRMS VIIRS fires. Uses WebGL2 via deck.gl for fast rendering of 2k+ cells.
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import { Deck } from 'deck.gl';
 import { ScatterplotLayer, GeoJsonLayer } from '@deck.gl/layers';
@@ -52,6 +52,20 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
   const mapRef = useRef<maplibregl.Map | null>(null);
   const deckRef = useRef<Deck | null>(null);
 
+  // Animation tick — drives the pulsing rings on CRITICAL markers.
+  // Cycles 0 → 1 every 1.6 s (rebuilt every 50 ms → ~32 rebuilds/cycle).
+  const [pulse, setPulse] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPulse((p) => (p + 0.03) % 1);
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
+  const criticalCells = useMemo(
+    () => cells.filter((c) => c.band === 'CRITICAL'),
+    [cells],
+  );
+
   // Build deck.gl layer list (memoized — rebuilt only when data changes)
   const layers: Layer[] = useMemo(
     () => [
@@ -72,6 +86,30 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
             }),
           ]
         : []),
+      // Animated pulse ring around CRITICAL cells — expanding + fading
+      new ScatterplotLayer<V17Cell>({
+        id: 'critical-pulse',
+        data: criticalCells,
+        pickable: false,
+        stroked: true,
+        filled: false,
+        radiusUnits: 'meters',
+        radiusMinPixels: 2,
+        radiusMaxPixels: 40,
+        lineWidthUnits: 'pixels',
+        lineWidthMinPixels: 1,
+        getPosition: (d) => [d.lon, d.lat, 0],
+        getRadius: 4000 + pulse * 12000,
+        getFillColor: [0, 0, 0, 0],
+        getLineColor: [239, 68, 68, Math.round((1 - pulse) * 180)],
+        getLineWidth: 1.5 + (1 - pulse) * 2,
+        updateTriggers: {
+          getRadius: pulse,
+          getLineColor: pulse,
+          getLineWidth: pulse,
+          data: criticalCells.length,
+        },
+      }),
       // v17 ignition cells — scatterplot circles
       new ScatterplotLayer<V17Cell>({
         id: 'ignition-cells',
@@ -117,7 +155,7 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
         lineWidthMinPixels: 1,
       }),
     ],
-    [cells, viirs, beats, onCellClick],
+    [cells, criticalCells, viirs, beats, pulse, onCellClick],
   );
 
   // Mount MapLibre + Deck once
