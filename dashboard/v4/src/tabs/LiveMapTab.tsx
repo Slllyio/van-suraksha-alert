@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Layers, Flame, Target, Crosshair, Loader2, Calendar } from 'lucide-react';
+import { Layers, Target, Crosshair, Loader2, Calendar, Eye, EyeOff, Filter } from 'lucide-react';
 import { motion, fadeUp, transitions } from '../lib/motion';
 import { colors } from '../designTokens';
 import { Sidebar, SidebarSection } from '../components/Sidebar';
@@ -18,6 +18,8 @@ interface RiskCounts {
   watch: number;
 }
 
+type BandKey = 'critical' | 'alert' | 'watch';
+
 function daysSince(iso: string | undefined): number | null {
   if (!iso) return null;
   const d = new Date(iso);
@@ -35,10 +37,25 @@ export default function LiveMapTab() {
   const [predictionDate, setPredictionDate] = useState<string | undefined>();
 
   // Layer toggles
-  const [showIgnition, setShowIgnition] = useState(true);
   const [showFires, setShowFires] = useState(true);
   const [showBeats, setShowBeats] = useState(false);
   const [showDiv] = useState(true);
+  // Per-band visibility — each of CRITICAL / ALERT / WATCH independent.
+  // Click a sidebar risk card (or its checkbox) to toggle that band on/off.
+  const [visibleBands, setVisibleBands] = useState<Record<BandKey, boolean>>({
+    critical: true,
+    alert: true,
+    watch: true,
+  });
+  const toggleBand = (k: BandKey) =>
+    setVisibleBands((prev) => ({ ...prev, [k]: !prev[k] }));
+  // Solo: click a band alone (meta/ctrl-click) to show only that band
+  const soloBand = (k: BandKey) =>
+    setVisibleBands({
+      critical: k === 'critical',
+      alert: k === 'alert',
+      watch: k === 'watch',
+    });
 
   // Lazy-loaded beat polygons (179 MB — only fetch when user turns the toggle on)
   const [beats, setBeats] = useState<GeoJSONFeatureCollection | null>(null);
@@ -125,9 +142,16 @@ export default function LiveMapTab() {
     { band: 'watch',    count: counts.watch,    divisions: divisionCount },
   ];
 
-  // Filter layer data based on toggles
-  const displayedCells = showIgnition ? cells : [];
+  // Filter layer data based on per-band visibility + FIRMS toggle
+  const displayedCells = cells.filter((c) => {
+    const b = (c.band || '').toUpperCase();
+    if (b === 'CRITICAL') return visibleBands.critical;
+    if (b === 'ALERT')    return visibleBands.alert;
+    if (b === 'WATCH')    return visibleBands.watch;
+    return true;
+  });
   const displayedFires = showFires ? viirs : [];
+  const anyBandOff = !(visibleBands.critical && visibleBands.alert && visibleBands.watch);
 
   const ageDays = daysSince(predictionDate);
   const stale = ageDays != null && ageDays > 1;
@@ -203,8 +227,9 @@ export default function LiveMapTab() {
             rows.map((row, i) => {
               const bandColor = colors.fire[row.band].fg;
               const bandBg = colors.fire[row.band].bg;
+              const visible = visibleBands[row.band];
               return (
-                <motion.div
+                <motion.button
                   key={row.band}
                   variants={fadeUp}
                   initial="hidden"
@@ -214,7 +239,15 @@ export default function LiveMapTab() {
                     y: -2,
                     boxShadow: `0 8px 24px ${bandBg}, 0 0 0 1px ${colors.fire[row.band].border}`,
                   }}
+                  whileTap={{ scale: 0.98 }}
                   transition={transitions.base}
+                  onClick={(e) =>
+                    e.shiftKey || e.metaKey || e.ctrlKey
+                      ? soloBand(row.band)
+                      : toggleBand(row.band)
+                  }
+                  title={`Click to ${visible ? 'hide' : 'show'} ${row.band.toUpperCase()} markers. Shift-click to show ONLY ${row.band.toUpperCase()}.`}
+                  aria-pressed={visible}
                   style={{
                     position: 'relative',
                     overflow: 'hidden',
@@ -227,6 +260,11 @@ export default function LiveMapTab() {
                     flexDirection: 'column',
                     gap: 8,
                     cursor: 'pointer',
+                    textAlign: 'left',
+                    color: 'inherit',
+                    font: 'inherit',
+                    opacity: visible ? 1 : 0.42,
+                    filter: visible ? 'none' : 'grayscale(0.4)',
                   }}
                 >
                   {/* Ambient colored glow in the corner */}
@@ -240,7 +278,7 @@ export default function LiveMapTab() {
                       height: 120,
                       background: `radial-gradient(circle, ${bandBg} 0%, transparent 70%)`,
                       pointerEvents: 'none',
-                      opacity: 0.8,
+                      opacity: visible ? 0.8 : 0.25,
                     }}
                   />
                   <div
@@ -251,11 +289,22 @@ export default function LiveMapTab() {
                       position: 'relative',
                     }}
                   >
-                    <StatusBadge
-                      band={row.band}
-                      size="sm"
-                      pulse={row.band === 'critical' && row.count > 0}
-                    />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <StatusBadge
+                        band={row.band}
+                        size="sm"
+                        pulse={row.band === 'critical' && row.count > 0 && visible}
+                      />
+                      {visible ? (
+                        <Eye size={12} color={bandColor} aria-label="visible on map" />
+                      ) : (
+                        <EyeOff
+                          size={12}
+                          color={colors.text.tertiary}
+                          aria-label="hidden from map"
+                        />
+                      )}
+                    </div>
                     <motion.span
                       className="mono"
                       initial={{ opacity: 0, scale: 0.7 }}
@@ -288,9 +337,37 @@ export default function LiveMapTab() {
                       ? `across ${row.divisions} / 87 divisions`
                       : '— no data —'}
                   </div>
-                </motion.div>
+                </motion.button>
               );
             })}
+          {anyBandOff && !loading && !error && (
+            <motion.button
+              variants={fadeUp}
+              whileHover={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
+              whileTap={{ scale: 0.97 }}
+              transition={transitions.fast}
+              onClick={() =>
+                setVisibleBands({ critical: true, alert: true, watch: true })
+              }
+              style={{
+                marginTop: 4,
+                padding: '8px 10px',
+                borderRadius: 8,
+                background: 'transparent',
+                border: `1px dashed ${colors.border.base}`,
+                color: colors.accent.base,
+                fontSize: 11,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 6,
+              }}
+            >
+              <Filter size={12} />
+              Show all bands
+            </motion.button>
+          )}
         </SidebarSection>
 
         <SidebarSection label="Model confidence">
@@ -327,14 +404,8 @@ export default function LiveMapTab() {
           </motion.div>
         </SidebarSection>
 
-        <SidebarSection label="Layers">
+        <SidebarSection label="Other layers">
           {[
-            {
-              icon: Flame,
-              label: 'Predicted ignitions',
-              checked: showIgnition,
-              onChange: setShowIgnition,
-            },
             {
               icon: Target,
               label: 'Active fires (FIRMS)',

@@ -41,9 +41,10 @@ function bandColor(band: string): [number, number, number, number] {
 }
 
 function bandRadius(band: string, risk?: number): number {
-  // Base radius by band + subtle risk-score weighting
-  const base = band === 'CRITICAL' ? 6000 : band === 'ALERT' ? 4500 : 3200;
-  const weight = typeof risk === 'number' ? Math.max(0.7, Math.min(1.4, risk * 1.2)) : 1;
+  // Base radius by band + subtle risk-score weighting. Kept small so dense
+  // clusters read as individual markers, not one blob.
+  const base = band === 'CRITICAL' ? 2200 : band === 'ALERT' ? 1600 : 1200;
+  const weight = typeof risk === 'number' ? Math.max(0.8, Math.min(1.2, risk * 1.1)) : 1;
   return base * weight;
 }
 
@@ -94,15 +95,15 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
         stroked: true,
         filled: false,
         radiusUnits: 'meters',
-        radiusMinPixels: 2,
-        radiusMaxPixels: 40,
+        radiusMinPixels: 3,
+        radiusMaxPixels: 16,
         lineWidthUnits: 'pixels',
-        lineWidthMinPixels: 1,
+        lineWidthMinPixels: 0.5,
         getPosition: (d) => [d.lon, d.lat, 0],
-        getRadius: 4000 + pulse * 12000,
+        getRadius: 2200 + pulse * 4500,
         getFillColor: [0, 0, 0, 0],
-        getLineColor: [239, 68, 68, Math.round((1 - pulse) * 180)],
-        getLineWidth: 1.5 + (1 - pulse) * 2,
+        getLineColor: [239, 68, 68, Math.round((1 - pulse) * 150)],
+        getLineWidth: 1 + (1 - pulse) * 1.2,
         updateTriggers: {
           getRadius: pulse,
           getLineColor: pulse,
@@ -119,9 +120,9 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
         filled: true,
         radiusUnits: 'meters',
         lineWidthUnits: 'pixels',
-        radiusMinPixels: 4,
-        radiusMaxPixels: 28,
-        lineWidthMinPixels: 1,
+        radiusMinPixels: 2.5,
+        radiusMaxPixels: 8,
+        lineWidthMinPixels: 0.5,
         getPosition: (d) => [d.lon, d.lat, 0],
         getRadius: (d) => bandRadius(d.band, d.risk_score),
         getFillColor: (d) => bandColor(d.band),
@@ -146,13 +147,13 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
         stroked: true,
         filled: true,
         radiusUnits: 'meters',
-        radiusMinPixels: 3,
-        radiusMaxPixels: 10,
+        radiusMinPixels: 2,
+        radiusMaxPixels: 5,
         getPosition: (d) => [d.lon, d.lat, 0],
-        getRadius: 1600,
-        getFillColor: [34, 197, 94, 180],
+        getRadius: 900,
+        getFillColor: [34, 197, 94, 210],
         getLineColor: [34, 197, 94, 255],
-        lineWidthMinPixels: 1,
+        lineWidthMinPixels: 0.5,
       }),
     ],
     [cells, criticalCells, viirs, beats, pulse, onCellClick],

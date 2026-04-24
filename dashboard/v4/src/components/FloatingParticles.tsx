@@ -15,7 +15,7 @@ interface Particle {
   hue: number; // 0–20 (red) for ember; 200–220 for cool ash
 }
 
-export default function FloatingParticles({ count = 32 }: { count?: number }) {
+export default function FloatingParticles({ count = 14 }: { count?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const reduce = useReducedMotion();
 
@@ -36,15 +36,16 @@ export default function FloatingParticles({ count = 32 }: { count?: number }) {
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
-    // Initialize particles — mix of embers + ash
+    // Initialize particles — subtle embers + ash, low alpha + slow drift so
+    // they read as atmosphere, not foreground noise.
     const particles: Particle[] = Array.from({ length: count }, () => ({
       x: Math.random() * canvas.clientWidth,
       y: Math.random() * canvas.clientHeight,
-      vx: (Math.random() - 0.5) * 0.2,
-      vy: -0.15 - Math.random() * 0.25, // drift upward
-      size: 0.5 + Math.random() * 1.8,
-      alpha: 0.15 + Math.random() * 0.35,
-      hue: Math.random() < 0.6 ? 14 + Math.random() * 14 : 210 + Math.random() * 20,
+      vx: (Math.random() - 0.5) * 0.08,
+      vy: -0.05 - Math.random() * 0.1, // gentle upward
+      size: 0.3 + Math.random() * 1.0,
+      alpha: 0.06 + Math.random() * 0.12,
+      hue: Math.random() < 0.5 ? 14 + Math.random() * 14 : 210 + Math.random() * 20,
     }));
 
     let raf = 0;
@@ -66,12 +67,9 @@ export default function FloatingParticles({ count = 32 }: { count?: number }) {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 90%, 65%, ${p.alpha})`;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = `hsla(${p.hue}, 90%, 60%, ${p.alpha * 1.2})`;
+        ctx.fillStyle = `hsla(${p.hue}, 70%, 60%, ${p.alpha})`;
         ctx.fill();
       }
-      ctx.shadowBlur = 0;
       if (!reduce) raf = requestAnimationFrame(tick);
     };
 
@@ -96,8 +94,8 @@ export default function FloatingParticles({ count = 32 }: { count?: number }) {
         position: 'absolute',
         inset: 0,
         pointerEvents: 'none',
-        mixBlendMode: 'screen',
         zIndex: 2,
+        opacity: 0.8,
       }}
     />
   );
