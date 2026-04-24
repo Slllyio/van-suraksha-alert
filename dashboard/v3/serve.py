@@ -984,14 +984,34 @@ class PortalHandler(SimpleHTTPRequestHandler):
         else:
             super().do_GET()
 
+    # Hard upper bound on accepted POST body size. 64 KiB is plenty for
+    # every legitimate field-response payload (< 1 KB in practice); anything
+    # larger is refused with 413 to prevent memory-exhaustion DoS.
+    _MAX_POST_BYTES = 64 * 1024
+
     def do_POST(self):
         parsed = urlparse(self.path)
         path = parsed.path.rstrip("/")
-        length = int(self.headers.get("Content-Length", "0") or 0)
+        length_hdr = self.headers.get("Content-Length", "0") or "0"
+        try:
+            length = int(length_hdr)
+        except ValueError:
+            length = -1
+        if length < 0 or length > self._MAX_POST_BYTES:
+            if path.startswith("/api/v2/"):
+                self._send_v2_error(
+                    "payload_too_large",
+                    f"request body > {self._MAX_POST_BYTES} bytes",
+                    status=413,
+                )
+            else:
+                self.send_error(413, "payload too large")
+            return
+
         raw = self.rfile.read(length) if length > 0 else b"{}"
         try:
             body = json.loads(raw.decode("utf-8") or "{}")
-        except json.JSONDecodeError:
+        except (json.JSONDecodeError, UnicodeDecodeError):
             if path.startswith("/api/v2/"):
                 self._send_v2_error(
                     "invalid_json", "request body is not valid JSON", status=400,
@@ -1028,7 +1048,11 @@ class PortalHandler(SimpleHTTPRequestHandler):
                 self.send_header(
                     "Location", f"/api/v2/field-responses/{resp_id}",
                 )
-                self.send_header("Access-Control-Allow-Origin", "*")
+                # Mutating endpoint — reflect localhost only (no wildcard).
+                reflected = self._cors_origin_for_mutation()
+                if reflected:
+                    self.send_header("Access-Control-Allow-Origin", reflected)
+                    self.send_header("Vary", "Origin")
                 self.send_header("Content-Length", len(body_json))
                 self.end_headers()
                 self.wfile.write(body_json)
@@ -1040,11 +1064,46 @@ class PortalHandler(SimpleHTTPRequestHandler):
             else:
                 self.send_error(404, "unknown POST endpoint")
 
+    # Localhost origin pattern — reflected on preflight + mutating POSTs only.
+    # Reads stay open (wildcard) so curl / SDK usage isn't friction.
+    _LOCALHOST_ORIGIN_RE = re.compile(
+        r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
+    )
+
+    def _cors_origin_for_mutation(self) -> str:
+        """Return an allowed origin for mutating requests, or empty string
+        (which causes the browser to block) for non-local origins."""
+        origin = self.headers.get("Origin", "")
+        if self._LOCALHOST_ORIGIN_RE.match(origin):
+            return origin
+        return ""
+
     def do_OPTIONS(self):
+        # Preflight: wildcard only when the preflighted method is safe (GET).
+        # Mutating methods (POST) require the origin to match the localhost
+        # allowlist; otherwise we omit the CORS header entirely so the
+        # browser rejects the actual request.
+        requested_method = (
+            self.headers.get("Access-Control-Request-Method", "GET")
+            .strip()
+            .upper()
+        )
+        is_mutation = requested_method in {"POST", "PUT", "PATCH", "DELETE"}
+        reflected = self._cors_origin_for_mutation()
+
         self.send_response(204)
-        self.send_header("Access-Control-Allow-Origin", "*")
+        if is_mutation:
+            if reflected:
+                self.send_header("Access-Control-Allow-Origin", reflected)
+                self.send_header("Vary", "Origin")
+            # else: deliberately NO Access-Control-Allow-Origin header —
+            # the browser will reject the subsequent POST.
+        else:
+            # Safe-method preflight: wildcard is fine for public reads.
+            self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Max-Age", "600")
         self.end_headers()
 
     def _serve_file(self, filepath: Path, content_type: str):
