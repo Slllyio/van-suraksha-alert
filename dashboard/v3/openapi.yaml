@@ -235,10 +235,50 @@ paths:
                           The live server emits a string, not a `{from, to}` object.
                         example: "2026-04-17 to 2026-04-24"
 
+  /api/v2/division-boundaries:
+    get:
+      summary: 87 MP forest-division MultiPolygons (dissolved from beats)
+      description: |
+        Compact state-level polygons, 87 features. Solves the 179 MB
+        payload concern flagged by the architect review. Two resolutions
+        available via the `?resolution` query parameter.
+      parameters:
+        - in: query
+          name: resolution
+          description: |
+            `ultra` (default, ~8 MB, tolerance ≈ 1 km) for state overviews;
+            `high` (~17 MB, tolerance ≈ 111 m) for zoom-in detail.
+          schema:
+            type: string
+            enum: [ultra, high]
+            default: ultra
+      responses:
+        "200":
+          description: Enveloped GeoJSON FeatureCollection
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: "#/components/schemas/GeoJSONFeatureCollection" }
+                  meta:
+                    type: object
+                    properties:
+                      resolution: { type: string, enum: [ultra, high] }
+                      n_features: { type: integer }
+                      source_bytes: { type: integer }
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+
   /api/v2/beats-boundary:
     get:
       summary: 8,973 MP forest-beat MultiPolygons
-      description: "Large (~179 MB). Fetch once and cache."
+      description: |
+        **Large (~179 MB).** Prefer `/api/v2/division-boundaries` for
+        state-level rendering — this endpoint is retained for future
+        zoom-in / beat-level annotation workflows.
       responses:
         "200":
           description: Enveloped GeoJSON FeatureCollection

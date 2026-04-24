@@ -249,4 +249,16 @@ export const api = {
 
   beatsBoundary: (signal?: AbortSignal) =>
     getData<GeoJSONFeatureCollection>('/api/v2/beats-boundary', signal),
+
+  /** Dissolved MP division polygons. Much smaller (~8 MB ultra, ~17 MB high)
+   *  than /api/v2/beats-boundary (~187 MB). Default resolution is `ultra` —
+   *  good for state-level overview at zoom 5-8. */
+  divisionBoundaries: (
+    resolution: 'ultra' | 'high' = 'ultra',
+    signal?: AbortSignal,
+  ) =>
+    getData<GeoJSONFeatureCollection>(
+      `/api/v2/division-boundaries?resolution=${resolution}`,
+      signal,
+    ),
 };

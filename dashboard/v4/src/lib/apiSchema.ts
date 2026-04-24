@@ -388,6 +388,63 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/division-boundaries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 87 MP forest-division MultiPolygons (dissolved from beats)
+         * @description Compact state-level polygons, 87 features. Solves the 179 MB
+         *     payload concern flagged by the architect review. Two resolutions
+         *     available via the `?resolution` query parameter.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description `ultra` (default, ~8 MB, tolerance ≈ 1 km) for state overviews;
+                     *     `high` (~17 MB, tolerance ≈ 111 m) for zoom-in detail.
+                     */
+                    resolution?: "ultra" | "high";
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Enveloped GeoJSON FeatureCollection */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data?: components["schemas"]["GeoJSONFeatureCollection"];
+                            meta?: {
+                                /** @enum {string} */
+                                resolution?: "ultra" | "high";
+                                n_features?: number;
+                                source_bytes?: number;
+                            };
+                        };
+                    };
+                };
+                400: components["responses"]["ErrorResponse"];
+                404: components["responses"]["ErrorResponse"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/beats-boundary": {
         parameters: {
             query?: never;
@@ -397,7 +454,9 @@ export interface paths {
         };
         /**
          * 8,973 MP forest-beat MultiPolygons
-         * @description Large (~179 MB). Fetch once and cache.
+         * @description **Large (~179 MB).** Prefer `/api/v2/division-boundaries` for
+         *     state-level rendering — this endpoint is retained for future
+         *     zoom-in / beat-level annotation workflows.
          */
         get: {
             parameters: {

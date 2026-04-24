@@ -86,3 +86,7 @@ tests_output.txt
 failures.txt
 fail2.txt
 remaining_failures.txt
+
+# Division-dissolve intermediate — 79 MB, can be regenerated from
+# mp_beats_wgs84.geojson via scripts/build_division_boundaries.py.
+data/aoi/mp_divisions_dissolved.geojson

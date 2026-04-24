@@ -981,6 +981,12 @@ class PortalHandler(SimpleHTTPRequestHandler):
                 self._send_v2_error(
                     "not_found", "beats geojson not present on disk", status=404,
                 )
+        elif path == "/api/v2/division-boundaries":
+            # Dissolved + simplified MP division polygons. Resolutions:
+            #   ?resolution=ultra  (default, ~8 MB, tolerance 0.01° ≈ 1 km)
+            #   ?resolution=high   (~17 MB, tolerance 0.001° ≈ 111 m)
+            # Both files are pre-baked by scripts/build_division_boundaries.py.
+            self._serve_v2_division_boundaries(qs)
         else:
             super().do_GET()
 
@@ -1229,6 +1235,52 @@ class PortalHandler(SimpleHTTPRequestHandler):
         if next_cursor:
             links["next"] = f"/api/v2/ignition-v17?limit={limit}&cursor={next_cursor}"
         self._send_v2(page, meta=meta, links=links)
+
+    def _serve_v2_division_boundaries(self, qs) -> None:
+        """Serve a pre-baked simplified-MP-divisions GeoJSON.
+
+        Two resolutions available. Both are cached ~87-feature FeatureCollections
+        dissolved from the 8,973-feature `mp_beats_wgs84.geojson` source; see
+        `scripts/build_division_boundaries.py`. Default = ``ultra`` (~8 MB);
+        ``high`` (~17 MB) preserves more vertex detail for zoom-in.
+        """
+        resolution = (qs.get("resolution", ["ultra"]) or ["ultra"])[0]
+        files = {
+            "ultra": ROOT / "data" / "aoi" / "mp_divisions_ultra.geojson",
+            "high":  ROOT / "data" / "aoi" / "mp_divisions_simplified.geojson",
+        }
+        path = files.get(resolution)
+        if path is None:
+            self._send_v2_error(
+                "invalid_resolution",
+                f"resolution must be one of {sorted(files)}; got {resolution!r}",
+                status=400,
+            )
+            return
+        if not path.exists():
+            self._send_v2_error(
+                "not_found",
+                f"division boundary file missing: {path.name}. "
+                "Run `python scripts/build_division_boundaries.py` to regenerate.",
+                status=404,
+            )
+            return
+        try:
+            fc = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            self._send_v2_error(
+                "boundaries_unreadable", str(exc), status=500,
+            )
+            return
+        feats = fc.get("features", [])
+        self._send_v2(
+            fc,
+            meta={
+                "resolution": resolution,
+                "n_features": len(feats),
+                "source_bytes": path.stat().st_size,
+            },
+        )
 
     def _serve_v2_viirs(self, date_from, date_to) -> None:
         payload = _build_viirs_fires(date_from=date_from, date_to=date_to)
