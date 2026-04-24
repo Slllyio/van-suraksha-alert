@@ -15,9 +15,10 @@ import os
 import re
 import threading
 import time
+import uuid
 from collections import deque
 from collections import defaultdict
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -136,6 +137,42 @@ _RATE_LIMITS = {
     "read": (120, 60.0),     # 120 req per 60 s (~2 req/s per IP)
     "mutate": (12, 60.0),    # 12 req per 60 s (1 field response per 5 s)
 }
+
+
+# ---------------------------------------------------------------------------
+# Structured JSON access log — one line per HTTP request, JSON for ingest by
+# log aggregators (Grafana Loki, CloudWatch, Datadog).
+# ---------------------------------------------------------------------------
+
+
+_ACCESS_LOG = logging.getLogger("v3.access")
+if not _ACCESS_LOG.handlers:
+    _ACCESS_LOG.addHandler(logging.NullHandler())
+
+
+def _new_request_id() -> str:
+    """Short (12-char) unique ID to thread through request lifecycle."""
+    return uuid.uuid4().hex[:12]
+
+
+def _log_access(entry: dict) -> None:
+    """Emit a single JSON-formatted access log line. Defaults timestamp
+    + level if the caller didn't set them."""
+    entry.setdefault(
+        "ts",
+        datetime.now(timezone.utc)
+        .isoformat(timespec="milliseconds")
+        .replace("+00:00", "Z"),
+    )
+    entry.setdefault("level", "info")
+    try:
+        line = json.dumps(entry, default=str, separators=(",", ":"))
+    except (TypeError, ValueError):
+        line = json.dumps({"level": "error", "msg": "log_serialize_failed"})
+    _ACCESS_LOG.info(line)
+    # Always mirror to stdout so `python serve.py > log.out` captures it
+    # even when basicConfig is not set.
+    print(line, flush=True)
 
 
 def _load_v17_predictions(date_str: str | None = None) -> dict:
@@ -909,6 +946,47 @@ def _build_healthz() -> dict:
 
 
 class PortalHandler(SimpleHTTPRequestHandler):
+    # Per-request fields populated by _begin_request / consumed by _end_request.
+    request_id: str
+    _request_start: float
+    _request_path: str
+
+    def _begin_request(self, method: str, path: str) -> None:
+        self.request_id = _new_request_id()
+        self._request_start = time.monotonic()
+        self._request_path = path
+        self._request_method = method
+
+    def _end_request(self, method: str, status: int, extra: dict | None = None) -> None:
+        try:
+            duration_ms = (time.monotonic() - self._request_start) * 1000.0
+        except AttributeError:
+            duration_ms = -1.0
+        entry = {
+            "kind": "access",
+            "request_id": getattr(self, "request_id", "-"),
+            "method": method,
+            "path": getattr(self, "_request_path", "-"),
+            "status": status,
+            "duration_ms": round(duration_ms, 1),
+            "ip": self._client_ip(),
+            "user_agent": (self.headers.get("User-Agent") or "")[:160],
+        }
+        if extra:
+            entry.update(extra)
+        _log_access(entry)
+
+    # Hook send_response so every outgoing HTTP response carries the
+    # X-Request-Id header AND updates the per-request status we log at end.
+    _response_status: int = 0
+
+    def send_response(self, code, message=None):
+        self._response_status = int(code)
+        super().send_response(code, message)
+        rid = getattr(self, "request_id", None)
+        if rid:
+            self.send_header("X-Request-Id", rid)
+
     def _client_ip(self) -> str:
         # X-Forwarded-For first hop if set, else remote_addr.
         xff = self.headers.get("X-Forwarded-For", "")
@@ -956,12 +1034,22 @@ class PortalHandler(SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
         path = parsed.path.rstrip("/")
         qs = parse_qs(parsed.query)
+        self._begin_request("GET", path)
+        self._response_status = 200
 
         # Reads get the generous budget; non-API paths (HTML / static) are
         # unlimited because MapLibre requests many tile assets that shouldn't
         # compete with /api/* quota.
         if path.startswith("/api/") and not self._check_rate_limit("read"):
+            self._end_request("GET", 429)
             return
+
+        try:
+            self._dispatch_get(path, qs)
+        finally:
+            self._end_request("GET", self._response_status or 200)
+
+    def _dispatch_get(self, path: str, qs) -> None:
 
         if path == "/v3" or path == "/v3/index.html":
             self._serve_file(DASHBOARD_DIR / "v3" / "index.html", "text/html")
@@ -1099,10 +1187,20 @@ class PortalHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         parsed = urlparse(self.path)
         path = parsed.path.rstrip("/")
+        self._begin_request("POST", path)
+        self._response_status = 200
 
         # Mutations get a tight budget to throttle abuse of /field-responses.
         if not self._check_rate_limit("mutate"):
+            self._end_request("POST", 429)
             return
+
+        try:
+            self._dispatch_post(path)
+        finally:
+            self._end_request("POST", self._response_status or 200)
+
+    def _dispatch_post(self, path: str) -> None:
 
         length_hdr = self.headers.get("Content-Length", "0") or "0"
         try:
