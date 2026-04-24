@@ -15,6 +15,7 @@ import os
 import re
 import threading
 import time
+from collections import deque
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from http.server import HTTPServer, SimpleHTTPRequestHandler
@@ -84,6 +85,57 @@ def _valid_iso_date(value: str) -> bool:
     except ValueError:
         return False
     return True
+
+
+# ---------------------------------------------------------------------------
+# Rate limiting — per-IP sliding-window tracker.
+# Reads 120 req/min, mutations 12 req/min. Closes the no-rate-limit MEDIUM
+# finding from outputs/swarm/security_audit.md.
+# ---------------------------------------------------------------------------
+
+
+class _RateLimiter:
+    """Simple per-IP sliding window rate limiter.
+
+    Thread-safe via a single lock (the backend handles requests on one thread
+    per connection via SimpleHTTPRequestHandler's default ThreadingHTTPServer).
+    Memory bound: one deque per unique IP, pruned lazily.
+    """
+
+    def __init__(self) -> None:
+        self._buckets: dict[tuple[str, str], deque[float]] = {}
+        self._lock = threading.Lock()
+
+    def check(
+        self, identifier: str, scope: str, max_requests: int, window_s: float
+    ) -> tuple[bool, int, float]:
+        """Return (allowed, remaining, retry_after_s).
+
+        retry_after_s is the seconds until the oldest request in the window
+        ages out (0 when allowed).
+        """
+        now = time.monotonic()
+        key = (identifier, scope)
+        with self._lock:
+            q = self._buckets.setdefault(key, deque())
+            cutoff = now - window_s
+            while q and q[0] < cutoff:
+                q.popleft()
+            if len(q) >= max_requests:
+                oldest = q[0]
+                retry_after = max(0.0, window_s - (now - oldest))
+                return False, 0, retry_after
+            q.append(now)
+            return True, max_requests - len(q), 0.0
+
+
+_RATE_LIMITER = _RateLimiter()
+
+# Reads generous, mutations tight.
+_RATE_LIMITS = {
+    "read": (120, 60.0),     # 120 req per 60 s (~2 req/s per IP)
+    "mutate": (12, 60.0),    # 12 req per 60 s (1 field response per 5 s)
+}
 
 
 def _load_v17_predictions(date_str: str | None = None) -> dict:
@@ -857,10 +909,59 @@ def _build_healthz() -> dict:
 
 
 class PortalHandler(SimpleHTTPRequestHandler):
+    def _client_ip(self) -> str:
+        # X-Forwarded-For first hop if set, else remote_addr.
+        xff = self.headers.get("X-Forwarded-For", "")
+        if xff:
+            return xff.split(",")[0].strip()
+        return self.client_address[0] if self.client_address else "unknown"
+
+    def _check_rate_limit(self, scope: str) -> bool:
+        """If allowed, attach X-RateLimit-* headers via the next response.
+        If denied, send 429 immediately and return False so the caller bails.
+        """
+        if scope not in _RATE_LIMITS:
+            return True
+        max_req, window_s = _RATE_LIMITS[scope]
+        allowed, _remaining, retry_after = _RATE_LIMITER.check(
+            self._client_ip(), scope, max_req, window_s
+        )
+        if allowed:
+            return True
+        # Denied — 429 with Retry-After.
+        retry_int = max(1, int(retry_after) + 1)
+        body = json.dumps(
+            {
+                "error": {
+                    "code": "rate_limit_exceeded",
+                    "message": (
+                        f"Rate limit exceeded ({max_req} requests per "
+                        f"{int(window_s)}s). Retry in {retry_int}s."
+                    ),
+                }
+            }
+        ).encode("utf-8")
+        self.send_response(429)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Retry-After", str(retry_int))
+        self.send_header("X-RateLimit-Limit", str(max_req))
+        self.send_header("X-RateLimit-Remaining", "0")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+        return False
+
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path.rstrip("/")
         qs = parse_qs(parsed.query)
+
+        # Reads get the generous budget; non-API paths (HTML / static) are
+        # unlimited because MapLibre requests many tile assets that shouldn't
+        # compete with /api/* quota.
+        if path.startswith("/api/") and not self._check_rate_limit("read"):
+            return
 
         if path == "/v3" or path == "/v3/index.html":
             self._serve_file(DASHBOARD_DIR / "v3" / "index.html", "text/html")
@@ -998,6 +1099,11 @@ class PortalHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         parsed = urlparse(self.path)
         path = parsed.path.rstrip("/")
+
+        # Mutations get a tight budget to throttle abuse of /field-responses.
+        if not self._check_rate_limit("mutate"):
+            return
+
         length_hdr = self.headers.get("Content-Length", "0") or "0"
         try:
             length = int(length_hdr)
