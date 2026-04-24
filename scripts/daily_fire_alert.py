@@ -678,6 +678,19 @@ def main():
             "--no-risk-maps",  # fast mode: FWI forecast only
         ], timeout=180)
 
+    # Step 7: Export Obsidian daily-alert note (best-effort, non-blocking).
+    # Writes obsidian-vault/02-Operations/Daily/<target_date>.md from the
+    # v17 JSON we just generated. Never fails the whole pipeline.
+    if not args.skip_prediction:
+        try:
+            exporter = ROOT / "scripts" / "export_obsidian_daily.py"
+            if exporter.exists():
+                run_step("Export Obsidian daily note", [
+                    PYTHON, str(exporter), "--date", target_date,
+                ], timeout=30)
+        except Exception as exc:
+            print(f"  [obsidian] export skipped: {exc}")
+
     elapsed = (datetime.now() - started).total_seconds()
     print(f"\n{'='*60}")
     print(f"  PIPELINE COMPLETE -- {elapsed:.0f}s elapsed")
@@ -687,6 +700,7 @@ def main():
     print(f"    Prediction: outputs/predictive_fire_risk/risk_map_{target_date}.csv")
     print(f"    Unified:    outputs/dashboard_feed/unified_alert.geojson")
     print(f"    Forecast:   outputs/dashboard_feed/fire_danger_forecast.json")
+    print(f"    Obsidian:   obsidian-vault/02-Operations/Daily/{target_date}.md")
 
 
 if __name__ == "__main__":
