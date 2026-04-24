@@ -17,8 +17,8 @@ export default function ViirsTab() {
   const loadFires = async () => {
     setLoading(true);
     try {
-      const resp = await api.viirsFires(from, to);
-      setFiresCount(resp.n_fires ?? resp.fires?.length ?? 0);
+      const env = await api.viirsFires(from, to);
+      setFiresCount(env.meta?.total ?? env.data?.length ?? 0);
     } catch {
       setFiresCount(null);
     } finally {

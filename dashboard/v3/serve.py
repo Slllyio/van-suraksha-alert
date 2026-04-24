@@ -894,6 +894,60 @@ class PortalHandler(SimpleHTTPRequestHandler):
             self._send_json(_load_soil_pulse())
         elif path == "/api/healthz":
             self._send_json(_build_healthz())
+        # --- v2 namespace: envelope { data, meta } + standardized errors ---
+        # See dashboard/v3/openapi.yaml for the contract. Backward-compat: the
+        # unversioned /api/* paths above remain unchanged.
+        elif path == "/api/v2/ignition-v17":
+            self._serve_v2_ignition(qs)
+        elif path == "/api/v2/latest-alert":
+            self._send_v2(_load_latest_alert(), meta={"source": "nrt_alert_pipeline"})
+        elif path == "/api/v2/division-overview":
+            v17 = _load_v17_predictions(qs.get("date", [None])[0])
+            base = _build_division_overview(v17)
+            rows = _enrich_division_overview(base)
+            total = len(rows) if isinstance(rows, list) else 0
+            self._send_v2(rows, meta={"total": total})
+        elif path == "/api/v2/blind-spots":
+            self._send_v2(_build_blind_spots())
+        elif path == "/api/v2/season-validation":
+            rows = _load_season_validation()
+            total = len(rows) if isinstance(rows, list) else 0
+            self._send_v2(rows, meta={"total": total})
+        elif path == "/api/v2/model-transparency":
+            self._send_v2(_build_transparency())
+        elif path == "/api/v2/validation-log":
+            rows = _build_validation_log()
+            total = len(rows) if isinstance(rows, list) else 0
+            self._send_v2(rows, meta={"total": total})
+        elif path == "/api/v2/viirs-fires":
+            date_from = qs.get("from", [None])[0]
+            date_to = qs.get("to", [None])[0]
+            self._serve_v2_viirs(date_from, date_to)
+        elif path == "/api/v2/operational-alerts":
+            rows = _load_operational_alerts(qs.get("date", [None])[0])
+            total = len(rows) if isinstance(rows, list) else 0
+            self._send_v2(rows, meta={"total": total})
+        elif path == "/api/v2/division-briefings":
+            self._send_v2(_load_division_briefings())
+        elif path == "/api/v2/field-responses":
+            self._send_v2(_summarize_field_responses())
+        elif path == "/api/v2/healthz":
+            self._send_v2(_build_healthz())
+        elif path == "/api/v2/beats-boundary":
+            # GeoJSON is already standardized; wrap as data + meta for v2 parity
+            if BEATS_GEOJSON.exists():
+                try:
+                    fc = json.loads(BEATS_GEOJSON.read_text(encoding="utf-8"))
+                    feats = fc.get("features", [])
+                    self._send_v2(fc, meta={"n_features": len(feats)})
+                except (OSError, json.JSONDecodeError) as e:
+                    self._send_v2_error(
+                        "beats_geojson_unreadable", str(e), status=500,
+                    )
+            else:
+                self._send_v2_error(
+                    "not_found", "beats geojson not present on disk", status=404,
+                )
         else:
             super().do_GET()
 
@@ -905,17 +959,53 @@ class PortalHandler(SimpleHTTPRequestHandler):
         try:
             body = json.loads(raw.decode("utf-8") or "{}")
         except json.JSONDecodeError:
-            self.send_error(400, "invalid json")
+            if path.startswith("/api/v2/"):
+                self._send_v2_error(
+                    "invalid_json", "request body is not valid JSON", status=400,
+                )
+            else:
+                self.send_error(400, "invalid json")
             return
 
         if path == "/api/field-response":
+            # Legacy v1 path, unchanged
             result = _append_field_response(body)
             if "error" in result:
                 self._send_json(result, status=400)
             else:
                 self._send_json(result)
+        elif path == "/api/v2/field-responses":
+            # v2 POST — responds with 201 Created + Location header per
+            # REST best practice (api-design skill §HTTP Methods).
+            result = _append_field_response(body)
+            if "error" in result:
+                self._send_v2_error(
+                    "validation_error", result.get("error", "validation failed"),
+                    status=422,
+                    details=result.get("details"),
+                )
+            else:
+                resp_id = result.get("id") or result.get("response_id") or "unknown"
+                body_json = json.dumps(
+                    {"data": result, "meta": {"created_at": result.get("created_at")}},
+                    default=str,
+                ).encode("utf-8")
+                self.send_response(201)
+                self.send_header("Content-Type", "application/json")
+                self.send_header(
+                    "Location", f"/api/v2/field-responses/{resp_id}",
+                )
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Content-Length", len(body_json))
+                self.end_headers()
+                self.wfile.write(body_json)
         else:
-            self.send_error(404, "unknown POST endpoint")
+            if path.startswith("/api/v2/"):
+                self._send_v2_error(
+                    "not_found", f"unknown POST endpoint: {path}", status=404,
+                )
+            else:
+                self.send_error(404, "unknown POST endpoint")
 
     def do_OPTIONS(self):
         self.send_response(204)
@@ -948,6 +1038,117 @@ class PortalHandler(SimpleHTTPRequestHandler):
         self.send_header("Content-Length", len(body))
         self.end_headers()
         self.wfile.write(body)
+
+    # ---------------------------------------------------------------
+    # v2 envelope helpers. Contract: every 2xx response is
+    #   { "data": <payload>, "meta": {...} }
+    # and every non-2xx response is
+    #   { "error": { "code": <snake_case>, "message": <human>, "details"?: [...] } }
+    # with the HTTP status used semantically.
+    # ---------------------------------------------------------------
+    def _send_v2(
+        self,
+        data,
+        meta: dict | None = None,
+        status: int = 200,
+        links: dict | None = None,
+    ) -> None:
+        env: dict = {"data": data}
+        if meta is not None:
+            env["meta"] = meta
+        if links is not None:
+            env["links"] = links
+        self._send_json(env, status=status)
+
+    def _send_v2_error(
+        self,
+        code: str,
+        message: str,
+        status: int = 400,
+        details: list | None = None,
+    ) -> None:
+        err: dict = {"code": code, "message": message}
+        if details is not None:
+            err["details"] = details
+        self._send_json({"error": err}, status=status)
+
+    def _serve_v2_ignition(self, qs) -> None:
+        """Paginated v17 alerts. Params: date, limit (1-2000, default 500),
+        cursor (opaque, base64 of last-rank offset)."""
+        import base64
+
+        date = qs.get("date", [None])[0]
+        raw_limit = (qs.get("limit", ["500"]) or ["500"])[0]
+        try:
+            limit = max(1, min(2000, int(raw_limit)))
+        except (TypeError, ValueError):
+            self._send_v2_error(
+                "invalid_limit",
+                f"limit must be integer 1..2000, got {raw_limit!r}",
+                status=400,
+            )
+            return
+
+        cursor_raw = (qs.get("cursor", [None]) or [None])[0]
+        offset = 0
+        if cursor_raw:
+            try:
+                decoded = base64.urlsafe_b64decode(cursor_raw.encode("ascii"))
+                offset = int(decoded.decode("ascii"))
+                if offset < 0:
+                    raise ValueError("negative offset")
+            except (ValueError, OSError):
+                self._send_v2_error(
+                    "invalid_cursor",
+                    "cursor is opaque, must be value returned by previous response",
+                    status=400,
+                )
+                return
+
+        payload = _load_v17_predictions(date)
+        alerts = payload.get("banded_alerts", []) if isinstance(payload, dict) else []
+        total = len(alerts)
+        page = alerts[offset : offset + limit]
+        has_next = offset + limit < total
+        next_offset = offset + limit if has_next else None
+        next_cursor = (
+            base64.urlsafe_b64encode(str(next_offset).encode("ascii")).decode("ascii")
+            if next_offset is not None
+            else None
+        )
+
+        meta = {
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "has_next": has_next,
+            "next_cursor": next_cursor,
+            "prediction_date": payload.get("prediction_date")
+            if isinstance(payload, dict)
+            else None,
+            "model": payload.get("model") if isinstance(payload, dict) else None,
+            "generated_at": payload.get("generated_at")
+            if isinstance(payload, dict)
+            else None,
+        }
+        links = {
+            "self": f"/api/v2/ignition-v17?limit={limit}&cursor={cursor_raw or ''}".rstrip("="),
+        }
+        if next_cursor:
+            links["next"] = f"/api/v2/ignition-v17?limit={limit}&cursor={next_cursor}"
+        self._send_v2(page, meta=meta, links=links)
+
+    def _serve_v2_viirs(self, date_from, date_to) -> None:
+        payload = _build_viirs_fires(date_from=date_from, date_to=date_to)
+        fires = payload.get("fires", []) if isinstance(payload, dict) else []
+        meta = {
+            "total": len(fires),
+            "n_before_clip": payload.get("n_before_clip") if isinstance(payload, dict) else None,
+            "n_clipped": payload.get("n_clipped") if isinstance(payload, dict) else None,
+            "latest_date": payload.get("latest_date") if isinstance(payload, dict) else None,
+            "date_range": payload.get("date_range") if isinstance(payload, dict) else None,
+        }
+        self._send_v2(fires, meta=meta)
 
     def log_message(self, _fmt, *args):
         if "/api/" in str(args[0]):

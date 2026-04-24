@@ -1,6 +1,7 @@
-// Typed fetchers for the v3 Python backend (proxied via Vite to :8790).
-// Keep payload shapes loose — v3 JSON schemas occasionally drift; only extract
-// the fields each component actually uses.
+// Typed fetchers for the v3 Python backend, v2 API namespace.
+// Every v2 response is `{ data, meta, links? }`; errors are
+// `{ error: { code, message, details? } }` with semantic HTTP status.
+// See dashboard/v3/openapi.yaml for the full contract.
 
 export interface V17Cell {
   cell_id: string | number;
@@ -19,34 +20,47 @@ export interface V17Cell {
   [key: string]: unknown;
 }
 
-export interface V17Payload {
-  /** Actual alert key returned by the v3 backend. Older shape used `cells`;
-   *  we support both by reading `banded_alerts ?? cells`. */
-  banded_alerts?: V17Cell[];
-  cells?: V17Cell[];
-  target_date?: string;
+export interface V17Meta {
+  total?: number;
+  limit?: number;
+  offset?: number;
+  has_next?: boolean;
+  next_cursor?: string | null;
   prediction_date?: string;
-  generated_at?: string;
-  n_cells_total?: number;
   model?: string;
-  legacy_top_pct?: {
-    top_pct?: number;
-    threshold?: number;
-    n_cells?: number;
-  };
-  hurdle_blend?: Record<string, unknown>;
-  metrics_on_validation?: Record<string, unknown>;
-  meta?: Record<string, unknown>;
+  generated_at?: string;
 }
 
-export type GeoJSONFeatureCollection = {
-  type: 'FeatureCollection';
-  features: Array<{
-    type: 'Feature';
-    properties?: Record<string, unknown>;
-    geometry: unknown;
-  }>;
-};
+export interface PaginationLinks {
+  self?: string;
+  next?: string;
+  prev?: string;
+  last?: string;
+}
+
+export interface Envelope<T, M = Record<string, unknown>> {
+  data: T;
+  meta?: M;
+  links?: PaginationLinks;
+}
+
+export interface ApiErrorShape {
+  code: string;
+  message: string;
+  details?: Array<{ field?: string; message?: string; code?: string }>;
+}
+
+export class ApiError extends Error {
+  status: number;
+  code: string;
+  details?: ApiErrorShape['details'];
+  constructor(status: number, shape: ApiErrorShape) {
+    super(shape.message || `HTTP ${status}`);
+    this.status = status;
+    this.code = shape.code;
+    this.details = shape.details;
+  }
+}
 
 export interface DivisionSummary {
   division: string;
@@ -93,61 +107,127 @@ export interface ViirsFire {
   frp?: number;
 }
 
-export interface ViirsResponse {
-  fires: ViirsFire[];
-  n_fires?: number;
+export interface ViirsMeta {
+  total?: number;
   n_before_clip?: number;
   n_clipped?: number;
-  date_range?: { from?: string; to?: string };
   latest_date?: string;
+  date_range?: { from?: string; to?: string };
 }
 
-async function getJSON<T>(path: string, signal?: AbortSignal): Promise<T> {
+export type GeoJSONFeatureCollection = {
+  type: 'FeatureCollection';
+  features: Array<{
+    type: 'Feature';
+    properties?: Record<string, unknown>;
+    geometry: unknown;
+  }>;
+};
+
+async function getEnvelope<T, M = Record<string, unknown>>(
+  path: string,
+  signal?: AbortSignal,
+): Promise<Envelope<T, M>> {
   const res = await fetch(path, { signal });
-  if (!res.ok) {
-    throw new Error(`GET ${path} → HTTP ${res.status}`);
+  const text = await res.text();
+  let parsed: unknown;
+  try {
+    parsed = text ? JSON.parse(text) : null;
+  } catch {
+    throw new ApiError(res.status, {
+      code: 'invalid_json_response',
+      message: `Non-JSON body from ${path} (HTTP ${res.status})`,
+    });
   }
-  return res.json() as Promise<T>;
+  if (!res.ok) {
+    const body = parsed as { error?: ApiErrorShape } | null;
+    const shape: ApiErrorShape = body?.error ?? {
+      code: 'http_error',
+      message: `HTTP ${res.status}`,
+    };
+    throw new ApiError(res.status, shape);
+  }
+  return parsed as Envelope<T, M>;
+}
+
+/** Lower-level fetcher that returns the raw envelope (data + meta + links). */
+export async function getV2<T, M = Record<string, unknown>>(
+  path: string,
+  signal?: AbortSignal,
+): Promise<Envelope<T, M>> {
+  return getEnvelope<T, M>(path, signal);
+}
+
+/** Convenience wrapper that unwraps .data for callers who don't need meta. */
+async function getData<T, M = Record<string, unknown>>(
+  path: string,
+  signal?: AbortSignal,
+): Promise<T> {
+  const env = await getEnvelope<T, M>(path, signal);
+  return env.data;
 }
 
 export const api = {
-  ignitionV17: (date?: string, signal?: AbortSignal) =>
-    getJSON<V17Payload>(
-      `/api/ignition-v17${date ? `?date=${encodeURIComponent(date)}` : ''}`,
-      signal,
-    ),
+  /**
+   * Paginated v17 banded alerts.
+   * @param date  Optional `YYYY-MM-DD`. Omit for latest.
+   * @param limit 1-2000, default 500.
+   * @param cursor Opaque cursor from a previous response's `meta.next_cursor`.
+   */
+  ignitionV17: (
+    date?: string,
+    opts?: { limit?: number; cursor?: string; signal?: AbortSignal },
+  ) => {
+    const qs = new URLSearchParams();
+    if (date) qs.set('date', date);
+    if (opts?.limit) qs.set('limit', String(opts.limit));
+    if (opts?.cursor) qs.set('cursor', opts.cursor);
+    return getV2<V17Cell[], V17Meta>(
+      `/api/v2/ignition-v17?${qs.toString()}`,
+      opts?.signal,
+    );
+  },
+
+  /** Load ALL v17 banded alerts by walking cursors. Use sparingly — ~2,600
+   *  cells, ~350 KB on the wire. */
+  async ignitionV17All(date?: string, signal?: AbortSignal): Promise<V17Cell[]> {
+    const out: V17Cell[] = [];
+    let cursor: string | undefined;
+    for (;;) {
+      const page = await api.ignitionV17(date, { limit: 2000, cursor, signal });
+      out.push(...page.data);
+      const next = page.meta?.next_cursor;
+      if (!next) break;
+      cursor = next;
+    }
+    return out;
+  },
 
   divisionOverview: (signal?: AbortSignal) =>
-    getJSON<DivisionSummary[]>('/api/division-overview', signal),
+    getData<DivisionSummary[]>('/api/v2/division-overview', signal),
 
   seasonValidation: (signal?: AbortSignal) =>
-    getJSON<ValidationRow[]>('/api/season-validation', signal),
+    getData<ValidationRow[]>('/api/v2/season-validation', signal),
 
   modelTransparency: (signal?: AbortSignal) =>
-    getJSON<ModelTransparency>('/api/model-transparency', signal),
+    getData<ModelTransparency>('/api/v2/model-transparency', signal),
 
   viirsFires: (from?: string, to?: string, signal?: AbortSignal) => {
     const qs = new URLSearchParams();
     if (from) qs.set('from', from);
     if (to) qs.set('to', to);
-    return getJSON<ViirsResponse>(`/api/viirs-fires?${qs.toString()}`, signal);
+    return getV2<ViirsFire[], ViirsMeta>(
+      `/api/v2/viirs-fires?${qs.toString()}`,
+      signal,
+    );
   },
 
   healthz: (signal?: AbortSignal) =>
-    getJSON<{ ok: boolean; checks?: Record<string, unknown> }>('/api/healthz', signal),
+    getData<{ ok: boolean } & Record<string, unknown>>(
+      '/api/v2/healthz',
+      signal,
+    ),
 
-  /** 179 MB GeoJSON of all 8,973 MP forest beats. Backend serves from a
-   *  cached file; browser receives gzipped. Call once and cache in memory. */
   beatsBoundary: (signal?: AbortSignal) =>
-    getJSON<GeoJSONFeatureCollection>('/api/beats-boundary', signal),
+    getData<GeoJSONFeatureCollection>('/api/v2/beats-boundary', signal),
 };
-
-// Generic hook-friendly wrapper
-export function fetchWithTimeout<T>(
-  promise: Promise<T>,
-  ms = 15000,
-): Promise<T> {
-  const controller = new AbortController();
-  const t = setTimeout(() => controller.abort(), ms);
-  return promise.finally(() => clearTimeout(t));
-}

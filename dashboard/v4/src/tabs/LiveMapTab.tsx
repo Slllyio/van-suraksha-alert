@@ -68,26 +68,27 @@ export default function LiveMapTab() {
       try {
         setLoading(true);
         setError(null);
-        const [v17, viirsResp] = await Promise.all([
-          api
-            .ignitionV17(undefined, ctrl.signal)
-            .catch(() => ({ banded_alerts: [] as V17Cell[] })),
+        const [allCells, viirsEnv] = await Promise.all([
+          // Walks cursors — returns flat V17Cell[]
+          api.ignitionV17All(undefined, ctrl.signal).catch(() => [] as V17Cell[]),
           api
             .viirsFires(undefined, undefined, ctrl.signal)
-            .catch(() => ({ fires: [] as ViirsFire[] })),
+            .catch(() => ({ data: [] as ViirsFire[], meta: {} })),
         ]);
-        // Backend returns `banded_alerts` now; tolerate legacy `cells` too.
-        const raw = v17.banded_alerts ?? v17.cells ?? [];
-        const norm: V17Cell[] = raw.map((c) => ({
+        const norm: V17Cell[] = allCells.map((c) => ({
           ...c,
           band: String(c.band ?? '').toUpperCase(),
           lat: Number(c.lat),
           lon: Number(c.lon),
         }));
         setCells(norm);
-        setPredictionDate(v17.prediction_date ?? v17.target_date);
-        // Backend wraps fires under { fires: [...] } — unwrap + coerce numerics
-        const firesList: ViirsFire[] = (viirsResp.fires ?? []).map((f) => ({
+        // v2 envelope exposes prediction_date on the first page's meta.
+        // We re-fetch one small page just to read it — cheap.
+        api
+          .ignitionV17(undefined, { limit: 1, signal: ctrl.signal })
+          .then((env) => setPredictionDate(env.meta?.prediction_date))
+          .catch(() => {});
+        const firesList: ViirsFire[] = (viirsEnv.data ?? []).map((f) => ({
           ...f,
           lat: Number(f.lat),
           lon: Number(f.lon),

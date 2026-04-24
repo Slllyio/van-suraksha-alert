@@ -31,6 +31,7 @@ export default function ValidationTab() {
     api
       .seasonValidation(ctrl.signal)
       .then((live) => {
+        // v2 endpoint unwraps to data: ValidationRow[]
         if (Array.isArray(live) && live.length > 0) {
           setRows(live);
           setSource('live');

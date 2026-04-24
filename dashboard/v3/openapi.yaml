@@ -1,0 +1,438 @@
+openapi: 3.1.0
+info:
+  title: JwalaNetra v2 Portal API
+  version: "2.0.0"
+  summary: MP Forest Fire EWS — portal backend contract (v2)
+  description: |
+    Parallel v2 namespace served from `dashboard/v3/serve.py`. Every 2xx response
+    follows the envelope `{ data, meta, links? }`. Errors follow
+    `{ error: { code, message, details? } }` with semantic HTTP status codes.
+
+    Designed per the `api-design` skill recommendations:
+      * Resource URLs, plural + kebab-case (`/division-overview`, `/viirs-fires`)
+      * Correct status codes (201 Created, 404 Not Found, 422 Unprocessable Entity)
+      * Cursor pagination on the heaviest endpoint (`/ignition-v17`, 2.6 k cells)
+      * Standardized error shape with field-level details
+      * URL path versioning (`/api/v2/*`); v1 paths remain as `/api/*`
+
+    The v1 paths continue to serve the legacy v3 portal and must not be removed
+    until that portal is retired.
+servers:
+  - url: http://localhost:8790
+    description: Local dev (v3 backend, any client)
+  - url: http://localhost:5173
+    description: v4 portal via Vite proxy (`/api/*` → :8790)
+
+paths:
+  /api/v2/ignition-v17:
+    get:
+      summary: Paginated v17 banded alerts
+      description: |
+        Returns the current day's (or requested date's) ranked fire-ignition
+        cells from the LightGBM × hurdle model. ~2,600 alerts per day at peak.
+      parameters:
+        - in: query
+          name: date
+          schema: { type: string, format: date }
+          description: "Prediction date (YYYY-MM-DD). Defaults to latest."
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 2000, default: 500 }
+        - in: query
+          name: cursor
+          schema: { type: string }
+          description: "Opaque; pass meta.next_cursor from the previous page."
+      responses:
+        "200":
+          description: Paginated alerts
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/V17Cell" }
+                  meta:
+                    type: object
+                    properties:
+                      total: { type: integer }
+                      limit: { type: integer }
+                      offset: { type: integer }
+                      has_next: { type: boolean }
+                      next_cursor: { type: string, nullable: true }
+                      prediction_date: { type: string, format: date }
+                      model: { type: string }
+                      generated_at: { type: string, format: date-time }
+                  links:
+                    $ref: "#/components/schemas/PaginationLinks"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /api/v2/division-overview:
+    get:
+      summary: 87 forest divisions with alert counts + trust tiers
+      responses:
+        "200":
+          description: Enveloped list
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/DivisionSummary" }
+                  meta:
+                    type: object
+                    properties: { total: { type: integer } }
+
+  /api/v2/season-validation:
+    get:
+      summary: Rolling 2026 season recall × observed fires
+      responses:
+        "200":
+          description: Enveloped rolling validation rows
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/ValidationRow" }
+                  meta:
+                    type: object
+                    properties: { total: { type: integer } }
+
+  /api/v2/validation-log:
+    get:
+      summary: Field validation log (operator actions vs predictions)
+      responses:
+        "200": { description: Enveloped list }
+
+  /api/v2/model-transparency:
+    get:
+      summary: Honest v17.5 metrics + feature importance + trust guidance
+      responses:
+        "200":
+          description: Enveloped model card
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: "#/components/schemas/ModelTransparency" }
+
+  /api/v2/blind-spots:
+    get:
+      summary: Per-division blind-spot analysis (where recall drops)
+      responses:
+        "200": { description: Enveloped blind-spot report }
+
+  /api/v2/latest-alert:
+    get:
+      summary: Most recent NRT detection bundle
+      responses:
+        "200": { description: Enveloped alert payload }
+
+  /api/v2/viirs-fires:
+    get:
+      summary: Forest-clipped FIRMS VIIRS active-fire detections
+      description: |
+        Spatial-joined to MP beat polygons; ~75 % of raw pixels excluded as
+        non-forest. 1.35 M historical rows indexed by date.
+      parameters:
+        - in: query
+          name: from
+          schema: { type: string, format: date }
+        - in: query
+          name: to
+          schema: { type: string, format: date }
+      responses:
+        "200":
+          description: Enveloped detection list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/ViirsFire" }
+                  meta:
+                    type: object
+                    properties:
+                      total: { type: integer }
+                      n_before_clip: { type: integer }
+                      n_clipped: { type: integer }
+                      latest_date: { type: string, format: date }
+                      date_range:
+                        type: object
+                        properties:
+                          from: { type: string, format: date }
+                          to: { type: string, format: date }
+
+  /api/v2/beats-boundary:
+    get:
+      summary: 8,973 MP forest-beat MultiPolygons
+      description: "Large (~179 MB). Fetch once and cache."
+      responses:
+        "200":
+          description: Enveloped GeoJSON FeatureCollection
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: "#/components/schemas/GeoJSONFeatureCollection" }
+                  meta:
+                    type: object
+                    properties: { n_features: { type: integer } }
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /api/v2/operational-alerts:
+    get:
+      summary: Decorated alerts (coverage floor + climatology applied)
+      parameters:
+        - in: query
+          name: date
+          schema: { type: string, format: date }
+      responses:
+        "200": { description: Enveloped alert list }
+
+  /api/v2/division-briefings:
+    get:
+      summary: Per-division human-readable briefings
+      responses:
+        "200": { description: Enveloped briefing map }
+
+  /api/v2/field-responses:
+    get:
+      summary: Operator response rollup
+      responses:
+        "200": { description: Enveloped summary }
+    post:
+      summary: Record an operator response to an alert
+      description: |
+        Canonical Create: returns 201 with a Location header pointing to the
+        resource, response body uses the `{data, meta}` envelope.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FieldResponseInput" }
+      responses:
+        "201":
+          description: Created
+          headers:
+            Location:
+              schema: { type: string }
+              description: Relative URI of the new response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: "#/components/schemas/FieldResponse" }
+                  meta:
+                    type: object
+                    properties:
+                      created_at: { type: string, format: date-time }
+        "422":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /api/v2/healthz:
+    get:
+      summary: Liveness + cache warmup status
+      responses:
+        "200":
+          description: Enveloped health payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      ok: { type: boolean }
+                      portal_uptime_s: { type: number }
+                      beat_polygons_loaded: { type: boolean }
+                      firms_nrt_age_hours: { type: number }
+                      firms_nrt_max_date: { type: string, format: date }
+
+components:
+  responses:
+    ErrorResponse:
+      description: Standardized error envelope
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ApiError" }
+
+  schemas:
+    ApiError:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              description: "Snake-case machine code (e.g., `invalid_cursor`)"
+            message:
+              type: string
+              description: "Human-readable explanation"
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  message: { type: string }
+                  code: { type: string }
+
+    PaginationLinks:
+      type: object
+      properties:
+        self: { type: string }
+        next: { type: string }
+        prev: { type: string }
+        last: { type: string }
+
+    V17Cell:
+      type: object
+      required: [cell_id, lat, lon, band]
+      properties:
+        cell_id:
+          oneOf: [{ type: string }, { type: integer }]
+          example: "r0173_c0343"
+        lat: { type: number, format: double }
+        lon: { type: number, format: double }
+        band:
+          type: string
+          enum: [CRITICAL, ALERT, WATCH]
+        ignition_risk: { type: number, format: double }
+        calibrated_risk: { type: number, format: double }
+        rank: { type: number, format: double }
+        stage_a_risk: { type: number, format: double }
+        hawkes_lambda: { type: number, format: double }
+        hawkes_n_recent_10km_7d: { type: integer }
+
+    DivisionSummary:
+      type: object
+      required: [division]
+      properties:
+        division: { type: string }
+        critical: { type: integer }
+        alert: { type: integer }
+        watch: { type: integer }
+        beats: { type: integer }
+        hawkes_lambda: { type: number }
+        trust_tier:
+          type: string
+          enum: [HIGH, MEDIUM, LOW]
+
+    ValidationRow:
+      type: object
+      required: [date, predicted, observed, caught, recall_pct]
+      properties:
+        date: { type: string, format: date }
+        predicted: { type: integer }
+        observed: { type: integer }
+        caught: { type: integer }
+        recall_pct: { type: number }
+        trust:
+          type: string
+          enum: [HIGH, MEDIUM, LOW]
+        notes: { type: string }
+
+    ModelTransparency:
+      type: object
+      properties:
+        model_version: { type: string, example: "v17.5" }
+        recall_top5_pct: { type: number }
+        precision_critical_pct: { type: number }
+        per_division_coverage:
+          type: object
+          properties:
+            covered: { type: integer }
+            total: { type: integer }
+        feature_importance:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              gain: { type: number }
+        trust_tiers:
+          type: array
+          items:
+            type: object
+            properties:
+              tier: { type: string, enum: [HIGH, MEDIUM, LOW] }
+              description: { type: string }
+        weaknesses:
+          type: array
+          items: { type: string }
+
+    ViirsFire:
+      type: object
+      required: [lat, lon, date]
+      properties:
+        lat: { type: number }
+        lon: { type: number }
+        date: { type: string, format: date }
+        time: { type: string }
+        brightness: { type: number }
+        confidence: { type: string }
+        satellite: { type: string }
+        source: { type: string }
+        division: { type: string }
+        range: { type: string }
+        beat: { type: string }
+        frp: { type: number }
+
+    FieldResponseInput:
+      type: object
+      required: [cell_id, action]
+      properties:
+        cell_id: { type: string }
+        action:
+          type: string
+          enum: [dispatch, monitor, awareness]
+        operator: { type: string }
+        notes: { type: string }
+
+    FieldResponse:
+      allOf:
+        - $ref: "#/components/schemas/FieldResponseInput"
+        - type: object
+          properties:
+            id: { type: string }
+            created_at: { type: string, format: date-time }
+
+    GeoJSONFeatureCollection:
+      type: object
+      properties:
+        type: { type: string, enum: [FeatureCollection] }
+        features:
+          type: array
+          items:
+            type: object
+            properties:
+              type: { type: string, enum: [Feature] }
+              properties:
+                type: object
+                properties:
+                  Division: { type: string }
+                  Range: { type: string }
+                  Beat: { type: string }
+              geometry: { type: object }
