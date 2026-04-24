@@ -2,6 +2,25 @@
 // Every v2 response is `{ data, meta, links? }`; errors are
 // `{ error: { code, message, details? } }` with semantic HTTP status.
 // See dashboard/v3/openapi.yaml for the full contract.
+//
+// Canonical schema types come from apiSchema.ts (auto-generated from the
+// OpenAPI spec via `npm run codegen`, wired as prebuild). We re-export a
+// few under their historic names for incremental migration; new code
+// should prefer `schemas['V17Cell']` etc. directly.
+
+import type { components } from './apiSchema';
+
+type Schemas = components['schemas'];
+
+/** Re-exports of the canonical OpenAPI-generated schemas. Keeping the
+ *  aliases lets the rest of the codebase upgrade incrementally. */
+export type V17CellSchema = Schemas['V17Cell'];
+export type DivisionSummarySchema = Schemas['DivisionSummary'];
+export type ValidationRowSchema = Schemas['ValidationRow'];
+export type ModelTransparencySchema = Schemas['ModelTransparency'];
+export type ViirsFireSchema = Schemas['ViirsFire'];
+export type PaginationLinksSchema = Schemas['PaginationLinks'];
+export type ApiErrorSchema = Schemas['ApiError']['error'];
 
 export interface V17Cell {
   cell_id: string | number;
