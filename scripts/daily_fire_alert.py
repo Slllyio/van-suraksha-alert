@@ -678,9 +678,8 @@ def main():
             "--no-risk-maps",  # fast mode: FWI forecast only
         ], timeout=180)
 
-    # Step 7: Export Obsidian daily-alert note (best-effort, non-blocking).
-    # Writes obsidian-vault/02-Operations/Daily/<target_date>.md from the
-    # v17 JSON we just generated. Never fails the whole pipeline.
+    # Step 7: Export Obsidian daily-alert note + per-division notes.
+    # Best-effort, non-blocking. Never fails the whole pipeline.
     if not args.skip_prediction:
         try:
             exporter = ROOT / "scripts" / "export_obsidian_daily.py"
@@ -689,7 +688,15 @@ def main():
                     PYTHON, str(exporter), "--date", target_date,
                 ], timeout=30)
         except Exception as exc:
-            print(f"  [obsidian] export skipped: {exc}")
+            print(f"  [obsidian] daily export skipped: {exc}")
+        try:
+            div_exporter = ROOT / "scripts" / "export_obsidian_divisions.py"
+            if div_exporter.exists():
+                run_step("Export Obsidian division notes", [
+                    PYTHON, str(div_exporter), "--date", target_date,
+                ], timeout=60)
+        except Exception as exc:
+            print(f"  [obsidian] division export skipped: {exc}")
 
     elapsed = (datetime.now() - started).total_seconds()
     print(f"\n{'='*60}")

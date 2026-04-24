@@ -1,0 +1,90 @@
+filters:
+  and:
+    - file.inFolder("03-Divisions")
+    - file.hasTag("division")
+
+properties:
+  division:
+    displayName: Division
+  confidence:
+    displayName: Trust
+  critical:
+    displayName: 🔴 CRIT
+  alert:
+    displayName: 🟠 ALERT
+  watch:
+    displayName: 🟡 WATCH
+  total-alerts:
+    displayName: Total
+  n-cold-start:
+    displayName: Cold-start
+  mean-risk:
+    displayName: Mean risk
+  max-risk:
+    displayName: Max risk
+  hawkes-high-pct:
+    displayName: Hawkes high %
+  silent-in-danger:
+    displayName: Silent 🚨
+  last-updated:
+    displayName: Updated
+
+views:
+  - type: table
+    name: All 87 divisions
+    order:
+      - division
+      - confidence
+      - critical
+      - alert
+      - watch
+      - total-alerts
+      - n-cold-start
+      - silent-in-danger
+      - last-updated
+    sort:
+      - property: critical
+        direction: DESC
+
+  - type: table
+    name: High-priority (CRITICAL > 0)
+    filters:
+      and:
+        - critical > 0
+    order:
+      - division
+      - confidence
+      - critical
+      - alert
+      - max-risk
+      - n-cold-start
+    sort:
+      - property: critical
+        direction: DESC
+
+  - type: table
+    name: Silent-in-danger (no alerts but high fire weather)
+    filters:
+      and:
+        - silent-in-danger == true
+    order:
+      - division
+      - confidence
+      - total-alerts
+      - mean-risk
+      - last-updated
+
+  - type: table
+    name: High-confidence dispatches
+    filters:
+      and:
+        - confidence == "HIGH"
+        - critical > 0
+    order:
+      - division
+      - critical
+      - alert
+      - max-risk
+    sort:
+      - property: max-risk
+        direction: DESC

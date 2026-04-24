@@ -25,11 +25,12 @@ tags: [moc, home]
 - [[_Templates/Daily Alert]] (template)
 
 ### Divisions
-87 forest divisions. Query the live alert count via [[_Bases/alerts.base]].
+All **87 forest divisions** are auto-generated from `/api/v2/division-overview` by [[../scripts/export_obsidian_divisions.py|the division exporter]] — one note per division with YAML frontmatter driving the Base views.
+- 🔍 [[_Bases/divisions|Divisions Base]] — filterable by CRITICAL count, confidence tier, silent-in-danger flag
 - [[03-Divisions/Betul]]
 - [[03-Divisions/Guna]]
 - [[03-Divisions/Hoshangabad]]
-- _(others auto-created as officers record notes)_
+- _(84 more — see the Divisions Base view)_
 
 ### Model
 - [[04-Model/v17.5 Model Card]]
