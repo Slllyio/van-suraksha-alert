@@ -11,6 +11,7 @@ export function Sidebar({ children, width = layoutTokens.sidebarWidth }: Sidebar
   const stagger = useAccessibleVariants(staggerContainer());
   return (
     <motion.aside
+      data-role="sidebar"
       variants={stagger}
       initial="hidden"
       animate="visible"

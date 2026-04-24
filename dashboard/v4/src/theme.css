@@ -203,12 +203,13 @@ button {
    Designed for the field-tablet case (iPad Mini portrait ≈ 768px). */
 @media (max-width: 900px) {
   body { font-size: 13px; }
-  /* Live Map layout — flip row → column so the sidebar is on top */
-  main > div[role='tabpanel'] > div[style*='display: flex'] {
+  /* Live Map layout — flip row → column so the sidebar is on top.
+   * Target via data-layout="live-map" from LiveMapTab and data-role="sidebar"
+   * from Sidebar, so styles survive inline-style changes from framer-motion. */
+  [data-layout='live-map'] {
     flex-direction: column !important;
   }
-  /* Sidebar narrows + becomes scrollable horizontally for risk cards */
-  aside[style*='width'] {
+  [data-role='sidebar'] {
     width: 100% !important;
     max-height: 260px;
     flex-direction: row !important;
@@ -217,12 +218,12 @@ button {
     padding: 12px !important;
     gap: 12px !important;
   }
-  aside[style*='width'] > * {
+  [data-role='sidebar'] > * {
     min-width: 240px;
     flex-shrink: 0;
   }
   /* Header tabs wrap onto a second row */
-  header[role] + *, header nav {
+  header nav[role='tablist'] {
     flex-wrap: wrap;
   }
 }

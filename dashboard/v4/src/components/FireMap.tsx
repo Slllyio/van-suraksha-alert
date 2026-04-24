@@ -75,27 +75,10 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
     [cells],
   );
 
-  // Build deck.gl layer list (memoized — rebuilt only when data changes)
-  const layers: Layer[] = useMemo(
-    () => [
-      // Beats polygon overlay (rendered UNDER the scatter so markers stay on top)
-      ...(beats
-        ? [
-            new GeoJsonLayer({
-              id: 'beats-boundary',
-              data: beats as unknown as GeoJSON.FeatureCollection,
-              pickable: false,
-              stroked: true,
-              filled: true,
-              lineWidthUnits: 'pixels',
-              lineWidthMinPixels: 0.5,
-              getFillColor: [148, 163, 184, 10],
-              getLineColor: [148, 163, 184, 60],
-              getLineWidth: 1,
-            }),
-          ]
-        : []),
-      // Animated pulse ring around CRITICAL cells — expanding + fading
+  // Pulse layer is rebuilt every 50 ms on its own so the data layers below
+  // don't churn. Data layers only rebuild when `cells`/`viirs`/`beats` change.
+  const pulseLayer = useMemo(
+    () =>
       new ScatterplotLayer<V17Cell>({
         id: 'critical-pulse',
         data: criticalCells,
@@ -119,6 +102,28 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
           data: criticalCells.length,
         },
       }),
+    [criticalCells, pulse],
+  );
+
+  const dataLayers: Layer[] = useMemo(
+    () => [
+      // Beats polygon overlay (rendered UNDER the scatter so markers stay on top)
+      ...(beats
+        ? [
+            new GeoJsonLayer({
+              id: 'beats-boundary',
+              data: beats as unknown as GeoJSON.FeatureCollection,
+              pickable: false,
+              stroked: true,
+              filled: true,
+              lineWidthUnits: 'pixels',
+              lineWidthMinPixels: 0.5,
+              getFillColor: [148, 163, 184, 10],
+              getLineColor: [148, 163, 184, 60],
+              getLineWidth: 1,
+            }),
+          ]
+        : []),
       // v17 ignition cells — scatterplot circles
       new ScatterplotLayer<V17Cell>({
         id: 'ignition-cells',
@@ -165,7 +170,16 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
         lineWidthMinPixels: 0.5,
       }),
     ],
-    [cells, criticalCells, viirs, beats, pulse],
+    [cells, viirs, beats],
+  );
+
+  // Final layer list inserts the pulse layer just after beats so it sits
+  // under the ignition scatter (so markers remain the hit target).
+  const layers: Layer[] = useMemo(
+    () => [dataLayers[0], pulseLayer, ...dataLayers.slice(1)].filter(
+      (l): l is Layer => Boolean(l),
+    ),
+    [dataLayers, pulseLayer],
   );
 
   // Mount MapLibre + Deck once

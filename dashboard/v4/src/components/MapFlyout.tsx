@@ -312,9 +312,11 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
                   borderColor: colors.border.base,
                 }}
                 whileTap={{ scale: 0.99 }}
-                transition={transitions.fast}
                 initial={{ opacity: 0, x: 8 }}
                 animate={{ opacity: 1, x: 0 }}
+                // Stagger the entrance via real framer-motion delay
+                // (the previous `transition-delay` HTML attr was a no-op).
+                transition={{ ...transitions.fast, delay: 0.04 * i }}
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
@@ -328,8 +330,6 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
                   textAlign: 'left',
                   cursor: 'pointer',
                 }}
-                // Stagger the entrance slightly via delay
-                transition-delay={`${i * 40}ms`}
               >
                 <Icon size={16} color={stripe} style={{ flexShrink: 0, marginTop: 1 }} />
                 <div>

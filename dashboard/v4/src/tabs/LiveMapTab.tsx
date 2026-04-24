@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Layers, Target, Crosshair, Loader2, Calendar, Eye, EyeOff, Filter } from 'lucide-react';
 import { motion, fadeUp, transitions } from '../lib/motion';
 import { colors } from '../designTokens';
@@ -105,6 +105,14 @@ export default function LiveMapTab() {
     return () => ctrl.abort();
   }, []);
 
+  const handleCellClick = useCallback((cell: V17Cell) => {
+    setSelected(cell);
+    const isCritical =
+      typeof cell.band === 'string' && cell.band.toUpperCase() === 'CRITICAL';
+    playCue(isCritical ? 'alert' : 'open');
+    hapticTap(isCritical ? [20, 40, 20] : 15);
+  }, []);
+
   const handleBeatsToggle = async (checked: boolean) => {
     setShowBeats(checked);
     if (checked && !beats && !beatsLoading) {
@@ -158,7 +166,7 @@ export default function LiveMapTab() {
   const stale = ageDays != null && ageDays > 1;
 
   return (
-    <div style={{ display: 'flex', height: '100%' }}>
+    <div data-layout="live-map" style={{ display: 'flex', height: '100%' }}>
       <Sidebar>
         {predictionDate && (
           <motion.div
@@ -477,13 +485,7 @@ export default function LiveMapTab() {
           cells={displayedCells}
           viirs={displayedFires}
           beats={showBeats ? beats : null}
-          onCellClick={(cell) => {
-            setSelected(cell);
-            const isCritical =
-              typeof cell.band === 'string' && cell.band.toUpperCase() === 'CRITICAL';
-            playCue(isCritical ? 'alert' : 'open');
-            hapticTap(isCritical ? [20, 40, 20] : 15);
-          }}
+          onCellClick={handleCellClick}
         />
         <FloatingParticles count={36} />
         <MapFlyout
