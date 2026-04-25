@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "claude-flow": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@claude-flow/cli@latest",
+        "mcp",
+        "start"
+      ],
+      "env": {
+        "npm_config_update_notifier": "false",
+        "CLAUDE_FLOW_MODE": "v3",
+        "CLAUDE_FLOW_HOOKS_ENABLED": "true",
+        "CLAUDE_FLOW_TOPOLOGY": "hierarchical-mesh",
+        "CLAUDE_FLOW_MAX_AGENTS": "15",
+        "CLAUDE_FLOW_MEMORY_BACKEND": "hybrid"
+      },
+      "autoStart": false
+    },
+    "notebooklm": {
+      "command": "python",
+      "args": [
+        "-c",
+        "import os; os.environ[\"PYTHONIOENCODING\"]=\"utf-8\"; os.environ[\"CHROME_USER_DATA_DIR\"]=\"C:/Users/S.C.C/AppData/Local/notebooklm-chrome-profile\"; from notebooklm_mcp.server import NotebookLMFastMCP; server = NotebookLMFastMCP(); server.run()"
+      ],
+      "env": {
+        "NOTEBOOK_ID": "18c853c3-7fc5-4d6f-a38c-e9b9994c53f6",
+        "CHROME_USER_DATA_DIR": "C:/Users/S.C.C/AppData/Local/notebooklm-chrome-profile",
+        "PYTHONIOENCODING": "utf-8"
+      }
+    }
+  }
+}
