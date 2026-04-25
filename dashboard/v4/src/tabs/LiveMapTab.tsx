@@ -21,6 +21,8 @@ import {
   type GeoJSONFeatureCollection,
   type HistoricalBurnPrior,
   type HistoricalBurnPoint,
+  type FuelLoadRecord,
+  type BurnPrediction,
 } from '../lib/api';
 
 interface RiskCounts {
@@ -91,6 +93,12 @@ export default function LiveMapTab() {
   const [showBurnDensity, setShowBurnDensity] = useState(false);
   const [showBlindSpots, setShowBlindSpots] = useState(false);
   const [augmentWithPriors, setAugmentWithPriors] = useState(false);
+  // Fuel-load layer (where biomass is). Lazy-loaded ~1.4 MB JSON.
+  const [showFuelLoad, setShowFuelLoad] = useState(false);
+  const [fuelLoad, setFuelLoad] = useState<FuelLoadRecord[] | null>(null);
+  const [fuelLoading, setFuelLoading] = useState(false);
+  // Per-click burn-area prediction (set by MapFlyout via callback).
+  const [burnPrediction, setBurnPrediction] = useState<BurnPrediction | null>(null);
   const [burnDensity, setBurnDensity] = useState<HistoricalBurnPoint[] | null>(null);
   const [burnDensityLoading, setBurnDensityLoading] = useState(false);
   const [historicalPriors, setHistoricalPriors] = useState<HistoricalBurnPrior[] | null>(null);
@@ -123,6 +131,25 @@ export default function LiveMapTab() {
       setPriorsLoading(false);
     }
   }, [historicalPriors, priorsLoading]);
+
+  // Fuel-load lazy fetcher (Pass A output, ~1.4 MB).
+  const ensureFuelLoad = useCallback(async () => {
+    if (fuelLoad || fuelLoading) return;
+    setFuelLoading(true);
+    try {
+      const { records } = await api.fuelLoad();
+      setFuelLoad(records);
+    } catch (e) {
+      console.error('fuel-load fetch failed:', e);
+    } finally {
+      setFuelLoading(false);
+    }
+  }, [fuelLoad, fuelLoading]);
+
+  const handleFuelLoadToggle = (checked: boolean) => {
+    setShowFuelLoad(checked);
+    if (checked) ensureFuelLoad();
+  };
 
   const handleBurnDensityToggle = (checked: boolean) => {
     setShowBurnDensity(checked);
@@ -703,6 +730,19 @@ export default function LiveMapTab() {
               count: blindSpotCells?.length ?? null,
               countLabel: 'silent cells',
             },
+            {
+              // Fuel-load (where biomass is). NOT a burn signal — a
+              // *static* layer derived from WorldCover × Reddy et al.
+              // Heatmap ramp: teal → khaki → amber → brown.
+              icon: Flame,
+              key: 'fuel-load',
+              label: 'Fuel load (t/ha)',
+              checked: showFuelLoad,
+              onChange: handleFuelLoadToggle,
+              loading: fuelLoading,
+              count: fuelLoad?.length ?? null,
+              countLabel: 'cells',
+            },
           ].map(({ icon: Icon, key, label, checked, onChange, loading: rowLoading, count, countLabel }) => (
             <motion.label
               key={key}
@@ -722,7 +762,9 @@ export default function LiveMapTab() {
               title={
                 key === 'burn-density'
                   ? 'Heatmap of every cell that burned ≥2× over the last 5 fire seasons.'
-                  : 'Cells that historically burned in 3+ of last 5 seasons but have NO current v17 alert. Purple rings = blind spots.'
+                  : key === 'blind-spots'
+                    ? 'Cells that historically burned in 3+ of last 5 seasons but have NO current v17 alert. Purple rings = blind spots.'
+                    : 'Per-cell dry biomass (t/ha) derived from ESA WorldCover × Reddy et al (2019). Brown = heavy fuel. Approximation, not field-validated.'
               }
             >
               <input
@@ -960,6 +1002,8 @@ export default function LiveMapTab() {
           burnDensityPoints={burnDensityLayerData}
           blindSpotCells={blindSpotCells}
           priorWatchCells={priorWatchCells}
+          fuelLoadRecords={showFuelLoad && fuelLoad ? fuelLoad : undefined}
+          burnPrediction={burnPrediction}
           onCellClick={handleCellClick}
         />
         <MapLegend
@@ -974,8 +1018,10 @@ export default function LiveMapTab() {
           cell={selected}
           onClose={() => {
             setSelected(null);
+            setBurnPrediction(null);
             playCue('close');
           }}
+          onPredictionUpdate={setBurnPrediction}
         />
       </section>
     </div>

@@ -14,6 +14,7 @@ import json
 import logging
 import os
 import re
+import sys
 import threading
 import time
 import uuid
@@ -192,6 +193,10 @@ _PARQUET_CACHE: dict[Path, tuple[int, int, "pd.DataFrame"]] = {}
 # spatial-clip pipeline that dominated viirs-fires latency. Single
 # entry — clear on key change to bound RSS.
 _VIIRS_CLIPPED_CACHE: dict[tuple, tuple["pd.DataFrame", int]] = {}
+# Burn-prediction result cache. Key = (rounded_lat, rounded_lon, rounded_frp,
+# weather_signature). Value = (etag, payload_dict, created_ts). Bounded
+# at 64 entries (FIFO eviction); per-prediction TTL via Cache-Control.
+_BURN_PRED_CACHE: dict[tuple, tuple[str, dict, float]] = {}
 _CACHE_LOCK = threading.Lock()
 
 
@@ -1510,6 +1515,13 @@ class PortalHandler(SimpleHTTPRequestHandler):
             # interior cells that historically burn but the v17 model
             # rarely catches.
             self._serve_v2_historical_density()
+        elif path == "/api/v2/fuel-load":
+            # Per-cell fuel-load (t/ha) derived from WorldCover ×
+            # Reddy et al (2019) reference loads. Pre-baked by
+            # scripts/build_fuel_load_v17.py. Used by the v4 portal
+            # for the "Fuel load" sidebar toggle so officers can see
+            # WHERE heavy fuel is before fire ignites.
+            self._serve_v2_fuel_load()
         else:
             super().do_GET()
 
@@ -1564,6 +1576,14 @@ class PortalHandler(SimpleHTTPRequestHandler):
                 self.send_error(400, "invalid json")
             return
 
+        if path == "/api/v2/burn-prediction":
+            # Synchronous SpreadPredictor invocation. Body:
+            #   { "lat": 23.21, "lon": 77.49, "frp_mw": 5.0,
+            #     "weather": { "wind_kmh": 12, "temp_c": 38, "rh_pct": 25, "fwi": 38 } }
+            # Response: { spread_6h, spread_12h, spread_24h } each with
+            #   { polygon: GeoJSON FeatureCollection, area_ha, max_ros_m_min }
+            self._handle_burn_prediction(body)
+            return
         if path == "/api/v2/ai/chat":
             msgs = body.get("messages")
             if not isinstance(msgs, list) or len(msgs) == 0:
@@ -2038,6 +2058,210 @@ class PortalHandler(SimpleHTTPRequestHandler):
             extra_headers={
                 "ETag": etag,
                 "Cache-Control": "public, max-age=3600, must-revalidate",
+            },
+        )
+
+    # Whitelisted metadata keys propagated from the fuel-load JSON file.
+    # Drops the verbose grid block + disclaimer (UI shows its own copy).
+    _FUEL_META_WHITELIST: tuple[str, ...] = (
+        "n_records",
+        "fuel_load_summary_t_per_ha",
+        "source_class_mapping",
+        "sb40_reference",
+    )
+
+    def _serve_v2_fuel_load(self) -> None:
+        """Per-cell fuel-load (t/ha) for the entire MP v17 grid.
+
+        Returns ``[{cell_id, lat, lon, fuel_load_t_per_ha, sb40_dominant,
+        canopy_frac, water_frac}]`` baked from ESA WorldCover ×
+        Reddy et al (2019) reference loads. Pre-baked by
+        ``scripts/build_fuel_load_v17.py``.
+
+        Same hardening as the historical-burn endpoints (cache, ETag,
+        scrubbed errors, whitelisted metadata, gzip via _send_json).
+        """
+        path = ROOT / "outputs" / "dashboard_feed" / "fuel_load_v17.json"
+        if not path.exists():
+            _ACCESS_LOG.warning("fuel_load file missing: %s", path)
+            self._send_v2_error(
+                "not_found", "fuel-load data not available", status=404,
+            )
+            return
+
+        etag = _file_etag(path, "f")
+        if self._maybe_send_304(etag):
+            return
+
+        try:
+            payload = _load_cached_json(path)
+        except (OSError, json.JSONDecodeError):
+            _ACCESS_LOG.exception("fuel_load parse failed: %s", path)
+            self._send_v2_error("fuel_unreadable", "internal error", status=500)
+            return
+
+        records = payload.get("records", [])
+        meta_in = payload.get("metadata") or {}
+        meta = {k: meta_in[k] for k in self._FUEL_META_WHITELIST if k in meta_in}
+        meta.update({"served_records": len(records), "source_file": path.name})
+        self._send_v2(
+            {"records": records},
+            meta=meta,
+            extra_headers={
+                "ETag": etag,
+                "Cache-Control": "public, max-age=3600, must-revalidate",
+            },
+        )
+
+    def _handle_burn_prediction(self, body: dict) -> None:
+        """Synchronous burn-area prediction at a user-supplied ignition point.
+
+        Wraps `src.analysis.spread_predictor.SpreadPredictor.predict()`.
+        Heavy: 5-30 s per call (Cell2Fire) or ~1 s (physics fallback).
+        Per-IP rate limit (4 req/min) since predictions can pin CPU.
+        Cached on (rounded_lat, rounded_lon, weather_signature) so a
+        re-click on the same cell is instant.
+        """
+        # --- 1. Validate body --------------------------------------------
+        try:
+            lat = float(body.get("lat"))
+            lon = float(body.get("lon"))
+        except (TypeError, ValueError):
+            self._send_v2_error("invalid_request", "lat and lon required (numeric)", status=400)
+            return
+        if not (21.0 <= lat <= 27.5) or not (74.0 <= lon <= 83.5):
+            self._send_v2_error(
+                "out_of_range", "lat/lon must be inside MP AOI (21-27.5N, 74-83.5E)",
+                status=400,
+            )
+            return
+        try:
+            frp_mw = float(body.get("frp_mw", 5.0))
+        except (TypeError, ValueError):
+            frp_mw = 5.0
+        weather_in = body.get("weather") or {}
+
+        # --- 2. Per-IP rate limit (predictions are expensive) -----------
+        allowed, _, retry = _RATE_LIMITER.check(
+            self.client_address[0], "burn_pred", 4, 60.0
+        )
+        if not allowed:
+            self.send_response(429)
+            self.send_header("Retry-After", str(int(retry) + 1))
+            self.end_headers()
+            return
+
+        # --- 3. Cache key + hit check -----------------------------------
+        wx_key = (
+            round(float(weather_in.get("wind_kmh", 12)), 1),
+            round(float(weather_in.get("temp_c",   38)), 1),
+            round(float(weather_in.get("rh_pct",   25)), 1),
+            round(float(weather_in.get("fwi",      38)), 1),
+        )
+        cache_key = (round(lat, 3), round(lon, 3), round(frp_mw, 1), wx_key)
+        cached = _BURN_PRED_CACHE.get(cache_key)
+        if cached is not None:
+            etag = cached[0]
+            if self._maybe_send_304(etag):
+                return
+            self._send_v2(
+                cached[1],
+                meta={"cached": True, "cache_age_s": int(time.time() - cached[2])},
+                extra_headers={
+                    "ETag": etag,
+                    "Cache-Control": "public, max-age=600, must-revalidate",
+                },
+            )
+            return
+
+        # --- 4. Run predictor -------------------------------------------
+        # Lazy-import inside handler so a missing dep doesn't blow up
+        # at module import time. SpreadPredictor pulls geopandas/numpy
+        # which are already loaded for VIIRS clip, so cost is minimal.
+        # Add repo root to sys.path so `src.analysis.*` resolves regardless
+        # of how the server was started (cwd-dependent normally).
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
+        try:
+            from src.analysis.spread_predictor import SpreadPredictor  # type: ignore[import-not-found]
+        except Exception as exc:
+            _ACCESS_LOG.exception("SpreadPredictor import failed")
+            self._send_v2_error(
+                "predictor_unavailable", f"spread predictor not loadable: {exc}",
+                status=503,
+            )
+            return
+
+        weather = {
+            "wind_kmh": float(weather_in.get("wind_kmh", 12)),
+            "wind_dir_deg": float(weather_in.get("wind_dir_deg", 270)),
+            "temp_c":   float(weather_in.get("temp_c",   38)),
+            "rh_pct":   float(weather_in.get("rh_pct",   25)),
+            "fwi":      float(weather_in.get("fwi",      38)),
+        }
+        fire_detection = {
+            "fire_lat": lat, "fire_lon": lon, "frp_mw": frp_mw,
+        }
+        try:
+            predictor = SpreadPredictor()
+            t0 = time.time()
+            result = predictor.predict(fire_detection, weather)
+            elapsed = time.time() - t0
+        except Exception as exc:
+            _ACCESS_LOG.exception("burn-prediction failed")
+            self._send_v2_error(
+                "prediction_failed", "internal error during fire-spread simulation",
+                status=500,
+            )
+            return
+
+        # --- 5. Wrap raw polygons into FeatureCollections so the v4
+        #         deck.gl GeoJsonLayer can ingest directly. SpreadPredictor
+        #         returns `polygon` as a single Polygon geometry; deck.gl
+        #         is happier with a proper FeatureCollection envelope.
+        def _wrap_horizon(h: dict | None) -> dict | None:
+            if not h:
+                return None
+            poly = h.get("polygon")
+            if isinstance(poly, dict) and poly.get("type") == "Polygon":
+                h = {**h, "polygon": {
+                    "type": "FeatureCollection",
+                    "features": [{
+                        "type": "Feature",
+                        "geometry": poly,
+                        "properties": {
+                            "area_ha": h.get("area_ha"),
+                            "max_ros_m_min": h.get("max_ros_m_min"),
+                        },
+                    }],
+                }}
+            return h
+
+        payload_data = {
+            "spread_6h":  _wrap_horizon(result.get("spread_6h")),
+            "spread_12h": _wrap_horizon(result.get("spread_12h")),
+            "spread_24h": _wrap_horizon(result.get("spread_24h")),
+        }
+        etag = hashlib.sha256(
+            f"{cache_key}:{elapsed:.3f}".encode()
+        ).hexdigest()[:16]
+        with _CACHE_LOCK:
+            # Bound cache — keep last 64 predictions, FIFO eviction.
+            if len(_BURN_PRED_CACHE) >= 64:
+                _BURN_PRED_CACHE.pop(next(iter(_BURN_PRED_CACHE)))
+            _BURN_PRED_CACHE[cache_key] = (etag, payload_data, time.time())
+
+        self._send_v2(
+            payload_data,
+            meta={
+                "cached": False,
+                "elapsed_s": round(elapsed, 2),
+                "fire_detection": fire_detection,
+                "weather_used": weather,
+            },
+            extra_headers={
+                "ETag": etag,
+                "Cache-Control": "public, max-age=600, must-revalidate",
             },
         )
 

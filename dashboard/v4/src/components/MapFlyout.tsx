@@ -22,11 +22,15 @@ import { colors } from '../designTokens';
 import StatusBadge, { type FireBand } from './StatusBadge';
 import ConfidenceTier from './ConfidenceTier';
 import { getTrustGuidance } from '../lib/trustTier';
-import type { V17Cell } from '../lib/api';
+import { api, type V17Cell, type BurnPrediction } from '../lib/api';
 
 interface MapFlyoutProps {
   cell: V17Cell | null;
   onClose: () => void;
+  /** Bubble the burn-area prediction up so the parent can render the
+   *  spread polygons on the map. Called with the prediction when ready,
+   *  null on flyout close. */
+  onPredictionUpdate?: (pred: BurnPrediction | null) => void;
 }
 
 function toBand(b: string | undefined): FireBand {
@@ -73,8 +77,13 @@ const ACTIONS: {
   },
 ];
 
-export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
+export default function MapFlyout({ cell, onClose, onPredictionUpdate }: MapFlyoutProps) {
   const [whyOpen, setWhyOpen] = useState(true);
+  // Burn-prediction state. Resets every time `cell` changes so we
+  // always show the fresh forecast for whichever cell is selected.
+  const [pred, setPred] = useState<BurnPrediction | null>(null);
+  const [predLoading, setPredLoading] = useState(false);
+  const [predError, setPredError] = useState<string | null>(null);
   const slideVariants = useAccessibleVariants(slideInRight);
   // Refs for keyboard focus management on open. asideRef is the dialog
   // container itself (tabIndex=-1 so we can focus it programmatically).
@@ -114,6 +123,45 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
     }, 50);
     return () => clearTimeout(t);
   }, [cell]);
+
+  // Fetch burn-area prediction whenever the selected cell changes.
+  // Resets state, hits POST /api/v2/burn-prediction with the cell's
+  // lat/lon. Bubbles result up via onPredictionUpdate so the parent
+  // can render the spread polygons over the map.
+  useEffect(() => {
+    if (!cell) {
+      setPred(null);
+      setPredError(null);
+      onPredictionUpdate?.(null);
+      return;
+    }
+    let cancelled = false;
+    setPred(null);
+    setPredError(null);
+    setPredLoading(true);
+    onPredictionUpdate?.(null);
+    const ctrl = new AbortController();
+    api
+      .burnPrediction(
+        { lat: Number(cell.lat), lon: Number(cell.lon), frp_mw: 5.0 },
+        ctrl.signal,
+      )
+      .then(({ prediction }) => {
+        if (cancelled) return;
+        setPred(prediction);
+        setPredLoading(false);
+        onPredictionUpdate?.(prediction);
+      })
+      .catch((e: Error) => {
+        if (cancelled || e.name === 'AbortError') return;
+        setPredError(e.message);
+        setPredLoading(false);
+      });
+    return () => {
+      cancelled = true;
+      ctrl.abort();
+    };
+  }, [cell?.cell_id, cell?.lat, cell?.lon, onPredictionUpdate]);
 
   return (
     <AnimatePresence>
@@ -306,6 +354,129 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
             )}
             {typeof cell.rank === 'number' && (
               <KV label="Rank" value={cell.rank.toFixed(3)} />
+            )}
+          </section>
+
+          {/* Fire-spread forecast — sync POST to /api/v2/burn-prediction.
+              Shows 3 chips (6h / 12h / 24h) with predicted burn area.
+              Polygons render on the parent map via onPredictionUpdate. */}
+          <section
+            style={{
+              marginTop: 18,
+              paddingTop: 14,
+              borderTop: `1px solid ${colors.border.subtle}`,
+            }}
+            aria-label="Fire-spread forecast"
+          >
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 500,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                color: colors.text.tertiary,
+                marginBottom: 8,
+              }}
+            >
+              Fire-spread forecast — if ignited
+            </div>
+            {predLoading && (
+              <div
+                style={{
+                  fontSize: 11,
+                  color: colors.text.tertiary,
+                  fontStyle: 'italic',
+                }}
+              >
+                Running spread simulator (1-30s)…
+              </div>
+            )}
+            {predError && (
+              <div
+                role="alert"
+                style={{
+                  fontSize: 11,
+                  color: colors.fire.critical.fg,
+                  background: colors.fire.critical.bg,
+                  padding: '6px 8px',
+                  borderRadius: 4,
+                }}
+              >
+                Prediction failed: {predError}
+              </div>
+            )}
+            {pred && !predLoading && (
+              <>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: 6,
+                  }}
+                >
+                  {[
+                    { key: '6h',  label: '6h',  data: pred.spread_6h,  fg: '#FFB450' },
+                    { key: '12h', label: '12h', data: pred.spread_12h, fg: '#DC6432' },
+                    { key: '24h', label: '24h', data: pred.spread_24h, fg: '#B43C28' },
+                  ].map((h) => (
+                    <div
+                      key={h.key}
+                      style={{
+                        padding: '8px 10px',
+                        background: colors.bg.raised,
+                        border: `1px solid ${colors.border.subtle}`,
+                        borderLeft: `3px solid ${h.fg}`,
+                        borderRadius: 6,
+                        textAlign: 'center',
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 10,
+                          color: colors.text.tertiary,
+                          fontWeight: 500,
+                          letterSpacing: '0.04em',
+                        }}
+                      >
+                        {h.label}
+                      </div>
+                      <div
+                        className="mono"
+                        style={{
+                          fontSize: 16,
+                          fontWeight: 600,
+                          color: h.fg,
+                          marginTop: 2,
+                        }}
+                      >
+                        {h.data ? `${h.data.area_ha.toFixed(0)} ha` : '—'}
+                      </div>
+                      {h.data && (
+                        <div
+                          style={{
+                            fontSize: 9,
+                            color: colors.text.tertiary,
+                            marginTop: 2,
+                          }}
+                        >
+                          ROS {h.data.max_ros_m_min.toFixed(1)} m/min
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div
+                  style={{
+                    marginTop: 6,
+                    fontSize: 10,
+                    color: colors.text.tertiary,
+                    lineHeight: 1.45,
+                  }}
+                >
+                  Spread polygons rendered on map. FRP=5 MW assumed; actual
+                  weather not yet wired (using climatology defaults).
+                </div>
+              </>
             )}
           </section>
 

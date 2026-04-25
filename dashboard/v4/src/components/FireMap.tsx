@@ -28,6 +28,8 @@ import type {
   GeoJSONFeatureCollection,
   HistoricalBurnPoint,
   HistoricalBurnPrior,
+  FuelLoadRecord,
+  BurnPrediction,
 } from '../lib/api';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -72,6 +74,14 @@ interface FireMapProps {
    *  of what v17 says. Rendered as amber double rings to make clear
    *  this is NOT a model prediction. */
   priorWatchCells?: HistoricalBurnPrior[];
+  /** Per-cell fuel-load layer (t/ha). Renders as a HeatmapLayer with a
+   *  teal→amber→brown ramp so it doesn't visually collide with the
+   *  burn-density magenta or alert palettes. */
+  fuelLoadRecords?: FuelLoadRecord[];
+  /** Optional active burn-area prediction polygon. When set, deck.gl
+   *  renders 3 nested GeoJsonLayers for the 6h/12h/24h spread polygons
+   *  with increasing transparency. Set/cleared by MapFlyout. */
+  burnPrediction?: BurnPrediction | null;
   onCellClick?: (cell: V17Cell) => void;
 }
 
@@ -102,6 +112,8 @@ export default function FireMap({
   burnDensityPoints,
   blindSpotCells,
   priorWatchCells,
+  fuelLoadRecords,
+  burnPrediction,
   onCellClick,
 }: FireMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -258,6 +270,68 @@ export default function FireMap({
     });
   }, [priorWatchCells, terrainProps]);
 
+  // Fuel-load HeatmapLayer (t/ha). Color ramp: navy → teal → khaki →
+  // amber → brown. Deliberately OFF the alert-palette axis (red/orange/
+  // amber gradient is reserved for severity bands) and OFF the burn-
+  // density magenta axis. Brown = "heavy biomass" reads naturally.
+  const fuelLoadLayer = useMemo(() => {
+    if (!fuelLoadRecords || fuelLoadRecords.length === 0) return null;
+    return new HeatmapLayer<FuelLoadRecord>({
+      id: 'fuel-load-tha',
+      data: fuelLoadRecords,
+      pickable: false,
+      getPosition: (d) => [d.lon, d.lat],
+      getWeight: (d) => d.fuel_load_t_per_ha,
+      radiusPixels: 32,
+      intensity: 0.85,
+      threshold: 0.05,
+      colorRange: [
+        [40, 60, 90, 0],         // transparent base
+        [62, 152, 152, 110],     // teal-500
+        [180, 200, 130, 150],    // khaki
+        [218, 175, 70, 180],     // amber-500
+        [180, 110, 50, 210],     // umber
+        [120, 70, 30, 230],      // brown — heavy fuel terminus
+      ],
+      updateTriggers: {
+        getWeight: fuelLoadRecords.length,
+      },
+    });
+  }, [fuelLoadRecords]);
+
+  // Burn-prediction polygons — 3 stacked GeoJsonLayers for 6h/12h/24h
+  // with shrinking opacity (most recent prediction = most opaque).
+  // These render only when the MapFlyout has fired a prediction.
+  const burnPredLayers = useMemo(() => {
+    if (!burnPrediction) return [];
+    const horizons = [
+      { id: 'burn-24h', data: burnPrediction.spread_24h, fill: [180, 60, 40, 60],   stroke: [180, 60, 40, 200],  width: 1.5 },
+      { id: 'burn-12h', data: burnPrediction.spread_12h, fill: [220, 100, 50, 100], stroke: [220, 100, 50, 230], width: 1.6 },
+      { id: 'burn-6h',  data: burnPrediction.spread_6h,  fill: [255, 180, 80, 150], stroke: [255, 180, 80, 250], width: 2.0 },
+    ];
+    return horizons.flatMap((h) => {
+      const poly = h.data?.polygon;
+      if (!poly || !poly.features?.length) return [];
+      return [
+        new GeoJsonLayer({
+          id: h.id,
+          data: poly as unknown as GeoJSON.FeatureCollection,
+          pickable: false,
+          stroked: true,
+          filled: true,
+          lineWidthUnits: 'pixels',
+          lineWidthMinPixels: 1,
+          lineWidthMaxPixels: 3,
+          getFillColor: h.fill as [number, number, number, number],
+          getLineColor: h.stroke as [number, number, number, number],
+          getLineWidth: h.width,
+          parameters: { blend: true, blendFunc: [770, 771] },
+          ...terrainProps,
+        }),
+      ];
+    });
+  }, [burnPrediction, terrainProps]);
+
   // Dissolved 87 MP forest-division polygons. Slightly bolder stroke
   // than beats so divisions read as the state-level container, beats
   // as the granular detail. No fill — keeps the map readable.
@@ -353,17 +427,20 @@ export default function FireMap({
   );
 
   // Final layer order (bottom → top):
-  //   1. burn-density heatmap     (Mitigation 2 — base context)
-  //   2. blind-spot rings         (Mitigation 2 — diff)
-  //   3. prior-watch hollow rings (Mitigation 3 — climatology priors)
-  //   4. beats polygons           (granular forest-beat outlines)
-  //   5. divisions polygons       (87 division-level outlines, bolder)
-  //   6. critical pulse           (animation under markers)
-  //   7. v17 ignition cells       (clickable, top-of-content)
-  //   8. VIIRS confirmed fires    (ground truth, top of all)
+  //   1. fuel-load heatmap        (where biomass is — STATIC backdrop)
+  //   2. burn-density heatmap     (Mitigation 2 — base context)
+  //   3. blind-spot rings         (Mitigation 2 — diff)
+  //   4. prior-watch hollow rings (Mitigation 3 — climatology priors)
+  //   5. beats polygons           (granular forest-beat outlines)
+  //   6. divisions polygons       (87 division-level outlines, bolder)
+  //   7. critical pulse           (animation under markers)
+  //   8. v17 ignition cells       (clickable, top-of-content)
+  //   9. VIIRS confirmed fires    (ground truth)
+  //  10. burn-prediction polygons (per-click focus, TOP of all)
   const layers: Layer[] = useMemo(
     () =>
       [
+        fuelLoadLayer,
         burnDensityLayer,
         blindSpotLayer,
         priorWatchLayer,
@@ -372,8 +449,10 @@ export default function FireMap({
         pulseLayer,
         ignitionLayer,
         viirsLayer,
+        ...burnPredLayers,
       ].filter((l): l is Layer => Boolean(l)),
     [
+      fuelLoadLayer,
       burnDensityLayer,
       blindSpotLayer,
       priorWatchLayer,
@@ -382,6 +461,7 @@ export default function FireMap({
       pulseLayer,
       ignitionLayer,
       viirsLayer,
+      burnPredLayers,
     ],
   );
 

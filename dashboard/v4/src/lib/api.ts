@@ -184,6 +184,53 @@ export interface HistoricalBurnDensityMeta {
   source_file?: string;
 }
 
+/** Per-cell fuel-load record from `/api/v2/fuel-load`. Derived from
+ *  ESA WorldCover × Reddy et al (2019) reference loads (kg/m² × 10).
+ *  Coarse approximation, NOT field-validated per cell. */
+export interface FuelLoadRecord {
+  cell_id: string;
+  lat: number;
+  lon: number;
+  fuel_load_t_per_ha: number;
+  sb40_dominant: string;        // "TL2", "GR1", "GR2", "SH2", "NB1", ...
+  canopy_frac: number;          // 0-1
+  water_frac: number;           // 0-1 (non-burnable fraction)
+}
+
+export interface FuelLoadMeta {
+  served_records?: number;
+  source_file?: string;
+  source_class_mapping?: string;
+  sb40_reference?: string;
+  fuel_load_summary_t_per_ha?: { min: number; max: number; mean: number; p50: number };
+  n_records?: number;
+}
+
+/** Result of POST /api/v2/burn-prediction. Each spread_Xh sub-dict is
+ *  a SpreadPredictor.predict() horizon entry. */
+export interface BurnHorizon {
+  polygon: GeoJSONFeatureCollection;
+  area_ha: number;
+  max_ros_m_min: number;
+  byram_intensity_kw_m?: number;
+  flame_length_m?: number;
+  mode?: string;
+}
+
+export interface BurnPrediction {
+  spread_6h: BurnHorizon | null;
+  spread_12h: BurnHorizon | null;
+  spread_24h: BurnHorizon | null;
+}
+
+export interface BurnPredictionMeta {
+  cached?: boolean;
+  cache_age_s?: number;
+  elapsed_s?: number;
+  fire_detection?: { fire_lat: number; fire_lon: number; frp_mw: number };
+  weather_used?: { wind_kmh: number; temp_c: number; rh_pct: number; fwi: number; wind_dir_deg?: number };
+}
+
 export interface ViirsMeta {
   total?: number;
   n_before_clip?: number;
@@ -362,6 +409,53 @@ export const api = {
       signal,
     );
     return { records: env.data?.records ?? [], meta: env.meta ?? {} };
+  },
+
+  /** Per-cell fuel-load (t/ha) over the entire MP v17 grid.
+   *  Used by the v4 portal "Fuel load" sidebar toggle. */
+  fuelLoad: async (
+    signal?: AbortSignal,
+  ): Promise<{ records: FuelLoadRecord[]; meta: FuelLoadMeta }> => {
+    const env = await getEnvelope<{ records: FuelLoadRecord[] }, FuelLoadMeta>(
+      '/api/v2/fuel-load',
+      signal,
+    );
+    return { records: env.data?.records ?? [], meta: env.meta ?? {} };
+  },
+
+  /** Synchronous burn-area prediction at an ignition point.
+   *  Slow (1-30 s); the backend rate-limits to 4 req/min/IP. Returns
+   *  spread_6h / spread_12h / spread_24h with polygon + area_ha. */
+  burnPrediction: async (
+    body: { lat: number; lon: number; frp_mw?: number; weather?: Record<string, number> },
+    signal?: AbortSignal,
+  ): Promise<{ prediction: BurnPrediction; meta: BurnPredictionMeta }> => {
+    const res = await fetch('/api/v2/burn-prediction', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal,
+    });
+    const text = await res.text();
+    let parsed: unknown;
+    try {
+      parsed = text ? JSON.parse(text) : null;
+    } catch {
+      throw new ApiError(res.status, {
+        code: 'invalid_json_response',
+        message: `Non-JSON body from burn-prediction (HTTP ${res.status})`,
+      });
+    }
+    if (!res.ok) {
+      const body = parsed as { error?: ApiErrorShape } | null;
+      const shape: ApiErrorShape = body?.error ?? {
+        code: 'http_error',
+        message: `HTTP ${res.status}`,
+      };
+      throw new ApiError(res.status, shape);
+    }
+    const env = parsed as Envelope<BurnPrediction, BurnPredictionMeta>;
+    return { prediction: env.data, meta: env.meta ?? {} };
   },
 
   /** Density-friendly point cloud for the burn-density HeatmapLayer.
