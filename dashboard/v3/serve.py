@@ -9,6 +9,7 @@ Usage:
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -173,6 +174,39 @@ def _log_access(entry: dict) -> None:
     # Always mirror to stdout so `python serve.py > log.out` captures it
     # even when basicConfig is not set.
     print(line, flush=True)
+
+
+# mtime-keyed JSON cache for the historical-burn endpoints (and any
+# future bulk-static-file endpoint that wants it). Re-parses only when
+# the source file's mtime_ns changes — works correctly across
+# `build_historical_burn_priors.py` reruns and survives partial-write
+# races (json.JSONDecodeError just leaves the previous entry in place).
+# Module-level so it's shared across the threaded HTTP handlers.
+_JSON_CACHE: dict[Path, tuple[int, int, dict]] = {}
+
+
+def _load_cached_json(path: Path) -> dict:
+    """Cache key: (path, mtime_ns). Returns parsed dict; partial-write
+    failures propagate so the caller can 500 cleanly."""
+    st = path.stat()
+    cached = _JSON_CACHE.get(path)
+    if cached and cached[0] == st.st_mtime_ns and cached[1] == st.st_size:
+        return cached[2]
+    parsed = json.loads(path.read_text(encoding="utf-8"))
+    _JSON_CACHE[path] = (st.st_mtime_ns, st.st_size, parsed)
+    return parsed
+
+
+def _file_etag(path: Path, *extra: object) -> str:
+    """Stable, cheap ETag = sha256(mtime_ns + size + extras)[:16]. We
+    intentionally do not hash file content — for these multi-MB JSONs,
+    that's wasteful when mtime is reliable."""
+    st = path.stat()
+    h = hashlib.sha256()
+    h.update(f"{st.st_mtime_ns}:{st.st_size}".encode())
+    for e in extra:
+        h.update(f":{e}".encode())
+    return h.hexdigest()[:16]
 
 
 def _load_v17_predictions(date_str: str | None = None) -> dict:
@@ -1542,16 +1576,39 @@ class PortalHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    def _send_json(self, payload: dict, status: int = 200):
+    def _send_json(
+        self,
+        payload: dict,
+        status: int = 200,
+        extra_headers: dict[str, str] | None = None,
+    ):
         body = json.dumps(payload, default=str).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
+        # Always-on hardening: stop browsers from MIME-sniffing JSON as HTML
+        # (mitigates XSS-via-content-type-confusion on shared portals).
+        self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.send_header("Content-Length", len(body))
+        if extra_headers:
+            for k, v in extra_headers.items():
+                self.send_header(k, v)
         self.end_headers()
         self.wfile.write(body)
+
+    def _maybe_send_304(self, etag: str) -> bool:
+        """Honor If-None-Match. Returns True if a 304 was sent and the
+        caller should bail. The 304 carries the same ETag header so the
+        client keeps using the cached copy."""
+        if self.headers.get("If-None-Match") == etag:
+            self.send_response(304)
+            self.send_header("ETag", etag)
+            self.send_header("Cache-Control", "public, max-age=3600, must-revalidate")
+            self.end_headers()
+            return True
+        return False
 
     # ---------------------------------------------------------------
     # v2 envelope helpers. Contract: every 2xx response is
@@ -1566,13 +1623,14 @@ class PortalHandler(SimpleHTTPRequestHandler):
         meta: dict | None = None,
         status: int = 200,
         links: dict | None = None,
+        extra_headers: dict[str, str] | None = None,
     ) -> None:
         env: dict = {"data": data}
         if meta is not None:
             env["meta"] = meta
         if links is not None:
             env["links"] = links
-        self._send_json(env, status=status)
+        self._send_json(env, status=status, extra_headers=extra_headers)
 
     def _send_v2_error(
         self,
@@ -1698,6 +1756,17 @@ class PortalHandler(SimpleHTTPRequestHandler):
             },
         )
 
+    # Whitelisted metadata keys propagated from the priors JSON file
+    # into the response envelope. Anything NOT in this set is dropped,
+    # so a tampered metadata dict can't smuggle untrusted keys into the
+    # served response (LOW finding from security-auditor).
+    _PRIORS_META_WHITELIST: tuple[str, ...] = (
+        "seasons", "fire_months", "n_cells_total",
+        "n_cells_3plus_seasons", "n_cells_5_seasons", "filter",
+        "grid",
+    )
+    _DENSITY_META_WHITELIST: tuple[str, ...] = ("seasons", "filter")
+
     def _serve_v2_historical_priors(self, qs) -> None:
         """Per-cell historical burn counts (5 fire seasons, 2021-2025).
 
@@ -1707,44 +1776,96 @@ class PortalHandler(SimpleHTTPRequestHandler):
         candidates for Mitigation 3.
 
         Query params:
-          ?min_seasons=N   filter (1-5; default 3 → use slim file)
-        """
-        try:
-            min_seasons = int((qs.get("min_seasons", ["3"]) or ["3"])[0])
-        except (TypeError, ValueError):
-            min_seasons = 3
-        min_seasons = max(1, min(5, min_seasons))
+          ?min_seasons=N   filter (integer 1-5; default 3 → use slim file)
 
-        # Use slim file when default 3-season filter is requested; else
-        # walk the full file and filter in-memory.
-        slim_path = ROOT / "outputs" / "dashboard_feed" / "historical_burn_priors_3plus.json"
-        full_path = ROOT / "outputs" / "dashboard_feed" / "historical_burn_priors.json"
-        path = slim_path if min_seasons == 3 and slim_path.exists() else full_path
-        if not path.exists():
+        Hardening (vs naive impl):
+          - Fail-fast 400 on any non-integer / out-of-range / repeated
+            min_seasons (no silent clamp).
+          - mtime-keyed JSON cache: re-parses only when the file changes.
+          - ETag + Cache-Control + 304 short-circuit.
+          - Whitelisted metadata, scrubbed error messages.
+        """
+        # --- 1. Validate min_seasons (fail-fast, single value) -----------
+        raw = qs.get("min_seasons", ["3"])
+        if len(raw) != 1:
             self._send_v2_error(
-                "not_found",
-                f"historical priors file missing: {path.name}. "
-                "Run `python scripts/build_historical_burn_priors.py`.",
-                status=404,
+                "invalid_min_seasons",
+                "exactly one min_seasons query parameter is required",
+                status=400,
             )
             return
         try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
-            self._send_v2_error("priors_unreadable", str(exc), status=500)
+            min_seasons = int(raw[0])
+        except (TypeError, ValueError):
+            self._send_v2_error(
+                "invalid_min_seasons",
+                "min_seasons must be an integer in [1, 5]",
+                status=400,
+            )
+            return
+        if not (1 <= min_seasons <= 5):
+            self._send_v2_error(
+                "invalid_min_seasons",
+                "min_seasons must be an integer in [1, 5]",
+                status=400,
+            )
+            return
+
+        # --- 2. Choose source file --------------------------------------
+        feed = ROOT / "outputs" / "dashboard_feed"
+        slim_path = feed / "historical_burn_priors_3plus.json"
+        full_path = feed / "historical_burn_priors.json"
+        # Use slim file for the common case AND for any min_seasons >= 3
+        # (slim is already pre-filtered to n_seasons_burned >= 3, so
+        # slim ⊇ {min_seasons in 3,4,5}). This avoids holding the
+        # 9.3 MB full file in memory for higher thresholds.
+        path = slim_path if (min_seasons >= 3 and slim_path.exists()) else full_path
+        if not path.exists():
+            # Don't leak the absolute path or rebuild command to anonymous
+            # callers. Server-side log gets the detail.
+            _ACCESS_LOG.warning("historical_priors file missing: %s", path)
+            self._send_v2_error(
+                "not_found", "historical priors data not available", status=404,
+            )
+            return
+
+        # --- 3. Cache + ETag short-circuit ------------------------------
+        etag = _file_etag(path, "p", min_seasons)
+        if self._maybe_send_304(etag):
+            return
+
+        # --- 4. Parse + filter ------------------------------------------
+        try:
+            payload = _load_cached_json(path)
+        except (OSError, json.JSONDecodeError):
+            _ACCESS_LOG.exception("historical_priors parse failed: %s", path)
+            self._send_v2_error("priors_unreadable", "internal error", status=500)
             return
 
         records = payload.get("records", [])
-        if min_seasons != 3 or path == full_path:
+        # Slim file is already filtered to >=3, so further filter only
+        # when caller wants 4 or 5.
+        if min_seasons > 3:
+            records = [r for r in records if r.get("n_seasons_burned", 0) >= min_seasons]
+        # If we fell back to the full file (slim missing), still filter.
+        elif path is full_path:
             records = [r for r in records if r.get("n_seasons_burned", 0) >= min_seasons]
 
-        meta = {
-            **(payload.get("metadata") or {}),
+        meta_in = payload.get("metadata") or {}
+        meta = {k: meta_in[k] for k in self._PRIORS_META_WHITELIST if k in meta_in}
+        meta.update({
             "served_min_seasons": min_seasons,
             "served_records": len(records),
             "source_file": path.name,
-        }
-        self._send_v2({"records": records}, meta=meta)
+        })
+        self._send_v2(
+            {"records": records},
+            meta=meta,
+            extra_headers={
+                "ETag": etag,
+                "Cache-Control": "public, max-age=3600, must-revalidate",
+            },
+        )
 
     def _serve_v2_historical_density(self) -> None:
         """Heatmap-friendly point cloud of historical burns.
@@ -1752,28 +1873,41 @@ class PortalHandler(SimpleHTTPRequestHandler):
         Returns ``[{lat, lon, w}]`` for every cell with >=2 fire-season
         VIIRS detections over the last 5 years (~58k points, ~2.4 MB).
         Pre-baked by ``scripts/build_historical_burn_priors.py``.
+
+        Same hardening as _serve_v2_historical_priors (cache, ETag,
+        scrubbed errors, whitelisted metadata).
         """
         path = ROOT / "outputs" / "dashboard_feed" / "historical_burn_density.json"
         if not path.exists():
+            _ACCESS_LOG.warning("historical_density file missing: %s", path)
             self._send_v2_error(
-                "not_found",
-                f"historical burn density missing: {path.name}. "
-                "Run `python scripts/build_historical_burn_priors.py`.",
-                status=404,
+                "not_found", "historical burn density not available", status=404,
             )
             return
-        try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
-            self._send_v2_error("density_unreadable", str(exc), status=500)
+
+        etag = _file_etag(path, "d")
+        if self._maybe_send_304(etag):
             return
+
+        try:
+            payload = _load_cached_json(path)
+        except (OSError, json.JSONDecodeError):
+            _ACCESS_LOG.exception("historical_density parse failed: %s", path)
+            self._send_v2_error("density_unreadable", "internal error", status=500)
+            return
+
         points = payload.get("points", [])
-        meta = {
-            **(payload.get("metadata") or {}),
-            "n_points": len(points),
-            "source_file": path.name,
-        }
-        self._send_v2({"points": points}, meta=meta)
+        meta_in = payload.get("metadata") or {}
+        meta = {k: meta_in[k] for k in self._DENSITY_META_WHITELIST if k in meta_in}
+        meta.update({"n_points": len(points), "source_file": path.name})
+        self._send_v2(
+            {"points": points},
+            meta=meta,
+            extra_headers={
+                "ETag": etag,
+                "Cache-Control": "public, max-age=3600, must-revalidate",
+            },
+        )
 
     def _serve_v2_viirs(self, date_from, date_to) -> None:
         payload = _build_viirs_fires(date_from=date_from, date_to=date_to)

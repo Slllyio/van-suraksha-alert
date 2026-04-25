@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import glob
 import json
+import os
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -57,6 +58,23 @@ LON_ORIGIN = 74.039279
 
 # Fire-season months (Feb-May per CLAUDE.md "Fire Season")
 FIRE_MONTHS = {2, 3, 4, 5}
+
+
+def _write_atomic_json(target: Path, payload: dict) -> None:
+    """Write JSON atomically: tmp file in same dir + os.replace().
+
+    Defends against the race where /api/v2/historical-burn-priors
+    reads a partially-written file mid-rebuild and bubbles up a 500.
+    `os.replace` is atomic on POSIX and on Windows since Python 3.3
+    (uses MoveFileEx with MOVEFILE_REPLACE_EXISTING).
+    """
+    target.parent.mkdir(parents=True, exist_ok=True)
+    tmp = target.with_suffix(target.suffix + ".tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(payload, f, separators=(",", ":"))
+        f.flush()
+        os.fsync(f.fileno())  # crash-safety: durable before rename
+    os.replace(tmp, target)
 
 # 5 most recent complete fire seasons
 SEASONS = [2021, 2022, 2023, 2024, 2025]
@@ -150,9 +168,7 @@ def main() -> None:
         "records": records,
     }
 
-    OUTPUT_FULL.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_FULL, "w", encoding="utf-8") as f:
-        json.dump(payload, f, separators=(",", ":"))
+    _write_atomic_json(OUTPUT_FULL, payload)
 
     # Slim variant — only cells with 3+ seasons burned (Mitigation 3
     # promotion candidates). Wire-friendly subset for the override toggle.
@@ -165,8 +181,7 @@ def main() -> None:
         },
         "records": slim_records,
     }
-    with open(OUTPUT_SLIM, "w", encoding="utf-8") as f:
-        json.dump(slim_payload, f, separators=(",", ":"))
+    _write_atomic_json(OUTPUT_SLIM, slim_payload)
 
     # Density variant for HeatmapLayer — only [lat, lon, weight] per
     # cell with ≥2 fires. Drops single-detection noise.
@@ -183,8 +198,7 @@ def main() -> None:
         },
         "points": density_points,
     }
-    with open(OUTPUT_DENSITY, "w", encoding="utf-8") as f:
-        json.dump(density_payload, f, separators=(",", ":"))
+    _write_atomic_json(OUTPUT_DENSITY, density_payload)
 
     md = payload["metadata"]
     print()
