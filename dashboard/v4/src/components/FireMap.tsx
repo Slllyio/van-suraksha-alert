@@ -28,6 +28,11 @@ interface FireMapProps {
   /** Optional MP forest-beats GeoJSON (MultiPolygon features). When null, the
    *  beats layer is not rendered. */
   beats?: GeoJSONFeatureCollection | null;
+  /** Toggle 3D terrain. When true, attaches AWS Terrain Tiles as a raster-DEM
+   *  source and animates pitch to 60°. See docs/3d_terrain_analysis.md. */
+  terrain3D?: boolean;
+  /** Vertical exaggeration multiplier for 3D terrain (default 1.5). */
+  terrainExaggeration?: number;
   onCellClick?: (cell: V17Cell) => void;
 }
 
@@ -48,7 +53,14 @@ function bandRadius(band: string, risk?: number): number {
   return base * weight;
 }
 
-export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapProps) {
+export default function FireMap({
+  cells,
+  viirs,
+  beats,
+  terrain3D = false,
+  terrainExaggeration = 1.5,
+  onCellClick,
+}: FireMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const deckRef = useRef<Deck | null>(null);
@@ -201,6 +213,9 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
       style: MAP_STYLE,
       center: [INITIAL_VIEW.longitude, INITIAL_VIEW.latitude],
       zoom: INITIAL_VIEW.zoom,
+      // Allow pitch up to 75° so 3D terrain mode can tilt the camera.
+      // Default would cap at 60° which is fine, but explicit is safer.
+      maxPitch: 75,
       attributionControl: { compact: true },
     });
     mapRef.current = map;
@@ -281,6 +296,57 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
   useEffect(() => {
     if (deckRef.current) deckRef.current.setProps({ layers });
   }, [layers]);
+
+  // 3D terrain side effect — attach AWS Terrain Tiles + animate pitch when
+  // terrain3D flips on; tear down when it flips off. See
+  // docs/3d_terrain_analysis.md for the picked path + future upgrade plan.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const onLoad = () => {
+      try {
+        if (terrain3D) {
+          if (!map.getSource('aws-terrain')) {
+            map.addSource('aws-terrain', {
+              type: 'raster-dem',
+              tiles: [
+                'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png',
+              ],
+              encoding: 'terrarium',
+              tileSize: 256,
+              maxzoom: 14,
+              attribution:
+                '<a href="https://registry.opendata.aws/terrain-tiles/">AWS Terrain</a>',
+            });
+          }
+          map.setTerrain({
+            source: 'aws-terrain',
+            exaggeration: terrainExaggeration,
+          });
+          map.dragRotate.enable();
+          map.touchZoomRotate.enableRotation();
+          // Snap pitch immediately to dodge any animation race against the
+          // basemap's "moveend" → deck.gl resync loop, then ease to add
+          // perceived motion. The "snap then ease" pattern survives some
+          // basemap styles (e.g. CartoDB) that quietly clamp pitch back to 0.
+          map.setPitch(45);
+          map.easeTo({ pitch: 60, duration: 800 });
+          // eslint-disable-next-line no-console
+          console.info('[FireMap] 3D terrain enabled (pitch 60°, exag', terrainExaggeration, ')');
+        } else {
+          map.setTerrain(null);
+          map.easeTo({ pitch: 0, bearing: 0, duration: 600 });
+        }
+      } catch (err) {
+        // MapLibre throws if source already exists / removed mid-tween.
+        // Non-fatal — log and continue.
+        // eslint-disable-next-line no-console
+        console.warn('[FireMap] 3D terrain toggle failed:', err);
+      }
+    };
+    if (map.isStyleLoaded()) onLoad();
+    else map.once('load', onLoad);
+  }, [terrain3D, terrainExaggeration]);
 
   return (
     <div

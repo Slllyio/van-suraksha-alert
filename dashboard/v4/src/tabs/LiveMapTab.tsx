@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Layers, Target, Crosshair, Loader2, Calendar, Eye, EyeOff, Filter } from 'lucide-react';
-import { motion, fadeUp, transitions } from '../lib/motion';
+import { Layers, Target, Crosshair, Loader2, Calendar, Eye, EyeOff, Filter, Mountain } from 'lucide-react';
+import { motion, AnimatePresence, fadeUp, transitions } from '../lib/motion';
 import { colors } from '../designTokens';
 import { Sidebar, SidebarSection } from '../components/Sidebar';
 import StatusBadge from '../components/StatusBadge';
@@ -40,6 +40,11 @@ export default function LiveMapTab() {
   const [showFires, setShowFires] = useState(true);
   const [showBeats, setShowBeats] = useState(false);
   const [showDiv] = useState(true);
+  // 3D terrain — see docs/3d_terrain_analysis.md
+  // Default exaggeration 4× because at state-wide zoom (~5.8) MP ridges
+  // are only 100-500m tall; without exaggeration they don't pop visually.
+  const [terrain3D, setTerrain3D] = useState(false);
+  const [terrainExag, setTerrainExag] = useState(4.0);
   // Per-band visibility — each of CRITICAL / ALERT / WATCH independent.
   // Click a sidebar risk card (or its checkbox) to toggle that band on/off.
   const [visibleBands, setVisibleBands] = useState<Record<BandKey, boolean>>({
@@ -481,6 +486,122 @@ export default function LiveMapTab() {
             </motion.label>
           ))}
         </SidebarSection>
+
+        <SidebarSection label="3D view">
+          <motion.label
+            variants={fadeUp}
+            whileHover={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+            transition={transitions.fast}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              padding: '8px 10px',
+              borderRadius: 8,
+              cursor: 'pointer',
+              background: terrain3D ? colors.accent.muted : colors.bg.raised,
+              border: `1px solid ${terrain3D ? 'rgba(138,180,248,.42)' : colors.border.subtle}`,
+              color: terrain3D ? colors.accent.base : colors.text.secondary,
+              fontSize: 13,
+              fontWeight: 500,
+              transition: 'background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast)',
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={terrain3D}
+              onChange={(e) => setTerrain3D(e.target.checked)}
+              style={{ accentColor: colors.accent.base }}
+            />
+            <Mountain size={14} />
+            <span style={{ flex: 1 }}>3D terrain</span>
+            {terrain3D && (
+              <motion.span
+                className="mono"
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                style={{
+                  fontSize: 10,
+                  color: colors.accent.base,
+                  background: 'rgba(138,180,248,.16)',
+                  padding: '2px 6px',
+                  borderRadius: 999,
+                }}
+              >
+                ON
+              </motion.span>
+            )}
+          </motion.label>
+          <AnimatePresence>
+            {terrain3D && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={transitions.base}
+                style={{ overflow: 'hidden' }}
+              >
+                <div
+                  style={{
+                    padding: '10px 4px 4px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 6,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      fontSize: 11,
+                      color: colors.text.tertiary,
+                    }}
+                  >
+                    <span>Vertical exaggeration</span>
+                    <span
+                      className="mono"
+                      style={{ color: colors.accent.base, fontSize: 11 }}
+                    >
+                      {terrainExag.toFixed(1)}×
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={10}
+                    step={0.5}
+                    value={terrainExag}
+                    onChange={(e) => setTerrainExag(parseFloat(e.target.value))}
+                    aria-label="Terrain vertical exaggeration"
+                    style={{
+                      width: '100%',
+                      accentColor: colors.accent.base,
+                    }}
+                  />
+                  <div
+                    style={{
+                      fontSize: 10,
+                      color: colors.text.tertiary,
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    Drag-rotate enabled. Tiles via{' '}
+                    <a
+                      href="https://registry.opendata.aws/terrain-tiles/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: colors.accent.base }}
+                    >
+                      AWS Terrain
+                    </a>
+                    .
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </SidebarSection>
       </Sidebar>
 
       <section style={{ flex: 1, minWidth: 0, position: 'relative' }}>
@@ -488,6 +609,8 @@ export default function LiveMapTab() {
           cells={displayedCells}
           viirs={displayedFires}
           beats={showBeats ? beats : null}
+          terrain3D={terrain3D}
+          terrainExaggeration={terrainExag}
           onCellClick={handleCellClick}
         />
         <FloatingParticles count={36} />
