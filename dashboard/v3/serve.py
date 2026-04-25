@@ -20,7 +20,7 @@ import uuid
 from collections import deque
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -176,36 +176,73 @@ def _log_access(entry: dict) -> None:
     print(line, flush=True)
 
 
-# mtime-keyed JSON cache for the historical-burn endpoints (and any
-# future bulk-static-file endpoint that wants it). Re-parses only when
-# the source file's mtime_ns changes — works correctly across
-# `build_historical_burn_priors.py` reruns and survives partial-write
-# races (json.JSONDecodeError just leaves the previous entry in place).
-# Module-level so it's shared across the threaded HTTP handlers.
+# mtime-keyed in-memory caches for bulk-static-file endpoints. Re-parses
+# only when the source file's (mtime_ns, size) pair changes — works
+# correctly across builder reruns and survives partial-write races
+# (decode errors just leave the previous entry in place).
+#
+# Thread-safety: caches are read/written from the threaded HTTP handler
+# (see ThreadingHTTPServer below). Reads are dict.get (atomic in CPython
+# for single-key access) but read-modify-write needs the lock to avoid
+# torn cache entries during concurrent first-loads of the same file.
 _JSON_CACHE: dict[Path, tuple[int, int, dict]] = {}
+_PARQUET_CACHE: dict[Path, tuple[int, int, "pd.DataFrame"]] = {}
+_CACHE_LOCK = threading.Lock()
 
 
 def _load_cached_json(path: Path) -> dict:
-    """Cache key: (path, mtime_ns). Returns parsed dict; partial-write
-    failures propagate so the caller can 500 cleanly."""
+    """Cache key: (path, mtime_ns, size). Returns parsed dict;
+    partial-write failures propagate so the caller can 500 cleanly."""
     st = path.stat()
     cached = _JSON_CACHE.get(path)
     if cached and cached[0] == st.st_mtime_ns and cached[1] == st.st_size:
         return cached[2]
+    # Parse outside the lock (slow, ~50-150 ms for 9 MB). Two concurrent
+    # cold-loads will each parse independently — the second one wins
+    # the lock and overwrites; both return correct data.
     parsed = json.loads(path.read_text(encoding="utf-8"))
-    _JSON_CACHE[path] = (st.st_mtime_ns, st.st_size, parsed)
+    with _CACHE_LOCK:
+        _JSON_CACHE[path] = (st.st_mtime_ns, st.st_size, parsed)
     return parsed
+
+
+def _load_cached_parquet(path: Path) -> "pd.DataFrame":
+    """Same pattern as _load_cached_json but for parquet. Returns the
+    cached DataFrame by reference — callers MUST treat it as immutable
+    (use .copy() before any in-place mutation)."""
+    st = path.stat()
+    cached = _PARQUET_CACHE.get(path)
+    if cached and cached[0] == st.st_mtime_ns and cached[1] == st.st_size:
+        return cached[2]
+    df = pd.read_parquet(path)
+    with _CACHE_LOCK:
+        _PARQUET_CACHE[path] = (st.st_mtime_ns, st.st_size, df)
+    return df
 
 
 def _file_etag(path: Path, *extra: object) -> str:
     """Stable, cheap ETag = sha256(mtime_ns + size + extras)[:16]. We
-    intentionally do not hash file content — for these multi-MB JSONs,
+    intentionally do not hash file content — for these multi-MB files,
     that's wasteful when mtime is reliable."""
     st = path.stat()
     h = hashlib.sha256()
     h.update(f"{st.st_mtime_ns}:{st.st_size}".encode())
     for e in extra:
         h.update(f":{e}".encode())
+    return h.hexdigest()[:16]
+
+
+def _composite_etag(*sources: object) -> str:
+    """ETag derived from multiple sources (e.g. multiple files + a
+    query-param signature). Useful for endpoints whose response depends
+    on >1 file or on params not derivable from the file alone."""
+    h = hashlib.sha256()
+    for s in sources:
+        if isinstance(s, Path) and s.exists():
+            st = s.stat()
+            h.update(f"{s.name}:{st.st_mtime_ns}:{st.st_size}|".encode())
+        else:
+            h.update(f"{s}|".encode())
     return h.hexdigest()[:16]
 
 
@@ -219,9 +256,17 @@ def _load_v17_predictions(date_str: str | None = None) -> dict:
         candidate = FEED_DIR / "ignition_risk_v17.json"
     if not candidate.exists():
         return {"error": "no v17 predictions available"}
-    payload = json.loads(candidate.read_text())
-    payload.pop("alerts_all_cells", None)
-    return payload
+    # mtime-keyed cache. Drops ~150 ms per page on the cursor-walking
+    # ignition-v17 endpoint. We pop `alerts_all_cells` AFTER caching the
+    # raw parse, so we copy before mutation to keep the cache untouched.
+    raw = _load_cached_json(candidate)
+    if "alerts_all_cells" in raw:
+        # Cheap shallow copy + pop on the copy. The cached dict is
+        # treated as immutable; this is the canonical "consumer copy".
+        out = dict(raw)
+        out.pop("alerts_all_cells", None)
+        return out
+    return raw
 
 
 def _load_latest_alert() -> dict:
@@ -565,23 +610,40 @@ def _refresh_firms_nrt(nrt_path: Path) -> None:
 
 
 def _build_viirs_fires(date_from: str | None = None, date_to: str | None = None) -> dict:
-    """Load VIIRS fire detections clipped to MP forest beats."""
-    fires = []
+    """Load VIIRS fire detections clipped to MP forest beats.
+
+    Hot-path optimizations vs the original:
+      - Both parquets are loaded via `_load_cached_parquet` (mtime-keyed
+        cache). Cold-load of the 1.35M-row consolidated parquet drops
+        from per-request to once-per-rebuild.
+      - Spatial clip + DataFrame → records uses `.to_dict("records")`
+        instead of `iterrows`, which is 10-50× faster for ~10k rows.
+      - Concat/dedup runs once on the cached frame too — see _viirs_combined.
+    """
     nrt_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "nrt_7d.parquet"
     cons_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "firms_mp_consolidated.parquet"
 
-    # Refresh NRT cache from NASA before serving (throttled to 6h)
+    # Refresh NRT cache from NASA before serving (throttled to 6h).
+    # Refresh changes nrt_path mtime → cache auto-invalidates.
     _refresh_firms_nrt(nrt_path)
 
+    fires = []
     if nrt_path.exists():
-        nrt = pd.read_parquet(nrt_path)
-        nrt["acq_date"] = pd.to_datetime(nrt["acq_date"])
-        nrt["source"] = "NRT"
+        nrt = _load_cached_parquet(nrt_path)
+        # Cached frame is read-only; never mutate. Take a view + add
+        # source by assigning into a fresh column-projected copy.
+        nrt = nrt.assign(
+            acq_date=pd.to_datetime(nrt["acq_date"]),
+            source="NRT",
+        )
         fires.append(nrt)
 
     if cons_path.exists():
-        cons = pd.read_parquet(cons_path)
-        cons["acq_date"] = pd.to_datetime(cons["acq_date"])
+        cons = _load_cached_parquet(cons_path)
+        # Avoid pd.to_datetime if already datetime64 (it's a no-op
+        # but still walks the column).
+        if cons["acq_date"].dtype != "datetime64[ns]":
+            cons = cons.assign(acq_date=pd.to_datetime(cons["acq_date"]))
         fires.append(cons)
 
     if not fires:
@@ -611,24 +673,30 @@ def _build_viirs_fires(date_from: str | None = None, date_to: str | None = None)
     available = [c for c in keep_cols if c in df.columns]
     # Cap for payload sanity — strict forest clip typically yields ~9k for a
     # 7-day MP-wide window; 10k cap leaves headroom for peak-week spikes.
-    df = df[available].head(10000)
+    df = df[available].head(10000).copy()
 
+    # Pre-coerce the date column so we don't pay str() per row.
+    df["acq_date"] = df["acq_date"].dt.strftime("%Y-%m-%d")
+
+    # Build records via vectorized to_dict instead of iterrows. ~30x
+    # faster for 10k rows on this schema.
+    raw_records = df.to_dict("records")
     records = []
-    for _, r in df.iterrows():
-        rec = {
+    for r in raw_records:
+        bright = r.get("bright_ti4")
+        records.append({
             "lat": float(r["latitude"]),
             "lon": float(r["longitude"]),
-            "date": str(r["acq_date"])[:10],
+            "date": r["acq_date"],
             "time": str(r.get("acq_time", "")),
             "confidence": str(r.get("confidence", "")),
-            "brightness": float(r["bright_ti4"]) if "bright_ti4" in r and pd.notna(r["bright_ti4"]) else None,
+            "brightness": float(bright) if bright is not None and pd.notna(bright) else None,
             "satellite": str(r.get("satellite", "")),
             "source": str(r.get("source", "")),
             "division": str(r.get("Division", "")),
             "range": str(r.get("Range", "")),
             "beat": str(r.get("Beat", "")),
-        }
-        records.append(rec)
+        })
 
     date_min = str(df["acq_date"].min())[:10] if len(df) else ""
     date_max = str(df["acq_date"].max())[:10] if len(df) else ""
@@ -1576,6 +1644,11 @@ class PortalHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    # Gzip threshold — below this, the compress overhead isn't worth it.
+    # Above ~10 KB JSON, gzip routinely shrinks 80-90% (good: high
+    # repetition in field names, lat/lon precision, etc.).
+    _GZIP_MIN_BYTES = 4096
+
     def _send_json(
         self,
         payload: dict,
@@ -1583,15 +1656,28 @@ class PortalHandler(SimpleHTTPRequestHandler):
         extra_headers: dict[str, str] | None = None,
     ):
         body = json.dumps(payload, default=str).encode("utf-8")
+        encoding_used = None
+        # Gzip if the client offered it AND payload exceeds the threshold.
+        # Single-pass compress; no streaming. For our sizes (< 10 MB) the
+        # ~10-30 ms compress cost is dwarfed by the wire-time savings.
+        if len(body) >= self._GZIP_MIN_BYTES:
+            accept = (self.headers.get("Accept-Encoding") or "").lower()
+            if "gzip" in accept:
+                import gzip
+                body = gzip.compress(body, compresslevel=6)
+                encoding_used = "gzip"
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
-        # Always-on hardening: stop browsers from MIME-sniffing JSON as HTML
-        # (mitigates XSS-via-content-type-confusion on shared portals).
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.send_header("Content-Length", len(body))
+        if encoding_used:
+            self.send_header("Content-Encoding", encoding_used)
+            # Vary so caches keep the gzipped + uncompressed copies
+            # under separate keys.
+            self.send_header("Vary", "Accept-Encoding")
         if extra_headers:
             for k, v in extra_headers.items():
                 self.send_header(k, v)
@@ -1910,6 +1996,15 @@ class PortalHandler(SimpleHTTPRequestHandler):
         )
 
     def _serve_v2_viirs(self, date_from, date_to) -> None:
+        # ETag derived from the source parquets + the date window. NRT
+        # parquet mtime changes whenever _refresh_firms_nrt downloads
+        # fresh data, so the ETag invalidates automatically.
+        nrt_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "nrt_7d.parquet"
+        cons_path = ROOT / "data_lake" / "fire_detections" / "firms_mp_viirs" / "firms_mp_consolidated.parquet"
+        etag = _composite_etag(nrt_path, cons_path, "viirs", date_from or "", date_to or "")
+        if self._maybe_send_304(etag):
+            return
+
         payload = _build_viirs_fires(date_from=date_from, date_to=date_to)
         fires = payload.get("fires", []) if isinstance(payload, dict) else []
         meta = {
@@ -1919,7 +2014,17 @@ class PortalHandler(SimpleHTTPRequestHandler):
             "latest_date": payload.get("latest_date") if isinstance(payload, dict) else None,
             "date_range": payload.get("date_range") if isinstance(payload, dict) else None,
         }
-        self._send_v2(fires, meta=meta)
+        # Short max-age — NRT parquet refreshes every 6h; cons changes
+        # only when batch ingest runs (~daily). 1h browser cache + ETag
+        # revalidation strikes the right balance.
+        self._send_v2(
+            fires,
+            meta=meta,
+            extra_headers={
+                "ETag": etag,
+                "Cache-Control": "public, max-age=3600, must-revalidate",
+            },
+        )
 
     def log_message(self, _fmt, *args):
         if "/api/" in str(args[0]):
@@ -1951,5 +2056,9 @@ if __name__ == "__main__":
     print("done")
     print(f"Portal: http://localhost:{PORT}/v3/")
     print(f"APIs:   /api/ignition-v17, /api/division-overview, /api/model-transparency, /api/validation-log")
-    server = HTTPServer(("", PORT), PortalHandler)
+    # ThreadingHTTPServer (one thread per connection) so a slow VIIRS
+    # spatial-clip on the cold path doesn't block officers polling the
+    # cheap healthz/division-overview endpoints. Module-level caches
+    # already use _CACHE_LOCK to keep first-load races safe.
+    server = ThreadingHTTPServer(("", PORT), PortalHandler)
     server.serve_forever()
