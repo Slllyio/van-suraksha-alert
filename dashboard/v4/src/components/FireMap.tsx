@@ -319,27 +319,63 @@ export default function FireMap({
                 '<a href="https://registry.opendata.aws/terrain-tiles/">AWS Terrain</a>',
             });
           }
+          // Hillshade: actually paints the elevation gradient onto the mesh.
+          // Without it, setTerrain only deforms geometry — invisible against
+          // a dark vector basemap. Insert below the first symbol layer so
+          // city labels stay legible on top.
+          if (!map.getLayer('aws-hillshade')) {
+            const layers = map.getStyle().layers ?? [];
+            const firstSymbol = layers.find(
+              (l: { type?: string; id: string }) => l.type === 'symbol',
+            );
+            map.addLayer(
+              {
+                id: 'aws-hillshade',
+                type: 'hillshade',
+                source: 'aws-terrain',
+                paint: {
+                  'hillshade-exaggeration': 0.7,
+                  'hillshade-shadow-color': '#0a0e18',
+                  'hillshade-highlight-color': '#7a8fa8',
+                  'hillshade-accent-color': '#3b5878',
+                  'hillshade-illumination-direction': 315,
+                },
+              },
+              firstSymbol?.id,
+            );
+          }
+          // Atmospheric sky for horizon depth at high pitch.
+          try {
+            (map as unknown as {
+              setSky?: (s: Record<string, unknown>) => void;
+            }).setSky?.({
+              'sky-color': '#0b1220',
+              'sky-horizon-blend': 0.6,
+              'horizon-color': '#1a2d4a',
+              'horizon-fog-blend': 0.5,
+              'fog-color': '#0b1220',
+              'fog-ground-blend': 0.85,
+            });
+          } catch {
+            /* setSky only on MapLibre 5+; non-fatal */
+          }
           map.setTerrain({
             source: 'aws-terrain',
             exaggeration: terrainExaggeration,
           });
           map.dragRotate.enable();
           map.touchZoomRotate.enableRotation();
-          // Snap pitch immediately to dodge any animation race against the
-          // basemap's "moveend" → deck.gl resync loop, then ease to add
-          // perceived motion. The "snap then ease" pattern survives some
-          // basemap styles (e.g. CartoDB) that quietly clamp pitch back to 0.
+          // Snap pitch + zoom in one step so the change reads obviously.
           map.setPitch(45);
-          map.easeTo({ pitch: 60, duration: 800 });
+          map.easeTo({ pitch: 65, zoom: Math.max(map.getZoom(), 7), duration: 900 });
           // eslint-disable-next-line no-console
-          console.info('[FireMap] 3D terrain enabled (pitch 60°, exag', terrainExaggeration, ')');
+          console.info('[FireMap] 3D enabled — pitch 65°, exag', terrainExaggeration);
         } else {
+          if (map.getLayer('aws-hillshade')) map.removeLayer('aws-hillshade');
           map.setTerrain(null);
           map.easeTo({ pitch: 0, bearing: 0, duration: 600 });
         }
       } catch (err) {
-        // MapLibre throws if source already exists / removed mid-tween.
-        // Non-fatal — log and continue.
         // eslint-disable-next-line no-console
         console.warn('[FireMap] 3D terrain toggle failed:', err);
       }
