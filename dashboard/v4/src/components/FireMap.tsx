@@ -5,7 +5,16 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import { Deck } from 'deck.gl';
 import { ScatterplotLayer, GeoJsonLayer } from '@deck.gl/layers';
+// `_TerrainExtension` is the deck.gl 9 export name (underscore-prefixed
+// to signal experimental status). Aliased for clarity.
+import { _TerrainExtension as TerrainExtension } from '@deck.gl/extensions';
 import type { PickingInfo, Layer } from '@deck.gl/core';
+
+// Single shared TerrainExtension instance so deck.gl's prop-diff cache
+// recognizes "same extension" across re-renders and doesn't churn shaders.
+// Setting `terrainDrawMode: 'drape'` per-layer below tells deck.gl to
+// project that layer onto the active terrain mesh from MapLibre.
+const TERRAIN_EXT = new TerrainExtension();
 import { colors } from '../designTokens';
 import type { V17Cell, ViirsFire, GeoJSONFeatureCollection } from '../lib/api';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -113,6 +122,8 @@ export default function FireMap({
           getLineWidth: pulse,
           data: criticalCells.length,
         },
+        extensions: [TERRAIN_EXT],
+        terrainDrawMode: 'drape',
       }),
     [criticalCells, pulse],
   );
@@ -139,10 +150,13 @@ export default function FireMap({
               getLineColor: [129, 201, 149, 80],  // green @ 31% — visible but soft
               getLineWidth: 0.6,
               parameters: {
-                // Enable depth + alpha blending for smoother layered look
                 blend: true,
                 blendFunc: [770, 771],  // SRC_ALPHA, ONE_MINUS_SRC_ALPHA
               },
+              // Drape this polygon layer onto the 3D terrain mesh so beat
+              // boundaries follow ridges/valleys instead of floating at z=0.
+              extensions: [TERRAIN_EXT],
+              terrainDrawMode: 'drape',
             }),
           ]
         : []),
@@ -173,6 +187,8 @@ export default function FireMap({
           getFillColor: cells.length,
           getRadius: cells.length,
         },
+        extensions: [TERRAIN_EXT],
+        terrainDrawMode: 'drape',
       }),
 
       // FIRMS VIIRS fires — smaller, confirmed green circles
@@ -190,6 +206,8 @@ export default function FireMap({
         getFillColor: [34, 197, 94, 210],
         getLineColor: [34, 197, 94, 255],
         lineWidthMinPixels: 0.5,
+        extensions: [TERRAIN_EXT],
+        terrainDrawMode: 'drape',
       }),
     ],
     [cells, viirs, beats],
