@@ -50,7 +50,11 @@ export default function LiveMapTab() {
   // Layer toggles
   const [showFires, setShowFires] = useState(true);
   const [showBeats, setShowBeats] = useState(false);
-  const [showDiv] = useState(true);
+  // Division boundaries default ON — lighter (~8 MB ultra) than beats and
+  // gives officers immediate state-context without an interaction.
+  const [showDiv, setShowDiv] = useState(true);
+  const [divisions, setDivisions] = useState<GeoJSONFeatureCollection | null>(null);
+  const [divisionsLoading, setDivisionsLoading] = useState(false);
   // 3D terrain — see docs/3d_terrain_analysis.md
   // Default exaggeration 4× because at state-wide zoom (~5.8) MP ridges
   // are only 100-500m tall; without exaggeration they don't pop visually.
@@ -203,6 +207,34 @@ export default function LiveMapTab() {
       }
     }
   };
+
+  // Division boundaries — light ~8 MB ultra-resolution dissolved polys.
+  // Lazy-loaded; default ON. Fetches once + caches in component state.
+  const handleDivToggle = async (checked: boolean) => {
+    setShowDiv(checked);
+    if (checked && !divisions && !divisionsLoading) {
+      setDivisionsLoading(true);
+      try {
+        const fc = await api.divisionBoundaries('ultra');
+        setDivisions(fc);
+      } catch (e) {
+        console.error('division-boundaries fetch failed:', e);
+        setShowDiv(false);
+      } finally {
+        setDivisionsLoading(false);
+      }
+    }
+  };
+
+  // Fire the initial fetch on mount since toggle defaults to ON.
+  useEffect(() => {
+    if (showDiv && !divisions && !divisionsLoading) {
+      handleDivToggle(true);
+    }
+    // Mount-only — eslint react-hooks knows about handleDivToggle but
+    // running once on mount is the right behavior for a default-on toggle.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Count bands for sidebar cards
   const counts: RiskCounts = cells.reduce<RiskCounts>(
@@ -586,8 +618,8 @@ export default function LiveMapTab() {
               icon: Layers,
               label: 'Division boundaries',
               checked: showDiv,
-              onChange: undefined,
-              loading: false,
+              onChange: handleDivToggle,
+              loading: divisionsLoading,
             },
           ].map(({ icon: Icon, label, checked, onChange, loading: rowLoading }) => (
             <motion.label
@@ -922,6 +954,7 @@ export default function LiveMapTab() {
           cells={displayedCells}
           viirs={displayedFires}
           beats={showBeats ? beats : null}
+          divisions={showDiv ? divisions : null}
           terrain3D={terrain3D}
           terrainExaggeration={terrainExag}
           burnDensityPoints={burnDensityLayerData}

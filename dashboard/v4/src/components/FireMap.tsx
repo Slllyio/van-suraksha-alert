@@ -13,8 +13,13 @@ import type { PickingInfo, Layer } from '@deck.gl/core';
 
 // Single shared TerrainExtension instance so deck.gl's prop-diff cache
 // recognizes "same extension" across re-renders and doesn't churn shaders.
-// Setting `terrainDrawMode: 'drape'` per-layer below tells deck.gl to
-// project that layer onto the active terrain mesh from MapLibre.
+// IMPORTANT: only attach this extension to layers when 3D terrain is
+// ACTIVE on the MapLibre instance. Attaching it when no terrain source
+// is registered causes deck.gl 9.3's `_TerrainExtension` (still
+// underscore-prefixed / experimental) to silently drop the layer from
+// the render pass — every layer with the extension goes invisible.
+// Use `terrainProps` (computed inside the component, gated on the
+// `terrain3D` prop) instead of including these props unconditionally.
 const TERRAIN_EXT = new TerrainExtension();
 import { colors } from '../designTokens';
 import type {
@@ -44,6 +49,10 @@ interface FireMapProps {
   /** Optional MP forest-beats GeoJSON (MultiPolygon features). When null, the
    *  beats layer is not rendered. */
   beats?: GeoJSONFeatureCollection | null;
+  /** Optional dissolved MP division polygons (87 features, ~8 MB ultra).
+   *  Renders ABOVE beats but BELOW alerts so divisions outline the
+   *  state-level context without obscuring the marker dots. */
+  divisions?: GeoJSONFeatureCollection | null;
   /** Toggle 3D terrain. When true, attaches AWS Terrain Tiles as a raster-DEM
    *  source and animates pitch to 60°. See docs/3d_terrain_analysis.md. */
   terrain3D?: boolean;
@@ -87,6 +96,7 @@ export default function FireMap({
   cells,
   viirs,
   beats,
+  divisions,
   terrain3D = false,
   terrainExaggeration = 1.5,
   burnDensityPoints,
@@ -105,6 +115,18 @@ export default function FireMap({
   useEffect(() => {
     onCellClickRef.current = onCellClick;
   }, [onCellClick]);
+
+  // Conditional terrain-extension props. Spread into each layer config.
+  // When 3D terrain is OFF the spread is `{}` so layers render at z=0
+  // without the experimental extension that breaks no-terrain-source
+  // rendering.
+  const terrainProps = useMemo(
+    () =>
+      terrain3D
+        ? ({ extensions: [TERRAIN_EXT], terrainDrawMode: 'drape' } as const)
+        : ({} as const),
+    [terrain3D],
+  );
 
   // Animation tick — drives the pulsing rings on CRITICAL markers.
   // Cycles 0 → 1 every 1.6 s (rebuilt every 50 ms → ~32 rebuilds/cycle).
@@ -146,10 +168,9 @@ export default function FireMap({
           getLineWidth: pulse,
           data: criticalCells.length,
         },
-        extensions: [TERRAIN_EXT],
-        terrainDrawMode: 'drape',
+        ...terrainProps,
       }),
-    [criticalCells, pulse],
+    [criticalCells, pulse, terrainProps],
   );
 
   // Mitigation 2 — burn-density heatmap. Sits at the very bottom so
@@ -181,7 +202,7 @@ export default function FireMap({
         getWeight: burnDensityPoints.length,
       },
     });
-  }, [burnDensityPoints]);
+  }, [burnDensityPoints, terrainProps]);
 
   // Mitigation 2 — interior blind-spot rings. PURPLE hollow circles
   // (token: colors.coverage.blindSpot = #7C3AED). Deliberately off the
@@ -206,10 +227,9 @@ export default function FireMap({
       getRadius: 1800,
       getLineColor: [124, 58, 237, 230],   // purple — unambiguous vs ALERT orange
       getLineWidth: 1.4,
-      extensions: [TERRAIN_EXT],
-      terrainDrawMode: 'drape',
+      ...terrainProps,
     });
-  }, [blindSpotCells]);
+  }, [blindSpotCells, terrainProps]);
 
   // Mitigation 3 — climatology-promoted cells. DARKER amber (amber-600
   // #D97706) and HOLLOW so the rings read as "watch this for historical
@@ -234,10 +254,30 @@ export default function FireMap({
       getRadius: 1200,
       getLineColor: [217, 119, 6, 230],    // amber-600, darker than WATCH amber-400
       getLineWidth: 1.6,
-      extensions: [TERRAIN_EXT],
-      terrainDrawMode: 'drape',
+      ...terrainProps,
     });
-  }, [priorWatchCells]);
+  }, [priorWatchCells, terrainProps]);
+
+  // Dissolved 87 MP forest-division polygons. Slightly bolder stroke
+  // than beats so divisions read as the state-level container, beats
+  // as the granular detail. No fill — keeps the map readable.
+  const divisionsLayer = useMemo(() => {
+    if (!divisions) return null;
+    return new GeoJsonLayer({
+      id: 'divisions-boundary',
+      data: divisions as unknown as GeoJSON.FeatureCollection,
+      pickable: false,
+      stroked: true,
+      filled: false,
+      lineWidthUnits: 'pixels',
+      lineWidthMinPixels: 0.6,
+      lineWidthMaxPixels: 1.4,
+      getLineColor: [148, 163, 184, 90],   // slate-400 @ 35%
+      getLineWidth: 0.9,
+      parameters: { blend: true, blendFunc: [770, 771] },
+      ...terrainProps,
+    });
+  }, [divisions, terrainProps]);
 
   const beatsLayer = useMemo(() => {
     if (!beats) return null;
@@ -254,10 +294,9 @@ export default function FireMap({
       getLineColor: [129, 201, 149, 80],
       getLineWidth: 0.6,
       parameters: { blend: true, blendFunc: [770, 771] },
-      extensions: [TERRAIN_EXT],
-      terrainDrawMode: 'drape',
+      ...terrainProps,
     });
-  }, [beats]);
+  }, [beats, terrainProps]);
 
   const ignitionLayer = useMemo(
     () =>
@@ -287,10 +326,9 @@ export default function FireMap({
           getFillColor: cells.length,
           getRadius: cells.length,
         },
-        extensions: [TERRAIN_EXT],
-        terrainDrawMode: 'drape',
+        ...terrainProps,
       }),
-    [cells],
+    [cells, terrainProps],
   );
 
   const viirsLayer = useMemo(
@@ -309,22 +347,20 @@ export default function FireMap({
         getFillColor: [34, 197, 94, 210],
         getLineColor: [34, 197, 94, 255],
         lineWidthMinPixels: 0.5,
-        extensions: [TERRAIN_EXT],
-        terrainDrawMode: 'drape',
+        ...terrainProps,
       }),
-    [viirs],
+    [viirs, terrainProps],
   );
 
   // Final layer order (bottom → top):
   //   1. burn-density heatmap     (Mitigation 2 — base context)
   //   2. blind-spot rings         (Mitigation 2 — diff)
-  //   3. prior-watch hollow rings (Mitigation 3 — climatology priors,
-  //                                BELOW model alerts so model output
-  //                                visually dominates)
-  //   4. beats polygons           (existing context)
-  //   5. critical pulse           (animation under markers)
-  //   6. v17 ignition cells       (clickable, top-of-content)
-  //   7. VIIRS confirmed fires    (ground truth, top of all)
+  //   3. prior-watch hollow rings (Mitigation 3 — climatology priors)
+  //   4. beats polygons           (granular forest-beat outlines)
+  //   5. divisions polygons       (87 division-level outlines, bolder)
+  //   6. critical pulse           (animation under markers)
+  //   7. v17 ignition cells       (clickable, top-of-content)
+  //   8. VIIRS confirmed fires    (ground truth, top of all)
   const layers: Layer[] = useMemo(
     () =>
       [
@@ -332,6 +368,7 @@ export default function FireMap({
         blindSpotLayer,
         priorWatchLayer,
         beatsLayer,
+        divisionsLayer,
         pulseLayer,
         ignitionLayer,
         viirsLayer,
@@ -341,6 +378,7 @@ export default function FireMap({
       blindSpotLayer,
       priorWatchLayer,
       beatsLayer,
+      divisionsLayer,
       pulseLayer,
       ignitionLayer,
       viirsLayer,
