@@ -107,7 +107,10 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
 
   const dataLayers: Layer[] = useMemo(
     () => [
-      // Beats polygon overlay (rendered UNDER the scatter so markers stay on top)
+      // Beats polygon overlay (rendered UNDER the scatter so markers stay on top).
+      // Original 8,973 MP forest-beat MultiPolygons. Render with soft fill +
+      // anti-aliased thin stroke to avoid the "sharp edges" look officers
+      // flagged on the dissolved divisions.
       ...(beats
         ? [
             new GeoJsonLayer({
@@ -117,10 +120,17 @@ export default function FireMap({ cells, viirs, beats, onCellClick }: FireMapPro
               stroked: true,
               filled: true,
               lineWidthUnits: 'pixels',
-              lineWidthMinPixels: 0.5,
-              getFillColor: [148, 163, 184, 10],
-              getLineColor: [148, 163, 184, 60],
-              getLineWidth: 1,
+              lineWidthMinPixels: 0.4,
+              lineWidthMaxPixels: 0.9,
+              // Soft slate fill + thin teal stroke for forest feel
+              getFillColor: [129, 201, 149, 8],   // green @ ~3% (forest)
+              getLineColor: [129, 201, 149, 80],  // green @ 31% — visible but soft
+              getLineWidth: 0.6,
+              parameters: {
+                // Enable depth + alpha blending for smoother layered look
+                blend: true,
+                blendFunc: [770, 771],  // SRC_ALPHA, ONE_MINUS_SRC_ALPHA
+              },
             }),
           ]
         : []),

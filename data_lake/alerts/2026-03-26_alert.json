@@ -1,6 +1,6 @@
 {
   "alert_id": "GUNA-2026-03-26-000fires",
-  "generated_at": "2026-03-26T03:26:33.610363+05:30",
+  "generated_at": "2026-03-26T19:31:47.604167+05:30",
   "target_date": "2026-03-26",
   "bulletin_severity": "CLEAR",
   "fires_detected": 0,
@@ -112,5 +112,6 @@
       }
     ],
     "model": "Mesa ABM v1 (5 agent types, beat-calibrated)"
-  }
+  },
+  "dispatch_ready": false
 }

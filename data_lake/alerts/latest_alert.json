@@ -1,8 +1,8 @@
 {
-  "alert_id": "GUNA-2026-03-26-000fires",
-  "generated_at": "2026-03-26T03:26:33.610363+05:30",
-  "target_date": "2026-03-26",
-  "bulletin_severity": "CLEAR",
+  "alert_id": "GUNA-2026-04-25-000fires",
+  "generated_at": "2026-04-25T03:00:08.713067+05:30",
+  "target_date": "2026-04-25",
+  "bulletin_severity": "WATCH",
   "fires_detected": 0,
   "n_critical": 0,
   "n_high": 0,
@@ -11,16 +11,16 @@
   "forest_mask_used": true,
   "peak_frp_mw": 0.0,
   "fwi": {
-    "value": 20.8,
-    "danger_class": "High",
-    "ffmc": 90.2,
-    "dmc": 109.2,
-    "dc": 533.3,
-    "isi": 4.4,
-    "bui": 144.5,
-    "temp_c": 24.4,
-    "rh_pct": 38.2,
-    "wind_kmh": 0.0
+    "value": 77.3,
+    "danger_class": "Extreme",
+    "ffmc": 98.9,
+    "dmc": 123.7,
+    "dc": 549.6,
+    "isi": 32.4,
+    "bui": 158.4,
+    "temp_c": 41.3,
+    "rh_pct": 10.0,
+    "wind_kmh": 15.9
   },
   "fires": [],
   "area": {
@@ -37,80 +37,81 @@
     "NASA POWER / GFS FWI"
   ],
   "abm_ignition_risk": {
-    "risk_level": "HIGH",
-    "mean_ignitions_per_day": 20.6,
+    "risk_level": "VERY HIGH",
+    "mean_ignitions_per_day": 293.2,
     "hotspots": [
       {
-        "latitude": 24.325,
-        "longitude": 77.295,
-        "probability": 0.2,
-        "grid_x": 84,
-        "grid_y": 52
+        "latitude": 24.925,
+        "longitude": 77.025,
+        "probability": 0.9,
+        "grid_x": 57,
+        "grid_y": 112
       },
       {
-        "latitude": 23.905,
-        "longitude": 77.295,
-        "probability": 0.2,
-        "grid_x": 84,
-        "grid_y": 10
-      },
-      {
-        "latitude": 23.905,
-        "longitude": 77.315,
-        "probability": 0.2,
-        "grid_x": 86,
-        "grid_y": 10
-      },
-      {
-        "latitude": 24.405,
-        "longitude": 77.285,
-        "probability": 0.2,
-        "grid_x": 83,
-        "grid_y": 60
-      },
-      {
-        "latitude": 24.345000000000002,
-        "longitude": 77.325,
-        "probability": 0.2,
-        "grid_x": 87,
-        "grid_y": 54
-      },
-      {
-        "latitude": 24.345000000000002,
+        "latitude": 24.195,
         "longitude": 77.065,
-        "probability": 0.2,
+        "probability": 0.8,
         "grid_x": 61,
-        "grid_y": 54
+        "grid_y": 39
       },
       {
-        "latitude": 24.135,
-        "longitude": 77.055,
-        "probability": 0.2,
-        "grid_x": 60,
-        "grid_y": 33
+        "latitude": 23.965,
+        "longitude": 77.315,
+        "probability": 0.8,
+        "grid_x": 86,
+        "grid_y": 16
       },
       {
-        "latitude": 24.325,
-        "longitude": 76.97500000000001,
-        "probability": 0.2,
-        "grid_x": 52,
-        "grid_y": 52
-      },
-      {
-        "latitude": 24.545,
-        "longitude": 77.22500000000001,
-        "probability": 0.1,
-        "grid_x": 77,
-        "grid_y": 74
-      },
-      {
-        "latitude": 24.725,
+        "latitude": 24.425,
         "longitude": 77.185,
-        "probability": 0.1,
+        "probability": 0.8,
         "grid_x": 73,
-        "grid_y": 92
+        "grid_y": 62
+      },
+      {
+        "latitude": 24.445,
+        "longitude": 77.165,
+        "probability": 0.8,
+        "grid_x": 71,
+        "grid_y": 64
+      },
+      {
+        "latitude": 24.855,
+        "longitude": 77.19500000000001,
+        "probability": 0.8,
+        "grid_x": 74,
+        "grid_y": 105
+      },
+      {
+        "latitude": 23.865000000000002,
+        "longitude": 77.325,
+        "probability": 0.7,
+        "grid_x": 87,
+        "grid_y": 6
+      },
+      {
+        "latitude": 24.265,
+        "longitude": 76.575,
+        "probability": 0.7,
+        "grid_x": 12,
+        "grid_y": 46
+      },
+      {
+        "latitude": 24.495,
+        "longitude": 77.155,
+        "probability": 0.7,
+        "grid_x": 70,
+        "grid_y": 69
+      },
+      {
+        "latitude": 24.175,
+        "longitude": 77.08500000000001,
+        "probability": 0.7,
+        "grid_x": 63,
+        "grid_y": 37
       }
     ],
     "model": "Mesa ABM v1 (5 agent types, beat-calibrated)"
-  }
+  },
+  "dispatch_ready": false
 }

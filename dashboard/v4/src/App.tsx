@@ -9,7 +9,9 @@ import {
   HelpCircle,
   Bell,
   Clock,
+  Sparkles,
 } from 'lucide-react';
+import AIBriefDrawer from './components/AIBriefDrawer';
 import {
   motion,
   AnimatePresence,
@@ -39,6 +41,7 @@ const TABS: { id: TabId; label: string; Icon: typeof MapPin }[] = [
 
 export default function App() {
   const [tab, setTab] = useState<TabId>('map');
+  const [briefOpen, setBriefOpen] = useState(false);
   const headerVariants = useAccessibleVariants(fadeUp);
   const stagger = useAccessibleVariants(staggerContainer());
 
@@ -206,6 +209,48 @@ export default function App() {
         </motion.nav>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {/* Brief me button — glowing AI trigger */}
+          <motion.button
+            onClick={() => {
+              setBriefOpen(true);
+              playCue('open');
+              hapticTap(8);
+            }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.96 }}
+            animate={{
+              boxShadow: briefOpen
+                ? 'none'
+                : [
+                    '0 0 0 0 rgba(59,130,246,0)',
+                    '0 0 8px 2px rgba(59,130,246,0.45)',
+                    '0 0 0 0 rgba(59,130,246,0)',
+                  ],
+            }}
+            transition={{
+              ...transitions.fast,
+              boxShadow: { duration: 2.4, repeat: Infinity, ease: 'easeOut' },
+            }}
+            aria-label="Open AI daily brief"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '7px 13px',
+              borderRadius: 999,
+              background: briefOpen
+                ? colors.accent.muted
+                : 'linear-gradient(120deg, rgba(59,130,246,0.22), rgba(59,130,246,0.12))',
+              border: `1px solid ${briefOpen ? colors.accent.base : 'rgba(59,130,246,0.42)'}`,
+              color: colors.accent.hover,
+              fontSize: 13,
+              fontWeight: 500,
+              cursor: 'pointer',
+              letterSpacing: '0.01em',
+            }}
+          >
+            <Sparkles size={13} />
+            <span>Brief me</span>
+          </motion.button>
+
           <motion.button
             whileHover={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
             whileTap={{ scale: 0.95 }}
@@ -242,6 +287,9 @@ export default function App() {
           </div>
         </div>
       </motion.header>
+
+      {/* AI Brief Drawer — portal-level overlay, not scoped to any tab */}
+      <AIBriefDrawer open={briefOpen} onClose={() => setBriefOpen(false)} />
 
       <main
         id="main"

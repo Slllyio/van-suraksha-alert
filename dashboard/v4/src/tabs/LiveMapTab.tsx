@@ -118,14 +118,13 @@ export default function LiveMapTab() {
     if (checked && !beats && !beatsLoading) {
       setBeatsLoading(true);
       try {
-        // Prefer the compact dissolved division boundaries (~8 MB) over
-        // the 179 MB per-beat geojson. Officers viewing at state zoom
-        // can't resolve individual beats anyway; division polygons are
-        // visually equivalent and 22× smaller.
-        const fc = await api.divisionBoundaries('ultra');
+        // Load the original 8,973 MP beat polygons (187 MB). Officers
+        // asked for the original detail back — division-dissolve looked
+        // too geometric. Browser caches after first load.
+        const fc = await api.beatsBoundary();
         setBeats(fc);
       } catch (e) {
-        console.error('division-boundaries fetch failed:', e);
+        console.error('beats-boundary fetch failed:', e);
         setShowBeats(false);
       } finally {
         setBeatsLoading(false);

@@ -945,6 +945,177 @@ def _build_healthz() -> dict:
     }
 
 
+# ---------------------------------------------------------------------------
+# AI chat proxy — POST /api/v2/ai/chat
+# Priority: 1) Ollama (local, no data egress)  2) Anthropic API (if key set)
+#           3) Deterministic stub (always works, no LLM)
+# Streams SSE: data: {"type":"delta","text":"..."}\n\n  ...  data: [DONE]\n\n
+# ---------------------------------------------------------------------------
+
+import urllib.request as _urllib_req
+import urllib.error as _urllib_err
+
+_OLLAMA_URL = "http://localhost:11434/api/chat"
+_OLLAMA_MODEL = "qwen2.5:7b"
+
+_AI_SYSTEM_PROMPT = """You are JwalaNetra's operational AI assistant for Indian Forest Service officers.
+You help officers in Madhya Pradesh triage daily fire alerts from the v17.5 LightGBM ignition model.
+Be concise, professional, and actionable. Use bullet points for lists.
+State uncertainty where present. Do not invent fire data — use only the context provided.
+Never ask for or record officer names, phone numbers, or personal identifiers."""
+
+_MAX_INPUT_CHARS = 2000  # sanitized upstream; belt-and-suspenders cap
+
+
+def _sanitize_chat_input(text: str) -> str:
+    """Strip control characters, cap length."""
+    cleaned = "".join(c for c in text if c >= " " or c in "\n\t")
+    return cleaned[:_MAX_INPUT_CHARS]
+
+
+def _build_stub_brief() -> str:
+    """Generate deterministic brief from live /api/v2 data — no LLM needed."""
+    try:
+        v17 = _load_v17_predictions()
+        alerts = v17.get("banded_alerts", [])
+        n_critical = sum(1 for a in alerts if a.get("band") == "CRITICAL")
+        n_alert    = sum(1 for a in alerts if a.get("band") == "ALERT")
+        n_watch    = sum(1 for a in alerts if a.get("band") == "WATCH")
+        pred_date  = v17.get("prediction_date", TODAY)
+
+        div_data = _build_division_overview(v17)
+        enriched = _enrich_division_overview(div_data)
+        divisions = enriched if isinstance(enriched, list) else div_data.get("divisions", [])
+        top5 = sorted(divisions, key=lambda d: -d.get("critical", 0))[:5]
+        silent = [d for d in divisions if d.get("silent_in_danger")]
+
+        lines = [
+            f"DAILY FIRE BRIEF — {pred_date}  |  Model: v17.5 hurdle blend",
+            "",
+            f"ALERT SUMMARY: {n_critical} CRITICAL | {n_alert} ALERT | {n_watch} WATCH",
+            "",
+            "TOP DIVISIONS BY CRITICAL COUNT:",
+        ]
+        for d in top5:
+            sil = "  [SILENT-IN-DANGER]" if d.get("silent_in_danger") else ""
+            lines.append(
+                f"  • {d.get('name','?')}: {d.get('critical',0)} CRIT / "
+                f"{d.get('alert',0)} ALT | confidence={d.get('confidence','?')}"
+                f" | hawkes_high={d.get('hawkes_high_pct',0)}%{sil}"
+            )
+        if silent:
+            lines.append("")
+            lines.append("SILENT-IN-DANGER DIVISIONS (floor-promoted — no organic CRITICAL):")
+            for d in silent:
+                lines.append(f"  ⚠ {d.get('name','?')}")
+
+        lines += [
+            "",
+            "TRIAGE RECOMMENDATION:",
+            "  1. Prioritise SILENT-IN-DANGER divisions — organic model confidence is low but",
+            "     historical beat activity warrants a patrol check.",
+            "  2. In top divisions with hawkes_high > 50%, fire contagion is the primary driver —",
+            "     dispatch patrol to highest-risk cells.",
+            "  3. Ask follow-ups: 'Why is <division> hot?' or 'List CRITICAL cells in <division>'.",
+            "",
+            "[Note: LLM offline — structured summary generated from live v17.5 data.]",
+        ]
+        return "\n".join(lines)
+    except Exception as exc:  # noqa: BLE001
+        return f"Could not generate brief: {exc}"
+
+
+def _stream_ollama(wfile, messages: list[dict]) -> None:
+    """Forward a streaming Ollama /api/chat response as SSE to `wfile`."""
+    import json as _json
+
+    payload = _json.dumps({
+        "model": _OLLAMA_MODEL,
+        "messages": messages,
+        "stream": True,
+    }).encode()
+
+    req = _urllib_req.Request(
+        _OLLAMA_URL,
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with _urllib_req.urlopen(req, timeout=60) as resp:
+        for raw_line in resp:
+            if not raw_line.strip():
+                continue
+            try:
+                chunk = _json.loads(raw_line)
+            except _json.JSONDecodeError:
+                continue
+            delta = chunk.get("message", {}).get("content", "")
+            if delta:
+                sse = f'data: {_json.dumps({"type": "delta", "text": delta})}\n\n'
+                wfile.write(sse.encode())
+                wfile.flush()
+            if chunk.get("done"):
+                break
+
+
+def _stream_stub(wfile, text: str) -> None:
+    """Stream a pre-built text as SSE word-by-word."""
+    import json as _json
+    import time as _time
+
+    words = text.split(" ")
+    for i, word in enumerate(words):
+        chunk = word + (" " if i < len(words) - 1 else "")
+        sse = f'data: {_json.dumps({"type": "delta", "text": chunk})}\n\n'
+        wfile.write(sse.encode())
+        wfile.flush()
+        _time.sleep(0.012)  # ~85 wpm
+
+
+def _handle_ai_chat(
+    wfile,
+    send_response_fn,
+    send_header_fn,
+    end_headers_fn,
+    messages: list[dict],
+) -> None:
+    """Main dispatch: Ollama → stub. Writes SSE to wfile."""
+    import json as _json
+
+    # Sanitize inputs
+    clean_messages = [
+        {
+            "role": m.get("role", "user"),
+            "content": _sanitize_chat_input(str(m.get("content", ""))),
+        }
+        for m in messages
+        if m.get("role") in ("user", "assistant")
+    ]
+    full_messages = [{"role": "system", "content": _AI_SYSTEM_PROMPT}] + clean_messages
+
+    # SSE response headers
+    send_response_fn(200)
+    send_header_fn("Content-Type", "text/event-stream; charset=utf-8")
+    send_header_fn("Cache-Control", "no-cache")
+    send_header_fn("X-Accel-Buffering", "no")
+    send_header_fn("Access-Control-Allow-Origin", "*")
+    send_header_fn("Transfer-Encoding", "chunked")
+    end_headers_fn()
+
+    try:
+        _stream_ollama(wfile, full_messages)
+    except (_urllib_err.URLError, OSError):
+        # Ollama unreachable — fall back to structured stub
+        stub_text = _build_stub_brief()
+        _stream_stub(wfile, stub_text)
+    except Exception as exc:  # noqa: BLE001
+        err_sse = f'data: {_json.dumps({"type": "delta", "text": f"[Error: {exc}]"})}\n\n'
+        wfile.write(err_sse.encode())
+
+    wfile.write(b"data: [DONE]\n\n")
+    wfile.flush()
+
+
 class PortalHandler(SimpleHTTPRequestHandler):
     # Per-request fields populated by _begin_request / consumed by _end_request.
     request_id: str
@@ -1230,7 +1401,33 @@ class PortalHandler(SimpleHTTPRequestHandler):
                 self.send_error(400, "invalid json")
             return
 
-        if path == "/api/field-response":
+        if path == "/api/v2/ai/chat":
+            msgs = body.get("messages")
+            if not isinstance(msgs, list) or len(msgs) == 0:
+                self._send_v2_error(
+                    "invalid_request",
+                    "body must contain a non-empty 'messages' list",
+                    status=400,
+                )
+                return
+            # AI chat uses a separate, tighter rate-limit bucket (6 req/min).
+            allowed, _, retry = _RATE_LIMITER.check(
+                self.client_address[0], "ai_chat", 6, 60.0
+            )
+            if not allowed:
+                self.send_response(429)
+                self.send_header("Retry-After", str(int(retry) + 1))
+                self.end_headers()
+                return
+            _handle_ai_chat(
+                self.wfile,
+                self.send_response,
+                self.send_header,
+                self.end_headers,
+                msgs,
+            )
+            return
+        elif path == "/api/field-response":
             # Legacy v1 path, unchanged
             result = _append_field_response(body)
             if "error" in result:

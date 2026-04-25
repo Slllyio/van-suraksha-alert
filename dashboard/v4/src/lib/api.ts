@@ -81,6 +81,7 @@ export class ApiError extends Error {
   }
 }
 
+/** Legacy shape — kept for any callers outside DivisionsTab. */
 export interface DivisionSummary {
   division: string;
   critical: number;
@@ -89,6 +90,25 @@ export interface DivisionSummary {
   beats?: number;
   hawkes_lambda?: number;
   trust_tier?: 'HIGH' | 'MEDIUM' | 'LOW';
+}
+
+/** Real shape returned by GET /api/v2/division-overview → .data.divisions */
+export interface DivisionDetail {
+  name: string;
+  critical: number;
+  alert: number;
+  watch: number;
+  total: number;
+  mean_risk: number;
+  max_risk: number;
+  hawkes_high_pct: number;
+  confidence: 'HIGH' | 'MEDIUM' | 'LOW';
+  center_lat: number;
+  center_lon: number;
+  silent_in_danger: boolean;
+  n_critical_organic: number;
+  n_critical_floor_promoted: number;
+  n_cold_start: number;
 }
 
 export interface ValidationRow {
@@ -222,8 +242,13 @@ export const api = {
     return out;
   },
 
-  divisionOverview: (signal?: AbortSignal) =>
-    getData<DivisionSummary[]>('/api/v2/division-overview', signal),
+  divisionOverview: async (signal?: AbortSignal): Promise<DivisionDetail[]> => {
+    const env = await getEnvelope<{ divisions: DivisionDetail[] }>(
+      '/api/v2/division-overview',
+      signal,
+    );
+    return env.data.divisions;
+  },
 
   seasonValidation: (signal?: AbortSignal) =>
     getData<ValidationRow[]>('/api/v2/season-validation', signal),
