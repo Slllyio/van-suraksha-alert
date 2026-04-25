@@ -330,6 +330,154 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/historical-burn-density": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Heatmap-friendly historical burn density point cloud
+         * @description Returns every cell with ≥2 fire-season VIIRS detections over 2021-2025.
+         *     Optimized for HeatmapLayer rendering. Supports HTTP caching via ETag +
+         *     If-None-Match → 304. No query parameters.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Enveloped point cloud with density weights */
+                200: {
+                    headers: {
+                        /** @description Strong ETag for cache validation. */
+                        ETag?: string;
+                        /** @description public, max-age=3600, must-revalidate */
+                        "Cache-Control"?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: {
+                                points?: components["schemas"]["HistoricalBurnPoint"][];
+                            };
+                            meta: components["schemas"]["HistoricalBurnDensityMeta"];
+                        };
+                    };
+                };
+                /** @description Not Modified (honors If-None-Match) */
+                304: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Pre-baked density file missing — run scripts/build_historical_burn_priors.py */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/historical-burn-priors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Per-cell historical burn counts over 5 fire seasons (2021-2025)
+         * @description Returns cell-level burn history: total count, seasons burned, season list.
+         *     Default `min_seasons=3` uses pre-baked slim file (~3.7 MB / ~27k records).
+         *     Higher thresholds filter the slim file in-memory. Supports HTTP caching.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /**
+                     * @description Filter cells by minimum number of seasons burned (1-5). Returns 400
+                     *     `invalid_min_seasons` on non-integer, out-of-range, or repeated query
+                     *     parameter.
+                     */
+                    min_seasons?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Enveloped historical burn priors with metadata */
+                200: {
+                    headers: {
+                        /** @description Strong ETag for cache validation. */
+                        ETag?: string;
+                        /** @description public, max-age=3600, must-revalidate */
+                        "Cache-Control"?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: {
+                                records?: components["schemas"]["HistoricalBurnPrior"][];
+                            };
+                            meta: components["schemas"]["HistoricalBurnPriorMeta"];
+                        };
+                    };
+                };
+                /** @description Not Modified (honors If-None-Match) */
+                304: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Invalid min_seasons parameter */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+                /** @description Pre-baked priors file missing — run scripts/build_historical_burn_priors.py */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiError"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/viirs-fires": {
         parameters: {
             query?: never;
@@ -850,6 +998,73 @@ export interface components {
             id?: string;
             /** Format: date-time */
             created_at?: string;
+        };
+        /** @description Single point for the burn-density HeatmapLayer. */
+        HistoricalBurnPoint: {
+            /**
+             * Format: double
+             * @description Latitude (WGS84)
+             */
+            lat: number;
+            /**
+             * Format: double
+             * @description Longitude (WGS84)
+             */
+            lon: number;
+            /** @description Weight: total fire-season VIIRS detections over 5 years */
+            w: number;
+        };
+        HistoricalBurnDensityMeta: {
+            /**
+             * @description Fire seasons included
+             * @example [
+             *       2021,
+             *       2022,
+             *       2023,
+             *       2024,
+             *       2025
+             *     ]
+             */
+            seasons: number[];
+            /** @example total_fires_5y >= 2 */
+            filter: string;
+            n_points: number;
+            source_file: string;
+        };
+        /** @description Per-cell historical burn record over the last 5 fire seasons. */
+        HistoricalBurnPrior: {
+            /** @example r0118_c0175 */
+            cell_id: string;
+            /** Format: double */
+            lat: number;
+            /** Format: double */
+            lon: number;
+            /** @description Total fire-season VIIRS detections across 5 years */
+            total_fires_5y: number;
+            /** @description Number of seasons (out of 5) in which the cell burned */
+            n_seasons_burned: number;
+            /**
+             * @description Years that experienced fire — subset of [2021, 2022, 2023, 2024, 2025]
+             * @example [
+             *       2021,
+             *       2023,
+             *       2024
+             *     ]
+             */
+            seasons_burned: number[];
+        };
+        HistoricalBurnPriorMeta: {
+            seasons: number[];
+            /** @description min_seasons threshold applied (from query param, default 3) */
+            served_min_seasons: number;
+            /** @description Count of records returned */
+            served_records: number;
+            /** @description Filename of the source data (e.g. historical_burn_priors_3plus.json) */
+            source_file: string;
+            /** @description Optional: total cells with ≥3 seasons burned in the source dataset */
+            n_cells_3plus_seasons?: number;
+            /** @description Optional: total cells that burned in all 5 seasons */
+            n_cells_5_seasons?: number;
         };
         GeoJSONFeatureCollection: {
             /** @enum {string} */

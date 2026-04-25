@@ -565,7 +565,10 @@ export default function ViirsTab() {
                         label="Forest clip ratio"
                         value={Math.round(clipRatio)}
                         sub="% of raw pixels inside forest beats"
-                        color={colors.fire.watch.fg}
+                        // Data-pipeline metric, NOT a fire severity.
+                        // Use neutral text color, not the WATCH amber
+                        // (token-collision fix per 51fdab25 decoupling).
+                        color={colors.text.secondary}
                       />
                     )}
                   </motion.div>
@@ -697,10 +700,14 @@ export default function ViirsTab() {
                                 {i + 1}
                               </span>
 
-                              {/* Division name */}
+                              {/* Division name — responsive: never
+                                  hard-fix at 180px, let it shrink on
+                                  narrow viewports. */}
                               <span
                                 style={{
-                                  flex: '0 0 180px',
+                                  flex: '1 1 100px',
+                                  minWidth: 80,
+                                  maxWidth: 180,
                                   fontSize: 13,
                                   color: colors.text.primary,
                                   overflow: 'hidden',
@@ -730,12 +737,17 @@ export default function ViirsTab() {
                                   style={{
                                     height: '100%',
                                     borderRadius: 999,
+                                    // Leaderboard rank colors are
+                                    // chart/data-viz coloring, NOT
+                                    // severity. Use accent + neutral
+                                    // tokens to keep these out of the
+                                    // fire-band namespace (51fdab25).
                                     background:
                                       i === 0
-                                        ? colors.fire.confirmed.fg
+                                        ? colors.accent.base
                                         : i < 3
-                                        ? colors.fire.watch.fg
-                                        : colors.fire.info.fg,
+                                        ? colors.accent.hover
+                                        : colors.text.tertiary,
                                   }}
                                 />
                               </div>

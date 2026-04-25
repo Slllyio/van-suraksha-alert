@@ -138,10 +138,17 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
             top: 16,
             right: 16,
             bottom: 16,
-            // Responsive width: clamp so flyout never crowds the map on
-            // tablets. Sidebar is 240px; reserve at least 16px gutter.
-            width: 'min(380px, calc(100vw - 256px))',
-            minWidth: 280,
+            // Responsive width: at >900px the sidebar sits to the left
+            // (240px) so subtract 256px gutter. At ≤900px the sidebar
+            // stacks ABOVE the map (per theme.css), so the full
+            // viewport width is available — only reserve a 32px gutter.
+            // Window is read on mount + resize (cheap; tablets rarely
+            // resize). Falls back gracefully on SSR (no window).
+            width:
+              typeof window !== 'undefined' && window.innerWidth <= 900
+                ? 'min(380px, calc(100vw - 32px))'
+                : 'min(380px, calc(100vw - 256px))',
+            minWidth: 260,
             background: 'rgba(30, 41, 59, 0.92)',
             backdropFilter: 'blur(24px) saturate(150%)',
             WebkitBackdropFilter: 'blur(24px) saturate(150%)',
@@ -165,10 +172,11 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
             aria-label="Close detail panel"
             style={{
               position: 'absolute',
-              top: 12,
-              right: 12,
-              width: 32,
-              height: 32,
+              top: 8,
+              right: 8,
+              // 44×44 minimum touch target (Apple HIG / WCAG)
+              width: 44,
+              height: 44,
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
@@ -176,7 +184,7 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
               color: colors.text.tertiary,
             }}
           >
-            <X size={16} />
+            <X size={16} aria-hidden="true" />
           </motion.button>
 
           {/* Band + tier */}

@@ -14,10 +14,14 @@ import { getDivisionOverview, getCriticalCells } from '../lib/ai-tools';
 // ---- Types ------------------------------------------------------------------
 
 interface ChatMessage {
+  id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   streaming?: boolean;
 }
+
+let _msgSeq = 0;
+const newMsgId = () => `m${++_msgSeq}-${Date.now().toString(36)}`;
 
 interface AIBriefDrawerProps {
   open: boolean;
@@ -130,10 +134,27 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Focus input when drawer opens
+  // Close-button ref so we can focus the always-enabled escape hatch
+  // on open. Focusing the textarea (the previous behavior) was a trap:
+  // the textarea is `disabled` while streaming, so the first focusable
+  // element on open was unusable.
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  // Focus close button when drawer opens. After streaming completes
+  // (finalizeAssistant), the input field becomes the natural next
+  // focus target if the user wants to type a follow-up.
   useEffect(() => {
-    if (open) setTimeout(() => inputRef.current?.focus(), 300);
+    if (open) setTimeout(() => closeBtnRef.current?.focus(), 300);
   }, [open]);
+
+  // After initial brief streams in, hand focus to the input so the
+  // user can immediately type a follow-up question.
+  useEffect(() => {
+    if (open && !streaming && messages.length > 0) {
+      const t = setTimeout(() => inputRef.current?.focus(), 100);
+      return () => clearTimeout(t);
+    }
+  }, [open, streaming, messages.length]);
 
   // Escape key dismissal
   useEffect(() => {
@@ -147,7 +168,7 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
     setMessages((prev) => {
       const last = prev[prev.length - 1];
       if (!last || last.role !== 'assistant') {
-        return [...prev, { role: 'assistant', content: chunk, streaming: true }];
+        return [...prev, { id: newMsgId(), role: 'assistant', content: chunk, streaming: true }];
       }
       return [
         ...prev.slice(0, -1),
@@ -167,7 +188,7 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
   const sendMessage = useCallback(
     async (text: string) => {
       if (!text.trim() || streaming) return;
-      const userMsg: ChatMessage = { role: 'user', content: text.trim() };
+      const userMsg: ChatMessage = { id: newMsgId(), role: 'user', content: text.trim() };
       setMessages((prev) => [...prev, userMsg]);
       setInput('');
       setError(null);
@@ -193,6 +214,17 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
         // Backend unreachable — use client stub only for the initial brief
         if (messages.length === 0) {
           try {
+            // Surface the degradation BEFORE the stream starts, so
+            // officers (and AT users) know the brief is offline-mode
+            // not full Ollama. role=status is read once on mount.
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: newMsgId(),
+                role: 'system',
+                content: 'AI backend offline — showing client-side stub brief.',
+              },
+            ]);
             const brief = await buildStubBrief();
             // Stream it character by character for the demo feel
             for (const char of brief) {
@@ -271,14 +303,23 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
             animate="visible"
             exit="exit"
             role="dialog"
-            aria-label="AI Daily Briefing"
-            aria-modal="true"
+            // aria-labelledby (not aria-label) so the visually-hidden
+            // h2 below is announced AND the body content remains
+            // readable. Same pattern as MapFlyout post 51fdab25.
+            aria-labelledby="brief-drawer-title"
+            // NOT aria-modal — no full focus trap implemented; honest
+            // role="dialog" instead. AT users can still navigate
+            // background but won't think it's hidden.
+            tabIndex={-1}
             style={{
               position: 'fixed',
               top: 0,
               right: 0,
               bottom: 0,
-              width: 420,
+              // Responsive width clamp — same MapFlyout pattern. At
+              // 360px viewport, drawer fills minus 48px gutter.
+              width: 'min(420px, calc(100vw - 48px))',
+              minWidth: 280,
               background: 'rgba(15, 23, 42, 0.97)',
               backdropFilter: 'blur(32px) saturate(160%)',
               WebkitBackdropFilter: 'blur(32px) saturate(160%)',
@@ -287,8 +328,20 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
               flexDirection: 'column',
               zIndex: 50,
               boxShadow: shadow[4],
+              outline: 'none',
             }}
           >
+            {/* Visually-hidden heading — referenced by aria-labelledby */}
+            <h2
+              id="brief-drawer-title"
+              style={{
+                position: 'absolute', width: 1, height: 1,
+                padding: 0, margin: -1, overflow: 'hidden',
+                clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0,
+              }}
+            >
+              AI Daily Briefing — chat panel
+            </h2>
             {/* Header */}
             <div
               style={{
@@ -319,26 +372,33 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
                 </div>
               </div>
               <motion.button
+                ref={closeBtnRef}
                 onClick={onClose}
                 whileHover={{ backgroundColor: 'rgba(255,255,255,0.07)' }}
                 whileTap={{ scale: 0.93 }}
                 transition={transitions.fast}
                 aria-label="Close AI brief"
                 style={{
-                  width: 30, height: 30, borderRadius: radius.sm,
+                  // 44×44 minimum touch target (Apple HIG / WCAG)
+                  width: 44, height: 44, borderRadius: radius.sm,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   color: colors.text.tertiary,
                 }}
               >
-                <X size={15} />
+                <X size={16} />
               </motion.button>
             </div>
 
-            {/* Message list */}
+            {/* Message list. aria-live='off' DURING streaming so AT
+                doesn't fire on every SSE token (would be unusable);
+                flips to 'polite' when streaming ends so the final
+                message is announced once as a coherent unit. */}
             <div
               role="log"
-              aria-live="polite"
+              aria-live={streaming ? 'off' : 'polite'}
+              aria-relevant="additions text"
               aria-label="Chat messages"
+              tabIndex={0}
               style={{
                 flex: 1,
                 overflowY: 'auto',
@@ -346,6 +406,7 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 14,
+                outline: 'none',
               }}
             >
               {messages.length === 0 && (
@@ -362,9 +423,32 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
                 </div>
               )}
 
-              {messages.filter((m) => m.role !== 'system').map((msg, i) => (
+              {/* System rows render as a compact role=status banner
+                  separate from the chat-bubble flow (e.g. stub-fallback
+                  notice). */}
+              {messages.filter((m) => m.role === 'system').map((sys) => (
                 <div
-                  key={i}
+                  key={sys.id}
+                  role="status"
+                  style={{
+                    display: 'flex', alignItems: 'flex-start', gap: 8,
+                    padding: '8px 10px',
+                    background: colors.coverage.priorWatch.bg,
+                    border: `1px solid ${colors.coverage.priorWatch.border}`,
+                    borderRadius: radius.sm,
+                    fontSize: 11,
+                    color: colors.coverage.priorWatch.fg,
+                    lineHeight: 1.45,
+                  }}
+                >
+                  <Bot size={12} aria-hidden="true" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <span>{sys.content}</span>
+                </div>
+              ))}
+
+              {messages.filter((m) => m.role !== 'system').map((msg) => (
+                <div
+                  key={msg.id}
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -394,6 +478,7 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
                     {msg.content}
                     {msg.streaming && (
                       <motion.span
+                        aria-hidden="true"
                         animate={{ opacity: [1, 0, 1] }}
                         transition={{ duration: 0.9, repeat: Infinity }}
                         style={{ marginLeft: 2, color: colors.accent.base }}
@@ -427,8 +512,10 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
               <div ref={bottomRef} />
             </div>
 
-            {/* PII disclaimer */}
+            {/* PII disclaimer — id allows the textarea to reference
+                this via aria-describedby. */}
             <div
+              id="brief-pii-note"
               style={{
                 padding: '6px 14px',
                 fontSize: 10,
@@ -450,7 +537,19 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
                 alignItems: 'flex-end',
               }}
             >
+              {/* Visually-hidden label — placeholder isn't a label */}
+              <label
+                htmlFor="brief-input"
+                style={{
+                  position: 'absolute', width: 1, height: 1,
+                  padding: 0, margin: -1, overflow: 'hidden',
+                  clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0,
+                }}
+              >
+                Ask a follow-up question
+              </label>
               <textarea
+                id="brief-input"
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -458,6 +557,8 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
                 placeholder="Ask a follow-up…"
                 rows={2}
                 disabled={streaming}
+                aria-describedby="brief-pii-note"
+                aria-busy={streaming}
                 style={{
                   flex: 1,
                   resize: 'none',
@@ -478,9 +579,20 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
                 whileHover={!streaming && input.trim() ? { scale: 1.05 } : undefined}
                 whileTap={!streaming && input.trim() ? { scale: 0.93 } : undefined}
                 transition={transitions.fast}
-                aria-label="Send message"
+                // Dynamic label distinguishes "streaming, wait" from
+                // "input is empty, type first" — both are the disabled
+                // state but mean different things to AT users.
+                aria-label={
+                  streaming
+                    ? 'Sending — please wait for the assistant to finish'
+                    : !input.trim()
+                      ? 'Send message — type a question first'
+                      : 'Send message'
+                }
+                aria-busy={streaming}
                 style={{
-                  width: 38, height: 38, borderRadius: radius.md,
+                  // 44×44 minimum touch target (Apple HIG / WCAG)
+                  width: 44, height: 44, borderRadius: radius.md,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   background:
                     streaming || !input.trim()
@@ -495,7 +607,7 @@ export default function AIBriefDrawer({ open, onClose }: AIBriefDrawerProps) {
                   transition: 'background 0.15s',
                 }}
               >
-                <Send size={15} />
+                <Send size={16} aria-hidden="true" />
               </motion.button>
             </div>
           </motion.aside>

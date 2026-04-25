@@ -197,6 +197,97 @@ paths:
                     additionalProperties: true
                   meta: { type: object, additionalProperties: true }
 
+  /api/v2/historical-burn-density:
+    get:
+      summary: Heatmap-friendly historical burn density point cloud
+      description: |
+        Returns every cell with ≥2 fire-season VIIRS detections over 2021-2025.
+        Optimized for HeatmapLayer rendering. Supports HTTP caching via ETag +
+        If-None-Match → 304. No query parameters.
+      responses:
+        "200":
+          description: Enveloped point cloud with density weights
+          headers:
+            ETag:
+              schema: { type: string }
+              description: Strong ETag for cache validation.
+            Cache-Control:
+              schema: { type: string }
+              description: "public, max-age=3600, must-revalidate"
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      points:
+                        type: array
+                        items: { $ref: "#/components/schemas/HistoricalBurnPoint" }
+                  meta:
+                    $ref: "#/components/schemas/HistoricalBurnDensityMeta"
+        "304":
+          description: Not Modified (honors If-None-Match)
+        "404":
+          description: Pre-baked density file missing — run scripts/build_historical_burn_priors.py
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
+  /api/v2/historical-burn-priors:
+    get:
+      summary: Per-cell historical burn counts over 5 fire seasons (2021-2025)
+      description: |
+        Returns cell-level burn history: total count, seasons burned, season list.
+        Default `min_seasons=3` uses pre-baked slim file (~3.7 MB / ~27k records).
+        Higher thresholds filter the slim file in-memory. Supports HTTP caching.
+      parameters:
+        - in: query
+          name: min_seasons
+          schema: { type: integer, minimum: 1, maximum: 5, default: 3 }
+          description: |
+            Filter cells by minimum number of seasons burned (1-5). Returns 400
+            `invalid_min_seasons` on non-integer, out-of-range, or repeated query
+            parameter.
+      responses:
+        "200":
+          description: Enveloped historical burn priors with metadata
+          headers:
+            ETag:
+              schema: { type: string }
+              description: Strong ETag for cache validation.
+            Cache-Control:
+              schema: { type: string }
+              description: "public, max-age=3600, must-revalidate"
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      records:
+                        type: array
+                        items: { $ref: "#/components/schemas/HistoricalBurnPrior" }
+                  meta:
+                    $ref: "#/components/schemas/HistoricalBurnPriorMeta"
+        "304":
+          description: Not Modified (honors If-None-Match)
+        "400":
+          description: Invalid min_seasons parameter
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+        "404":
+          description: Pre-baked priors file missing — run scripts/build_historical_burn_priors.py
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApiError" }
+
   /api/v2/viirs-fires:
     get:
       summary: Forest-clipped FIRMS VIIRS active-fire detections
@@ -564,6 +655,73 @@ components:
           properties:
             id: { type: string }
             created_at: { type: string, format: date-time }
+
+    HistoricalBurnPoint:
+      type: object
+      required: [lat, lon, w]
+      description: Single point for the burn-density HeatmapLayer.
+      properties:
+        lat: { type: number, format: double, description: "Latitude (WGS84)" }
+        lon: { type: number, format: double, description: "Longitude (WGS84)" }
+        w:   { type: integer, description: "Weight: total fire-season VIIRS detections over 5 years" }
+
+    HistoricalBurnDensityMeta:
+      type: object
+      required: [seasons, filter, n_points, source_file]
+      properties:
+        seasons:
+          type: array
+          items: { type: integer }
+          description: Fire seasons included
+          example: [2021, 2022, 2023, 2024, 2025]
+        filter:
+          type: string
+          example: "total_fires_5y >= 2"
+        n_points: { type: integer }
+        source_file: { type: string }
+
+    HistoricalBurnPrior:
+      type: object
+      required: [cell_id, lat, lon, total_fires_5y, n_seasons_burned, seasons_burned]
+      description: Per-cell historical burn record over the last 5 fire seasons.
+      properties:
+        cell_id: { type: string, example: "r0118_c0175" }
+        lat:     { type: number, format: double }
+        lon:     { type: number, format: double }
+        total_fires_5y: { type: integer, description: "Total fire-season VIIRS detections across 5 years" }
+        n_seasons_burned:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: "Number of seasons (out of 5) in which the cell burned"
+        seasons_burned:
+          type: array
+          items: { type: integer }
+          description: "Years that experienced fire — subset of [2021, 2022, 2023, 2024, 2025]"
+          example: [2021, 2023, 2024]
+
+    HistoricalBurnPriorMeta:
+      type: object
+      required: [seasons, served_min_seasons, served_records, source_file]
+      properties:
+        seasons:
+          type: array
+          items: { type: integer }
+        served_min_seasons:
+          type: integer
+          description: "min_seasons threshold applied (from query param, default 3)"
+        served_records:
+          type: integer
+          description: "Count of records returned"
+        source_file:
+          type: string
+          description: "Filename of the source data (e.g. historical_burn_priors_3plus.json)"
+        n_cells_3plus_seasons:
+          type: integer
+          description: "Optional: total cells with ≥3 seasons burned in the source dataset"
+        n_cells_5_seasons:
+          type: integer
+          description: "Optional: total cells that burned in all 5 seasons"
 
     GeoJSONFeatureCollection:
       type: object

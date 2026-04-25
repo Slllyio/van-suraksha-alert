@@ -222,9 +222,26 @@ button {
     min-width: 240px;
     flex-shrink: 0;
   }
-  /* Header tabs wrap onto a second row */
+  /* Header — when tabs wrap to a second row, the fixed 56px height
+     was CLIPPING that row. Let header grow to fit content; tab nav
+     spans the full width on its own row below the logo+tools. */
+  header {
+    flex-wrap: wrap !important;
+    height: auto !important;
+    min-height: var(--header-h);
+    padding-bottom: 8px;
+  }
   header nav[role='tablist'] {
     flex-wrap: wrap;
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  /* Outer page padding shrinks for tab content (DivisionsTab,
+     ViirsTab, ValidationTab, ModelCardTab all use 32px 48px). */
+  [data-tab-content] {
+    padding: 16px 16px !important;
   }
 }
 @media (max-width: 640px) {

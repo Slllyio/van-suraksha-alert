@@ -2,7 +2,7 @@
 // Data: GET /api/v2/division-overview → { data: { divisions: DivisionDetail[] } }
 // Detail: right-edge slide-in, Escape to close, matching MapFlyout pattern.
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   Search,
   ChevronDown,
@@ -125,6 +125,7 @@ interface DetailPanelProps {
 
 function DetailPanel({ division, onClose }: DetailPanelProps) {
   const slideVariants = useAccessibleVariants(slideInRight);
+  const panelRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!division) return;
@@ -135,24 +136,36 @@ function DetailPanel({ division, onClose }: DetailPanelProps) {
     return () => document.removeEventListener('keydown', handler);
   }, [division, onClose]);
 
+  // Reset scroll to top when the user clicks a different division —
+  // otherwise the panel keeps the previous scroll position which can
+  // hide the new division's header below the fold.
+  useEffect(() => {
+    panelRef.current?.scrollTo(0, 0);
+  }, [division?.name]);
+
   return (
     <AnimatePresence>
       {division && (
         <motion.aside
+          ref={panelRef as React.RefObject<HTMLElement>}
           key={division.name}
           variants={slideVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
           role="dialog"
-          aria-modal="true"
-          aria-label={`${division.name} division detail`}
+          // aria-labelledby alone — redundant aria-label was dropped
+          // (some AT read both, causing duplicate announcement).
+          aria-labelledby="division-detail-title"
           style={{
             position: 'absolute',
             top: 12,
             right: 12,
             bottom: 12,
-            width: 400,
+            // Responsive — clamp so DetailPanel doesn't cover the full
+            // grid on small tablets. min ensures readability.
+            width: 'min(400px, calc(100vw - 24px))',
+            minWidth: 280,
             background: 'rgba(30, 41, 59, 0.95)',
             backdropFilter: 'blur(24px) saturate(150%)',
             WebkitBackdropFilter: 'blur(24px) saturate(150%)',
@@ -176,10 +189,12 @@ function DetailPanel({ division, onClose }: DetailPanelProps) {
             aria-label="Close division detail"
             style={{
               position: 'absolute',
-              top: 12,
-              right: 12,
-              width: 32,
-              height: 32,
+              top: 8,
+              right: 8,
+              // 44×44 minimum touch target — matches MapFlyout +
+              // AIBriefDrawer post-polish.
+              width: 44,
+              height: 44,
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
@@ -205,6 +220,7 @@ function DetailPanel({ division, onClose }: DetailPanelProps) {
                 marginTop: 8,
                 marginBottom: 2,
               }}
+              id="division-detail-title"
             >
               {division.name}
             </h2>
@@ -349,13 +365,17 @@ function DetailPanel({ division, onClose }: DetailPanelProps) {
               </div>
               <div
                 style={{
-                  background: 'rgba(249, 115, 22, 0.08)',
-                  border: `1px solid rgba(249, 115, 22, 0.28)`,
+                  // Floor-promoted is a coverage-diagnostic concept,
+                  // NOT a severity. Use coverage.priorWatch tokens to
+                  // avoid colliding with the ALERT severity band per
+                  // the 51fdab25 token decoupling.
+                  background: colors.coverage.priorWatch.bg,
+                  border: `1px solid ${colors.coverage.priorWatch.border}`,
                   borderRadius: radius.sm,
                   padding: '8px 12px',
                 }}
               >
-                <div style={{ fontSize: 10, color: colors.fire.alert.fg, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
+                <div style={{ fontSize: 10, color: colors.coverage.priorWatch.fg, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
                   Floor-promoted
                 </div>
                 <div
@@ -363,7 +383,7 @@ function DetailPanel({ division, onClose }: DetailPanelProps) {
                   style={{
                     fontSize: 22,
                     fontWeight: 600,
-                    color: colors.fire.alert.fg,
+                    color: colors.coverage.priorWatch.fg,
                     fontFamily: fontFamily.mono,
                   }}
                 >
@@ -712,6 +732,8 @@ function DivisionCard({ division: d, onSelect, variants, isSelected }: DivisionC
 // ---- Loading / error states ------------------------------------------------
 
 function SkeletonCard() {
+  // Shimmer animation matching ViirsTab.SkeletonBlock — pulse opacity
+  // so the loading state feels alive, not broken.
   return (
     <div
       style={{
@@ -725,8 +747,10 @@ function SkeletonCard() {
       }}
     >
       {[80, 48, 30].map((w) => (
-        <div
+        <motion.div
           key={w}
+          animate={{ opacity: [0.4, 0.8, 0.4] }}
+          transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
           style={{
             height: 14,
             width: `${w}%`,
@@ -803,6 +827,19 @@ export default function DivisionsTab() {
         overflow: 'hidden',
       }}
     >
+      {/* Visually-hidden h1 for landmark consistency with the other
+          tabs (ViirsTab, ValidationTab, ModelCardTab open with a
+          visible h1). Screen readers + landmark navigation now include
+          this tab in the heading hierarchy. */}
+      <h1
+        style={{
+          position: 'absolute', width: 1, height: 1,
+          padding: 0, margin: -1, overflow: 'hidden',
+          clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0,
+        }}
+      >
+        Forest Divisions
+      </h1>
       {/* Toolbar — always visible */}
       <Toolbar
         search={search}

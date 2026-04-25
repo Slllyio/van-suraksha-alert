@@ -7,6 +7,7 @@ import {
 } from '../lib/motion';
 import { colors, chartColors, fontFamily } from '../designTokens';
 import StatusBadge from '../components/StatusBadge';
+import ConfidenceTier from '../components/ConfidenceTier';
 import PlotlyChart from '../components/PlotlyChart';
 import { api, type ValidationRow } from '../lib/api';
 
@@ -166,7 +167,11 @@ export default function ValidationTab() {
             overflow: 'hidden',
           }}
         >
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          {/* Horizontal scroll wrapper so the 6-column table doesn't
+              break the page on tablets/phones. WebKit smoothing keeps
+              touch-scroll momentum on iPad. */}
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 520 }}>
             <thead>
               <tr style={{ background: colors.bg.raised }}>
                 {['Date', 'Predicted', 'Observed', 'Caught', 'Recall', 'Trust'].map(
@@ -248,15 +253,12 @@ export default function ValidationTab() {
                       {recall.toFixed(1)}%
                     </td>
                     <td style={tdStyle({})}>
-                      <StatusBadge
-                        band={
-                          r.trust === 'HIGH'
-                            ? 'confirmed'
-                            : r.trust === 'LOW'
-                              ? 'critical'
-                              : 'watch'
-                        }
-                        label={r.trust ?? 'MEDIUM'}
+                      {/* Use ConfidenceTier (trustTier palette) instead
+                          of StatusBadge (fire-band palette). LOW trust
+                          is amber-500, not CRITICAL red — same fix as
+                          51fdab25 but back-ported here. */}
+                      <ConfidenceTier
+                        tier={(r.trust ?? 'MEDIUM') as 'HIGH' | 'MEDIUM' | 'LOW'}
                         size="sm"
                       />
                     </td>
@@ -265,6 +267,7 @@ export default function ValidationTab() {
               })}
             </tbody>
           </table>
+          </div>
         </motion.div>
       </motion.div>
     </div>

@@ -44,15 +44,31 @@ const TRUST_TIERS = [
   },
   {
     tier: 'MEDIUM',
-    band: 'watch' as const,
+    // Use trustTier palette directly, not fire-band tokens. The fire
+    // band 'watch' (amber-400) collides with the trustTier MEDIUM
+    // (now violet) post the 51fdab25 decoupling.
+    band: 'medium' as const,
     body: 'Active fire weather but low prior activity. Cross-check with local patrol before dispatch.',
   },
   {
     tier: 'LOW',
-    band: 'critical' as const,
+    // LOW model confidence is NOT a CRITICAL severity. amber-500 vs
+    // CRITICAL red — same fix as 51fdab25.
+    band: 'low' as const,
     body: 'Cold-start region (low-Hawkes). Only 7.65% R@5% here. Use as awareness, not dispatch trigger.',
   },
 ];
+
+// Map TRUST_TIERS .band value → actual color from the trustTier palette.
+const TRUST_BAND_COLOR: Record<string, string> = {
+  high: '#22C55E',     // colors.trustTier.high.fg
+  medium: '#A78BFA',   // colors.trustTier.medium.fg
+  low: '#F59E0B',      // colors.trustTier.low.fg
+  // Backward compat for any callers still using fire-band names:
+  confirmed: '#22C55E',
+  watch: '#FBBF24',
+  critical: '#EF4444',
+};
 
 export default function ModelCardTab() {
   const container = useAccessibleVariants(staggerContainer(0.05));
@@ -219,7 +235,9 @@ export default function ModelCardTab() {
                 style={{
                   background: colors.bg.raised,
                   border: `1px solid ${colors.border.subtle}`,
-                  borderLeft: `3px solid ${colors.fire[t.band].fg}`,
+                  // Look up via TRUST_BAND_COLOR map (trustTier palette)
+                  // instead of colors.fire[band] (severity palette).
+                  borderLeft: `3px solid ${TRUST_BAND_COLOR[t.band]}`,
                   borderRadius: 10,
                   padding: 16,
                   fontSize: 13,
