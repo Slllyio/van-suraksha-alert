@@ -20,7 +20,8 @@ import {
 } from '../lib/motion';
 import { colors } from '../designTokens';
 import StatusBadge, { type FireBand } from './StatusBadge';
-import ConfidenceTier, { type Tier } from './ConfidenceTier';
+import ConfidenceTier from './ConfidenceTier';
+import { getTrustGuidance } from '../lib/trustTier';
 import type { V17Cell } from '../lib/api';
 
 interface MapFlyoutProps {
@@ -32,11 +33,6 @@ function toBand(b: string | undefined): FireBand {
   const lower = (b ?? 'info').toLowerCase();
   if (lower === 'critical' || lower === 'alert' || lower === 'watch') return lower;
   return 'info';
-}
-
-function toTier(t: string | undefined): Tier {
-  if (t === 'HIGH' || t === 'MEDIUM' || t === 'LOW') return t;
-  return 'MEDIUM';
 }
 
 const WHY_ATTRIBUTIONS = [
@@ -80,6 +76,16 @@ const ACTIONS: {
 export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
   const [whyOpen, setWhyOpen] = useState(true);
   const slideVariants = useAccessibleVariants(slideInRight);
+  // Derive the trust tier client-side from Hawkes signal — backend
+  // doesn't yet emit `trust_tier`, but every cell carries the inputs.
+  // See `docs/edge_bias_brutal_analysis.md` § Mitigation 1.
+  const guidance = cell ? getTrustGuidance(cell) : null;
+  const tierStripeColor = (() => {
+    if (!guidance) return colors.border.subtle;
+    if (guidance.tier === 'HIGH') return colors.trustTier.high.fg;
+    if (guidance.tier === 'LOW') return colors.trustTier.low.fg;
+    return colors.trustTier.medium.fg;
+  })();
 
   // Dismiss on Escape for officer-tablet keyboard workflows (Apple HIG
   // `escape-routes` rule). Only active while a cell is selected.
@@ -150,7 +156,7 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
               band={toBand(cell.band)}
               pulse={toBand(cell.band) === 'critical'}
             />
-            {cell.trust_tier && <ConfidenceTier tier={toTier(cell.trust_tier)} />}
+            {guidance && <ConfidenceTier tier={guidance.tier} />}
           </div>
 
           {/* Title */}
@@ -163,6 +169,51 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
           >
             cell · {cell.cell_id}
           </div>
+
+          {/* Trust-strength guidance strip — Mitigation 1 from
+              `docs/edge_bias_brutal_analysis.md`. Tells the officer
+              whether the model is in its 25.5%-recall sweet spot or its
+              5.9% cold-start blind zone *before* they act. */}
+          {guidance && (
+            <div
+              role="note"
+              aria-label={`Trust tier ${guidance.tier}: ${guidance.label}`}
+              style={{
+                marginTop: 12,
+                padding: '10px 12px',
+                background: 'rgba(148, 163, 184, 0.06)',
+                borderLeft: `3px solid ${tierStripeColor}`,
+                borderRadius: 6,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  color: tierStripeColor,
+                  marginBottom: 4,
+                }}
+              >
+                {guidance.label}
+              </div>
+              <div style={{ fontSize: 12, color: colors.text.secondary, lineHeight: 1.5 }}>
+                {guidance.guidance}
+              </div>
+              <div
+                style={{
+                  marginTop: 4,
+                  fontSize: 11,
+                  color: colors.text.tertiary,
+                  lineHeight: 1.45,
+                  fontStyle: 'italic',
+                }}
+              >
+                {guidance.recallContext}
+              </div>
+            </div>
+          )}
 
           {/* Key-value grid */}
           <section
