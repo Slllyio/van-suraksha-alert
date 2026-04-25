@@ -35,10 +35,24 @@ export const colors = {
     pressed: '#2563EB',
     muted:   'rgba(59, 130, 246, 0.16)',
   },
+  // Trust tier — DECOUPLED from fire-band palette so MEDIUM cells with
+  // LOW model confidence don't read as "amber+amber" or "red+red" in
+  // MapFlyout. Fire-band keeps its semantic meaning (severity), trust
+  // tier carries the orthogonal axis (model confidence in this prediction).
+  // HIGH stays green (matches confirmed-fire semantically: trustworthy).
+  // MEDIUM moves to violet — distinct from amber WATCH.
+  // LOW moves to amber-500 — distinct from CRITICAL red, still warning-coded.
   trustTier: {
     high:   { fg: '#22C55E', label: 'HIGH' },
-    medium: { fg: '#FBBF24', label: 'MEDIUM' },
-    low:    { fg: '#EF4444', label: 'LOW' },
+    medium: { fg: '#A78BFA', label: 'MEDIUM' },  // violet-400
+    low:    { fg: '#F59E0B', label: 'LOW' },     // amber-500 (warning, not alarm)
+  },
+  // Coverage-diagnostic layers (Mitigation 2 + 3). Tokens deliberately
+  // OFF the red/orange/amber alert axis so officers can distinguish
+  // "model said this" from "climatology said this" at a glance.
+  coverage: {
+    blindSpot:  { fg: '#7C3AED', bg: 'rgba(124, 58, 237, 0.14)',  border: 'rgba(124, 58, 237, 0.42)' },  // violet-600
+    priorWatch: { fg: '#D97706', bg: 'rgba(217, 119, 6, 0.10)',   border: 'rgba(217, 119, 6, 0.36)' },   // amber-600 (darker than WATCH)
   },
 } as const;
 

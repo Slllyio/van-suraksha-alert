@@ -1,7 +1,7 @@
 // MapFlyout — right-edge sliding detail panel for a selected v17 ignition cell.
 // Built on the existing design tokens + StatusBadge/ConfidenceTier primitives.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   X,
   ChevronRight,
@@ -76,6 +76,10 @@ const ACTIONS: {
 export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
   const [whyOpen, setWhyOpen] = useState(true);
   const slideVariants = useAccessibleVariants(slideInRight);
+  // Refs for keyboard focus management on open. asideRef is the dialog
+  // container itself (tabIndex=-1 so we can focus it programmatically).
+  const asideRef = useRef<HTMLDivElement | null>(null);
+  const closeRef = useRef<HTMLButtonElement | null>(null);
   // Derive the trust tier client-side from Hawkes signal — backend
   // doesn't yet emit `trust_tier`, but every cell carries the inputs.
   // See `docs/edge_bias_brutal_analysis.md` § Mitigation 1.
@@ -87,8 +91,8 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
     return colors.trustTier.medium.fg;
   })();
 
-  // Dismiss on Escape for officer-tablet keyboard workflows (Apple HIG
-  // `escape-routes` rule). Only active while a cell is selected.
+  // Dismiss on Escape (officer-tablet keyboard workflows — Apple HIG
+  // `escape-routes`). Only active while a cell is selected.
   useEffect(() => {
     if (!cell) return;
     const onKey = (e: KeyboardEvent) => {
@@ -98,23 +102,46 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
     return () => document.removeEventListener('keydown', onKey);
   }, [cell, onClose]);
 
+  // Focus management on open: when the dialog mounts, move focus into
+  // it so keyboard users can immediately interact. Without this, Tab
+  // would have to traverse the entire DOM to reach the dispatch
+  // actions — unusable during a 2 a.m. dispatch on a keyboard.
+  useEffect(() => {
+    if (!cell) return;
+    // Slight delay so framer-motion enter animation doesn't fight focus.
+    const t = setTimeout(() => {
+      closeRef.current?.focus();
+    }, 50);
+    return () => clearTimeout(t);
+  }, [cell]);
+
   return (
     <AnimatePresence>
       {cell && (
         <motion.aside
           key={String(cell.cell_id)}
+          ref={asideRef}
           variants={slideVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
           role="dialog"
-          aria-label="Fire risk cell detail"
+          // NOT aria-modal — we don't implement a true focus trap, only
+          // initial focus + Esc-close. aria-modal would mislead virtual-
+          // cursor AT into hiding background content as if trapped.
+          // role="dialog" + aria-labelledby is honest; AT users can
+          // still navigate but won't think the background is hidden.
+          aria-labelledby="flyout-title"
+          tabIndex={-1}
           style={{
             position: 'absolute',
             top: 16,
             right: 16,
             bottom: 16,
-            width: 380,
+            // Responsive width: clamp so flyout never crowds the map on
+            // tablets. Sidebar is 240px; reserve at least 16px gutter.
+            width: 'min(380px, calc(100vw - 256px))',
+            minWidth: 280,
             background: 'rgba(30, 41, 59, 0.92)',
             backdropFilter: 'blur(24px) saturate(150%)',
             WebkitBackdropFilter: 'blur(24px) saturate(150%)',
@@ -125,10 +152,12 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
             boxShadow:
               '0 12px 32px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.45)',
             zIndex: 5,
+            outline: 'none',  // we manage focus ring on inner controls
           }}
         >
           {/* Close */}
           <motion.button
+            ref={closeRef}
             onClick={onClose}
             whileHover={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
             whileTap={{ scale: 0.92 }}
@@ -159,8 +188,8 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
             {guidance && <ConfidenceTier tier={guidance.tier} />}
           </div>
 
-          {/* Title */}
-          <h2 style={{ fontSize: 20, fontWeight: 500, letterSpacing: '-0.01em' }}>
+          {/* Title — id matches aria-labelledby on the dialog */}
+          <h2 id="flyout-title" style={{ fontSize: 20, fontWeight: 500, letterSpacing: '-0.01em' }}>
             {cell.division ?? 'Unknown division'}
           </h2>
           <div
@@ -173,11 +202,14 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
           {/* Trust-strength guidance strip — Mitigation 1 from
               `docs/edge_bias_brutal_analysis.md`. Tells the officer
               whether the model is in its 25.5%-recall sweet spot or its
-              5.9% cold-start blind zone *before* they act. */}
+              5.9% cold-start blind zone *before* they act.
+              Accessibility: role="note" + visually-hidden heading
+              instead of aria-label on the wrapper. The previous
+              aria-label swallowed all child content for screen readers,
+              hiding the actual dispatch guidance. */}
           {guidance && (
             <div
               role="note"
-              aria-label={`Trust tier ${guidance.tier}: ${guidance.label}`}
               style={{
                 marginTop: 12,
                 padding: '10px 12px',
@@ -186,6 +218,21 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
                 borderRadius: 6,
               }}
             >
+              {/* Visually-hidden heading so screen readers announce a
+                  context label, then continue reading the visible
+                  body content naturally. */}
+              <span
+                style={{
+                  position: 'absolute',
+                  width: 1, height: 1,
+                  padding: 0, margin: -1,
+                  overflow: 'hidden',
+                  clip: 'rect(0, 0, 0, 0)',
+                  whiteSpace: 'nowrap', border: 0,
+                }}
+              >
+                Trust tier {guidance.tier}.
+              </span>
               <div
                 style={{
                   fontSize: 11,
@@ -201,13 +248,18 @@ export default function MapFlyout({ cell, onClose }: MapFlyoutProps) {
               <div style={{ fontSize: 12, color: colors.text.secondary, lineHeight: 1.5 }}>
                 {guidance.guidance}
               </div>
+              {/* Promoted from 11px italic tertiary → 12px secondary
+                  non-italic with bold percentage, since this is the
+                  single most operationally critical line in the strip.
+                  ui-designer pass flagged the original as glanceability
+                  failure under field conditions. */}
               <div
                 style={{
                   marginTop: 4,
-                  fontSize: 11,
-                  color: colors.text.tertiary,
+                  fontSize: 12,
+                  color: colors.text.secondary,
                   lineHeight: 1.45,
-                  fontStyle: 'italic',
+                  fontWeight: 500,
                 }}
               >
                 {guidance.recallContext}

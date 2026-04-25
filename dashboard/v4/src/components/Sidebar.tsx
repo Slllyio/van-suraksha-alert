@@ -12,6 +12,7 @@ export function Sidebar({ children, width = layoutTokens.sidebarWidth }: Sidebar
   return (
     <motion.aside
       data-role="sidebar"
+      aria-label="Map controls and alert summary"
       variants={stagger}
       initial="hidden"
       animate="visible"

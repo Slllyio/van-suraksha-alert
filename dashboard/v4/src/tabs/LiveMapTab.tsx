@@ -10,6 +10,7 @@ import StatusBadge from '../components/StatusBadge';
 import ConfidenceTier from '../components/ConfidenceTier';
 import FireMap from '../components/FireMap';
 import MapFlyout from '../components/MapFlyout';
+import MapLegend from '../components/MapLegend';
 import CountUp from '../components/CountUp';
 import FloatingParticles from '../components/FloatingParticles';
 import { playCue, hapticTap } from '../lib/feedback';
@@ -266,12 +267,54 @@ export default function LiveMapTab() {
   const ageDays = daysSince(predictionDate);
   const stale = ageDays != null && ageDays > 1;
 
+  // Aria-live announcement string. Updates whenever a layer finishes
+  // loading so screen-reader users get completion feedback they would
+  // otherwise miss (the spinner just disappears silently).
+  const liveAnnouncement = (() => {
+    if (burnDensityLoading) return 'Loading burn density layer';
+    if (priorsLoading) return 'Loading historical priors layer';
+    if (showBurnDensity && burnDensity) {
+      return `Burn density layer ready, ${burnDensity.length.toLocaleString()} cells`;
+    }
+    if ((showBlindSpots || augmentWithPriors) && historicalPriors) {
+      return `Historical priors layer ready, ${historicalPriors.length.toLocaleString()} cells`;
+    }
+    return '';
+  })();
+
   return (
     <div data-layout="live-map" style={{ display: 'flex', height: '100%' }}>
+      {/* Visually-hidden live region — only mounted when there is
+          something to announce. Avoids empty-string echo that some AT
+          (older NVDA+Firefox) read as a brief pause. */}
+      {liveAnnouncement && (
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          style={{
+            position: 'absolute', width: 1, height: 1,
+            padding: 0, margin: -1, overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0,
+          }}
+        >
+          {liveAnnouncement}
+        </div>
+      )}
       <Sidebar>
         {predictionDate && (
           <motion.div
             variants={fadeUp}
+            // role=status + aria-live so screen readers announce
+            // staleness on mount instead of leaving it in a title
+            // tooltip that touch-device AT never reads.
+            role={stale ? 'status' : undefined}
+            aria-live={stale ? 'polite' : undefined}
+            aria-label={
+              stale
+                ? `Warning: last prediction is ${ageDays} days old. Daily pipeline may need a re-run.`
+                : `Live prediction date ${predictionDate}.`
+            }
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -290,7 +333,7 @@ export default function LiveMapTab() {
                 : 'Live prediction from the daily pipeline.'
             }
           >
-            <Calendar size={12} />
+            <Calendar size={12} aria-hidden="true" />
             <span className="mono">{predictionDate}</span>
             {stale && <span style={{ marginLeft: 'auto' }}>· {ageDays}d old</span>}
           </motion.div>
@@ -356,8 +399,18 @@ export default function LiveMapTab() {
                       ? soloBand(row.band)
                       : toggleBand(row.band)
                   }
-                  title={`Click to ${visible ? 'hide' : 'show'} ${row.band.toUpperCase()} markers. Shift-click to show ONLY ${row.band.toUpperCase()}.`}
+                  // Keyboard equivalent of shift-click: Shift+Enter or
+                  // Shift+Space solos this band. Plain Enter/Space
+                  // toggles (handled by browser default for buttons).
+                  onKeyDown={(e) => {
+                    if ((e.key === 'Enter' || e.key === ' ') && (e.shiftKey || e.ctrlKey || e.metaKey)) {
+                      e.preventDefault();
+                      soloBand(row.band);
+                    }
+                  }}
+                  title={`Click to ${visible ? 'hide' : 'show'} ${row.band.toUpperCase()} markers. Shift-click (or Shift+Enter) to show ONLY ${row.band.toUpperCase()}.`}
                   aria-pressed={visible}
+                  aria-label={`${visible ? 'Hide' : 'Show'} ${row.band.toUpperCase()} band on map. Shift+Enter to isolate this band.`}
                   style={{
                     position: 'relative',
                     overflow: 'hidden',
@@ -637,7 +690,7 @@ export default function LiveMapTab() {
               title={
                 key === 'burn-density'
                   ? 'Heatmap of every cell that burned ≥2× over the last 5 fire seasons.'
-                  : 'Cells that historically burned in 3+ of last 5 seasons but have NO current v17 alert. Orange rings = blind spots.'
+                  : 'Cells that historically burned in 3+ of last 5 seasons but have NO current v17 alert. Purple rings = blind spots.'
               }
             >
               <input
@@ -675,13 +728,15 @@ export default function LiveMapTab() {
             </motion.label>
           ))}
 
-          {/* Mitigation 3 — Interior-monitor override. Sits in same
-              section because the data source (3+ season priors) is
-              identical, but the visual treatment is different — these
-              cells are deterministic recommendations, not model output. */}
+          {/* Mitigation 3 — Interior-monitor override. Visual treatment
+              uses the BLUE accent (not amber) so officers don't read
+              the toggle itself as alarming. The amber rings appear on
+              the map; the toggle communicates "feature engaged", not
+              "danger active". Pattern matches the 3D-terrain toggle's
+              engaged state below. */}
           <motion.label
             variants={fadeUp}
-            whileHover={{ backgroundColor: 'rgba(251, 191, 36, 0.06)' }}
+            whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.04)' }}
             transition={transitions.fast}
             style={{
               display: 'flex',
@@ -692,15 +747,15 @@ export default function LiveMapTab() {
               borderRadius: 8,
               cursor: 'pointer',
               background: augmentWithPriors
-                ? 'rgba(251, 191, 36, 0.08)'
+                ? colors.accent.muted
                 : colors.bg.raised,
               border: `1px solid ${
                 augmentWithPriors
-                  ? 'rgba(251, 191, 36, 0.42)'
+                  ? 'rgba(138, 180, 248, 0.42)'
                   : colors.border.subtle
               }`,
               color: augmentWithPriors
-                ? colors.fire.watch.fg
+                ? colors.accent.base
                 : colors.text.secondary,
               fontSize: 13,
               fontWeight: 500,
@@ -734,7 +789,7 @@ export default function LiveMapTab() {
                   className="mono"
                   style={{
                     fontSize: 10,
-                    color: colors.fire.watch.fg,
+                    color: colors.accent.base,
                     marginTop: 6,
                   }}
                 >
@@ -874,6 +929,13 @@ export default function LiveMapTab() {
           priorWatchCells={priorWatchCells}
           onCellClick={handleCellClick}
         />
+        <MapLegend
+          showFires={showFires}
+          showBeats={showBeats}
+          showBurnDensity={showBurnDensity}
+          showBlindSpots={showBlindSpots}
+          augmentWithPriors={augmentWithPriors}
+        />
         <FloatingParticles count={36} />
         <MapFlyout
           cell={selected}
@@ -892,9 +954,17 @@ function ConfidenceRing({ value }: { value: number }) {
   const r = 34;
   const c = 2 * Math.PI * r;
   const pct = Math.max(0, Math.min(100, value)) / 100;
+  // Arc color: BLUE accent, NOT confirmed-fire green. Officers are
+  // trained to read green = "confirmed real fire" (VIIRS dots). Reusing
+  // green here for "model recall %" inverted the semantic — green at
+  // 22.8% is bad news, but green is brain-coded as "good".
   return (
-    <div style={{ position: 'relative', width: 84, height: 84, margin: '0 auto' }}>
-      <svg width={84} height={84} viewBox="0 0 84 84">
+    <div
+      role="img"
+      aria-label={`Model pixel-level recall: ${value.toFixed(1)} percent`}
+      style={{ position: 'relative', width: 84, height: 84, margin: '0 auto' }}
+    >
+      <svg width={84} height={84} viewBox="0 0 84 84" aria-hidden="true">
         {/* Track */}
         <circle
           cx={42}
@@ -910,7 +980,7 @@ function ConfidenceRing({ value }: { value: number }) {
           cy={42}
           r={r}
           fill="none"
-          stroke={colors.fire.confirmed.fg}
+          stroke={colors.accent.base}
           strokeWidth={6}
           strokeLinecap="round"
           transform="rotate(-90 42 42)"
@@ -918,7 +988,7 @@ function ConfidenceRing({ value }: { value: number }) {
           initial={{ strokeDashoffset: c }}
           animate={{ strokeDashoffset: c * (1 - pct) }}
           transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-          style={{ filter: `drop-shadow(0 0 6px ${colors.fire.confirmed.bg})` }}
+          style={{ filter: `drop-shadow(0 0 6px ${colors.accent.muted})` }}
         />
       </svg>
       <div

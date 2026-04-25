@@ -153,9 +153,11 @@ export default function FireMap({
   );
 
   // Mitigation 2 — burn-density heatmap. Sits at the very bottom so
-  // every other layer reads on top. Weight bins by 5y total fire count
-  // and uses a green→amber→red ramp so officers visually distinguish
-  // "burns occasionally" from "burns every season."
+  // every other layer reads on top. Weight bins by 5y total fire count.
+  // Color ramp: navy → blue → teal → amber → orange → MAGENTA terminus.
+  // The magenta terminus is deliberate — keeps the warmest end OFF the
+  // CRITICAL-red axis so heatmap warmth doesn't visually impersonate
+  // a model alert.
   const burnDensityLayer = useMemo(() => {
     if (!burnDensityPoints || burnDensityPoints.length === 0) return null;
     return new HeatmapLayer<HistoricalBurnPoint>({
@@ -164,19 +166,16 @@ export default function FireMap({
       pickable: false,
       getPosition: (d) => [d.lon, d.lat],
       getWeight: (d) => d.w,
-      // Wider radius reads better at state-level zoom (5-7).
       radiusPixels: 30,
       intensity: 0.9,
       threshold: 0.04,
-      // Cool→warm ramp keeps the visual distinct from the alert markers
-      // (which use the saturated CRITICAL/ALERT/WATCH palette).
       colorRange: [
         [40, 60, 90, 0],
         [62, 109, 152, 110],
         [89, 159, 124, 140],
         [218, 175, 70, 170],
-        [232, 119, 53, 200],
-        [205, 64, 64, 220],
+        [180, 60, 140, 200],   // magenta-600: distinct from any alert color
+        [210, 80, 180, 220],   // magenta-500 terminus
       ],
       updateTriggers: {
         getWeight: burnDensityPoints.length,
@@ -184,8 +183,11 @@ export default function FireMap({
     });
   }, [burnDensityPoints]);
 
-  // Mitigation 2 — interior blind-spot rings. Hollow orange circles for
-  // cells that historically burn but the v17 model is silent on.
+  // Mitigation 2 — interior blind-spot rings. PURPLE hollow circles
+  // (token: colors.coverage.blindSpot = #7C3AED). Deliberately off the
+  // red/orange/amber alert axis so officers cannot confuse these with
+  // ALERT-orange model dots. Tightened pixel radius so blind-spots
+  // never visually outrank live alerts.
   const blindSpotLayer = useMemo(() => {
     if (!blindSpotCells || blindSpotCells.length === 0) return null;
     return new ScatterplotLayer<HistoricalBurnPrior>({
@@ -196,23 +198,24 @@ export default function FireMap({
       filled: false,
       radiusUnits: 'meters',
       radiusMinPixels: 3,
-      radiusMaxPixels: 12,
+      radiusMaxPixels: 9,
       lineWidthUnits: 'pixels',
       lineWidthMinPixels: 1,
-      lineWidthMaxPixels: 2,
+      lineWidthMaxPixels: 1.5,
       getPosition: (d) => [d.lon, d.lat, 0],
       getRadius: 1800,
-      getLineColor: [249, 115, 22, 220],
+      getLineColor: [124, 58, 237, 230],   // purple — unambiguous vs ALERT orange
       getLineWidth: 1.4,
       extensions: [TERRAIN_EXT],
       terrainDrawMode: 'drape',
     });
   }, [blindSpotCells]);
 
-  // Mitigation 3 — climatology-promoted cells. Two concentric rings so
-  // officers cannot mistake these for v17 model predictions; the inner
-  // soft-fill amber and outer thicker amber stroke read as "watch this,
-  // not because the model said so but because it always burns here."
+  // Mitigation 3 — climatology-promoted cells. DARKER amber (amber-600
+  // #D97706) and HOLLOW so the rings read as "watch this for historical
+  // reasons" without being mistaken for a model WATCH (#FBBF24 amber-400,
+  // filled). Pixel radius tightened to stay below ignitionLayer's
+  // visual weight (the model output should remain dominant).
   const priorWatchLayer = useMemo(() => {
     if (!priorWatchCells || priorWatchCells.length === 0) return null;
     return new ScatterplotLayer<HistoricalBurnPrior>({
@@ -220,16 +223,16 @@ export default function FireMap({
       data: priorWatchCells,
       pickable: false,
       stroked: true,
-      filled: true,
+      filled: false,                       // hollow — distinguishes from filled WATCH dots
       radiusUnits: 'meters',
       radiusMinPixels: 3,
-      radiusMaxPixels: 10,
+      radiusMaxPixels: 7,                  // smaller than ignitionLayer (8) → model wins visually
       lineWidthUnits: 'pixels',
       lineWidthMinPixels: 1,
+      lineWidthMaxPixels: 2,
       getPosition: (d) => [d.lon, d.lat, 0],
-      getRadius: 1500,
-      getFillColor: [251, 191, 36, 70],
-      getLineColor: [251, 191, 36, 230],
+      getRadius: 1200,
+      getLineColor: [217, 119, 6, 230],    // amber-600, darker than WATCH amber-400
       getLineWidth: 1.6,
       extensions: [TERRAIN_EXT],
       terrainDrawMode: 'drape',
@@ -313,31 +316,33 @@ export default function FireMap({
   );
 
   // Final layer order (bottom → top):
-  //   1. burn-density heatmap    (Mitigation 2 — base context)
-  //   2. blind-spot rings        (Mitigation 2 — diff)
-  //   3. beats polygons          (existing context)
-  //   4. critical pulse          (animation under markers)
-  //   5. v17 ignition cells      (clickable markers)
-  //   6. prior-watch double-ring (Mitigation 3 — climatology promotion)
-  //   7. VIIRS confirmed fires   (latest reality)
+  //   1. burn-density heatmap     (Mitigation 2 — base context)
+  //   2. blind-spot rings         (Mitigation 2 — diff)
+  //   3. prior-watch hollow rings (Mitigation 3 — climatology priors,
+  //                                BELOW model alerts so model output
+  //                                visually dominates)
+  //   4. beats polygons           (existing context)
+  //   5. critical pulse           (animation under markers)
+  //   6. v17 ignition cells       (clickable, top-of-content)
+  //   7. VIIRS confirmed fires    (ground truth, top of all)
   const layers: Layer[] = useMemo(
     () =>
       [
         burnDensityLayer,
         blindSpotLayer,
+        priorWatchLayer,
         beatsLayer,
         pulseLayer,
         ignitionLayer,
-        priorWatchLayer,
         viirsLayer,
       ].filter((l): l is Layer => Boolean(l)),
     [
       burnDensityLayer,
       blindSpotLayer,
+      priorWatchLayer,
       beatsLayer,
       pulseLayer,
       ignitionLayer,
-      priorWatchLayer,
       viirsLayer,
     ],
   );
