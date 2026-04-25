@@ -250,8 +250,45 @@ export const api = {
     return env.data.divisions;
   },
 
-  seasonValidation: (signal?: AbortSignal) =>
-    getData<ValidationRow[]>('/api/v2/season-validation', signal),
+  /** Live season-validation source returns a wrapper object —
+   *  { summary, per_day, per_division, per_trust_tier }. We unwrap
+   *  `per_day` and map the live `recall_any_band` field to the
+   *  `recall_pct` name the v4 ValidationTab expects. */
+  seasonValidation: async (signal?: AbortSignal): Promise<ValidationRow[]> => {
+    interface PerDayRaw {
+      date: string;
+      n_critical_alerts?: number;
+      n_events?: number;
+      n_caught_any_band?: number;
+      n_caught_critical?: number;
+      recall_any_band?: number | null;
+      recall_critical?: number | null;
+    }
+    const env = await getEnvelope<{ per_day?: PerDayRaw[] }>(
+      '/api/v2/season-validation',
+      signal,
+    );
+    const rows = env.data?.per_day ?? [];
+    return rows.map((r) => ({
+      date: r.date,
+      predicted: Number(r.n_critical_alerts ?? 0),
+      observed: Number(r.n_events ?? 0),
+      caught: Number(r.n_caught_any_band ?? 0),
+      // recall_any_band is fraction (0-1) on live data; coerce to %
+      recall_pct:
+        typeof r.recall_any_band === 'number'
+          ? r.recall_any_band <= 1
+            ? r.recall_any_band * 100
+            : r.recall_any_band
+          : 0,
+      trust:
+        (r.recall_any_band ?? 0) >= 0.30
+          ? 'HIGH'
+          : (r.recall_any_band ?? 0) >= 0.15
+            ? 'MEDIUM'
+            : 'LOW',
+    }));
+  },
 
   modelTransparency: (signal?: AbortSignal) =>
     getData<ModelTransparency>('/api/v2/model-transparency', signal),
