@@ -1347,6 +1347,21 @@ class PortalHandler(SimpleHTTPRequestHandler):
             #   ?resolution=high   (~17 MB, tolerance 0.001° ≈ 111 m)
             # Both files are pre-baked by scripts/build_division_boundaries.py.
             self._serve_v2_division_boundaries(qs)
+        elif path == "/api/v2/historical-burn-priors":
+            # Per-cell historical burn counts over the last 5 fire seasons.
+            # Source: pre-baked by scripts/build_historical_burn_priors.py
+            # Used by the v4 portal for Mitigation 3 (interior-monitor
+            # override that promotes any cell burned in 3+ of last 5
+            # seasons to WATCH). See docs/edge_bias_brutal_analysis.md.
+            #   ?min_seasons=N (default 3, range 1-5)
+            self._serve_v2_historical_priors(qs)
+        elif path == "/api/v2/historical-burn-density":
+            # Heatmap point cloud: every cell with >=2 fire-season VIIRS
+            # detections over the last 5 years. Used by the v4 portal
+            # for Mitigation 2 (coverage diagnostic overlay) — shows
+            # interior cells that historically burn but the v17 model
+            # rarely catches.
+            self._serve_v2_historical_density()
         else:
             super().do_GET()
 
@@ -1682,6 +1697,83 @@ class PortalHandler(SimpleHTTPRequestHandler):
                 "source_bytes": path.stat().st_size,
             },
         )
+
+    def _serve_v2_historical_priors(self, qs) -> None:
+        """Per-cell historical burn counts (5 fire seasons, 2021-2025).
+
+        Pre-baked by ``scripts/build_historical_burn_priors.py``. Default
+        slim variant returns only cells with ``n_seasons_burned >= 3``
+        (~27k records, ~3.7 MB) — those are the override-promotion
+        candidates for Mitigation 3.
+
+        Query params:
+          ?min_seasons=N   filter (1-5; default 3 → use slim file)
+        """
+        try:
+            min_seasons = int((qs.get("min_seasons", ["3"]) or ["3"])[0])
+        except (TypeError, ValueError):
+            min_seasons = 3
+        min_seasons = max(1, min(5, min_seasons))
+
+        # Use slim file when default 3-season filter is requested; else
+        # walk the full file and filter in-memory.
+        slim_path = ROOT / "outputs" / "dashboard_feed" / "historical_burn_priors_3plus.json"
+        full_path = ROOT / "outputs" / "dashboard_feed" / "historical_burn_priors.json"
+        path = slim_path if min_seasons == 3 and slim_path.exists() else full_path
+        if not path.exists():
+            self._send_v2_error(
+                "not_found",
+                f"historical priors file missing: {path.name}. "
+                "Run `python scripts/build_historical_burn_priors.py`.",
+                status=404,
+            )
+            return
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            self._send_v2_error("priors_unreadable", str(exc), status=500)
+            return
+
+        records = payload.get("records", [])
+        if min_seasons != 3 or path == full_path:
+            records = [r for r in records if r.get("n_seasons_burned", 0) >= min_seasons]
+
+        meta = {
+            **(payload.get("metadata") or {}),
+            "served_min_seasons": min_seasons,
+            "served_records": len(records),
+            "source_file": path.name,
+        }
+        self._send_v2({"records": records}, meta=meta)
+
+    def _serve_v2_historical_density(self) -> None:
+        """Heatmap-friendly point cloud of historical burns.
+
+        Returns ``[{lat, lon, w}]`` for every cell with >=2 fire-season
+        VIIRS detections over the last 5 years (~58k points, ~2.4 MB).
+        Pre-baked by ``scripts/build_historical_burn_priors.py``.
+        """
+        path = ROOT / "outputs" / "dashboard_feed" / "historical_burn_density.json"
+        if not path.exists():
+            self._send_v2_error(
+                "not_found",
+                f"historical burn density missing: {path.name}. "
+                "Run `python scripts/build_historical_burn_priors.py`.",
+                status=404,
+            )
+            return
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            self._send_v2_error("density_unreadable", str(exc), status=500)
+            return
+        points = payload.get("points", [])
+        meta = {
+            **(payload.get("metadata") or {}),
+            "n_points": len(points),
+            "source_file": path.name,
+        }
+        self._send_v2({"points": points}, meta=meta)
 
     def _serve_v2_viirs(self, date_from, date_to) -> None:
         payload = _build_viirs_fires(date_from=date_from, date_to=date_to)

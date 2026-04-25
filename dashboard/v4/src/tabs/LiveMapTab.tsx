@@ -1,5 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Layers, Target, Crosshair, Loader2, Calendar, Eye, EyeOff, Filter, Mountain } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Layers, Target, Crosshair, Loader2, Calendar, Eye, EyeOff, Filter,
+  Mountain, Flame, ShieldQuestion,
+} from 'lucide-react';
 import { motion, AnimatePresence, fadeUp, transitions } from '../lib/motion';
 import { colors } from '../designTokens';
 import { Sidebar, SidebarSection } from '../components/Sidebar';
@@ -10,7 +13,14 @@ import MapFlyout from '../components/MapFlyout';
 import CountUp from '../components/CountUp';
 import FloatingParticles from '../components/FloatingParticles';
 import { playCue, hapticTap } from '../lib/feedback';
-import { api, type V17Cell, type ViirsFire, type GeoJSONFeatureCollection } from '../lib/api';
+import {
+  api,
+  type V17Cell,
+  type ViirsFire,
+  type GeoJSONFeatureCollection,
+  type HistoricalBurnPrior,
+  type HistoricalBurnPoint,
+} from '../lib/api';
 
 interface RiskCounts {
   critical: number;
@@ -65,6 +75,62 @@ export default function LiveMapTab() {
   // Lazy-loaded beat polygons (179 MB — only fetch when user turns the toggle on)
   const [beats, setBeats] = useState<GeoJSONFeatureCollection | null>(null);
   const [beatsLoading, setBeatsLoading] = useState(false);
+
+  // Mitigation 2 — past-5-year burn density heatmap (lazy-loaded, ~2.4 MB).
+  // Mitigation 2 — interior blind-spot diff (cells with 3+ seasons burned
+  //   that have no current v17 alert).
+  // Mitigation 3 — climatology-promoted WATCH cells (3+ seasons burned).
+  // Both mitigations share the same /api/v2/historical-burn-priors fetch
+  // because they need the per-cell season counts. Density is fetched
+  // separately because it's a flat point cloud weighted by 5y total.
+  const [showBurnDensity, setShowBurnDensity] = useState(false);
+  const [showBlindSpots, setShowBlindSpots] = useState(false);
+  const [augmentWithPriors, setAugmentWithPriors] = useState(false);
+  const [burnDensity, setBurnDensity] = useState<HistoricalBurnPoint[] | null>(null);
+  const [burnDensityLoading, setBurnDensityLoading] = useState(false);
+  const [historicalPriors, setHistoricalPriors] = useState<HistoricalBurnPrior[] | null>(null);
+  const [priorsLoading, setPriorsLoading] = useState(false);
+
+  // Lazy fetch — burn density (Mitigation 2 base layer)
+  const ensureBurnDensity = useCallback(async () => {
+    if (burnDensity || burnDensityLoading) return;
+    setBurnDensityLoading(true);
+    try {
+      const { points } = await api.historicalBurnDensity();
+      setBurnDensity(points);
+    } catch (e) {
+      console.error('historical-burn-density fetch failed:', e);
+    } finally {
+      setBurnDensityLoading(false);
+    }
+  }, [burnDensity, burnDensityLoading]);
+
+  // Lazy fetch — historical priors (Mitigation 2 blind-spots + Mitigation 3)
+  const ensurePriors = useCallback(async () => {
+    if (historicalPriors || priorsLoading) return;
+    setPriorsLoading(true);
+    try {
+      const { records } = await api.historicalBurnPriors(3);
+      setHistoricalPriors(records);
+    } catch (e) {
+      console.error('historical-burn-priors fetch failed:', e);
+    } finally {
+      setPriorsLoading(false);
+    }
+  }, [historicalPriors, priorsLoading]);
+
+  const handleBurnDensityToggle = (checked: boolean) => {
+    setShowBurnDensity(checked);
+    if (checked) ensureBurnDensity();
+  };
+  const handleBlindSpotsToggle = (checked: boolean) => {
+    setShowBlindSpots(checked);
+    if (checked) ensurePriors();
+  };
+  const handleAugmentToggle = (checked: boolean) => {
+    setAugmentWithPriors(checked);
+    if (checked) ensurePriors();
+  };
 
   // Load v17 + VIIRS once
   useEffect(() => {
@@ -169,6 +235,33 @@ export default function LiveMapTab() {
   });
   const displayedFires = showFires ? viirs : [];
   const anyBandOff = !(visibleBands.critical && visibleBands.alert && visibleBands.watch);
+
+  // Pre-compute the set of cell_ids the v17 model is currently flagging.
+  // Drives both the blind-spot diff (priors NOT in alerts) and the
+  // prior-watch promotion (priors NOT in alerts → synthetic WATCH).
+  const alertCellIds = useMemo(
+    () => new Set(cells.map((c) => String(c.cell_id))),
+    [cells],
+  );
+
+  // Mitigation 2 — interior blind-spots: any cell that historically
+  // burned in 3+ seasons but is NOT in today's alert set. These are the
+  // cells where officers are flying blind.
+  const blindSpotCells = useMemo<HistoricalBurnPrior[] | undefined>(() => {
+    if (!showBlindSpots || !historicalPriors) return undefined;
+    return historicalPriors.filter((p) => !alertCellIds.has(p.cell_id));
+  }, [showBlindSpots, historicalPriors, alertCellIds]);
+
+  // Mitigation 3 — climatology-promoted WATCH cells: same source as
+  // blind spots, but rendered with double-ring amber to communicate
+  // "watch this regardless of model." The override is deterministic —
+  // any cell with 3+ seasons burned and no v17 alert gets surfaced.
+  const priorWatchCells = useMemo<HistoricalBurnPrior[] | undefined>(() => {
+    if (!augmentWithPriors || !historicalPriors) return undefined;
+    return historicalPriors.filter((p) => !alertCellIds.has(p.cell_id));
+  }, [augmentWithPriors, historicalPriors, alertCellIds]);
+
+  const burnDensityLayerData = showBurnDensity && burnDensity ? burnDensity : undefined;
 
   const ageDays = daysSince(predictionDate);
   const stale = ageDays != null && ageDays > 1;
@@ -487,6 +580,171 @@ export default function LiveMapTab() {
           ))}
         </SidebarSection>
 
+        {/* Mitigations 2 + 3 — coverage diagnostic + interior monitor.
+            See docs/edge_bias_brutal_analysis.md. The model is structurally
+            edge-biased (71% of alerts within 1 km of forest edge, 0% in
+            deep interior); these toggles let officers visually verify
+            the gap and override with deterministic climatology priors. */}
+        <SidebarSection label="Coverage diagnostic">
+          <div
+            style={{
+              fontSize: 10,
+              color: colors.text.tertiary,
+              padding: '0 4px 6px',
+              lineHeight: 1.5,
+            }}
+          >
+            v17.5 misses ~94% of fires in low-Hawkes (cold-start) cells.
+            Use these to see WHERE fires actually keep happening.
+          </div>
+          {[
+            {
+              icon: Flame,
+              key: 'burn-density',
+              label: 'Past 5y burn density',
+              checked: showBurnDensity,
+              onChange: handleBurnDensityToggle,
+              loading: burnDensityLoading,
+              count: burnDensity?.length ?? null,
+              countLabel: 'cells',
+            },
+            {
+              icon: ShieldQuestion,
+              key: 'blind-spots',
+              label: 'Interior blind-spots',
+              checked: showBlindSpots,
+              onChange: handleBlindSpotsToggle,
+              loading: priorsLoading,
+              count: blindSpotCells?.length ?? null,
+              countLabel: 'silent cells',
+            },
+          ].map(({ icon: Icon, key, label, checked, onChange, loading: rowLoading, count, countLabel }) => (
+            <motion.label
+              key={key}
+              variants={fadeUp}
+              whileHover={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+              transition={transitions.fast}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                padding: '6px 8px',
+                borderRadius: 6,
+                cursor: 'pointer',
+                color: colors.text.secondary,
+                fontSize: 13,
+              }}
+              title={
+                key === 'burn-density'
+                  ? 'Heatmap of every cell that burned ≥2× over the last 5 fire seasons.'
+                  : 'Cells that historically burned in 3+ of last 5 seasons but have NO current v17 alert. Orange rings = blind spots.'
+              }
+            >
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={(e) => onChange(e.target.checked)}
+                disabled={rowLoading}
+                style={{ accentColor: colors.accent.base }}
+              />
+              <Icon size={14} color={colors.text.tertiary} />
+              <span style={{ flex: 1 }}>{label}</span>
+              {rowLoading ? (
+                <motion.span
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
+                  style={{ display: 'inline-flex', color: colors.accent.base }}
+                  aria-label="loading"
+                >
+                  <Loader2 size={12} />
+                </motion.span>
+              ) : checked && typeof count === 'number' ? (
+                <span
+                  className="mono"
+                  style={{
+                    fontSize: 10,
+                    color: colors.text.tertiary,
+                    background: 'rgba(148, 163, 184, 0.08)',
+                    padding: '2px 6px',
+                    borderRadius: 999,
+                  }}
+                >
+                  {count.toLocaleString()} {countLabel}
+                </span>
+              ) : null}
+            </motion.label>
+          ))}
+
+          {/* Mitigation 3 — Interior-monitor override. Sits in same
+              section because the data source (3+ season priors) is
+              identical, but the visual treatment is different — these
+              cells are deterministic recommendations, not model output. */}
+          <motion.label
+            variants={fadeUp}
+            whileHover={{ backgroundColor: 'rgba(251, 191, 36, 0.06)' }}
+            transition={transitions.fast}
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 10,
+              padding: '8px 10px',
+              marginTop: 6,
+              borderRadius: 8,
+              cursor: 'pointer',
+              background: augmentWithPriors
+                ? 'rgba(251, 191, 36, 0.08)'
+                : colors.bg.raised,
+              border: `1px solid ${
+                augmentWithPriors
+                  ? 'rgba(251, 191, 36, 0.42)'
+                  : colors.border.subtle
+              }`,
+              color: augmentWithPriors
+                ? colors.fire.watch.fg
+                : colors.text.secondary,
+              fontSize: 13,
+              fontWeight: 500,
+            }}
+            title="Interior-monitor override: deterministically promotes any cell that burned in 3+ of last 5 fire seasons to WATCH, regardless of v17 score."
+          >
+            <input
+              type="checkbox"
+              checked={augmentWithPriors}
+              onChange={(e) => handleAugmentToggle(e.target.checked)}
+              disabled={priorsLoading}
+              style={{ marginTop: 2, accentColor: colors.fire.watch.fg }}
+            />
+            <span style={{ flex: 1 }}>
+              <div>Augment with historical priors</div>
+              <div
+                style={{
+                  fontSize: 10,
+                  color: colors.text.tertiary,
+                  marginTop: 4,
+                  lineHeight: 1.45,
+                  fontWeight: 400,
+                }}
+              >
+                Promotes any cell to WATCH if it burned in 3+ of the last
+                5 fire seasons, regardless of the model's score. Amber
+                double-rings on the map.
+              </div>
+              {augmentWithPriors && priorWatchCells && (
+                <div
+                  className="mono"
+                  style={{
+                    fontSize: 10,
+                    color: colors.fire.watch.fg,
+                    marginTop: 6,
+                  }}
+                >
+                  +{priorWatchCells.length.toLocaleString()} promoted cells
+                </div>
+              )}
+            </span>
+          </motion.label>
+        </SidebarSection>
+
         <SidebarSection label="3D view">
           <motion.label
             variants={fadeUp}
@@ -611,6 +869,9 @@ export default function LiveMapTab() {
           beats={showBeats ? beats : null}
           terrain3D={terrain3D}
           terrainExaggeration={terrainExag}
+          burnDensityPoints={burnDensityLayerData}
+          blindSpotCells={blindSpotCells}
+          priorWatchCells={priorWatchCells}
           onCellClick={handleCellClick}
         />
         <FloatingParticles count={36} />

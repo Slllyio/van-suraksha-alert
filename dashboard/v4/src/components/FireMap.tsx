@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import { Deck } from 'deck.gl';
 import { ScatterplotLayer, GeoJsonLayer } from '@deck.gl/layers';
+import { HeatmapLayer } from '@deck.gl/aggregation-layers';
 // `_TerrainExtension` is the deck.gl 9 export name (underscore-prefixed
 // to signal experimental status). Aliased for clarity.
 import { _TerrainExtension as TerrainExtension } from '@deck.gl/extensions';
@@ -16,7 +17,13 @@ import type { PickingInfo, Layer } from '@deck.gl/core';
 // project that layer onto the active terrain mesh from MapLibre.
 const TERRAIN_EXT = new TerrainExtension();
 import { colors } from '../designTokens';
-import type { V17Cell, ViirsFire, GeoJSONFeatureCollection } from '../lib/api';
+import type {
+  V17Cell,
+  ViirsFire,
+  GeoJSONFeatureCollection,
+  HistoricalBurnPoint,
+  HistoricalBurnPrior,
+} from '../lib/api';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const INITIAL_VIEW = {
@@ -42,6 +49,20 @@ interface FireMapProps {
   terrain3D?: boolean;
   /** Vertical exaggeration multiplier for 3D terrain (default 1.5). */
   terrainExaggeration?: number;
+  /** Mitigation 2 — past-5-year burn density heatmap. When provided +
+   *  non-empty, deck.gl renders a HeatmapLayer underneath the alerts so
+   *  officers can see WHERE fires actually keep happening vs WHERE the
+   *  model predicts. */
+  burnDensityPoints?: HistoricalBurnPoint[];
+  /** Mitigation 2 — interior blind-spot rings: cells that historically
+   *  burned in 3+ of the last 5 seasons but have NO matching v17 alert
+   *  this cycle. Rendered as orange hollow circles. */
+  blindSpotCells?: HistoricalBurnPrior[];
+  /** Mitigation 3 — climatology-promoted WATCH cells. Officer-toggled
+   *  override that surfaces deterministic prior-burn cells regardless
+   *  of what v17 says. Rendered as amber double rings to make clear
+   *  this is NOT a model prediction. */
+  priorWatchCells?: HistoricalBurnPrior[];
   onCellClick?: (cell: V17Cell) => void;
 }
 
@@ -68,6 +89,9 @@ export default function FireMap({
   beats,
   terrain3D = false,
   terrainExaggeration = 1.5,
+  burnDensityPoints,
+  blindSpotCells,
+  priorWatchCells,
   onCellClick,
 }: FireMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -128,39 +152,112 @@ export default function FireMap({
     [criticalCells, pulse],
   );
 
-  const dataLayers: Layer[] = useMemo(
-    () => [
-      // Beats polygon overlay (rendered UNDER the scatter so markers stay on top).
-      // Original 8,973 MP forest-beat MultiPolygons. Render with soft fill +
-      // anti-aliased thin stroke to avoid the "sharp edges" look officers
-      // flagged on the dissolved divisions.
-      ...(beats
-        ? [
-            new GeoJsonLayer({
-              id: 'beats-boundary',
-              data: beats as unknown as GeoJSON.FeatureCollection,
-              pickable: false,
-              stroked: true,
-              filled: true,
-              lineWidthUnits: 'pixels',
-              lineWidthMinPixels: 0.4,
-              lineWidthMaxPixels: 0.9,
-              // Soft slate fill + thin teal stroke for forest feel
-              getFillColor: [129, 201, 149, 8],   // green @ ~3% (forest)
-              getLineColor: [129, 201, 149, 80],  // green @ 31% — visible but soft
-              getLineWidth: 0.6,
-              parameters: {
-                blend: true,
-                blendFunc: [770, 771],  // SRC_ALPHA, ONE_MINUS_SRC_ALPHA
-              },
-              // Drape this polygon layer onto the 3D terrain mesh so beat
-              // boundaries follow ridges/valleys instead of floating at z=0.
-              extensions: [TERRAIN_EXT],
-              terrainDrawMode: 'drape',
-            }),
-          ]
-        : []),
-      // v17 ignition cells — scatterplot circles
+  // Mitigation 2 — burn-density heatmap. Sits at the very bottom so
+  // every other layer reads on top. Weight bins by 5y total fire count
+  // and uses a green→amber→red ramp so officers visually distinguish
+  // "burns occasionally" from "burns every season."
+  const burnDensityLayer = useMemo(() => {
+    if (!burnDensityPoints || burnDensityPoints.length === 0) return null;
+    return new HeatmapLayer<HistoricalBurnPoint>({
+      id: 'burn-density-5y',
+      data: burnDensityPoints,
+      pickable: false,
+      getPosition: (d) => [d.lon, d.lat],
+      getWeight: (d) => d.w,
+      // Wider radius reads better at state-level zoom (5-7).
+      radiusPixels: 30,
+      intensity: 0.9,
+      threshold: 0.04,
+      // Cool→warm ramp keeps the visual distinct from the alert markers
+      // (which use the saturated CRITICAL/ALERT/WATCH palette).
+      colorRange: [
+        [40, 60, 90, 0],
+        [62, 109, 152, 110],
+        [89, 159, 124, 140],
+        [218, 175, 70, 170],
+        [232, 119, 53, 200],
+        [205, 64, 64, 220],
+      ],
+      updateTriggers: {
+        getWeight: burnDensityPoints.length,
+      },
+    });
+  }, [burnDensityPoints]);
+
+  // Mitigation 2 — interior blind-spot rings. Hollow orange circles for
+  // cells that historically burn but the v17 model is silent on.
+  const blindSpotLayer = useMemo(() => {
+    if (!blindSpotCells || blindSpotCells.length === 0) return null;
+    return new ScatterplotLayer<HistoricalBurnPrior>({
+      id: 'blind-spot-rings',
+      data: blindSpotCells,
+      pickable: false,
+      stroked: true,
+      filled: false,
+      radiusUnits: 'meters',
+      radiusMinPixels: 3,
+      radiusMaxPixels: 12,
+      lineWidthUnits: 'pixels',
+      lineWidthMinPixels: 1,
+      lineWidthMaxPixels: 2,
+      getPosition: (d) => [d.lon, d.lat, 0],
+      getRadius: 1800,
+      getLineColor: [249, 115, 22, 220],
+      getLineWidth: 1.4,
+      extensions: [TERRAIN_EXT],
+      terrainDrawMode: 'drape',
+    });
+  }, [blindSpotCells]);
+
+  // Mitigation 3 — climatology-promoted cells. Two concentric rings so
+  // officers cannot mistake these for v17 model predictions; the inner
+  // soft-fill amber and outer thicker amber stroke read as "watch this,
+  // not because the model said so but because it always burns here."
+  const priorWatchLayer = useMemo(() => {
+    if (!priorWatchCells || priorWatchCells.length === 0) return null;
+    return new ScatterplotLayer<HistoricalBurnPrior>({
+      id: 'prior-watch-promoted',
+      data: priorWatchCells,
+      pickable: false,
+      stroked: true,
+      filled: true,
+      radiusUnits: 'meters',
+      radiusMinPixels: 3,
+      radiusMaxPixels: 10,
+      lineWidthUnits: 'pixels',
+      lineWidthMinPixels: 1,
+      getPosition: (d) => [d.lon, d.lat, 0],
+      getRadius: 1500,
+      getFillColor: [251, 191, 36, 70],
+      getLineColor: [251, 191, 36, 230],
+      getLineWidth: 1.6,
+      extensions: [TERRAIN_EXT],
+      terrainDrawMode: 'drape',
+    });
+  }, [priorWatchCells]);
+
+  const beatsLayer = useMemo(() => {
+    if (!beats) return null;
+    return new GeoJsonLayer({
+      id: 'beats-boundary',
+      data: beats as unknown as GeoJSON.FeatureCollection,
+      pickable: false,
+      stroked: true,
+      filled: true,
+      lineWidthUnits: 'pixels',
+      lineWidthMinPixels: 0.4,
+      lineWidthMaxPixels: 0.9,
+      getFillColor: [129, 201, 149, 8],
+      getLineColor: [129, 201, 149, 80],
+      getLineWidth: 0.6,
+      parameters: { blend: true, blendFunc: [770, 771] },
+      extensions: [TERRAIN_EXT],
+      terrainDrawMode: 'drape',
+    });
+  }, [beats]);
+
+  const ignitionLayer = useMemo(
+    () =>
       new ScatterplotLayer<V17Cell>({
         id: 'ignition-cells',
         data: cells,
@@ -190,8 +287,11 @@ export default function FireMap({
         extensions: [TERRAIN_EXT],
         terrainDrawMode: 'drape',
       }),
+    [cells],
+  );
 
-      // FIRMS VIIRS fires — smaller, confirmed green circles
+  const viirsLayer = useMemo(
+    () =>
       new ScatterplotLayer<ViirsFire>({
         id: 'viirs-fires',
         data: viirs,
@@ -209,17 +309,37 @@ export default function FireMap({
         extensions: [TERRAIN_EXT],
         terrainDrawMode: 'drape',
       }),
-    ],
-    [cells, viirs, beats],
+    [viirs],
   );
 
-  // Final layer list inserts the pulse layer just after beats so it sits
-  // under the ignition scatter (so markers remain the hit target).
+  // Final layer order (bottom → top):
+  //   1. burn-density heatmap    (Mitigation 2 — base context)
+  //   2. blind-spot rings        (Mitigation 2 — diff)
+  //   3. beats polygons          (existing context)
+  //   4. critical pulse          (animation under markers)
+  //   5. v17 ignition cells      (clickable markers)
+  //   6. prior-watch double-ring (Mitigation 3 — climatology promotion)
+  //   7. VIIRS confirmed fires   (latest reality)
   const layers: Layer[] = useMemo(
-    () => [dataLayers[0], pulseLayer, ...dataLayers.slice(1)].filter(
-      (l): l is Layer => Boolean(l),
-    ),
-    [dataLayers, pulseLayer],
+    () =>
+      [
+        burnDensityLayer,
+        blindSpotLayer,
+        beatsLayer,
+        pulseLayer,
+        ignitionLayer,
+        priorWatchLayer,
+        viirsLayer,
+      ].filter((l): l is Layer => Boolean(l)),
+    [
+      burnDensityLayer,
+      blindSpotLayer,
+      beatsLayer,
+      pulseLayer,
+      ignitionLayer,
+      priorWatchLayer,
+      viirsLayer,
+    ],
   );
 
   // Mount MapLibre + Deck once

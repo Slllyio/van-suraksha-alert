@@ -146,6 +146,44 @@ export interface ViirsFire {
   frp?: number;
 }
 
+/** Historical-burn priors aggregated per v17 cell over the last 5 fire
+ *  seasons (2021-2025). Used by Mitigation 2 (coverage diagnostic) +
+ *  Mitigation 3 (interior-monitor override). See
+ *  `docs/edge_bias_brutal_analysis.md`. */
+export interface HistoricalBurnPrior {
+  cell_id: string;
+  lat: number;
+  lon: number;
+  total_fires_5y: number;
+  n_seasons_burned: number;
+  seasons_burned: number[];
+}
+
+export interface HistoricalBurnPriorMeta {
+  seasons?: number[];
+  served_min_seasons?: number;
+  served_records?: number;
+  source_file?: string;
+  n_cells_3plus_seasons?: number;
+  n_cells_5_seasons?: number;
+}
+
+/** Density-friendly point cloud for HeatmapLayer: `[lat, lon, weight]`
+ *  per cell that had >=2 fire-season VIIRS detections in last 5y. */
+export interface HistoricalBurnPoint {
+  lat: number;
+  lon: number;
+  /** Weight = total fire-season VIIRS detections over 5y. */
+  w: number;
+}
+
+export interface HistoricalBurnDensityMeta {
+  seasons?: number[];
+  filter?: string;
+  n_points?: number;
+  source_file?: string;
+}
+
 export interface ViirsMeta {
   total?: number;
   n_before_clip?: number;
@@ -311,6 +349,32 @@ export const api = {
 
   beatsBoundary: (signal?: AbortSignal) =>
     getData<GeoJSONFeatureCollection>('/api/v2/beats-boundary', signal),
+
+  /** Per-cell historical burn counts (5-year, fire-season VIIRS). Default
+   *  filter is `min_seasons=3` (~27k records) — those are the
+   *  Mitigation 3 promotion candidates. */
+  historicalBurnPriors: async (
+    minSeasons = 3,
+    signal?: AbortSignal,
+  ): Promise<{ records: HistoricalBurnPrior[]; meta: HistoricalBurnPriorMeta }> => {
+    const env = await getEnvelope<{ records: HistoricalBurnPrior[] }, HistoricalBurnPriorMeta>(
+      `/api/v2/historical-burn-priors?min_seasons=${minSeasons}`,
+      signal,
+    );
+    return { records: env.data?.records ?? [], meta: env.meta ?? {} };
+  },
+
+  /** Density-friendly point cloud for the burn-density HeatmapLayer.
+   *  Each point is `{lat, lon, w}` for a cell with >=2 fires in 5y. */
+  historicalBurnDensity: async (
+    signal?: AbortSignal,
+  ): Promise<{ points: HistoricalBurnPoint[]; meta: HistoricalBurnDensityMeta }> => {
+    const env = await getEnvelope<{ points: HistoricalBurnPoint[] }, HistoricalBurnDensityMeta>(
+      '/api/v2/historical-burn-density',
+      signal,
+    );
+    return { points: env.data?.points ?? [], meta: env.meta ?? {} };
+  },
 
   /** Dissolved MP division polygons. Much smaller (~8 MB ultra, ~17 MB high)
    *  than /api/v2/beats-boundary (~187 MB). Default resolution is `ultra` —
