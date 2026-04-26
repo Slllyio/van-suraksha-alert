@@ -214,3 +214,32 @@ browse --ws 9222 eval "deckRef.current?.props?.viewState?.pitch"  # expect 0
 - Cloud / rain animation overlay (tempting but distracting for ops)
 - Time-of-day shadow casting
 - Globe view (CesiumJS-class feature)
+
+---
+
+## Update 2026-04-26 — forest-clip is NOT applied to terrain
+
+Per user feedback (`feedback_clip_to_forest.md`), all per-cell map
+overlays (fuel-load, burn-density, blind-spots, prior-watch, beats,
+divisions, alerts) are spatially filtered to MP forest beat polygons
+before serving. **The 3D terrain hillshade + raster-DEM mesh is the
+ONE exception** — terrain renders state-wide, not forest-clipped.
+
+Why: the AWS Terrarium tile mesh is a global raster. Clipping it to
+the 8,973 forest beat polygons would require a custom MapLibre shader
+or a stippled GeoJsonLayer mask, both of which carry per-frame perf
+cost and would obscure river channels + ridges officers genuinely
+need to see when a fire approaches a village from the forest edge.
+
+Operationally: the forest-clip on overlays + the always-on terrain
+gives officers "where is the threat" (forest-only fuel/burn density)
+plus "what's the ground" (full-state geomorphology). The former is
+data; the latter is context. Both are useful.
+
+If a future user asks for terrain-clip too, options are:
+1. Custom `_TerrainExtension` mask uniform — deck.gl-side shader work
+2. Lower-opacity hillshade outside a `data/aoi/mp_beats_wgs84` GeoJsonLayer mask — works in MapLibre with two `hillshade` paint expressions, costs ~2-3 ms/frame on integrated GPU
+3. Pre-bake a forest-only DEM tileset — heaviest, but cleanest
+
+None are blocking; revisit if officers say the non-forest terrain
+is genuinely distracting.

@@ -168,6 +168,18 @@ def main() -> None:
         "records": records,
     }
 
+    # FOREST CLIP — drop non-forest cells per the user design rule
+    # documented at ~/.claude/projects/e--FIRE/memory/feedback_clip_to_forest.md.
+    # Same pattern + same beats source as the runtime _clip_fires_to_forest.
+    from _forest_clip_helper import filter_records_to_forest  # noqa: E402
+    print()
+    print("=== forest-clipping records ===")
+    records = filter_records_to_forest(records)
+    payload["records"] = records
+    payload["metadata"]["forest_clipped"] = True
+    payload["metadata"]["n_cells_3plus_seasons"] = sum(1 for r in records if r["n_seasons_burned"] >= 3)
+    payload["metadata"]["n_cells_5_seasons"] = sum(1 for r in records if r["n_seasons_burned"] == 5)
+
     _write_atomic_json(OUTPUT_FULL, payload)
 
     # Slim variant — only cells with 3+ seasons burned (Mitigation 3

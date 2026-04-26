@@ -214,6 +214,13 @@ def main() -> None:
     # "show top N heavy-fuel cells" pattern).
     records.sort(key=lambda r: r["fuel_load_t_per_ha"], reverse=True)
 
+    # FOREST CLIP — drop non-forest cells (Bhopal urban grid, Narmada water,
+    # cropland outside forest perimeter). Officers care only about forest
+    # fires; rendering fuel-load over a city center is operational noise.
+    # See ~/.claude/projects/e--FIRE/memory/feedback_clip_to_forest.md.
+    from _forest_clip_helper import filter_records_to_forest  # noqa: E402
+    records = filter_records_to_forest(records)
+
     payload = {
         "metadata": {
             "source_tiles": [str(t.relative_to(REPO_ROOT)) for t in tiles],
