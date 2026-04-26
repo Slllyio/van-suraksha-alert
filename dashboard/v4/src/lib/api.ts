@@ -221,6 +221,27 @@ export interface FuelRasterBounds {
   fuel_class_colors: Record<string, string>;
 }
 
+/** Sidecar metadata for the WC fuel-class tile pyramid. Native ~10 m
+ *  resolution at z13. Used by deck.gl TileLayer with `data` =
+ *  xyz_url_template. */
+export interface FuelTilesMeta {
+  min_zoom: number;
+  max_zoom: number;
+  lon_min: number;
+  lat_min: number;
+  lon_max: number;
+  lat_max: number;
+  tile_size: number;
+  xyz_url_template: string;
+  pmtiles_url: string;
+  pmtiles_size_bytes: number;
+  n_tiles_written: number;
+  n_tiles_empty: number;
+  fuel_class_colors: Record<string, string>;
+  source: string;
+  generated_ts: number;
+}
+
 /** Result of POST /api/v2/burn-prediction. Each spread_Xh sub-dict is
  *  a SpreadPredictor.predict() horizon entry. */
 export interface BurnHorizon {
@@ -459,6 +480,19 @@ export const api = {
   ): Promise<FuelRasterBounds> => {
     const env = await getEnvelope<FuelRasterBounds>(
       '/api/v2/fuel-class-raster-bounds',
+      signal,
+    );
+    return env.data;
+  },
+
+  /** Sidecar for the WC tile pyramid (z6-z13, ~10m native at z13).
+   *  Tiles served from /static/wc_tiles/{z}/{x}/{y}.png; this fetcher
+   *  returns the meta needed to mount a deck.gl TileLayer. */
+  fuelTilesMeta: async (
+    signal?: AbortSignal,
+  ): Promise<FuelTilesMeta> => {
+    const env = await getEnvelope<FuelTilesMeta>(
+      '/api/v2/fuel-tiles-meta',
       signal,
     );
     return env.data;

@@ -90,3 +90,7 @@ remaining_failures.txt
 # Division-dissolve intermediate — 79 MB, can be regenerated from
 # mp_beats_wgs84.geojson via scripts/build_division_boundaries.py.
 data/aoi/mp_divisions_dissolved.geojson
+
+# Tile pyramid output (regenerable via scripts/bake_wc_tile_pyramid.py)
+dashboard/v3/static/wc_tiles/
+dashboard/v3/static/wc_fuel_class.pmtiles

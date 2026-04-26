@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import { Deck } from 'deck.gl';
 import { ScatterplotLayer, GeoJsonLayer, BitmapLayer } from '@deck.gl/layers';
+import { TileLayer } from '@deck.gl/geo-layers';
 import { HeatmapLayer } from '@deck.gl/aggregation-layers';
 // `_TerrainExtension` is the deck.gl 9 export name (underscore-prefixed
 // to signal experimental status). Aliased for clarity.
@@ -30,6 +31,7 @@ import type {
   HistoricalBurnPrior,
   FuelLoadRecord,
   FuelRasterBounds,
+  FuelTilesMeta,
   BurnPrediction,
 } from '../lib/api';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -84,6 +86,10 @@ interface FireMapProps {
    *  WorldCover fuel-class color map clipped to forest beats. Far
    *  finer than the per-cell ScatterplotLayer can show. */
   fuelRasterBounds?: FuelRasterBounds | null;
+  /** Phase 3 — WC fuel-class tile pyramid (z6-z13, ~10m native at z13).
+   *  When supplied, renders a deck.gl TileLayer that auto-fetches
+   *  tiles from the meta's xyz_url_template based on viewport zoom. */
+  fuelTilesMeta?: FuelTilesMeta | null;
   /** Optional active burn-area prediction polygon. When set, deck.gl
    *  renders 3 nested GeoJsonLayers for the 6h/12h/24h spread polygons
    *  with increasing transparency. Set/cleared by MapFlyout. */
@@ -120,6 +126,7 @@ export default function FireMap({
   priorWatchCells,
   fuelLoadRecords,
   fuelRasterBounds,
+  fuelTilesMeta,
   burnPrediction,
   onCellClick,
 }: FireMapProps) {
@@ -276,6 +283,41 @@ export default function FireMap({
       ...terrainProps,
     });
   }, [priorWatchCells, terrainProps]);
+
+  // Phase 3 — WC fuel-class tile pyramid (z6-z13). deck.gl TileLayer
+  // auto-fetches tiles from /static/wc_tiles/{z}/{x}/{y}.png at the
+  // appropriate zoom, then renders each tile as a BitmapLayer.
+  // Native ~10 m at z13. Fine-grained vs the single-PNG raster.
+  const fuelTilesLayer = useMemo(() => {
+    if (!fuelTilesMeta) return null;
+    return new TileLayer({
+      id: 'fuel-tiles-pyramid',
+      data: fuelTilesMeta.xyz_url_template,
+      minZoom: fuelTilesMeta.min_zoom,
+      maxZoom: fuelTilesMeta.max_zoom,
+      tileSize: fuelTilesMeta.tile_size,
+      pickable: false,
+      opacity: 0.85,
+      // Tile-level fetch — return undefined to skip missing tiles
+      // (TileLayer will absorb the 404 and render the lower zoom).
+      maxRequests: 8,
+      // Each tile is rendered as a sub-BitmapLayer.
+      renderSubLayers: (props) => {
+        const { boundingBox } = props.tile;
+        return new BitmapLayer({
+          ...props,
+          id: `${props.id}-bm`,
+          data: undefined,
+          image: props.data,
+          bounds: [
+            boundingBox[0][0], boundingBox[0][1],
+            boundingBox[1][0], boundingBox[1][1],
+          ],
+          ...terrainProps,
+        });
+      },
+    });
+  }, [fuelTilesMeta, terrainProps]);
 
   // Phase 2 — MP-wide WC PNG raster as a deck.gl BitmapLayer. ~120 m/px
   // forest-clipped, color-coded by SB40 class. Renders BELOW the per-
@@ -492,7 +534,8 @@ export default function FireMap({
   const layers: Layer[] = useMemo(
     () =>
       [
-        fuelRasterLayer,   // Phase 2 — WC native PNG, very bottom
+        fuelRasterLayer,   // Phase 2 — WC native PNG (single image)
+        fuelTilesLayer,    // Phase 3 — WC tile pyramid (zoom-aware)
         fuelLoadLayer,
         burnDensityLayer,
         blindSpotLayer,
@@ -506,6 +549,7 @@ export default function FireMap({
       ].filter((l): l is Layer => Boolean(l)),
     [
       fuelRasterLayer,
+      fuelTilesLayer,
       fuelLoadLayer,
       burnDensityLayer,
       blindSpotLayer,

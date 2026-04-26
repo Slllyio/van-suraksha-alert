@@ -23,6 +23,7 @@ import {
   type HistoricalBurnPoint,
   type FuelLoadRecord,
   type FuelRasterBounds,
+  type FuelTilesMeta,
   type BurnPrediction,
 } from '../lib/api';
 
@@ -103,6 +104,10 @@ export default function LiveMapTab() {
   const [showFuelRaster, setShowFuelRaster] = useState(false);
   const [fuelRaster, setFuelRaster] = useState<FuelRasterBounds | null>(null);
   const [fuelRasterLoading, setFuelRasterLoading] = useState(false);
+  // Phase 3 — WC tile pyramid (z6-z13, ~10 m/px at z13).
+  const [showFuelTiles, setShowFuelTiles] = useState(false);
+  const [fuelTiles, setFuelTiles] = useState<FuelTilesMeta | null>(null);
+  const [fuelTilesLoading, setFuelTilesLoading] = useState(false);
   // Per-click burn-area prediction (set by MapFlyout via callback).
   const [burnPrediction, setBurnPrediction] = useState<BurnPrediction | null>(null);
   const [burnDensity, setBurnDensity] = useState<HistoricalBurnPoint[] | null>(null);
@@ -174,6 +179,24 @@ export default function LiveMapTab() {
   const handleFuelRasterToggle = (checked: boolean) => {
     setShowFuelRaster(checked);
     if (checked) ensureFuelRaster();
+  };
+
+  const ensureFuelTiles = useCallback(async () => {
+    if (fuelTiles || fuelTilesLoading) return;
+    setFuelTilesLoading(true);
+    try {
+      const meta = await api.fuelTilesMeta();
+      setFuelTiles(meta);
+    } catch (e) {
+      console.error('fuel-tiles meta fetch failed:', e);
+    } finally {
+      setFuelTilesLoading(false);
+    }
+  }, [fuelTiles, fuelTilesLoading]);
+
+  const handleFuelTilesToggle = (checked: boolean) => {
+    setShowFuelTiles(checked);
+    if (checked) ensureFuelTiles();
   };
 
   const handleBurnDensityToggle = (checked: boolean) => {
@@ -781,6 +804,20 @@ export default function LiveMapTab() {
               count: fuelRaster ? fuelRaster.approx_m_per_px : null,
               countLabel: 'm/px',
             },
+            {
+              // Phase 3 — XYZ tile pyramid z6-z13 from native 10 m
+              // WorldCover. deck.gl TileLayer auto-fetches the right
+              // zoom; ~10 m/px at z13. Forest-clipped, fuel-class
+              // colored. Streams tiles as you pan/zoom.
+              icon: Flame,
+              key: 'fuel-tiles',
+              label: 'Fuel class — 10m pyramid',
+              checked: showFuelTiles,
+              onChange: handleFuelTilesToggle,
+              loading: fuelTilesLoading,
+              count: fuelTiles ? fuelTiles.n_tiles_written : null,
+              countLabel: 'tiles',
+            },
           ].map(({ icon: Icon, key, label, checked, onChange, loading: rowLoading, count, countLabel }) => (
             <motion.label
               key={key}
@@ -1042,6 +1079,7 @@ export default function LiveMapTab() {
           priorWatchCells={priorWatchCells}
           fuelLoadRecords={showFuelLoad && fuelLoad ? fuelLoad : undefined}
           fuelRasterBounds={showFuelRaster ? fuelRaster : null}
+          fuelTilesMeta={showFuelTiles ? fuelTiles : null}
           burnPrediction={burnPrediction}
           onCellClick={handleCellClick}
         />

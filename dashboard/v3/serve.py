@@ -1545,6 +1545,11 @@ class PortalHandler(SimpleHTTPRequestHandler):
             # The PNG itself is served as a static asset by
             # SimpleHTTPRequestHandler from dashboard/v3/static/.
             self._serve_v2_fuel_raster_bounds()
+        elif path == "/api/v2/fuel-tiles-meta":
+            # Sidecar for the WC tile pyramid (z6-z13, ~10m at z13).
+            # Tiles themselves served as static XYZ files from
+            # dashboard/v3/static/wc_tiles/{z}/{x}/{y}.png.
+            self._serve_v2_fuel_tiles_meta()
         else:
             super().do_GET()
 
@@ -2195,6 +2200,32 @@ class PortalHandler(SimpleHTTPRequestHandler):
         self._send_v2(
             bounds,
             meta={"source": "ESA WorldCover 10 m forest-clipped"},
+            extra_headers={
+                "ETag": etag,
+                "Cache-Control": "public, max-age=86400, must-revalidate",
+            },
+        )
+
+    def _serve_v2_fuel_tiles_meta(self) -> None:
+        """Sidecar for the WC fuel-class tile pyramid (z6-z13).
+        Frontend `TileLayer` reads `xyz_url_template` to fetch tiles."""
+        meta_path = ROOT / "dashboard" / "v3" / "static" / "wc_tiles_meta.json"
+        if not meta_path.exists():
+            self._send_v2_error(
+                "not_found", "fuel tile pyramid not yet baked", status=404,
+            )
+            return
+        etag = _file_etag(meta_path, "ft")
+        if self._maybe_send_304(etag):
+            return
+        try:
+            meta = _load_cached_json(meta_path)
+        except (OSError, json.JSONDecodeError):
+            self._send_v2_error("meta_unreadable", "internal error", status=500)
+            return
+        self._send_v2(
+            meta,
+            meta={"source": "ESA WorldCover 10 m forest-clipped pyramid"},
             extra_headers={
                 "ETag": etag,
                 "Cache-Control": "public, max-age=86400, must-revalidate",

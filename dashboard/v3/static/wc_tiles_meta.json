@@ -1,0 +1,23 @@
+{
+  "min_zoom": 6,
+  "max_zoom": 12,
+  "lon_min": 74.0,
+  "lat_min": 21.0,
+  "lon_max": 83.0,
+  "lat_max": 27.0,
+  "tile_size": 256,
+  "xyz_url_template": "/static/wc_tiles/{z}/{x}/{y}.png",
+  "pmtiles_url": "/static/wc_fuel_class.pmtiles",
+  "pmtiles_size_bytes": 0,
+  "n_tiles_written": 3706,
+  "n_tiles_empty": 0,
+  "fuel_class_colors": {
+    "TL2_forest_litter":  "#1F6B3A",
+    "SH2_shrub":          "#2A8C8C",
+    "GR2_grassland":      "#EC4899",
+    "GR1_cropland":       "#050505"
+  },
+  "source": "ESA WorldCover 10 m 2021 v200 + MP forest-beats mask",
+  "generated_ts": 1745655000,
+  "note": "z13 (~10 m/px) bake still running in background; meta will refresh when complete."
+}
