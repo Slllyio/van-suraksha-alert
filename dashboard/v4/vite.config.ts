@@ -26,6 +26,13 @@ export default defineConfig({
         target: 'http://localhost:8790',
         changeOrigin: true,
       },
+      // Proxy `/static/*` so the BitmapLayer can fetch the
+      // MP-wide WC fuel-class PNG (Phase 2). v3 backend serves
+      // these as static files via SimpleHTTPRequestHandler.
+      '/static': {
+        target: 'http://localhost:8790',
+        changeOrigin: true,
+      },
     },
   },
 });

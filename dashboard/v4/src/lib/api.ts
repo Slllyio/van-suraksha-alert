@@ -206,6 +206,21 @@ export interface FuelLoadMeta {
   n_records?: number;
 }
 
+/** Sidecar metadata for the MP-wide WC native PNG fuel-class raster. */
+export interface FuelRasterBounds {
+  lon_min: number;
+  lat_min: number;
+  lon_max: number;
+  lat_max: number;
+  width_px: number;
+  height_px: number;
+  approx_m_per_px: number;
+  png_url: string;
+  png_size_bytes: number;
+  source: string;
+  fuel_class_colors: Record<string, string>;
+}
+
 /** Result of POST /api/v2/burn-prediction. Each spread_Xh sub-dict is
  *  a SpreadPredictor.predict() horizon entry. */
 export interface BurnHorizon {
@@ -421,6 +436,32 @@ export const api = {
       signal,
     );
     return { records: env.data?.records ?? [], meta: env.meta ?? {} };
+  },
+
+  /** 500m grid version with REAL CCI biomass t/ha (not WC class
+   *  lookup). 16x finer than fuelLoad. */
+  fuelLoadHires: async (
+    signal?: AbortSignal,
+  ): Promise<{ records: FuelLoadRecord[]; meta: FuelLoadMeta }> => {
+    const env = await getEnvelope<{ records: FuelLoadRecord[] }, FuelLoadMeta>(
+      '/api/v2/fuel-load-hires',
+      signal,
+    );
+    return { records: env.data?.records ?? [], meta: env.meta ?? {} };
+  },
+
+  /** Bounds + URL of the MP-wide WC native PNG raster (Phase 2). The
+   *  PNG itself is a static asset; this fetcher returns the metadata
+   *  (corner lat/lon, dimensions, png_url) needed to mount a
+   *  deck.gl BitmapLayer. */
+  fuelClassRasterBounds: async (
+    signal?: AbortSignal,
+  ): Promise<FuelRasterBounds> => {
+    const env = await getEnvelope<FuelRasterBounds>(
+      '/api/v2/fuel-class-raster-bounds',
+      signal,
+    );
+    return env.data;
   },
 
   /** Synchronous burn-area prediction at an ignition point.

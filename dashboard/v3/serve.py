@@ -1275,6 +1275,19 @@ class PortalHandler(SimpleHTTPRequestHandler):
     _request_start: float
     _request_path: str
 
+    def translate_path(self, path: str) -> str:
+        """Route `/static/*` to dashboard/v3/static/ regardless of cwd.
+
+        SimpleHTTPRequestHandler defaults to serving from os.getcwd()
+        which is the repo root; without this override, deck.gl
+        BitmapLayer's PNG fetch from `/static/fuel_class_mp.png` would
+        404. Other paths fall through to the default behavior.
+        """
+        if path.startswith("/static/"):
+            rel = path[len("/static/"):].split("?", 1)[0].split("#", 1)[0]
+            return str(ROOT / "dashboard" / "v3" / "static" / rel)
+        return super().translate_path(path)
+
     def _begin_request(self, method: str, path: str) -> None:
         self.request_id = _new_request_id()
         self._request_start = time.monotonic()
@@ -1522,6 +1535,16 @@ class PortalHandler(SimpleHTTPRequestHandler):
             # for the "Fuel load" sidebar toggle so officers can see
             # WHERE heavy fuel is before fire ignites.
             self._serve_v2_fuel_load()
+        elif path == "/api/v2/fuel-load-hires":
+            # 500 m grid version with REAL CCI biomass t/ha (not WC
+            # class lookup). 16x finer than fuel-load. Pre-baked by
+            # scripts/build_fuel_load_hires.py.
+            self._serve_v2_fuel_load_hires()
+        elif path == "/api/v2/fuel-class-raster-bounds":
+            # Sidecar for the Phase 2 native-WC PNG raster (BitmapLayer).
+            # The PNG itself is served as a static asset by
+            # SimpleHTTPRequestHandler from dashboard/v3/static/.
+            self._serve_v2_fuel_raster_bounds()
         else:
             super().do_GET()
 
@@ -2110,6 +2133,71 @@ class PortalHandler(SimpleHTTPRequestHandler):
             extra_headers={
                 "ETag": etag,
                 "Cache-Control": "public, max-age=3600, must-revalidate",
+            },
+        )
+
+    def _serve_v2_fuel_load_hires(self) -> None:
+        """500 m grid fuel-load with REAL CCI AGB t/ha. Output of
+        scripts/build_fuel_load_hires.py."""
+        path = ROOT / "outputs" / "dashboard_feed" / "fuel_load_hires.json"
+        if not path.exists():
+            _ACCESS_LOG.warning("fuel_load_hires file missing: %s", path)
+            self._send_v2_error(
+                "not_found", "high-res fuel-load not yet baked", status=404,
+            )
+            return
+        etag = _file_etag(path, "fh")
+        if self._maybe_send_304(etag):
+            return
+        try:
+            payload = _load_cached_json(path)
+        except (OSError, json.JSONDecodeError):
+            _ACCESS_LOG.exception("fuel_load_hires parse failed: %s", path)
+            self._send_v2_error("fuel_unreadable", "internal error", status=500)
+            return
+        records = payload.get("records", [])
+        meta_in = payload.get("metadata") or {}
+        meta = {k: meta_in.get(k) for k in (
+            "source_cci", "source_wc", "grid_step_deg", "grid_step_m_approx",
+            "n_records", "fuel_load_summary_t_per_ha", "sb40_distribution",
+            "source_distribution", "forest_clipped",
+        ) if k in meta_in}
+        meta.update({"served_records": len(records), "source_file": path.name})
+        self._send_v2(
+            {"records": records},
+            meta=meta,
+            extra_headers={
+                "ETag": etag,
+                "Cache-Control": "public, max-age=3600, must-revalidate",
+            },
+        )
+
+    def _serve_v2_fuel_raster_bounds(self) -> None:
+        """Sidecar JSON for the MP-wide WC fuel-class PNG raster.
+        Frontend BitmapLayer needs (lat, lon) corner coordinates."""
+        bounds_path = ROOT / "dashboard" / "v3" / "static" / "fuel_class_mp.bounds.json"
+        png_path = ROOT / "dashboard" / "v3" / "static" / "fuel_class_mp.png"
+        if not bounds_path.exists() or not png_path.exists():
+            self._send_v2_error(
+                "not_found", "fuel-class raster not yet baked", status=404,
+            )
+            return
+        etag = _file_etag(bounds_path, "fr")
+        if self._maybe_send_304(etag):
+            return
+        try:
+            bounds = _load_cached_json(bounds_path)
+        except (OSError, json.JSONDecodeError):
+            self._send_v2_error("bounds_unreadable", "internal error", status=500)
+            return
+        bounds["png_url"] = "/static/fuel_class_mp.png"
+        bounds["png_size_bytes"] = png_path.stat().st_size
+        self._send_v2(
+            bounds,
+            meta={"source": "ESA WorldCover 10 m forest-clipped"},
+            extra_headers={
+                "ETag": etag,
+                "Cache-Control": "public, max-age=86400, must-revalidate",
             },
         )
 

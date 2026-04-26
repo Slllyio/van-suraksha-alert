@@ -22,6 +22,7 @@ import {
   type HistoricalBurnPrior,
   type HistoricalBurnPoint,
   type FuelLoadRecord,
+  type FuelRasterBounds,
   type BurnPrediction,
 } from '../lib/api';
 
@@ -97,6 +98,11 @@ export default function LiveMapTab() {
   const [showFuelLoad, setShowFuelLoad] = useState(false);
   const [fuelLoad, setFuelLoad] = useState<FuelLoadRecord[] | null>(null);
   const [fuelLoading, setFuelLoading] = useState(false);
+  // Phase 2 — MP-wide WC native PNG raster (~120 m/px). Lazy-loaded
+  // sidecar JSON; the actual PNG is fetched by deck.gl BitmapLayer.
+  const [showFuelRaster, setShowFuelRaster] = useState(false);
+  const [fuelRaster, setFuelRaster] = useState<FuelRasterBounds | null>(null);
+  const [fuelRasterLoading, setFuelRasterLoading] = useState(false);
   // Per-click burn-area prediction (set by MapFlyout via callback).
   const [burnPrediction, setBurnPrediction] = useState<BurnPrediction | null>(null);
   const [burnDensity, setBurnDensity] = useState<HistoricalBurnPoint[] | null>(null);
@@ -149,6 +155,25 @@ export default function LiveMapTab() {
   const handleFuelLoadToggle = (checked: boolean) => {
     setShowFuelLoad(checked);
     if (checked) ensureFuelLoad();
+  };
+
+  // Phase 2 raster toggle — fetches sidecar bounds once
+  const ensureFuelRaster = useCallback(async () => {
+    if (fuelRaster || fuelRasterLoading) return;
+    setFuelRasterLoading(true);
+    try {
+      const bounds = await api.fuelClassRasterBounds();
+      setFuelRaster(bounds);
+    } catch (e) {
+      console.error('fuel-raster bounds fetch failed:', e);
+    } finally {
+      setFuelRasterLoading(false);
+    }
+  }, [fuelRaster, fuelRasterLoading]);
+
+  const handleFuelRasterToggle = (checked: boolean) => {
+    setShowFuelRaster(checked);
+    if (checked) ensureFuelRaster();
   };
 
   const handleBurnDensityToggle = (checked: boolean) => {
@@ -733,15 +758,28 @@ export default function LiveMapTab() {
             {
               // Fuel-load (where biomass is). NOT a burn signal — a
               // *static* layer derived from WorldCover × Reddy et al.
-              // Heatmap ramp: teal → khaki → amber → brown.
+              // Categorical: TL2 forest green, GR1 black, GR2 pink, SH2 teal.
               icon: Flame,
               key: 'fuel-load',
-              label: 'Fuel load (t/ha)',
+              label: 'Fuel load — 2km cells',
               checked: showFuelLoad,
               onChange: handleFuelLoadToggle,
               loading: fuelLoading,
               count: fuelLoad?.length ?? null,
               countLabel: 'cells',
+            },
+            {
+              // Phase 2 — high-res PNG raster baked from native 10m
+              // WorldCover, ~120 m/px. Forest-clipped + colored by
+              // fuel class. Renders as a deck.gl BitmapLayer.
+              icon: Flame,
+              key: 'fuel-raster',
+              label: 'Fuel class — 120m raster',
+              checked: showFuelRaster,
+              onChange: handleFuelRasterToggle,
+              loading: fuelRasterLoading,
+              count: fuelRaster ? fuelRaster.approx_m_per_px : null,
+              countLabel: 'm/px',
             },
           ].map(({ icon: Icon, key, label, checked, onChange, loading: rowLoading, count, countLabel }) => (
             <motion.label
@@ -1003,6 +1041,7 @@ export default function LiveMapTab() {
           blindSpotCells={blindSpotCells}
           priorWatchCells={priorWatchCells}
           fuelLoadRecords={showFuelLoad && fuelLoad ? fuelLoad : undefined}
+          fuelRasterBounds={showFuelRaster ? fuelRaster : null}
           burnPrediction={burnPrediction}
           onCellClick={handleCellClick}
         />

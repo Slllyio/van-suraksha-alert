@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import { Deck } from 'deck.gl';
-import { ScatterplotLayer, GeoJsonLayer } from '@deck.gl/layers';
+import { ScatterplotLayer, GeoJsonLayer, BitmapLayer } from '@deck.gl/layers';
 import { HeatmapLayer } from '@deck.gl/aggregation-layers';
 // `_TerrainExtension` is the deck.gl 9 export name (underscore-prefixed
 // to signal experimental status). Aliased for clarity.
@@ -29,6 +29,7 @@ import type {
   HistoricalBurnPoint,
   HistoricalBurnPrior,
   FuelLoadRecord,
+  FuelRasterBounds,
   BurnPrediction,
 } from '../lib/api';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -78,6 +79,11 @@ interface FireMapProps {
    *  teal→amber→brown ramp so it doesn't visually collide with the
    *  burn-density magenta or alert palettes. */
   fuelLoadRecords?: FuelLoadRecord[];
+  /** Phase 2 — MP-wide WC native PNG raster bounds. When supplied,
+   *  renders a deck.gl BitmapLayer at ~120 m/px showing the
+   *  WorldCover fuel-class color map clipped to forest beats. Far
+   *  finer than the per-cell ScatterplotLayer can show. */
+  fuelRasterBounds?: FuelRasterBounds | null;
   /** Optional active burn-area prediction polygon. When set, deck.gl
    *  renders 3 nested GeoJsonLayers for the 6h/12h/24h spread polygons
    *  with increasing transparency. Set/cleared by MapFlyout. */
@@ -113,6 +119,7 @@ export default function FireMap({
   blindSpotCells,
   priorWatchCells,
   fuelLoadRecords,
+  fuelRasterBounds,
   burnPrediction,
   onCellClick,
 }: FireMapProps) {
@@ -269,6 +276,29 @@ export default function FireMap({
       ...terrainProps,
     });
   }, [priorWatchCells, terrainProps]);
+
+  // Phase 2 — MP-wide WC PNG raster as a deck.gl BitmapLayer. ~120 m/px
+  // forest-clipped, color-coded by SB40 class. Renders BELOW the per-
+  // cell fuel ScatterplotLayer so officers can toggle either or both.
+  const fuelRasterLayer = useMemo(() => {
+    if (!fuelRasterBounds) return null;
+    return new BitmapLayer({
+      id: 'fuel-class-raster',
+      image: fuelRasterBounds.png_url,
+      // deck.gl bounds order: [west, south, east, north]
+      bounds: [
+        fuelRasterBounds.lon_min,
+        fuelRasterBounds.lat_min,
+        fuelRasterBounds.lon_max,
+        fuelRasterBounds.lat_max,
+      ],
+      pickable: false,
+      opacity: 0.85,
+      // Raster has alpha=0 outside forest beats so terrain shows through.
+      transparentColor: [0, 0, 0, 0],
+      ...terrainProps,
+    });
+  }, [fuelRasterBounds, terrainProps]);
 
   // Fuel-load CATEGORICAL ScatterplotLayer keyed by SB40 class. User
   // explicitly asked for separable colors so high leaf-litter forest
@@ -462,6 +492,7 @@ export default function FireMap({
   const layers: Layer[] = useMemo(
     () =>
       [
+        fuelRasterLayer,   // Phase 2 — WC native PNG, very bottom
         fuelLoadLayer,
         burnDensityLayer,
         blindSpotLayer,
@@ -474,6 +505,7 @@ export default function FireMap({
         ...burnPredLayers,
       ].filter((l): l is Layer => Boolean(l)),
     [
+      fuelRasterLayer,
       fuelLoadLayer,
       burnDensityLayer,
       blindSpotLayer,
