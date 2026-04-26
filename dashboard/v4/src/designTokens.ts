@@ -62,8 +62,8 @@ export const colors = {
   fuelClass: {
     TL2: { fg: '#1F6B3A', label: 'Forest litter (TL2, ~15 t/ha)' },     // deep forest green
     SH2: { fg: '#2A8C8C', label: 'Shrub (SH2, ~8 t/ha)' },              // teal
-    GR2: { fg: '#A88E2C', label: 'Grassland (GR2, ~3.5 t/ha)' },        // olive
-    GR1: { fg: '#D4A55C', label: 'Cropland (GR1, ~12 t/ha)' },          // wheat
+    GR2: { fg: '#EC4899', label: 'Grassland (GR2, ~3.5 t/ha)' },        // pink-500 (per user override)
+    GR1: { fg: '#000000', label: 'Cropland (GR1, ~12 t/ha)' },          // black (per user override; rendered with white stroke to stay visible on dark basemap)
     NB1: { fg: '#64748B', label: 'Urban/non-burnable' },                 // slate
     NB8: { fg: '#3B82F6', label: 'Water (NB8)' },                        // blue
     NB9: { fg: '#94A3B8', label: 'Bare ground (NB9)' },                  // light slate

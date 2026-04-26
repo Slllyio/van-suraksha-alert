@@ -292,11 +292,17 @@ export default function FireMap({
       id: 'fuel-load-categorical',
       data: fuelLoadRecords,
       pickable: false,
-      stroked: false,
+      // Thin white stroke on every dot so black cropland (GR1) stays
+      // visible against the dark basemap. Other classes also benefit
+      // from the subtle outline at small zoom.
+      stroked: true,
       filled: true,
       radiusUnits: 'meters',
       radiusMinPixels: 2,
       radiusMaxPixels: 6,
+      lineWidthUnits: 'pixels',
+      lineWidthMinPixels: 0.4,
+      lineWidthMaxPixels: 0.8,
       getPosition: (d) => [d.lon, d.lat, 0],
       // Bivariate encoding — COLOR is fuel CLASS (categorical, distinct
       // hue per SB40), SIZE is fuel LOAD (continuous, scales with
@@ -305,6 +311,8 @@ export default function FireMap({
       // size adds within-class density variation.
       getRadius: (d) => 600 + (d.fuel_load_t_per_ha / 15) * 1200,
       getFillColor: (d) => colorFor(d.sb40_dominant),
+      getLineColor: [255, 255, 255, 80],
+      getLineWidth: 0.5,
       updateTriggers: {
         getFillColor: fuelLoadRecords.length,
         getRadius: fuelLoadRecords.length,
