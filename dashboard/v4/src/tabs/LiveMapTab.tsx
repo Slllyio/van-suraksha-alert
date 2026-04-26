@@ -1012,6 +1012,7 @@ export default function LiveMapTab() {
           showBurnDensity={showBurnDensity}
           showBlindSpots={showBlindSpots}
           augmentWithPriors={augmentWithPriors}
+          showFuelLoad={showFuelLoad && !!fuelLoad}
         />
         <FloatingParticles count={36} />
         <MapFlyout

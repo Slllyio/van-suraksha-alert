@@ -54,6 +54,20 @@ export const colors = {
     blindSpot:  { fg: '#7C3AED', bg: 'rgba(124, 58, 237, 0.14)',  border: 'rgba(124, 58, 237, 0.42)' },  // violet-600
     priorWatch: { fg: '#D97706', bg: 'rgba(217, 119, 6, 0.10)',   border: 'rgba(217, 119, 6, 0.36)' },   // amber-600 (darker than WATCH)
   },
+  // Fuel-load categorical palette — Scott & Burgan 40 fuel-model
+  // classes. Discrete hues so officers can tell forest leaf-litter
+  // from cropland from grassland AT A GLANCE, not via a continuous
+  // gradient. All chosen OFF the red/orange/amber alert palette and
+  // OFF the magenta burn-density terminus.
+  fuelClass: {
+    TL2: { fg: '#1F6B3A', label: 'Forest litter (TL2, ~15 t/ha)' },     // deep forest green
+    SH2: { fg: '#2A8C8C', label: 'Shrub (SH2, ~8 t/ha)' },              // teal
+    GR2: { fg: '#A88E2C', label: 'Grassland (GR2, ~3.5 t/ha)' },        // olive
+    GR1: { fg: '#D4A55C', label: 'Cropland (GR1, ~12 t/ha)' },          // wheat
+    NB1: { fg: '#64748B', label: 'Urban/non-burnable' },                 // slate
+    NB8: { fg: '#3B82F6', label: 'Water (NB8)' },                        // blue
+    NB9: { fg: '#94A3B8', label: 'Bare ground (NB9)' },                  // light slate
+  },
 } as const;
 
 export const fontFamily = {

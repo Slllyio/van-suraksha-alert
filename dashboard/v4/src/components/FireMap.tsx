@@ -270,34 +270,48 @@ export default function FireMap({
     });
   }, [priorWatchCells, terrainProps]);
 
-  // Fuel-load HeatmapLayer (t/ha). Color ramp: navy → teal → khaki →
-  // amber → brown. Deliberately OFF the alert-palette axis (red/orange/
-  // amber gradient is reserved for severity bands) and OFF the burn-
-  // density magenta axis. Brown = "heavy biomass" reads naturally.
+  // Fuel-load CATEGORICAL ScatterplotLayer keyed by SB40 class. User
+  // explicitly asked for separable colors so high leaf-litter forest
+  // (TL2) is distinguishable from cropland (GR1) and grassland (GR2)
+  // — a continuous heatmap blurred them. Each SB40 class gets a
+  // distinct hue from `colors.fuelClass`, deliberately off the alert
+  // palette + off the burn-density magenta. Cell radius is small
+  // (~3px) so 25k cells don't blob; user controls density via zoom.
   const fuelLoadLayer = useMemo(() => {
     if (!fuelLoadRecords || fuelLoadRecords.length === 0) return null;
-    return new HeatmapLayer<FuelLoadRecord>({
-      id: 'fuel-load-tha',
+    const colorFor = (cls: string): [number, number, number, number] => {
+      // Hex → RGBA. Lightweight inline parse; SB40 set is bounded.
+      const hex = (colors.fuelClass as Record<string, { fg: string }>)[cls]?.fg
+        ?? colors.fuelClass.NB9.fg;
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return [r, g, b, 200];
+    };
+    return new ScatterplotLayer<FuelLoadRecord>({
+      id: 'fuel-load-categorical',
       data: fuelLoadRecords,
       pickable: false,
-      getPosition: (d) => [d.lon, d.lat],
-      getWeight: (d) => d.fuel_load_t_per_ha,
-      radiusPixels: 32,
-      intensity: 0.85,
-      threshold: 0.05,
-      colorRange: [
-        [40, 60, 90, 0],         // transparent base
-        [62, 152, 152, 110],     // teal-500
-        [180, 200, 130, 150],    // khaki
-        [218, 175, 70, 180],     // amber-500
-        [180, 110, 50, 210],     // umber
-        [120, 70, 30, 230],      // brown — heavy fuel terminus
-      ],
+      stroked: false,
+      filled: true,
+      radiusUnits: 'meters',
+      radiusMinPixels: 2,
+      radiusMaxPixels: 6,
+      getPosition: (d) => [d.lon, d.lat, 0],
+      // Bivariate encoding — COLOR is fuel CLASS (categorical, distinct
+      // hue per SB40), SIZE is fuel LOAD (continuous, scales with
+      // t/ha). 15 t/ha is the cap (forest litter). User asked for
+      // separable categories so the class hue is the primary signal;
+      // size adds within-class density variation.
+      getRadius: (d) => 600 + (d.fuel_load_t_per_ha / 15) * 1200,
+      getFillColor: (d) => colorFor(d.sb40_dominant),
       updateTriggers: {
-        getWeight: fuelLoadRecords.length,
+        getFillColor: fuelLoadRecords.length,
+        getRadius: fuelLoadRecords.length,
       },
+      ...terrainProps,
     });
-  }, [fuelLoadRecords]);
+  }, [fuelLoadRecords, terrainProps]);
 
   // Burn-prediction polygons — 3 stacked GeoJsonLayers for 6h/12h/24h
   // with shrinking opacity (most recent prediction = most opaque).

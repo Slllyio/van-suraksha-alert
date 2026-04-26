@@ -18,6 +18,10 @@ interface MapLegendProps {
   showBurnDensity: boolean;
   showBlindSpots: boolean;
   augmentWithPriors: boolean;
+  /** When fuel-load layer is active, render a categorical sub-legend
+   *  for the SB40 fuel classes so officers can identify forest litter
+   *  vs cropland vs grassland by colour, not by guess. */
+  showFuelLoad?: boolean;
 }
 
 interface LegendRow {
@@ -89,6 +93,7 @@ export default function MapLegend({
   showBurnDensity,
   showBlindSpots,
   augmentWithPriors,
+  showFuelLoad,
 }: MapLegendProps) {
   // Always-on alert bands first; dynamic layers below. Only render the
   // dynamic-layer rows when their toggle is on so the legend stays
@@ -133,6 +138,17 @@ export default function MapLegend({
       swatch: <Ring stroke="rgba(129, 201, 149, 0.6)" />,
       label: 'Forest beat boundary',
     });
+  }
+  if (showFuelLoad) {
+    // Categorical SB40 fuel classes — distinct hue per type so
+    // officers can ID forest leaf-litter vs cropland vs grassland
+    // at a glance. Order: heaviest fuel first (forest litter).
+    rows.push(
+      { key: 'fuel-tl2', swatch: <Dot fill={colors.fuelClass.TL2.fg} />, label: colors.fuelClass.TL2.label },
+      { key: 'fuel-sh2', swatch: <Dot fill={colors.fuelClass.SH2.fg} />, label: colors.fuelClass.SH2.label },
+      { key: 'fuel-gr1', swatch: <Dot fill={colors.fuelClass.GR1.fg} />, label: colors.fuelClass.GR1.label },
+      { key: 'fuel-gr2', swatch: <Dot fill={colors.fuelClass.GR2.fg} />, label: colors.fuelClass.GR2.label },
+    );
   }
 
   return (
