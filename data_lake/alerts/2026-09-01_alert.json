@@ -1,0 +1,43 @@
+{
+  "alert_id": "GUNA-2026-09-01-000fires",
+  "generated_at": "2026-09-01T10:59:11.456210+05:30",
+  "target_date": "2026-09-01",
+  "bulletin_severity": "CLEAR",
+  "fires_detected": 0,
+  "n_critical": 0,
+  "n_high": 0,
+  "n_forest_fires": 0,
+  "n_agri_fires": 0,
+  "forest_mask_used": true,
+  "peak_frp_mw": 0.0,
+  "fwi": {
+    "value": 0.2,
+    "danger_class": "Low",
+    "ffmc": 62.2,
+    "dmc": 2.8,
+    "dc": 41.9,
+    "isi": 0.5,
+    "bui": 4.8,
+    "temp_c": 26.1,
+    "rh_pct": 88.7,
+    "wind_kmh": 0.0
+  },
+  "fires": [],
+  "area": {
+    "name": "Guna Division, Madhya Pradesh",
+    "bbox": {
+      "lon_min": 76.45,
+      "lat_min": 23.8,
+      "lon_max": 77.85,
+      "lat_max": 24.95
+    }
+  },
+  "data_sources": [
+    "FIRMS VIIRS SNPP",
+    "NASA POWER / GFS FWI"
+  ],
+  "abm_ignition_risk": {
+    "risk_level": "UNAVAILABLE",
+    "error": "No module named 'mesa'"
+  }
+}
