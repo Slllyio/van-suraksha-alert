@@ -1,7 +1,7 @@
 {
-  "alert_id": "GUNA-2026-09-22-000fires",
-  "generated_at": "2026-09-22T10:45:19.885550+05:30",
-  "target_date": "2026-09-22",
+  "alert_id": "GUNA-2026-09-23-000fires",
+  "generated_at": "2026-09-23T10:30:03.092712+05:30",
+  "target_date": "2026-09-23",
   "bulletin_severity": "CLEAR",
   "fires_detected": 0,
   "n_critical": 0,
@@ -13,11 +13,11 @@
   "fwi": {
     "value": 0.3,
     "danger_class": "Low",
-    "ffmc": 65.7,
-    "dmc": 3.6,
-    "dc": 38.5,
-    "isi": 0.5,
-    "bui": 5.9,
+    "ffmc": 69.4,
+    "dmc": 4.2,
+    "dc": 44.9,
+    "isi": 0.6,
+    "bui": 6.8,
     "temp_c": 26.2,
     "rh_pct": 87.0,
     "wind_kmh": 0.0
