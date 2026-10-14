@@ -1,0 +1,6 @@
+exp,recall,recall_new,recall_exact_cell
+gauss_s1,0.645,0.288,0.553
+max3x3,0.627,0.286,0.536
+mean3x3,0.654,0.306,0.553
+raw,0.764,0.456,0.553
+raw50_gauss50,0.708,0.376,0.56

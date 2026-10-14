@@ -1,0 +1,7 @@
+covered_target,method,covered_pct,recall,recall_new
+0.1,greedy,10.108,0.518,0.228
+0.1,topk,10.079,0.505,0.203
+0.2,greedy,19.87,0.711,0.42
+0.2,topk,19.842,0.71,0.393
+0.3,greedy,27.962,0.807,0.551
+0.3,topk,27.935,0.808,0.535

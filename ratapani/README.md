@@ -14,11 +14,32 @@ Season scored: issue dates Jan–May (97% of detections). This is research, not 
 
 Scripts use absolute paths under `E:\FIRE\ratapani` (unzip `data/ratapani_ee.zip` there so CSVs land in `ratapani/ee/`). The large cell-day tables (~300 MB parquet) are not committed; rebuild with `build_features.py` then `features_v2.py`.
 
-## Findings so far
-"Caught" = a fire cell with a flagged cell within 1 cell (1.5 km window; VIIRS geolocation ≈ 375 m).
-Numbers are leave-one-year-out over 2013–2024 unless stated.
+## Headline (rounds 1–13)
+Best model: **LightGBM, 255 leaves × 600 rounds, + leaf-fall features** (`scripts/research_r8.py`).
+Leave-one-year-out 2013–2024, risk-proportional daily area (more on bad days), measured by **ground actually
+covered** (flagged cells + their 8 neighbours, i.e. ~1.5 km patrol reach):
 
-1. **Flag ~10% of the AOI over the season, more on bad days and less on quiet ones** → **74% of fires caught**. A fixed 10% every day reaches 60–62%. Simple rules ("fire nearby last week", burn history) ≈ 30%.
+| Ground covered (season avg) | Fires caught | Brand-new fires caught |
+|---|---|---|
+| 10% | 51% | ~21% |
+| 20% | 71% | ~41% |
+| 30% | 81% | ~54% |
+
+- Transfer: unseen strip of the AOI **and** unseen 3-year block → 73% vs 76% (same counting as rounds 1–10), so the model carries to new ground.
+- Calibrated risk (nested isotonic, r11) matches observed rates: e.g. "within 1.5 km" predicted 6.7% → observed 6.8%, 13.1% → 12.9%. Realistic per-cell 2-day risk rarely exceeds 5–6% (background 0.2%); within 1.5 km tops out ~13–20% (background 1.2%). Suggest reporting % within 1.5 km plus "× normal".
+- Horizon (r5): 1-day 75%, 2-day 73%, 3-day 72% (same counting), so skill fades slowly.
+- No gain from: bigger LightGBM (511 leaves), CNN (67% LOYO, and ensembling lowers skill), FWI indices, forecast weather beyond +1–2 pts, smoothing the risk map (hurts), spread-out greedy selection (±1 pt).
+- Remaining gap = brand-new ignitions; needs new information (NOAA-20 VIIRS, finer human-activity layers, more sanctuaries).
+
+> **Counting note:** rounds 1–12 report "top 10% of cells flagged" with a 3×3 catch tolerance, so the ground
+> effectively covered was larger than 10%. Model-vs-model comparisons in those rounds are valid (same counting);
+> round 13 gives the honest area numbers above.
+
+## Findings by round
+"Caught" = a fire cell with a flagged cell within 1 cell (1.5 km window; VIIRS geolocation ≈ 375 m).
+Numbers are leave-one-year-out over 2013–2024 unless stated; areas in items 1–7 are flagged-cell shares (see note above).
+
+1. **Flag ~10% of the AOI's cells over the season, more on bad days and less on quiet ones** → **74% of fires caught**. A fixed 10% every day reaches 60–62%. Simple rules ("fire nearby last week", burn history) ≈ 30%.
 2. **Fire types** (by what burned nearby in the 7 days before): continuing (within 1.5 km, last 3 d) ≈25% of fire cells, ~95% caught; nearby (within 5 km, 7 d) ≈55%, ~75% caught; **brand-new ≈15–20%, ~35% caught** (46% of fires in 2023, which explains that year's weak score).
 3. **What data helps** (dynamic 10%): fire history 64% → +terrain/land cover/access 71% (land cover +4, terrain +3, roads/villages/pop +3) → +MODIS 72% → +AlphaEarth 72% → +weather 73% → +next-2-day weather (ERA5 as an oracle forecast) 74%.
 4. **Resolution:** coarsening to 1 km / 2 km does not raise recall for the same area, so 500 m costs nothing.
@@ -26,7 +47,14 @@ Numbers are leave-one-year-out over 2013–2024 unless stated.
 6. **New-ignition add-on model:** 8% main model + 2% new-fire model (9.2% area) → 71.6% of all fires, **48% of brand-new fires** (vs 37%). Drivers: NDVI (leaf fall/litter), season, AOI activity, time since last burn, humidity/rain, distance to roads, tracks and cropland.
 7. **AOI-wide 2-day alert** (2023–24 test): ROC-AUC 0.86; "very high" days hold 94.5% of fire cells, "normal" days 1.8%.
 
+8. **r5** horizon: t+1 75.1%, t+1..t+2 72.6%, t+1..t+3 71.5%, t+2 only 70.3%. Leaf-fall features +1.1 (new fires +1.6).
+9. **r6** model family: logistic 68.7%, LightGBM small 69.9% / default 72.6% / large 75.6% (new 43.9%). Spatial strip hold-out 76.9% (72–82% per strip); dropping cell climatology changes nothing.
+10. **r7/r10** CNN (dilated, whole-AOI raster): matched LightGBM on one split but 67.3% under LOYO; ensembles 72–74% (worse than LightGBM alone).
+11. **r8** large + leaf 76.4% (new 45.6%) = best; XL 76.2%; strict strip+years 73.1% (60–88%).
+12. **r9** FWI/FFMC/DMC/DC/ISI/BUI from ERA5: 75.8–75.9% (no gain). `results/r9/fwi_era5.csv` = daily FWI 2012–2024.
+13. **r11** nested isotonic calibration (see headline). **r12** smoothing the risk map: 64–71% (hurts). **r13** honest covered-area table (headline) and greedy spread selection (±1 pt).
+
 ## Open research directions
 - Add NOAA-20 VIIRS (2018+) for more overpasses and cleaner labels.
-- Compare 1 / 2 / 3-day horizons.
-- Per-cell leaf-fall timing (NDVI drop rate) as a dry-litter signal.
+- Finer human-activity layers (villages, cattle routes, mahua/NTFP collection areas).
+- More sanctuaries for more training days (also what a deep spatial model would need).

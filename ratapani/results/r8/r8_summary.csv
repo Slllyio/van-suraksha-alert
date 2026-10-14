@@ -1,0 +1,5 @@
+exp,recall,recall_new,recall_min,recall_max,folds
+LOYO deep_255x1500_slow +leaf,0.749,0.435,0.656,0.847,12.0
+LOYO large_255x600 +leaf,0.764,0.456,0.662,0.869,12.0
+LOYO xl_511x1000 +leaf,0.762,0.46,0.657,0.865,12.0
+strict strip+years large_255x600,0.731,0.387,0.605,0.879,24.0

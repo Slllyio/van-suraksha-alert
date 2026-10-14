@@ -1,0 +1,7 @@
+exp,recall,recall_new,precision_strict,recall_min_fold,recall_max_fold
+LOYO lgbm_default,0.726,0.371,0.014,0.612,0.852
+LOYO lgbm_large,0.756,0.439,0.014,0.658,0.877
+LOYO lgbm_small,0.699,0.295,0.014,0.553,0.833
+LOYO logistic,0.687,0.249,0.014,0.547,0.827
+"spatial_block, all feats",0.769,0.4,0.014,0.717,0.822
+"spatial_block, no cell climatology",0.769,0.397,0.014,0.711,0.825

@@ -1,0 +1,5 @@
+exp,recall,recall_new,recall_min,recall_max
+cnn,0.673,0.303,0.537,0.804
+ensemble 50/50,0.722,0.369,0.615,0.841
+ensemble 70 lgbm/30 cnn,0.74,0.394,0.634,0.848
+lgbm_large+leaf,0.764,0.456,0.662,0.869
