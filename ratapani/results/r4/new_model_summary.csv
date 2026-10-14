@@ -1,0 +1,4 @@
+variant,area_pct,recall_all,recall_new
+all_fires_model,10.0,0.726,0.371
+blend_8+2,9.2,0.716,0.476
+new_model_only,10.0,0.185,0.806

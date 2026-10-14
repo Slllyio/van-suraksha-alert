@@ -1,0 +1,188 @@
+{
+  "v2_strict_label": {
+    "val_tol_recall_top10": 0.465,
+    "test_pr_auc_strict": 0.0152,
+    "test_roc_auc": 0.857,
+    "fixed_area": {
+      "top2%": {
+        "recall": 0.22,
+        "precision": 0.037,
+        "mean_area_pct": 2.0,
+        "max_area_pct": 2.0
+      },
+      "top5%": {
+        "recall": 0.362,
+        "precision": 0.029,
+        "mean_area_pct": 5.0,
+        "max_area_pct": 5.0
+      },
+      "top10%": {
+        "recall": 0.508,
+        "precision": 0.024,
+        "mean_area_pct": 10.0,
+        "max_area_pct": 10.0
+      }
+    },
+    "dynamic_area": {
+      "avg5%": {
+        "threshold": 0.03842777256935522,
+        "recall": 0.574,
+        "precision": 0.067,
+        "mean_area_pct": 5.2,
+        "max_area_pct": 70.8
+      },
+      "avg10%": {
+        "threshold": 0.026664869703465863,
+        "recall": 0.677,
+        "precision": 0.052,
+        "mean_area_pct": 9.3,
+        "max_area_pct": 80.9
+      }
+    },
+    "top_features": {
+      "fdist_d3": 0.182,
+      "aoi_d3": 0.165,
+      "aoi_d1": 0.091,
+      "nb7_d1": 0.078,
+      "ae00": 0.044,
+      "ndvi": 0.039,
+      "fdist_d7": 0.035,
+      "doy": 0.029,
+      "rh": 0.027,
+      "fdist_d30": 0.022,
+      "clim_nb7": 0.019,
+      "aoi_d7": 0.018
+    }
+  },
+  "v2_smoothed_label": {
+    "val_tol_recall_top10": 0.435,
+    "test_pr_auc_strict": 0.0141,
+    "test_roc_auc": 0.868,
+    "fixed_area": {
+      "top2%": {
+        "recall": 0.197,
+        "precision": 0.037,
+        "mean_area_pct": 2.0,
+        "max_area_pct": 2.0
+      },
+      "top5%": {
+        "recall": 0.35,
+        "precision": 0.031,
+        "mean_area_pct": 5.0,
+        "max_area_pct": 5.0
+      },
+      "top10%": {
+        "recall": 0.491,
+        "precision": 0.025,
+        "mean_area_pct": 10.0,
+        "max_area_pct": 10.0
+      }
+    },
+    "dynamic_area": {
+      "avg5%": {
+        "threshold": 0.23892782252608563,
+        "recall": 0.508,
+        "precision": 0.072,
+        "mean_area_pct": 4.5,
+        "max_area_pct": 66.5
+      },
+      "avg10%": {
+        "threshold": 0.17335600572394214,
+        "recall": 0.638,
+        "precision": 0.054,
+        "mean_area_pct": 8.5,
+        "max_area_pct": 82.1
+      }
+    },
+    "top_features": {
+      "fdist_d3": 0.168,
+      "aoi_d3": 0.152,
+      "aoi_d1": 0.093,
+      "fdist_d7": 0.059,
+      "doy": 0.049,
+      "nb7_d1": 0.043,
+      "rh": 0.036,
+      "fdist_d30": 0.025,
+      "ndvi": 0.025,
+      "lst_k": 0.023,
+      "clim_nb7": 0.023,
+      "aoi_d7": 0.023
+    }
+  },
+  "v2_smoothed_label_fcst_wx": {
+    "val_tol_recall_top10": 0.446,
+    "test_pr_auc_strict": 0.0155,
+    "test_roc_auc": 0.877,
+    "fixed_area": {
+      "top2%": {
+        "recall": 0.214,
+        "precision": 0.038,
+        "mean_area_pct": 2.0,
+        "max_area_pct": 2.0
+      },
+      "top5%": {
+        "recall": 0.345,
+        "precision": 0.031,
+        "mean_area_pct": 5.0,
+        "max_area_pct": 5.0
+      },
+      "top10%": {
+        "recall": 0.507,
+        "precision": 0.026,
+        "mean_area_pct": 10.0,
+        "max_area_pct": 10.0
+      }
+    },
+    "dynamic_area": {
+      "avg5%": {
+        "threshold": 0.2659617095841617,
+        "recall": 0.466,
+        "precision": 0.093,
+        "mean_area_pct": 3.3,
+        "max_area_pct": 66.5
+      },
+      "avg10%": {
+        "threshold": 0.18715345454918575,
+        "recall": 0.612,
+        "precision": 0.064,
+        "mean_area_pct": 6.9,
+        "max_area_pct": 84.1
+      }
+    },
+    "top_features": {
+      "fdist_d3": 0.215,
+      "aoi_d3": 0.113,
+      "aoi_d1": 0.07,
+      "fdist_d7": 0.054,
+      "doy": 0.051,
+      "nb7_d1": 0.042,
+      "rh_f1": 0.036,
+      "rh_f2": 0.028,
+      "clim_nb7": 0.025,
+      "ndvi": 0.024,
+      "fdist_d30": 0.022,
+      "lst_k": 0.019
+    }
+  },
+  "aoi_alert": {
+    "test_days": 303,
+    "test_roc_auc": 0.855,
+    "levels": {
+      "normal": {
+        "days": 63,
+        "days_with_fire_pct": 11.1,
+        "share_of_all_fire_cells_pct": 1.8
+      },
+      "high": {
+        "days": 75,
+        "days_with_fire_pct": 38.7,
+        "share_of_all_fire_cells_pct": 3.8
+      },
+      "very_high": {
+        "days": 165,
+        "days_with_fire_pct": 80.6,
+        "share_of_all_fire_cells_pct": 94.5
+      }
+    }
+  }
+}

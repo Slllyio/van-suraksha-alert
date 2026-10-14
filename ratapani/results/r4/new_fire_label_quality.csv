@@ -1,0 +1,4 @@
+cls,fire_celldays,single_pixel,all_low_conf,frp_median,night_seen,burns_again_within_3d
+continuation,2573,0.882,0.23,3.34,0.444,0.16
+nearby,3366,0.887,0.274,4.64,0.215,0.163
+new,1074,0.894,0.282,4.355,0.188,0.109
