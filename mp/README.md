@@ -25,5 +25,22 @@ Pipeline (`scripts/`):
 5. `mp_transfer.py` — train 2014–2021, test 2022–2024 per division: (A) trained on the other 8 divisions,
    (B) trained on the division itself, (C) trained on all 9 pooled.
 
+6. `mp_pooling.py` — follow-up: (D) pooled + division id, (E) pooled with the division's own rows weighted 5x.
+
 Data (Earth Engine CSVs, feature tables ~1 GB per division) stay local in `E:\FIRE\mp\<Division>\`.
-Results: `results/` (added when the transfer run finishes).
+
+## Results (train 2014–2021, test 2022–2024; top 10% of cells flagged, 3×3 tolerance)
+
+| Model | Fires caught | Brand-new fires | Worst / best division |
+|---|---|---|---|
+| A trained on the other 8 divisions only | 77.3% | 44.2% | 64.5 / 86.2% |
+| **B trained on the division itself** | **83.3%** | **55.1%** | 72.9 / 93.1% |
+| C all 9 pooled | 81.4% | 48.3% | 70.6 / 91.2% |
+| D pooled + division id | 82.2% | 50.5% | 72.7 / 92.2% |
+| E pooled, own rows x5 | 82.4% | 50.6% | 71.6 / 92.0% |
+
+- The approach transfers: a model that never saw a division still catches ~77% of its fires.
+- Local history is worth ~6 pts (up to +16 in Singrauli, +12 in Kanha); no pooling variant beats the division's own model.
+- Practical design: a per-division model wherever fire history exists, the other-divisions model as a cold start for new areas.
+
+Per-division numbers: `results/transfer_by_division.csv`, `results/pooling_by_division.csv`.
