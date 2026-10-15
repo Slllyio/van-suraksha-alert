@@ -1,0 +1,5 @@
+exp,recall,recall_new,recall_min,recall_max
+AlphaEarth (base),0.769,0.45,0.678,0.852
+Prithvi in-season,0.786,0.466,0.658,0.878
+Prithvi pre-season (r14),0.773,0.45,0.647,0.885
+Prithvi pre-season + in-season,0.8,0.483,0.679,0.885

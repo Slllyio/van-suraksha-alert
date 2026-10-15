@@ -14,8 +14,27 @@ Season scored: issue dates Jan–May (97% of detections). This is research, not 
 
 Scripts use absolute paths under `E:\FIRE\ratapani` (unzip `data/ratapani_ee.zip` there so CSVs land in `ratapani/ee/`). The large cell-day tables (~300 MB parquet) are not committed; rebuild with `build_features.py` then `features_v2.py`.
 
+## Update: Prithvi (rounds 14–15) — new best
+**LightGBM + leaf-fall + Prithvi-EO-2.0-300M embeddings of HLS imagery, pre-season (Oct–Dec) *and* in-season
+(the 3 complete months before each issue month)** — `scripts/research_r15_prithvi_inseason.py`.
+LOYO 2014–2024, same counting as rounds 1–12 (top 10% of cells flagged, 3×3 tolerance):
+
+| Satellite embedding | Fires caught | Brand-new fires | Worst / best year |
+|---|---|---|---|
+| none | 75.7% | 42.7% | 64 / 86% |
+| AlphaEarth (annual) | 76.9% | 45.0% | 68 / 85% |
+| Prithvi pre-season | 77.3–77.9% | 44–45% | 65 / 89% |
+| Prithvi in-season | 78.6% | 46.6% | 66 / 88% |
+| **Prithvi pre + in-season** | **80.0%** | **48.3%** | **68 / 89%** |
+
+Pre + in-season Prithvi beats AlphaEarth in 10 of 11 held-out years (+3.1 pts overall; largest gains in the harder
+recent years 2021 +7.8, 2023 +4.8). In-season windows use only complete months before the issue date (no target leakage).
+The ground-covered numbers below were measured with the AlphaEarth model and are expected to rise accordingly.
+HLS imagery: monthly medians of HLSL30+HLSS30 (Fmask cloud/shadow removed), 30 m, `scripts/hls_pull*.py`; each 500 m
+cell takes the Prithvi token (16 px = 480 m) under its centroid; PCA-16 per embedding set.
+
 ## Headline (rounds 1–13)
-Best model: **LightGBM, 255 leaves × 600 rounds, + leaf-fall features** (`scripts/research_r8.py`).
+Best model (before Prithvi): **LightGBM, 255 leaves × 600 rounds, + leaf-fall features** (`scripts/research_r8.py`).
 Leave-one-year-out 2013–2024, risk-proportional daily area (more on bad days), measured by **ground actually
 covered** (flagged cells + their 8 neighbours, i.e. ~1.5 km patrol reach):
 
@@ -54,7 +73,11 @@ Numbers are leave-one-year-out over 2013–2024 unless stated; areas in items 1�
 12. **r9** FWI/FFMC/DMC/DC/ISI/BUI from ERA5: 75.8–75.9% (no gain). `results/r9/fwi_era5.csv` = daily FWI 2012–2024.
 13. **r11** nested isotonic calibration (see headline). **r12** smoothing the risk map: 64–71% (hurts). **r13** honest covered-area table (headline) and greedy spread selection (±1 pt).
 
+14. **r14** Prithvi-EO-2.0-300M on pre-season HLS (Oct–Dec): 77.9% vs AlphaEarth 76.9% vs none 75.7% (2014–2024).
+15. **r15** + in-season Prithvi windows (3 complete months before each issue month): pre + in-season **80.0%**, new fires 48.3%; beats AlphaEarth in 10/11 years.
+
 ## Open research directions
+- Prithvi-600M-TL (cached locally), fine-tuning Prithvi on the fire target, ground-covered re-measurement with the Prithvi model.
 - Add NOAA-20 VIIRS (2018+) for more overpasses and cleaner labels.
 - Finer human-activity layers (villages, cattle routes, mahua/NTFP collection areas).
 - More sanctuaries for more training days (also what a deep spatial model would need).
