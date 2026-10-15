@@ -1,0 +1,7 @@
+covered_target,model,covered_pct,recall,recall_new
+0.1,AlphaEarth (base),10.082,0.502,0.192
+0.1,Prithvi pre-season + in-season,10.086,0.52,0.211
+0.2,AlphaEarth (base),19.77,0.709,0.389
+0.2,Prithvi pre-season + in-season,19.795,0.727,0.403
+0.3,AlphaEarth (base),27.776,0.811,0.523
+0.3,Prithvi pre-season + in-season,27.716,0.822,0.536

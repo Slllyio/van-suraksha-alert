@@ -76,8 +76,12 @@ Numbers are leave-one-year-out over 2013–2024 unless stated; areas in items 1�
 14. **r14** Prithvi-EO-2.0-300M on pre-season HLS (Oct–Dec): 77.9% vs AlphaEarth 76.9% vs none 75.7% (2014–2024).
 15. **r15** + in-season Prithvi windows (3 complete months before each issue month): pre + in-season **80.0%**, new fires 48.3%; beats AlphaEarth in 10/11 years.
 
+16. **r16** ground-covered recall, Prithvi pre+in vs AlphaEarth: 10% covered 52.0% vs 50.2%, 20% 72.7% vs 70.9%, 30% 82.2% vs 81.1% (real but smaller gain, +1–2 pts).
+17. **r17** Prithvi-EO-2.0-600M-TL instead of 300M: pre+in 80.2% vs 80.0% — no meaningful gain for 4x compute; keep 300M.
+
 ## Open research directions
-- Prithvi-600M-TL (cached locally), fine-tuning Prithvi on the fire target, ground-covered re-measurement with the Prithvi model.
+- MP-wide transfer (see `../mp/`): one model across 9 contrasting divisions.
+- Fine-tuning Prithvi on the fire target.
 - Add NOAA-20 VIIRS (2018+) for more overpasses and cleaner labels.
 - Finer human-activity layers (villages, cattle routes, mahua/NTFP collection areas).
 - More sanctuaries for more training days (also what a deep spatial model would need).
