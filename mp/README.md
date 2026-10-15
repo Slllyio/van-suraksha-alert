@@ -44,3 +44,9 @@ Data (Earth Engine CSVs, feature tables ~1 GB per division) stay local in `E:\FI
 - Practical design: a per-division model wherever fire history exists, the other-divisions model as a cold start for new areas.
 
 Per-division numbers: `results/transfer_by_division.csv`, `results/pooling_by_division.csv`.
+
+### Step 1c — 10-day HLS fuel dryness (`scripts/mp_dryness.py`)
+Joins the separate all-MP HLS pull (`E:\FIRE\mp\tiles`, NDVI/NDMI/NBR every 10 days on the same grid, ~98% coverage)
+as-of each issue day, plus 10- and 30-day changes. Division's own model, train 2017–2021, test 2022–2024:
+base 82.8% → **83.6%** fires caught, brand-new 55.4% → 56.5%; better in 6 of 9 divisions (largest: South Panna +2.2,
+Obedullahganj +1.9). `results/dryness_by_division.csv`.
