@@ -12,9 +12,17 @@ import geopandas as gpd
 from scipy.ndimage import uniform_filter, distance_transform_edt, maximum_filter
 from sklearn.decomposition import PCA
 
-D = Path(sys.argv[1]); EE = D / "ee"; OUT = D / "feats"; OUT.mkdir(exist_ok=True)
+import os
+# Optional overrides (defaults = S-NPP only, feats/, 2014-2024):
+#   MP_FIRE_SOURCES  ';'-separated parquet archives with latitude/longitude/acq_date/acq_time/type columns
+#   MP_FEATS_DIR     output folder name inside the division dir
+#   MP_YEARS         'first-last' seasons
+D = Path(sys.argv[1]); EE = D / "ee"; OUT = D / os.environ.get("MP_FEATS_DIR", "feats"); OUT.mkdir(exist_ok=True)
 X0, Y1, S = 399000.0, 2996000.0, 500.0
-YEARS = range(2014, 2025)
+_y0, _y1 = os.environ.get("MP_YEARS", "2014-2024").split("-")
+YEARS = range(int(_y0), int(_y1) + 1)
+SOURCES = os.environ.get("MP_FIRE_SOURCES",
+                         r"E:\FIRE\data_lake\fire_detections\firms_mp_viirs\firms_mp_consolidated.parquet").split(";")
 t00 = time.time()
 grid = gpd.read_file(D / "grid_500m.geojson").drop(columns="geometry")
 n = len(grid); cells = grid.cell_id.to_numpy()
@@ -23,8 +31,9 @@ NI, NJ = grid.col.max() - c0 + 1, grid.row.max() - r0 + 1        # raster over t
 gi, gj = (grid.col - c0).to_numpy(), (grid.row - r0).to_numpy()
 
 # ---- fire raster from the MP archive (local IST date) ----
-v = pd.read_parquet(r"E:\FIRE\data_lake\fire_detections\firms_mp_viirs\firms_mp_consolidated.parquet",
-                    columns=["latitude", "longitude", "acq_date", "acq_time", "type"])
+v = pd.concat([pd.read_parquet(p, columns=["latitude", "longitude", "acq_date", "acq_time", "type"]) for p in SOURCES],
+              ignore_index=True)
+v["acq_date"] = pd.to_datetime(v.acq_date)
 v = v[v.type == 0]
 xy = gpd.GeoSeries(gpd.points_from_xy(v.longitude, v.latitude), crs=4326).to_crs(32643)
 col = np.floor((xy.x.to_numpy() - X0) / S).astype(int) - c0; row = np.floor((Y1 - xy.y.to_numpy()) / S).astype(int) - r0

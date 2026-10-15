@@ -50,3 +50,24 @@ Joins the separate all-MP HLS pull (`E:\FIRE\mp\tiles`, NDVI/NDMI/NBR every 10 d
 as-of each issue day, plus 10- and 30-day changes. Division's own model, train 2017–2021, test 2022–2024:
 base 82.8% → **83.6%** fires caught, brand-new 55.4% → 56.5%; better in 6 of 9 divisions (largest: South Panna +2.2,
 Obedullahganj +1.9). `results/dryness_by_division.csv`.
+
+### Step 1d — the same dryness from the packaged files (`scripts/mp_dryness_npz.py`)
+`E:\FIRE\mp\push\mp_dry_<season>.npz` (cells, steps, X[step, cell, ndvi/ndmi/nbr/clear]) holds values identical to the
+tiles (12,000 / 12,000 checked) for beat cells only; -32768 = no data, values outside ±10000 are overflow and masked.
+Result: base 82.8% → **83.7%** fires caught, brand-new 55.4% → 56.7%, weakest division 71.4% → 74.4%.
+This is now the default dryness input for the division models.
+
+## Step 2 — three VIIRS satellites (`scripts/firms_noaa_pull.py`, `scripts/mp_multisat.py`)
+NOAA-20 (2018-04+) and NOAA-21 (2023-03+) standard-processing detections over MP from the FIRMS area API
+(key read from the `FIRMS_MAP_KEY` environment variable, never stored). `mp_features.py` now takes
+`MP_FIRE_SOURCES` / `MP_FEATS_DIR` / `MP_YEARS`; 3-satellite tables are in `<division>/feats_multi/` (seasons 2019–2024).
+Division's own model + dryness, train 2019–2021, test 2022–2024:
+
+| Labels and fire history | vs S-NPP fires | vs all-satellite fires |
+|---|---|---|
+| S-NPP only | 82.8% | 80.4% |
+| **S-NPP + NOAA-20 + NOAA-21** | **84.6%** | **82.4%** |
+
+S-NPP alone records about half of the fire cell-days the three satellites see (23,913 vs 46,881 in the test years).
+Brand-new-fire recall is not comparable between rows: with more fires visible fewer cells count as "brand-new".
+`results/multisat_by_division.csv`.
