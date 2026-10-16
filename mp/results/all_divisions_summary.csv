@@ -1,0 +1,8 @@
+divisions_scored,87.0
+divisions_skipped,0.0
+fires_test,246790.0
+recall_weighted,0.805
+recall_new_weighted,0.468
+recall_median_division,0.808
+recall_min,0.308
+recall_max,0.943

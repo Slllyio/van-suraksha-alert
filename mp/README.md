@@ -1,3 +1,25 @@
+# MP fire outlook — all 87 forest divisions (research)
+
+## Headline: every MP division (`scripts/mp_all_eval.py`, `results/all_divisions.csv`)
+Best design applied to all 87 divisions (~1.05 M cells of 500 m): each division's own LightGBM model on
+3-satellite VIIRS labels/fire history (S-NPP + NOAA-20 + NOAA-21) plus the 10-day HLS dryness; train 2019–2021,
+test 2022–2024 (246,790 fire cell-days, scored against fires seen by any of the three satellites).
+Top 10% of each division's test cell-days flagged, a fire counts if a flagged cell is within 1 cell:
+
+| | |
+|---|---|
+| MP-wide fires caught (fire-weighted) | **80.5%** |
+| Median division | 80.8% |
+| Brand-new fires (no fire within 5 km in 7 days) | 46.8% |
+| Divisions at 80–90% / 90%+ | 45 / 3 |
+| Divisions at 70–80% | 29 |
+| Divisions below 70% | 10 (mostly small, low-fire divisions: Shajapur 26 test fires, Rajgarh 54, Mandsaur 275) |
+| Best | Barwani 94.3%, North Balaghat 92.7%, Singrauli 91.5% |
+
+Recall rises with the amount of local fire history (correlation with log fire count 0.39), so the weakest divisions
+are candidates for borrowing from neighbouring divisions. `scripts/mp_repair.py` finds and removes corrupted
+Earth Engine CSVs left by interrupted runs (17 files in 13 divisions were regenerated).
+
 # MP step 1 — does the Ratapani model carry across Madhya Pradesh? (research)
 
 Nine contrasting forest divisions on one shared 500 m grid (EPSG:32643, X0 399000, Y1 2996000, 1829 columns;
