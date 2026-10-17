@@ -1,0 +1,630 @@
+{
+ "Alirajpur": [
+  "Barwani",
+  "Dhar",
+  "Jhabua"
+ ],
+ "Anuppur": [
+  "Dindori",
+  "South_Shahdol",
+  "Umaria",
+  "Umaria_Project"
+ ],
+ "Ashok_Nagar": [
+  "North_Sagar",
+  "Shivpuri",
+  "Vidisha"
+ ],
+ "BTR": [
+  "Katni",
+  "North_Shahdol",
+  "Satna",
+  "South_Shahdol",
+  "Umaria",
+  "Umaria_Project"
+ ],
+ "Barghat_Project": [
+  "East_Chhindwara",
+  "Jabalpur",
+  "Lamta_Proj_N_Balaghat",
+  "Lamta_Proj_S_Balaghat",
+  "Mohgaon_Proj_West_Mandla",
+  "Narsinghpur",
+  "North_Balaghat",
+  "North_Seoni",
+  "PTR_MP",
+  "South_Balaghat",
+  "South_Seoni",
+  "West_Mandla"
+ ],
+ "Barwah": [
+  "Dewas",
+  "Dhar",
+  "FDC_Khandwa",
+  "Indore",
+  "Khandwa",
+  "Khargone"
+ ],
+ "Barwani": [
+  "Alirajpur",
+  "Dhar",
+  "Khargone",
+  "Sendhwa"
+ ],
+ "Bhind": [
+  "Datiya",
+  "Gwalior"
+ ],
+ "Bhopal": [
+  "FDCM_Vidisha",
+  "Guna",
+  "Obedullahganj",
+  "Raisen",
+  "Rajgarh",
+  "Sehore",
+  "Vidisha"
+ ],
+ "Burhanpur": [
+  "Khandwa",
+  "Khargone"
+ ],
+ "Chhatarpur": [
+  "Damoh",
+  "North_Panna",
+  "North_Sagar",
+  "Panna_TR",
+  "Tikamgarh"
+ ],
+ "Chhindwara_Project": [
+  "East_Chhindwara",
+  "South_Betul",
+  "South_Chhindwara",
+  "West_Chhindwara"
+ ],
+ "Damoh": [
+  "Chhatarpur",
+  "Jabalpur",
+  "Katni",
+  "Narsinghpur",
+  "Noradehi",
+  "North_Sagar",
+  "Panna_TR",
+  "South_Panna",
+  "South_Sagar"
+ ],
+ "Datiya": [
+  "Bhind",
+  "Gwalior",
+  "Shivpuri"
+ ],
+ "Dewas": [
+  "Barwah",
+  "FDC_Khandwa",
+  "Harda",
+  "Indore",
+  "Khandwa",
+  "Sehore"
+ ],
+ "Dhar": [
+  "Alirajpur",
+  "Barwah",
+  "Barwani",
+  "Indore",
+  "Jhabua",
+  "Ratlam"
+ ],
+ "Dindori": [
+  "Anuppur",
+  "East_Mandla",
+  "Jabalpur",
+  "Mohgaon_Proj_Dindori",
+  "Mohgaon_Proj_East_Mandla",
+  "Umaria",
+  "Umaria_Project",
+  "West_Mandla"
+ ],
+ "East_Chhindwara": [
+  "Barghat_Project",
+  "Chhindwara_Project",
+  "Narsinghpur",
+  "North_Seoni",
+  "PTR_MP",
+  "South_Chhindwara",
+  "South_Seoni",
+  "West_Chhindwara"
+ ],
+ "East_Mandla": [
+  "Dindori",
+  "Kanha_Tiger_Reserve",
+  "Mohgaon_Proj_Dindori",
+  "Mohgaon_Proj_East_Mandla",
+  "Mohgaon_Proj_West_Mandla",
+  "West_Mandla"
+ ],
+ "FDCM_Vidisha": [
+  "Bhopal",
+  "Raisen",
+  "South_Sagar",
+  "Vidisha"
+ ],
+ "FDC_Khandwa": [
+  "Barwah",
+  "Dewas",
+  "Harda",
+  "Indore",
+  "Khandwa",
+  "Khargone",
+  "Sehore"
+ ],
+ "Guna": [
+  "Bhopal",
+  "Rajgarh",
+  "Shivpuri",
+  "Vidisha"
+ ],
+ "Gwalior": [
+  "Bhind",
+  "Datiya",
+  "Morena",
+  "Sheopur",
+  "Shivpuri"
+ ],
+ "Harda": [
+  "Dewas",
+  "FDC_Khandwa",
+  "Hoshangabad",
+  "Khandwa",
+  "West_Betul"
+ ],
+ "Hoshangabad": [
+  "Harda",
+  "Narsinghpur",
+  "North_Betul",
+  "Rampur_Bhatodi_Proj",
+  "Satpura_TR",
+  "West_Betul",
+  "West_Chhindwara"
+ ],
+ "Indore": [
+  "Barwah",
+  "Dewas",
+  "Dhar",
+  "FDC_Khandwa"
+ ],
+ "Jabalpur": [
+  "Barghat_Project",
+  "Damoh",
+  "Dindori",
+  "Katni",
+  "Kundam_Proj_Jabalpur",
+  "Kundam_Proj_Katni",
+  "Narsinghpur",
+  "Noradehi",
+  "North_Seoni",
+  "Umaria",
+  "Umaria_Project",
+  "West_Mandla"
+ ],
+ "Jhabua": [
+  "Alirajpur",
+  "Dhar",
+  "Ratlam"
+ ],
+ "Kanha_Tiger_Reserve": [
+  "East_Mandla",
+  "Mohgaon_Proj_East_Mandla",
+  "North_Balaghat",
+  "West_Mandla"
+ ],
+ "Katni": [
+  "BTR",
+  "Damoh",
+  "Jabalpur",
+  "Kundam_Proj_Katni",
+  "Satna",
+  "South_Panna",
+  "Umaria",
+  "Umaria_Project"
+ ],
+ "Khandwa": [
+  "Barwah",
+  "Burhanpur",
+  "Dewas",
+  "FDC_Khandwa",
+  "Harda",
+  "Khargone",
+  "West_Betul"
+ ],
+ "Khargone": [
+  "Barwah",
+  "Barwani",
+  "Burhanpur",
+  "FDC_Khandwa",
+  "Khandwa",
+  "Sendhwa"
+ ],
+ "Kundam_Proj_Jabalpur": [
+  "Jabalpur",
+  "Kundam_Proj_Katni",
+  "North_Seoni",
+  "Umaria",
+  "Umaria_Project"
+ ],
+ "Kundam_Proj_Katni": [
+  "Jabalpur",
+  "Katni",
+  "Kundam_Proj_Jabalpur",
+  "Satna",
+  "Umaria",
+  "Umaria_Project"
+ ],
+ "Kuno_Palpur": [
+  "Morena",
+  "Sheopur",
+  "Shivpuri"
+ ],
+ "Lamta_Proj_N_Balaghat": [
+  "Barghat_Project",
+  "Lamta_Proj_S_Balaghat",
+  "Mohgaon_Proj_West_Mandla",
+  "North_Balaghat",
+  "South_Balaghat",
+  "South_Seoni",
+  "West_Mandla"
+ ],
+ "Lamta_Proj_S_Balaghat": [
+  "Barghat_Project",
+  "Lamta_Proj_N_Balaghat",
+  "North_Balaghat",
+  "PTR_MP",
+  "South_Balaghat",
+  "South_Seoni"
+ ],
+ "Madhav_National_Park": [
+  "Shivpuri"
+ ],
+ "Mandsaur": [
+  "Neemuch"
+ ],
+ "Mohgaon_Proj_Dindori": [
+  "Dindori",
+  "East_Mandla",
+  "Mohgaon_Proj_East_Mandla"
+ ],
+ "Mohgaon_Proj_East_Mandla": [
+  "Dindori",
+  "East_Mandla",
+  "Kanha_Tiger_Reserve",
+  "Mohgaon_Proj_Dindori",
+  "Mohgaon_Proj_West_Mandla",
+  "West_Mandla"
+ ],
+ "Mohgaon_Proj_West_Mandla": [
+  "Barghat_Project",
+  "East_Mandla",
+  "Lamta_Proj_N_Balaghat",
+  "Mohgaon_Proj_East_Mandla",
+  "North_Balaghat",
+  "North_Seoni",
+  "South_Seoni",
+  "West_Mandla"
+ ],
+ "Morena": [
+  "Gwalior",
+  "Kuno_Palpur",
+  "Sheopur"
+ ],
+ "Narsinghpur": [
+  "Barghat_Project",
+  "Damoh",
+  "East_Chhindwara",
+  "Hoshangabad",
+  "Jabalpur",
+  "Noradehi",
+  "North_Seoni",
+  "Raisen",
+  "South_Sagar",
+  "West_Chhindwara"
+ ],
+ "Neemuch": [
+  "Mandsaur"
+ ],
+ "Noradehi": [
+  "Damoh",
+  "Jabalpur",
+  "Narsinghpur",
+  "South_Sagar"
+ ],
+ "North_Balaghat": [
+  "Barghat_Project",
+  "Kanha_Tiger_Reserve",
+  "Lamta_Proj_N_Balaghat",
+  "Lamta_Proj_S_Balaghat",
+  "Mohgaon_Proj_West_Mandla",
+  "South_Balaghat",
+  "West_Mandla"
+ ],
+ "North_Betul": [
+  "Hoshangabad",
+  "Rampur_Bhatodi_Proj",
+  "Satpura_TR",
+  "South_Betul",
+  "West_Betul",
+  "West_Chhindwara"
+ ],
+ "North_Panna": [
+  "Chhatarpur",
+  "Panna_TR",
+  "Satna"
+ ],
+ "North_Sagar": [
+  "Ashok_Nagar",
+  "Chhatarpur",
+  "Damoh",
+  "South_Sagar"
+ ],
+ "North_Seoni": [
+  "Barghat_Project",
+  "East_Chhindwara",
+  "Jabalpur",
+  "Kundam_Proj_Jabalpur",
+  "Mohgaon_Proj_West_Mandla",
+  "Narsinghpur",
+  "South_Seoni",
+  "West_Mandla"
+ ],
+ "North_Shahdol": [
+  "BTR",
+  "SANJAY_DUBRI",
+  "Satna",
+  "Sidhi",
+  "South_Shahdol"
+ ],
+ "Obedullahganj": [
+  "Bhopal",
+  "Raisen",
+  "Sehore",
+  "Sehore_Project"
+ ],
+ "PTR_MP": [
+  "Barghat_Project",
+  "East_Chhindwara",
+  "Lamta_Proj_S_Balaghat",
+  "South_Balaghat",
+  "South_Chhindwara",
+  "South_Seoni"
+ ],
+ "Panna_TR": [
+  "Chhatarpur",
+  "Damoh",
+  "North_Panna"
+ ],
+ "Raisen": [
+  "Bhopal",
+  "FDCM_Vidisha",
+  "Narsinghpur",
+  "Obedullahganj",
+  "South_Sagar",
+  "Vidisha"
+ ],
+ "Rajgarh": [
+  "Bhopal",
+  "Guna",
+  "Sehore",
+  "Shajapur"
+ ],
+ "Rampur_Bhatodi_Proj": [
+  "Hoshangabad",
+  "North_Betul",
+  "Satpura_TR",
+  "West_Betul",
+  "West_Chhindwara"
+ ],
+ "Ratlam": [
+  "Dhar",
+  "Jhabua"
+ ],
+ "Rewa": [
+  "SANJAY_DUBRI",
+  "Satna",
+  "Sidhi",
+  "Sidhi_FDCM"
+ ],
+ "SANJAY_DUBRI": [
+  "North_Shahdol",
+  "Rewa",
+  "Sidhi",
+  "Singrauli"
+ ],
+ "Satna": [
+  "BTR",
+  "Katni",
+  "Kundam_Proj_Katni",
+  "North_Panna",
+  "North_Shahdol",
+  "Rewa",
+  "Sidhi",
+  "South_Panna"
+ ],
+ "Satpura_TR": [
+  "Hoshangabad",
+  "North_Betul",
+  "Rampur_Bhatodi_Proj",
+  "West_Chhindwara"
+ ],
+ "Sehore": [
+  "Bhopal",
+  "Dewas",
+  "FDC_Khandwa",
+  "Obedullahganj",
+  "Rajgarh",
+  "Sehore_Project"
+ ],
+ "Sehore_Project": [
+  "Obedullahganj",
+  "Sehore"
+ ],
+ "Sendhwa": [
+  "Barwani",
+  "Khargone"
+ ],
+ "Shajapur": [
+  "Rajgarh",
+  "Ujjain"
+ ],
+ "Sheopur": [
+  "Gwalior",
+  "Kuno_Palpur",
+  "Morena",
+  "Shivpuri"
+ ],
+ "Shivpuri": [
+  "Ashok_Nagar",
+  "Datiya",
+  "Guna",
+  "Gwalior",
+  "Kuno_Palpur",
+  "Madhav_National_Park",
+  "Sheopur"
+ ],
+ "Sidhi": [
+  "North_Shahdol",
+  "Rewa",
+  "SANJAY_DUBRI",
+  "Satna",
+  "Sidhi_FDCM",
+  "Singrauli"
+ ],
+ "Sidhi_FDCM": [
+  "Rewa",
+  "Sidhi",
+  "Singrauli"
+ ],
+ "Singrauli": [
+  "SANJAY_DUBRI",
+  "Sidhi",
+  "Sidhi_FDCM"
+ ],
+ "South_Balaghat": [
+  "Barghat_Project",
+  "Lamta_Proj_N_Balaghat",
+  "Lamta_Proj_S_Balaghat",
+  "North_Balaghat",
+  "PTR_MP",
+  "South_Seoni"
+ ],
+ "South_Betul": [
+  "Chhindwara_Project",
+  "North_Betul",
+  "South_Chhindwara",
+  "West_Betul",
+  "West_Chhindwara"
+ ],
+ "South_Chhindwara": [
+  "Chhindwara_Project",
+  "East_Chhindwara",
+  "PTR_MP",
+  "South_Betul",
+  "West_Chhindwara"
+ ],
+ "South_Panna": [
+  "Damoh",
+  "Katni",
+  "Satna"
+ ],
+ "South_Sagar": [
+  "Damoh",
+  "FDCM_Vidisha",
+  "Narsinghpur",
+  "Noradehi",
+  "North_Sagar",
+  "Raisen",
+  "Vidisha"
+ ],
+ "South_Seoni": [
+  "Barghat_Project",
+  "East_Chhindwara",
+  "Lamta_Proj_N_Balaghat",
+  "Lamta_Proj_S_Balaghat",
+  "Mohgaon_Proj_West_Mandla",
+  "North_Seoni",
+  "PTR_MP",
+  "South_Balaghat",
+  "West_Mandla"
+ ],
+ "South_Shahdol": [
+  "Anuppur",
+  "BTR",
+  "North_Shahdol",
+  "Umaria",
+  "Umaria_Project"
+ ],
+ "Tikamgarh": [
+  "Chhatarpur"
+ ],
+ "Ujjain": [
+  "Shajapur"
+ ],
+ "Umaria": [
+  "Anuppur",
+  "BTR",
+  "Dindori",
+  "Jabalpur",
+  "Katni",
+  "Kundam_Proj_Jabalpur",
+  "Kundam_Proj_Katni",
+  "South_Shahdol",
+  "Umaria_Project"
+ ],
+ "Umaria_Project": [
+  "Anuppur",
+  "BTR",
+  "Dindori",
+  "Jabalpur",
+  "Katni",
+  "Kundam_Proj_Jabalpur",
+  "Kundam_Proj_Katni",
+  "South_Shahdol",
+  "Umaria"
+ ],
+ "Vidisha": [
+  "Ashok_Nagar",
+  "Bhopal",
+  "FDCM_Vidisha",
+  "Guna",
+  "Raisen",
+  "South_Sagar"
+ ],
+ "West_Betul": [
+  "Harda",
+  "Hoshangabad",
+  "Khandwa",
+  "North_Betul",
+  "Rampur_Bhatodi_Proj",
+  "South_Betul"
+ ],
+ "West_Chhindwara": [
+  "Chhindwara_Project",
+  "East_Chhindwara",
+  "Hoshangabad",
+  "Narsinghpur",
+  "North_Betul",
+  "Rampur_Bhatodi_Proj",
+  "Satpura_TR",
+  "South_Betul",
+  "South_Chhindwara"
+ ],
+ "West_Mandla": [
+  "Barghat_Project",
+  "Dindori",
+  "East_Mandla",
+  "Jabalpur",
+  "Kanha_Tiger_Reserve",
+  "Lamta_Proj_N_Balaghat",
+  "Mohgaon_Proj_East_Mandla",
+  "Mohgaon_Proj_West_Mandla",
+  "North_Balaghat",
+  "North_Seoni",
+  "South_Seoni"
+ ]
+}

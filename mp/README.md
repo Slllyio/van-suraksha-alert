@@ -20,6 +20,32 @@ Recall rises with the amount of local fire history (correlation with log fire co
 are candidates for borrowing from neighbouring divisions. `scripts/mp_repair.py` finds and removes corrupted
 Earth Engine CSVs left by interrupted runs (17 files in 13 divisions were regenerated).
 
+## Officer-style scoring, neighbour borrowing, seasonal rules (`scripts/mp_officer_eval.py`, `scripts/mp_seasonal.py`)
+All 87 divisions, train 2019–2021, test 2022–2024, top 10% of each division's test cell-days flagged (more on bad days).
+- **Each fire once**: fire detections linked across touching cells and consecutive days form one fire.
+  STRICT = caught only if a first-day cell had a flag within 1 cell on the issues of day −1 or −2;
+  LOOSE = any part of the fire was flagged 1–2 days before it burned. Fires starting on a season's first 2 days are skipped.
+- **By beat** (cells mapped to beats from `data/aoi/mp_beats_wgs84.geojson`): a beat episode is a run of burning days;
+  STRICT = the beat had ≥1 flagged cell on day −1/−2 before its first day; LOOSE = any day of it was preceded by a flag.
+- **Neighbour borrowing**: own data (weight 3) + divisions within 5 km (weight 1); used for "weak" divisions
+  (< 1000 training fire cell-days, rule fixed in advance).
+- **Seasonal rules ("with")**: targets only 15 Feb–31 May; fires 1 Oct–14 Feb are an "early burn" input
+  (cell / 3×3 / 7×7 counts), never targets; on 15–28 Feb likely control burns are dropped from targets
+  (day-only same-day cluster within 1 km, ≤ 2 points, max FRP ≤ 5 MW, nothing within 1 km from day −2 to +3):
+  4,950 clusters / 5,708 points over 2019–2024.
+
+Recommended model (own; borrow if weak), MP-wide:
+
+| Rules | Labels | Fires caught strict / loose | Beat episodes strict / loose | Ground flagged / flagged-or-next | Beats flagged per day | Flagged beats per range per day |
+|---|---|---|---|---|---|---|
+| without | 3 satellites | 77.0% / 77.9% | 84.1% / 85.0% | 10% / 19.5% | 28.3% | 2.8 |
+| without | S-NPP + NOAA-20 | 77.9% / 78.7% | 84.9% / 85.7% | 10% / 19.5% | 28.3% | 2.8 |
+| **with** | **3 satellites** | **73.2% / 74.6%** | **81.6% / 83.0%** | **10% / 20.3%** | **30.6%** | **3.0** |
+| with | S-NPP + NOAA-20 | 74.2% / 75.5% | 82.3% / 83.6% | 10% / 20.4% | 30.6% | 3.0 |
+
+Neighbour borrowing for weak divisions: +0.4 to +1.5 pts (fires, strict). Per-division: `results/officer/per_division_recommended.csv`;
+full table `results/officer/combined_summary.csv`.
+
 # MP step 1 — does the Ratapani model carry across Madhya Pradesh? (research)
 
 Nine contrasting forest divisions on one shared 500 m grid (EPSG:32643, X0 399000, Y1 2996000, 1829 columns;
