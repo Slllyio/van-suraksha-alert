@@ -20,6 +20,24 @@ Recall rises with the amount of local fire history (correlation with log fire co
 are candidates for borrowing from neighbouring divisions. `scripts/mp_repair.py` finds and removes corrupted
 Earth Engine CSVs left by interrupted runs (17 files in 13 divisions were regenerated).
 
+## Forward test: frozen 2019–2024 model scored on 2025 and 2026 (`results/officer/forward_fwd*.csv`)
+Per division one model trained on 2019–2024 only (own data; neighbour borrowing if < 1000 own training fire cell-days:
+14 of 87 divisions), frozen, then run unchanged on the 2025 and 2026 seasons. Same seasonal rules and scoring as below;
+labels S-NPP + NOAA-20 + NOAA-21 (VIIRS standard processing). Feature inputs for 2025–26 use the AlphaEarth PCA and
+MODIS anomaly climatology frozen on <= 2024 (2024 features reproduce the earlier tables exactly).
+Note: S-NPP has no data after 27 Apr 2026, so 28 Apr–31 May 2026 labels come from NOAA-20/21 only.
+
+| Season | Fires | Fires caught strict / loose | Brand-new fires (model / rule) | Other fires (model / rule) | Beat episodes strict / loose | Ground flagged-or-next | Flagged beats per range per day |
+|---|---|---|---|---|---|---|---|
+| 2025 | 30,057 | 74.6% / 76.3% | 34.0% / 3.9% | 80.7% / 56.7% | 84.1% / 85.6% | 21.0% | 3.1 |
+| 2026 | 24,057 | 69.3% / 70.9% | 34.8% / 4.5% | 77.3% / 54.8% | 80.4% / 81.7% | 21.8% | 3.3 |
+| **both** | **54,114** | **72.3% / 73.9%** | **34.4% / 4.2%** | **79.2% / 55.9%** | **82.5% / 83.9%** | **21.4%** | **3.2** |
+
+"Fires nearby" rule (score = fires in the 7×7 block in the last 7 days + 0.01 × local burn climatology), all fires strict:
+49.8% (2025), 45.4% (2026), 47.9% (both); beat episodes strict 62.6%. Brand-new = no detection within 5 km in the 7 days
+before the first day (15.5% of fires). Back-test for comparison (train 2019–2021, test 2022–2024, same rules):
+fires strict 73.2%, beats strict 81.6%, ground 20.3%, 3.0 beats per range per day. Per-cell-day predictions are kept locally.
+
 ## Officer-style scoring, neighbour borrowing, seasonal rules (`scripts/mp_officer_eval.py`, `scripts/mp_seasonal.py`)
 All 87 divisions, train 2019–2021, test 2022–2024, top 10% of each division's test cell-days flagged (more on bad days).
 - **Each fire once**: fire detections linked across touching cells and consecutive days form one fire.
