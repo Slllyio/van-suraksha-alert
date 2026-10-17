@@ -38,6 +38,33 @@ Note: S-NPP has no data after 27 Apr 2026, so 28 Apr–31 May 2026 labels come f
 before the first day (15.5% of fires). Back-test for comparison (train 2019–2021, test 2022–2024, same rules):
 fires strict 73.2%, beats strict 81.6%, ground 20.3%, 3.0 beats per range per day. Per-cell-day predictions are kept locally.
 
+### Forward test, live-ready setup: same-day weather and a daily flag rule (`results/officer/forward_fwd{lag5,gfs}*.csv`, `flagrules_*.csv`)
+Weather (all retrained on 2019–2024 with that weather source, top 10% of the season flagged, 2025+2026):
+
+| Weather input | Fires strict | Brand-new | Beat episodes strict |
+|---|---|---|---|
+| ERA5-Land same day (not available live: ~5-day delay) | 72.3% | 34.4% | 82.5% |
+| ERA5-Land as available on the issue day (5 days old) | 71.1% | 32.5% | 81.4% |
+| **GFS 00Z run of the issue day** (out ~10:00 IST; soil moisture = ERA5 5 days old) | **72.3%** | **35.2%** | **82.6%** |
+
+GFS: division means of the 00Z run, forecast hours 3–24 (`gfs/gfs_daily.csv`, local); vs ERA5 in Feb–May (Guna):
+Tmax r = 0.99 (GFS +1.4 °C), rainfall r = 0.86. No GFS run on 2022-04-20 (left missing).
+
+Flag rules that need no hindsight (GFS model, 2026 season; 2025 provides the calibration):
+
+| Rule | Fires strict | Brand-new | Beats strict | Cells flagged | Ground flagged-or-next | Beats per range per day |
+|---|---|---|---|---|---|---|
+| top 10% of the season (hindsight; reference) | 69.7% | 35.9% | 80.6% | 10.0% | 21.8% | 3.3 |
+| top 10% of the division every day | 63.2% | 41.3% | 81.2% | 10.0% | 28.2% | 4.7 |
+| top 10% of each range every day | 65.5% | 49.3% | 84.0% | 10.2% | 32.9% | 5.6 |
+| previous season's score cut-off | 58.6% | 24.3% | 70.8% | 7.1% | 16.3% | 2.6 |
+| **danger-scaled daily share, calibrated on 2025** | **69.3%** | **44.3%** | **83.1%** | **11.6%** | **27.0%** | **4.2** |
+
+Danger-scaled rule: each day flag 10% x (today's mean score / this season's mean daily score up to yesterday) of the
+division's cells (1–40%; plain 10% in the first week), with the base share shrunk by the rule's own overshoot in the
+previous season, per division (MP average overshoot in 2025: 14.3% flagged vs 10%). It matches the hindsight rule on fires and catches more brand-new fires and beats,
+at ~16% more flags. Uncalibrated it flags 14.8% and catches 76.1% of fires (2025+2026).
+
 ## Officer-style scoring, neighbour borrowing, seasonal rules (`scripts/mp_officer_eval.py`, `scripts/mp_seasonal.py`)
 All 87 divisions, train 2019–2021, test 2022–2024, top 10% of each division's test cell-days flagged (more on bad days).
 - **Each fire once**: fire detections linked across touching cells and consecutive days form one fire.
