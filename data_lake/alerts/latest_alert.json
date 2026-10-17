@@ -1,7 +1,7 @@
 {
-  "alert_id": "GUNA-2026-10-16-000fires",
-  "generated_at": "2026-10-16T10:20:18.050754+05:30",
-  "target_date": "2026-10-16",
+  "alert_id": "GUNA-2026-10-17-000fires",
+  "generated_at": "2026-10-17T10:19:14.591854+05:30",
+  "target_date": "2026-10-17",
   "bulletin_severity": "CLEAR",
   "fires_detected": 0,
   "n_critical": 0,
@@ -11,13 +11,13 @@
   "forest_mask_used": true,
   "peak_frp_mw": 0.0,
   "fwi": {
-    "value": 4.0,
+    "value": 4.1,
     "danger_class": "Low",
     "ffmc": 84.3,
-    "dmc": 19.7,
-    "dc": 148.5,
+    "dmc": 20.5,
+    "dc": 153.7,
     "isi": 1.9,
-    "bui": 29.6,
+    "bui": 30.8,
     "temp_c": 24.5,
     "rh_pct": 78.7,
     "wind_kmh": 0.0
