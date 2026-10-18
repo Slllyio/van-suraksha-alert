@@ -149,6 +149,25 @@ On the scar key the model catches 81.8-85.7% of scar-confirmed fires 1-2 days ah
 44-56% for "burned before"), and 39-49% of brand-new ones (vs 6-15% and 34-43%). Events with no scar seen are caught
 less often (72-74%), consistent with many of them being small or non-forest burns.
 
+### Live combined rule, no hindsight: statewide pool + 50% floor + 25% quiet reserve (`results/officer/live_{held,fwd}*.csv`)
++GIS scores calibrated per division on the PREVIOUS season only (isotonic), so only seasons with an earlier
+out-of-sample season are scored: held-out 2023-24 (calibrated on 2022 / 2023) and forward 2026 (calibrated on 2025).
+Same statewide daily total as the per-division danger-scaled counts. floor50_quiet25: each division keeps half its count
+(25% of it on its clear squares, 75% on others, by +GIS; spare slots move between the two), the rest of the day's total
+is pooled statewide by calibrated % (25% to clear squares). One factor per rule matches the current model's statewide
+ground. Strict, each fire once.
+
+| Rule (all / brand-new / continuing / beats; fires per 100 flags) | Held-out 2023-24 | Forward 2026 |
+|---|---|---|
+| current (top 10% per division of the season, hindsight) | 72.1 / 41.9 / 82.4 / 81.3; 0.23 | 69.7 / 35.9 / 77.5 / 80.6; 0.36 |
+| per-division danger-scaled counts | 65.8 / 39.7 / 74.7 / 80.4; 0.26 | 62.9 / 38.2 / 68.6 / 78.8; 0.38 |
+| floor50 | 71.6 / 41.4 / 81.9 / 82.8; 0.24 | 69.2 / 37.7 / 76.4 / 81.9; 0.38 |
+| **floor50 + quiet25 (live rule)** | **71.1 / 45.8 / 79.7 / 83.2; 0.24** | **67.5 / 47.6 / 72.1 / 82.3; 0.38** |
+
+No division keeps less than half of its own count under either floor rule. With no hindsight anywhere (calibration,
+daily count and flag allocation all from past data), the live rule is within 1.0 / 2.2 pts of the hindsight rule on all
+fires, catches 3.9 / 11.7 pts more brand-new fires and 1.9 / 1.7 pts more beat episodes, at the same ground.
+
 ### Statewide crew budget at the same daily total (`results/officer/state_{held,fwd}*.csv`; vanagni `data/scar_key/PC_TASKS.md` job A)
 +GIS scores, calibrated per division (isotonic, leave-one-season-out: fitted on the division's other test season(s)).
 Daily statewide total = sum of the danger-scaled per-division counts; per_division = each division its own count (top
