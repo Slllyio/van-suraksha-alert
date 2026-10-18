@@ -104,6 +104,29 @@ frontier; f = 25-50% keeps all-fire catch at the current level (held-out 73.4-73
 fires rise to 42-48% (held-out) / 41-49% (forward). Beat episodes are best at f = 25-50% (82.8-84.3%).
 Note: the daily clear counts come from the pooled-head run, so they carry its day-to-day pattern.
 
+### Fixed quiet-share rule, no second model (`results/officer/quiet_{held,fwd}*.csv`)
+Each division-day, q = 20 / 25 / 30% of the day's flags go to clear squares (no fire within 5 km on days t-6..t), the
+rest to other squares, all picked by the +GIS score (days with too few clear squares give the spare flags to others).
+Daily count either danger-scaled (10% x today's mean +GIS score / season mean so far, 1-40%) or the +GIS top-10% daily
+counts ("topx", a season-pooled cut). One factor per division matches the current model's ground. Strict, each fire once.
+
+| Rule (all / brand-new / continuing / beats) | Held-out 2022-24 | Forward 2025+26 |
+|---|---|---|
+| current | 73.2 / 39.9 / 82.7 / 81.6 | 72.3 / 35.2 / 79.1 / 82.6 |
+| +GIS | 73.2 / 40.5 / 82.5 / 82.2 | 72.4 / 36.0 / 79.1 / 82.9 |
+| danger-scaled count, no reserve | 64.6 / 37.8 / 72.2 / 78.7 | 65.5 / 38.9 / 70.4 / 80.7 |
+| danger-scaled + 20% quiet | 66.0 / 43.6 / 72.4 / 80.7 | 64.6 / 47.2 / 67.9 / 81.4 |
+| danger-scaled + 25% quiet | 65.1 / 45.5 / 70.7 / 80.5 | 63.8 / 49.9 / 66.4 / 81.2 |
+| danger-scaled + 30% quiet | 64.1 / 47.1 / 68.9 / 80.1 | 62.9 / 52.0 / 64.9 / 80.8 |
+| +GIS top-10% counts + 20% quiet | 72.5 / 42.8 / 80.9 / 82.0 | 70.9 / 44.1 / 75.8 / 83.2 |
+| +GIS top-10% counts + 25% quiet | 72.1 / 44.8 / 79.9 / 82.1 | 70.4 / 46.5 / 74.8 / 83.3 |
+| +GIS top-10% counts + 30% quiet | 71.7 / 46.4 / 78.8 / 82.1 | 70.0 / 48.4 / 73.9 / 83.1 |
+
+The quiet reserve works without a second model: on the +GIS daily counts, 20-30% quiet costs 0.7-1.5 pts of all fires
+held-out (1.5-2.4 forward) for +2.3-5.9 (+8.1-12.4) on brand-new fires, beats unchanged or better. The danger-scaled
+daily count itself loses 8-9 pts of all fires at matched ground (the earlier "matches the hindsight rule" comparison let
+it use 27% vs 22% ground), so a live daily count is still the open problem.
+
 ### Forward test, live-ready setup: same-day weather and a daily flag rule (`results/officer/forward_fwd{lag5,gfs}*.csv`, `flagrules_*.csv`)
 Weather (all retrained on 2019–2024 with that weather source, top 10% of the season flagged, 2025+2026):
 
