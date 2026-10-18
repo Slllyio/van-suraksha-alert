@@ -80,6 +80,30 @@ Pooling turns the head from harmful (per-division head: brand-new -2.7 / -3.3) i
 ground it moves flags away from continuing fires: held-out +1,704 brand-new caught vs -3,011 continuing (net -1,307);
 forward +1,853 vs -3,879 (net -2,026). Beats are unchanged. A choice of what matters more, not a free gain.
 
+### Equal-share control and clear-square flag-share curve (`results/officer/share_{held,fwd}*.csv`, `share_curve.png`)
+Per division-day the pooled-head run's flag count on clear squares (no fire within 5 km on days t-6..t) is kept, or
+scaled by f = 0-100%, and the rest of the day's flags go to other squares by the +GIS score. Clear squares are ranked
+either by the pooled head or by +GIS (the "equal-share control" is f = 100% ranked by +GIS). All points at matched ground
+(f = 0 cannot reach it: 18.7% / 20.9% ground instead of 20.3% / 21.4%).
+
+| Setting (fires strict, all / brand-new) | Held-out 2022-24 | Forward 2025+26 |
+|---|---|---|
+| current | 73.2 / 39.9 | 72.3 / 35.2 |
+| +GIS (natural share: 22% / 13% of flags on clear squares) | 73.2 / 40.5 | 72.4 / 36.0 |
+| pooled head (51% / 46% of flags on clear squares) | 70.7 / 55.6 | 68.7 / 58.1 |
+| **equal-share control** (same clear counts, ranked by +GIS) | **70.2 / 55.0** | **68.4 / 58.8** |
+| f = 25%, pooled-head ranking | 73.9 / 42.2 | 72.4 / 40.9 |
+| f = 25%, +GIS ranking | 73.6 / 40.9 | 72.4 / 41.2 |
+| f = 50%, pooled-head ranking | 73.4 / 47.8 | 71.6 / 48.1 |
+| f = 50%, +GIS ranking | 73.1 / 46.9 | 71.5 / 48.5 |
+| f = 75%, pooled-head ranking | 72.6 / 52.6 | 70.6 / 53.3 |
+
+The pooled head's brand-new gain comes almost entirely from giving clear squares more flags, not from ranking them
+better: the equal-share control matches it (held-out -0.5 / -0.6 pts, forward -0.3 / +0.7). The curve is a trade-off
+frontier; f = 25-50% keeps all-fire catch at the current level (held-out 73.4-73.9, forward 71.6-72.4) while brand-new
+fires rise to 42-48% (held-out) / 41-49% (forward). Beat episodes are best at f = 25-50% (82.8-84.3%).
+Note: the daily clear counts come from the pooled-head run, so they carry its day-to-day pattern.
+
 ### Forward test, live-ready setup: same-day weather and a daily flag rule (`results/officer/forward_fwd{lag5,gfs}*.csv`, `flagrules_*.csv`)
 Weather (all retrained on 2019–2024 with that weather source, top 10% of the season flagged, 2025+2026):
 
