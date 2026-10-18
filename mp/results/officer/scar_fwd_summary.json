@@ -1,0 +1,37 @@
+{
+ "mode": "fwd",
+ "years": [
+  2025
+ ],
+ "divisions": 87,
+ "viirs_key": {
+  "events": 30057,
+  "all": 74.3,
+  "new": 34.3,
+  "ground_pct_mean_div": 20.9
+ },
+ "alert_all": {
+  "events": 28077,
+  "new_events": 2689,
+  "all": 82.2,
+  "new": 37.9
+ },
+ "alert_scar": {
+  "events": 25083,
+  "new_events": 2314,
+  "all": 83.0,
+  "new": 39.4
+ },
+ "scarsq_scar": {
+  "events": 25083,
+  "new_events": 2314,
+  "all": 85.7,
+  "new": 44.5
+ },
+ "alert_noscar": {
+  "events": 1934,
+  "new_events": 278,
+  "all": 73.8,
+  "new": 28.8
+ }
+}

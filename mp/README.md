@@ -127,6 +127,28 @@ held-out (1.5-2.4 forward) for +2.3-5.9 (+8.1-12.4) on brand-new fires, beats un
 daily count itself loses 8-9 pts of all fires at matched ground (the earlier "matches the hindsight rule" comparison let
 it use 27% vs 22% ground), so a live daily count is still the open problem.
 
+### Current model on the burn-scar answer key (`results/officer/scar_{held,fwd}*`; key from vanagni `claude/project-thread-v0whah`, `data/scar_key/`)
+Flags: the current model, top 10% of the division's test cell-days (held-out 2022-24 pooled; forward 2025). An event is
+caught if one of its squares (alert square, or squares >= 10% under the scar outline) is flagged or next to a flag on
+day ld-1 or ld-2; it belongs to every division whose grid holds its alert square. Brand-new = no detection within 5 km of
+each alert square on days ld-7..ld-1. Simple rules from the cloud's `scar_rules_summary*.json` (same key and scoring).
+
+Fires caught, all / brand-new (%):
+
+| Key | Model held-out | Fires nearby | Burned before | Model forward 2025 | Fires nearby | Burned before |
+|---|---|---|---|---|---|---|
+| VIIRS events (usual key) | 73.2 / 39.9 | 54.7 / 11.4 | 40.8 / 33.3 | 74.3 / 34.3 | 49.9 / 5.4 | 38.4 / 30.4 |
+| alert squares, all events | 80.8 / 42.9 | 64.5 / 11.5 | 45.1 / 35.9 | 82.2 / 37.9 | 64.7 / 6.1 | 43.7 / 33.3 |
+| alert squares, scar-confirmed | 81.8 / 44.9 | 65.2 / 11.7 | 44.8 / 36.3 | 83.0 / 39.4 | 65.2 / 5.9 | 43.8 / 33.8 |
+| all scar squares, scar-confirmed | 83.8 / 49.3 | 69.7 / 14.7 | 55.6 / 43.1 | 85.7 / 44.5 | 70.4 / 7.5 | 54.3 / 41.4 |
+| alert squares, no scar seen | 71.7 / 32.6 | 57.6 / 11.0 | 44.9 / 31.9 | 73.8 / 28.8 | 58.2 / 7.6 | 43.6 / 29.5 |
+| ground flagged-or-next | 20.3% | 16.8% | 22.9% | 20.9% | 15.6% | 22.2% |
+
+Events: held-out 47,434 (40,025 scar-confirmed), forward 2025 28,077 (25,083); the cloud key counts 47,398 / 28,086.
+On the scar key the model catches 81.8-85.7% of scar-confirmed fires 1-2 days ahead (vs 65-70% for "fires nearby" and
+44-56% for "burned before"), and 39-49% of brand-new ones (vs 6-15% and 34-43%). Events with no scar seen are caught
+less often (72-74%), consistent with many of them being small or non-forest burns.
+
 ### Forward test, live-ready setup: same-day weather and a daily flag rule (`results/officer/forward_fwd{lag5,gfs}*.csv`, `flagrules_*.csv`)
 Weather (all retrained on 2019–2024 with that weather source, top 10% of the season flagged, 2025+2026):
 
