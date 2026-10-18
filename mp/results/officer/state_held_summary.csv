@@ -1,0 +1,5 @@
+period,rule,fires,new_fires,strict_all,strict_new,strict_old,beat_recall_first,ground_pct,flags,caught_per_100_flags,divisions_losing_half,losing_divisions
+2022-2023-2024,current,50991,11279,0.732,0.399,0.827,0.816,20.09,13871030,0.269,0,
+2022-2023-2024,floor50,50991,11279,0.71,0.395,0.799,0.817,20.08,12648093,0.286,0,
+2022-2023-2024,per_division,50991,11279,0.648,0.379,0.724,0.787,20.1,11293776,0.293,0,
+2022-2023-2024,statewide,50991,11279,0.73,0.407,0.822,0.813,20.14,14419687,0.258,25,Anuppur;Ashok_Nagar;Barwani;Bhind;Datiya;Gwalior;Harda;Jhabua;Kanha_Tiger_Reserve;Khargone;Kuno_Palpur;Madhav_National_Park;Mandsaur;Morena;Neemuch;PTR_MP;Rajgarh;Satpura_TR;Sendhwa;Shajapur;Sheopur;Shivpuri;Sidhi;Tikamgarh;Ujjain

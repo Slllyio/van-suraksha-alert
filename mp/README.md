@@ -149,6 +149,26 @@ On the scar key the model catches 81.8-85.7% of scar-confirmed fires 1-2 days ah
 44-56% for "burned before"), and 39-49% of brand-new ones (vs 6-15% and 34-43%). Events with no scar seen are caught
 less often (72-74%), consistent with many of them being small or non-forest burns.
 
+### Statewide crew budget at the same daily total (`results/officer/state_{held,fwd}*.csv`; vanagni `data/scar_key/PC_TASKS.md` job A)
++GIS scores, calibrated per division (isotonic, leave-one-season-out: fitted on the division's other test season(s)).
+Daily statewide total = sum of the danger-scaled per-division counts; per_division = each division its own count (top
++GIS squares); statewide = the day's total to the highest calibrated % squares anywhere in MP; floor50 = each division
+keeps half its count, the rest pooled statewide. One factor per rule matches the current model's statewide ground.
+
+| Rule (all / brand-new / beats; fires per 100 flags) | Held-out 2022-24 | Forward 2025 | Forward 2026 |
+|---|---|---|---|
+| current (top 10% per division, hindsight) | 73.2 / 39.9 / 81.6; 0.27 | 74.3 / 34.3 / 84.1; 0.49 | 69.7 / 35.9 / 80.6; 0.36 |
+| per_division (danger-scaled counts) | 64.8 / 37.9 / 78.7; 0.29 | 66.3 / 39.9 / 81.3; 0.50 | 62.9 / 38.2 / 78.8; 0.38 |
+| statewide pool | 73.0 / 40.7 / 81.3; 0.26 | 73.8 / 37.7 / 83.4; 0.46 | 70.6 / 38.3 / 81.4; 0.36 |
+| floor50 | 71.0 / 39.5 / 81.7; 0.29 | 73.0 / 37.9 / 84.9; 0.51 | 69.2 / 37.7 / 81.9; 0.38 |
+| divisions losing > half their flags (statewide / floor50) | 25 / 0 | 28 / 0 | 23 / 0 |
+
+Pooling the same daily total statewide by calibrated % recovers the 8 pts the per-division danger-scaled counts lose
+(it moves flags across divisions and days the way the hindsight top-10% cut does), but 23-28 divisions then lose more
+than half their flags (always: Barwani, Bhind, Datiya, Jhabua, Kanha TR, Morena, Neemuch, PTR, Rajgarh, Satpura TR,
+Shajapur, Sidhi, Tikamgarh, Ujjain). The 50% floor keeps every division at least half its flags and stays within
+1-2 pts of the statewide pool. Ground is matched in total, so the number of flags (and fires caught per 100 flags) differs with how clustered the flags are.
+
 ### Forward test, live-ready setup: same-day weather and a daily flag rule (`results/officer/forward_fwd{lag5,gfs}*.csv`, `flagrules_*.csv`)
 Weather (all retrained on 2019–2024 with that weather source, top 10% of the season flagged, 2025+2026):
 

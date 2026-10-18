@@ -1,0 +1,13 @@
+period,rule,fires,new_fires,strict_all,strict_new,strict_old,beat_recall_first,ground_pct,flags,caught_per_100_flags,divisions_losing_half,losing_divisions
+2025,current,30057,3914,0.743,0.343,0.803,0.841,20.86,4609345,0.485,0,
+2025,floor50,30057,3914,0.73,0.379,0.782,0.849,20.86,4311919,0.509,0,
+2025,per_division,30057,3914,0.663,0.399,0.702,0.813,20.82,3965400,0.502,0,
+2025,statewide,30057,3914,0.738,0.377,0.792,0.834,20.89,4831985,0.459,28,Ashok_Nagar;BTR;Barwani;Bhind;Datiya;Dhar;Guna;Gwalior;Harda;Jhabua;Kanha_Tiger_Reserve;Katni;Kuno_Palpur;Mandsaur;Morena;Neemuch;PTR_MP;Rajgarh;Ratlam;SANJAY_DUBRI;Satpura_TR;Shajapur;Sheopur;Shivpuri;Sidhi;South_Panna;Tikamgarh;Ujjain
+2026,current,24057,4491,0.697,0.359,0.775,0.806,21.91,4609345,0.364,0,
+2026,floor50,24057,4491,0.692,0.377,0.764,0.819,21.84,4343906,0.383,0,
+2026,per_division,24057,4491,0.629,0.382,0.686,0.788,21.88,4010727,0.377,0,
+2026,statewide,24057,4491,0.706,0.383,0.781,0.814,21.85,4787784,0.355,23,BTR;Barwani;Bhind;Datiya;East_Mandla;Hoshangabad;Jhabua;Kanha_Tiger_Reserve;Katni;Mohgaon_Proj_Dindori;Morena;Neemuch;PTR_MP;Rajgarh;Ratlam;Satna;Satpura_TR;Sendhwa;Shajapur;Sidhi;Tikamgarh;Ujjain;West_Mandla
+both,current,54114,8405,0.723,0.352,0.791,0.826,21.38,9218690,0.424,0,
+both,floor50,54114,8405,0.713,0.378,0.775,0.836,21.35,8655825,0.446,0,
+both,per_division,54114,8405,0.648,0.39,0.695,0.802,21.35,7976127,0.439,0,
+both,statewide,54114,8405,0.724,0.38,0.787,0.825,21.37,9619769,0.407,25,BTR;Barwani;Bhind;Datiya;Dhar;Jhabua;Kanha_Tiger_Reserve;Katni;Kuno_Palpur;Mandsaur;Mohgaon_Proj_Dindori;Morena;Neemuch;PTR_MP;Rajgarh;Ratlam;SANJAY_DUBRI;Satpura_TR;Sendhwa;Shajapur;Sheopur;Shivpuri;Sidhi;Tikamgarh;Ujjain
