@@ -1,0 +1,7 @@
+season,variant,flags,divisions,fires,new_fires,strict_all,strict_new,strict_old,beat_recall_first,flagged_pct,covered_pct,beats_flagged_per_range_day
+2022-24,base,top10,87,50991,11279,0.732,0.399,0.827,0.816,10.0,20.34,3.02
+2022-24,burned_before,top10,87,50991,11279,0.531,0.448,0.555,0.777,10.07,30.43,4.95
+2022-24,gis,matched_ground,87,50991,11279,0.732,0.405,0.825,0.822,9.92,20.34,3.08
+2022-24,gis,top10,87,50991,11279,0.735,0.409,0.828,0.824,10.0,20.47,3.1
+2022-24,gis_head,matched_ground,87,50991,11279,0.732,0.372,0.835,0.821,10.13,20.34,3.06
+2022-24,gis_head,top10,87,50991,11279,0.733,0.371,0.836,0.821,10.0,20.13,3.03

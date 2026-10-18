@@ -38,6 +38,29 @@ Note: S-NPP has no data after 27 Apr 2026, so 28 Apr–31 May 2026 labels come f
 before the first day (15.5% of fires). Back-test for comparison (train 2019–2021, test 2022–2024, same rules):
 fires strict 73.2%, beats strict 81.6%, ground 20.3%, 3.0 beats per range per day. Per-cell-day predictions are kept locally.
 
+### Static GIS inputs + separate brand-new-fire head (vanagni `data/static-gis-2026-10-18`, section 6) on the 87-division models (`results/officer/gis_{held,fwd}*.csv`)
+Same divisions, labels, own/borrow rule and PC LightGBM settings for every variant (only the inputs / heads change).
+gis = + 33 static inputs from `static_gis_v1.parquet` joined on mp_cell; gis_head = gis + a second model trained only on
+"clear" cell-days (no type-0 fire within +-10 cells on days t-6..t), whose score is used on clear cells.
+Matched ground = flag share set per division so ground flagged-or-next equals the base model's.
+
+| Test | Model | Fires strict | Brand-new | Other fires | Beats strict | Ground |
+|---|---|---|---|---|---|---|
+| Held-out 2022-24 (ERA5; 50,991 fires, 11,279 new) | base | 73.2% | 39.9% | 82.7% | 81.6% | 20.3% |
+| | gis, matched ground | 73.2% | 40.5% | 82.5% | 82.2% | 20.3% |
+| | gis_head, matched ground | 73.2% | 37.2% | 83.5% | 82.1% | 20.3% |
+| | burned before (top 10%) | 53.1% | 44.8% | 55.5% | 77.7% | 30.4% |
+| Forward 2025+26 (GFS; 54,114 fires, 8,405 new) | base | 72.3% | 35.2% | 79.1% | 82.6% | 21.4% |
+| | gis, matched ground | 72.4% | 36.0% | 79.1% | 82.9% | 21.4% |
+| | gis_head, matched ground | 72.4% | 31.9% | 79.8% | 82.7% | 21.4% |
+| | burned before (top 10%) | 49.0% | 39.5% | 50.8% | 74.1% | 30.1% |
+
+On the PC model the GIS inputs give a small gain (brand-new +0.6 / +0.8 pts, beats +0.3-0.6, all fires flat); the
+per-division brand-new head lowers brand-new catch by 2.7-3.3 pts (it moves catches to continuing fires). The cloud
+result (+6.9 / +13.6 on brand-new) was on a pooled 10-division stand-in model with a weaker brand-new baseline (31.8 / 23.3).
+Isotonic calibration (per division and head, fitted on the previous test season): Brier skill raw -0.89 / -0.72 ->
+-0.009 held-out (fit 2022, applied to quieter 2023-24) / +0.014 forward (fit 2025, applied to 2026).
+
 ### Forward test, live-ready setup: same-day weather and a daily flag rule (`results/officer/forward_fwd{lag5,gfs}*.csv`, `flagrules_*.csv`)
 Weather (all retrained on 2019–2024 with that weather source, top 10% of the season flagged, 2025+2026):
 
