@@ -61,6 +61,25 @@ result (+6.9 / +13.6 on brand-new) was on a pooled 10-division stand-in model wi
 Isotonic calibration (per division and head, fitted on the previous test season): Brier skill raw -0.89 / -0.72 ->
 -0.009 held-out (fit 2022, applied to quieter 2023-24) / +0.014 forward (fit 2025, applied to 2026).
 
+### One brand-new-fire head pooled over all 87 divisions (`results/officer/pool_{held,fwd}*.csv`)
+One LightGBM (PC settings) trained on every division's own "clear" training rows (held-out 2.79 M rows / 29,225 fire
+cell-days; forward 5.45 M / 63,487), with division id as a categorical input and the GIS inputs kept. Clear test cells
+take its score, others the division's +GIS model. All rows at matched ground (= the current model's).
+
+| Test | Model | Fires strict | Brand-new | Continuing | Beats strict | Cells flagged |
+|---|---|---|---|---|---|---|
+| Held-out 2022-24 | current (top 10%) | 73.2% | 39.9% | 82.7% | 81.6% | 10.0% |
+| | + GIS | 73.2% | 40.5% | 82.5% | 82.2% | 9.9% |
+| | + GIS + pooled head | 70.7% | 55.6% | 75.0% | 82.0% | 9.6% |
+| Forward 2025+26 | current (top 10%) | 72.3% | 35.2% | 79.1% | 82.6% | 10.0% |
+| | + GIS | 72.4% | 36.0% | 79.1% | 82.9% | 9.9% |
+| | + GIS + pooled head | 68.7% | 58.1% | 70.6% | 82.7% | 9.6% |
+
+Pooling turns the head from harmful (per-division head: brand-new -2.7 / -3.3) into a large gain on brand-new fires
+(+15.1 / +22.1 pts vs +GIS; better in 85/87 held-out divisions and 166/174 forward division-seasons). But at the same
+ground it moves flags away from continuing fires: held-out +1,704 brand-new caught vs -3,011 continuing (net -1,307);
+forward +1,853 vs -3,879 (net -2,026). Beats are unchanged. A choice of what matters more, not a free gain.
+
 ### Forward test, live-ready setup: same-day weather and a daily flag rule (`results/officer/forward_fwd{lag5,gfs}*.csv`, `flagrules_*.csv`)
 Weather (all retrained on 2019–2024 with that weather source, top 10% of the season flagged, 2025+2026):
 
