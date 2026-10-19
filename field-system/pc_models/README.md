@@ -39,6 +39,16 @@ The 33 static GIS columns (`elev` ... `beat_5k`) are `ratapani/mp_grid/static_gi
 | `static_inputs.parquet` | now also carries `slope_deg_mean_f64` (the original float64 slope; `spread_slope` is formed with it, as in the pipeline) |
 | `make_fire_celldays.py`, `make_modis_clim.py`, `build_static.py` | how the three tables were made |
 
+### New season: AlphaEarth step (`make_static_season.py`, `ae_pca.npz`)
+Season S uses the AlphaEarth embedding of year S-1 through each division's own PCA-16. `ae_pca.npz` holds the 87 PCAs
+exactly as the live models use them (mean and components; fitted on 2017-2024, `save_ae_pca.py`); applied to the 2025
+embedding they reproduce `ae00`-`ae15` of `static_inputs.parquet` exactly (0 difference, all 87 divisions).
+`python make_static_season.py --season 2027 --models .` pulls the 2026 embedding from Earth Engine and writes
+`static_inputs_2027.parquet`; `--season 2026 --check` rebuilds the 2026 values from a fresh pull (0 difference on the
+divisions tested). As of 19 Oct 2026 Earth Engine has AlphaEarth only up to 2025, so the 2027 file cannot be built yet;
+the script stops with that message until Google publishes 2026. For 2027 also use `static_inputs_2027.parquet` in
+`daily_run.py --models` (copy it over `static_inputs.parquet` or point a separate models folder at it).
+
 MODIS composites (MOD09A1 ndvi/ndmi, MOD11A2 lst_k; `mp/scripts/mp_ee.py` pulls them per division) are needed from 1 Sep of
 the previous year (the `ndvi_peak` window); GFS and ERA5 soil moisture from 1 Oct of the previous year.
 
