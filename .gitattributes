@@ -1,2 +1,4 @@
 ratapani/data/*.zip filter=lfs diff=lfs merge=lfs -text
 field-system/pc_models/models/*.xz filter=lfs diff=lfs merge=lfs -text
+field-system/pc_models/*.parquet filter=lfs diff=lfs merge=lfs -text
+field-system/pc_models/example_2026-04-05/*.parquet filter=lfs diff=lfs merge=lfs -text
