@@ -10,11 +10,11 @@ Target: a fire (VIIRS S-NPP / NOAA-20 / NOAA-21, type 0, seasonal rules) in the 
 | `live_score.py` | standalone daily script (numpy, pandas, lightgbm): one issue day -> score, calibrated %, quiet, flag per square |
 | `meta.json` | per division: feature list, weak / borrowed neighbours, check result; LightGBM params; live-rule constants (k, floor, quiet, share) |
 | `calibration/<division>.json` | isotonic map fitted on the 2025 season: `pct = 100 * numpy.interp(score, x, y)` |
-| `models/<division>.txt` | LightGBM model text files (about 1.2 GB in all; delivered separately because of size, see below) |
+| `models/<division>.txt.xz` | LightGBM models, shrunk and xz-compressed (198 MB in all; Git LFS). Shrinking only removed fields LightGBM never reads to predict (tree_sizes, split gains, internal values/weights/counts, leaf weights/counts, feature importances); scores are bit-identical. Load: `lightgbm.Booster(model_str=lzma.decompress(open(f, "rb").read()).decode())` (done by `live_score.py`) |
 
 Checks done on the PC:
 - Every saved model, reloaded, reproduces the stored 2026 +GIS scores exactly (max abs difference 0 for all 87).
-- `live_score.py` run on the saved models with the 2026-04-05 feature tables and season state reproduces
+- `live_score.py` run on the shrunk models (`models/*.txt.xz`) with the 2026-04-05 feature tables and season state reproduces
   `field-system/pc_check/live_flags_2026-04-05.parquet` exactly: 430,776 squares, 23,858 flags, 0 disagreements,
   every division's count identical (pct differs by < 1e-7).
 

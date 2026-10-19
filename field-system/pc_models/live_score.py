@@ -4,7 +4,7 @@ Usage:
   python live_score.py --models pc_models --features <dir> --state season_state.csv --date 2026-04-05 --out <dir>
 
 Inputs
-  --models    folder with models/<division>.txt, calibration/<division>.json and meta.json (from mp_save_live.py)
+  --models    folder with models/<division>.txt.xz (or .txt), calibration/<division>.json and meta.json
   --features  one parquet per division, <division>.parquet, for the issue day: column `cell` (mp_grid cell =
               row*1829+col), column `quiet` (1 = no type-0 VIIRS detection within 5 km on days t-6..t) and every
               feature listed in meta.json["divisions"][<division>]["features"] (same definitions as the training tables)
@@ -24,11 +24,19 @@ Rule (as in the PC research, results/officer/live_*):
   pool       = sum of own_count - all floors, given statewide to the highest calibrated % squares not yet flagged;
                25% of the pool to quiet squares.
 """
-import argparse, json
+import argparse, json, lzma
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import lightgbm as lgb
+
+
+def load_model(M, dv):
+    """models/<division>.txt.xz (shrunk, xz-compressed) or models/<division>.txt."""
+    xz = M / "models" / f"{dv}.txt.xz"
+    if xz.exists():
+        return lgb.Booster(model_str=lzma.decompress(xz.read_bytes()).decode())
+    return lgb.Booster(model_file=str(M / "models" / f"{dv}.txt"))
 
 
 def main():
@@ -47,7 +55,7 @@ def main():
             continue
         X = pd.read_parquet(f).sort_values("cell").reset_index(drop=True)
         feats = meta["divisions"][dv]["features"]
-        s = lgb.Booster(model_file=str(M / "models" / f"{dv}.txt")).predict(X.reindex(columns=feats)).astype(np.float32)
+        s = load_model(M, dv).predict(X.reindex(columns=feats)).astype(np.float32)
         cal = json.loads((M / "calibration" / f"{dv}.json").read_text())
         pct = 100 * np.interp(s, cal["x"], cal["y"])
         n_days = int(state.n_days.get(dv, 0)) if len(state) else 0
