@@ -28,10 +28,25 @@ Checks done on the PC:
 | `example_2026-04-05/` | full 2026-04-05 feature tables for Shivpuri (largest, 13,798 squares) and Ujjain (smallest, 239), with `cell` and `quiet`; their GFS and ERA5 soil-moisture series since 1 Oct 2025; the season state before 5 Apr. `python gfs_features.py Shivpuri example_2026-04-05/gfs_daily_Shivpuri_Ujjain.csv example_2026-04-05/era5land_swvl1_Shivpuri.csv example_2026-04-05/Shivpuri.parquet` prints 0 differences |
 
 The 33 static GIS columns (`elev` ... `beat_5k`) are `ratapani/mp_grid/static_gis_v1.parquet` joined on `cell`.
-Still built only by the PC pipeline (no standalone builder yet): the fire-history columns (`cell_d*`, `nb3_*`, `nb7_*`,
-`aoi_d*`, `dsl`, `fdist_d*`, `clim_*`, `early_*`), the MODIS columns (`ndvi*`, `ndmi*`, `lst_k*`, `leaf_loss`,
-`ndvi_peak`), the HLS dryness columns (`hls_*`) and `doy`; their exact definitions are in `mp/scripts/mp_features.py`,
-`mp_seasonal.py` and `mp_officer_eval.py`, and the example tables show the values they take.
+## Daily feature builder (no PC pipeline needed)
+
+| Path | What |
+|---|---|
+| `daily_run.py` | one command per issue day: builds every division's table, then runs `live_score.py` (usage in its docstring) |
+| `build_day_features.py` | every model column for one division and day from raw inputs: fire history (`cell_d*`, `nb3/nb7_d*`, `aoi_d*`, `dsl`, `fdist_d*`, `clim_cell`, `clim_nb7`), early burns (`early_*`), `quiet`, MODIS (`ndvi`, `ndmi`, `lst_k`, anomalies, `ndmi_d16`, `*_chg16/32`, `ndvi_peak`, `leaf_loss`), HLS dryness (`hls_*`, from the season's `mp_dry_<season>.npz`), `doy`, static + GIS columns, weather (via `gfs_features.py`) and the interactions; same float32 arithmetic as the pipeline |
+| `fire_celldays.parquet` (Git LFS, 5 MB) | the fire history the models saw: one row per (IST date, row, col) with a VIIRS type-0 detection, 2014-01 .. 2026-06, all satellites. Append new days with `make_fire_celldays.to_celldays(firms_rows)` (`daily_run.py --firms`). History back to 2014 is needed (burn climatology since 2014; days since last fire up to 400) |
+| `modis_clim.parquet` (Git LFS, 48 MB) | per division and cell, the MODIS as-of climatology (2013-12 .. 2024) per 14-day bin 3-10 for `ndvi`, `ndmi`, `lst_k` (used by the anomalies); `make_modis_clim.py` made it |
+| `static_inputs.parquet` | now also carries `slope_deg_mean_f64` (the original float64 slope; `spread_slope` is formed with it, as in the pipeline) |
+| `make_fire_celldays.py`, `make_modis_clim.py`, `build_static.py` | how the three tables were made |
+
+MODIS composites (MOD09A1 ndvi/ndmi, MOD11A2 lst_k; `mp/scripts/mp_ee.py` pulls them per division) are needed from 1 Sep of
+the previous year (the `ndvi_peak` window); GFS and ERA5 soil moisture from 1 Oct of the previous year.
+
+Checks (2026-04-05, all 87 divisions, built from raw inputs only: fire cell-days, MODIS composites, HLS npz, GFS, ERA5
+soil moisture, static tables):
+- every one of the 128 feature columns and `quiet` is identical to the pipeline's tables in all 87 divisions (0 difference);
+- scored with `live_score.py`: 23,858 flags, 0 disagreements with `field-system/pc_check`, raw scores identical;
+- the same through the one-command `daily_run.py`.
 
 Inputs per issue day (see the script's docstring): one parquet per division with `cell` (mp_grid cell), `quiet` (no
 type-0 detection within 5 km on days t-6..t) and every feature in `meta.json[divisions][<division>][features]` (same
