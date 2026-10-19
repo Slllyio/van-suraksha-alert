@@ -168,6 +168,28 @@ No division keeps less than half of its own count under either floor rule. With 
 daily count and flag allocation all from past data), the live rule is within 1.0 / 2.2 pts of the hindsight rule on all
 fires, catches 3.9 / 11.7 pts more brand-new fires and 1.9 / 1.7 pts more beat episodes, at the same ground.
 
+### Live combined rule on the burn-scar key, with bootstrap 95% intervals (`results/officer/livescar_*.csv`)
+Same deterministic live rule as `live_*` (pool + 50% floor + 25% quiet, matched ground), scored per division-season on
+the VIIRS key and on the scar key (alert squares; scar-confirmed and no-scar-seen events; all and brand-new; cloud scorer
+rule). 95% intervals: 2000 bootstrap draws of division-seasons (same draws for every rule; paired difference vs current).
+Calibration: previous season for 2023-24 and 2026 (no hindsight); 2025 has no out-of-sample 2024, so it is calibrated on
+2026 (marked *). No scar key exists for 2026.
+
+| Metric (%) | Held-out 2023-24: current | live rule | live - current | Forward 2025*: current | live rule | live - current |
+|---|---|---|---|---|---|---|
+| all fires (VIIRS) | 72.1 (70.5-73.6) | 71.1 (68.3-73.8) | -1.0 (-4.1 to +1.8) | 74.3 (73.2-75.6) | 69.9 (66.9-73.0) | -4.4 (-7.6 to -1.1) |
+| brand-new (VIIRS) | 41.9 (39.1-44.6) | 45.8 (43.4-48.1) | +3.9 (+0.3 to +7.6) | 34.3 (31.7-37.2) | 54.2 (51.2-57.4) | +19.9 (+15.5 to +24.3) |
+| beat episodes | 81.3 (80.2-82.4) | 83.2 (81.5-84.9) | +1.9 (-0.3 to +4.1) | 84.1 (83.1-85.2) | 84.6 (82.5-86.6) | +0.5 (-1.7 to +2.6) |
+| fires per 100 flags | 0.23 (0.20-0.26) | 0.24 (0.22-0.26) | +0.01 (-0.01 to +0.03) | 0.48 (0.43-0.54) | 0.51 (0.47-0.55) | +0.03 (-0.02 to +0.07) |
+| scar-confirmed, alert square, all | 79.4 (77.3-81.3) | 77.9 (75.6-80.4) | -1.5 (-4.4 to +1.5) | 83.0 (81.8-84.1) | 78.4 (75.6-81.2) | -4.6 (-7.5 to -1.8) |
+| scar-confirmed, alert square, brand-new | 47.0 (43.7-50.4) | 50.5 (47.7-53.3) | +3.6 (-0.6 to +7.7) | 39.4 (36.1-42.6) | 58.2 (54.3-62.4) | +18.8 (+13.9 to +23.8) |
+| no scar seen, alert square, all | 69.3 (65.7-72.5) | 68.3 (64.2-72.2) | -1.0 (-4.6 to +2.5) | 73.8 (70.0-77.7) | 67.2 (62.4-72.3) | -6.6 (-9.7 to -3.2) |
+| no scar seen, alert square, brand-new | 35.1 (30.8-39.2) | 38.5 (34.2-43.1) | +3.5 (-1.6 to +8.6) | 28.8 (22.4-35.2) | 42.5 (36.1-49.4) | +13.7 (+6.9 to +20.6) |
+
+Forward 2026 (VIIRS key only; previous-season calibration): all fires 69.7 (68.2-71.2) vs live 67.5 (63.8-70.8),
+difference -2.2 (-5.8 to +0.9); brand-new 35.9 (33.0-39.0) vs 47.6 (44.6-50.6), +11.8 (+7.7 to +15.5); beats 80.6 vs
+82.3, +1.7 (-1.0 to +4.0). Events: scar-confirmed 19,339 (2023-24) / 25,083 (2025); no scar seen 2,486 / 1,934.
+
 ### Statewide crew budget at the same daily total (`results/officer/state_{held,fwd}*.csv`; vanagni `data/scar_key/PC_TASKS.md` job A)
 +GIS scores, calibrated per division (isotonic, leave-one-season-out: fitted on the division's other test season(s)).
 Daily statewide total = sum of the danger-scaled per-division counts; per_division = each division its own count (top
