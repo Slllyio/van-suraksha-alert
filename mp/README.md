@@ -168,6 +168,21 @@ No division keeps less than half of its own count under either floor rule. With 
 daily count and flag allocation all from past data), the live rule is within 1.0 / 2.2 pts of the hindsight rule on all
 fires, catches 3.9 / 11.7 pts more brand-new fires and 1.9 / 1.7 pts more beat episodes, at the same ground.
 
+### Stale AlphaEarth map (`results/officer/livestale_fwd*.csv`)
+What 2027 would face if the 2026 AlphaEarth embedding is not yet published: the 2026 season rescored with the saved live
+models, ae00-ae15 from the 2024 embedding (one year staler) through each division's same PCA (`field-system/pc_models/
+ae_pca.npz`); 2025 scores unchanged, so the previous-season calibration is as it would be live. Same live rule (pool + 50%
+floor + 25% quiet, matched ground). Check: the fresh map reproduces the stored 2026 scores exactly (0 difference).
+
+| Live rule, 2026 (fires strict) | All fires | Brand-new | Beat episodes | Ground |
+|---|---|---|---|---|
+| 2025 embedding (published `live_fwd`) | 67.5% | 47.6% | 82.3% | 21.9% |
+| 2024 embedding (one year stale) | 67.8% | 47.4% | 82.5% | 21.9% |
+
+The stale map costs nothing measurable (differences 0.2-0.3 pts, well inside the +-2-4 pt bootstrap intervals of the live
+rule): the AlphaEarth inputs change slowly from year to year. Using last year's embedding until the new one is published
+is safe.
+
 ### Live combined rule on the burn-scar key, with bootstrap 95% intervals (`results/officer/livescar_*.csv`)
 Same deterministic live rule as `live_*` (pool + 50% floor + 25% quiet, matched ground), scored per division-season on
 the VIIRS key and on the scar key (alert squares; scar-confirmed and no-scar-seen events; all and brand-new; cloud scorer
