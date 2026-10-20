@@ -168,6 +168,23 @@ No division keeps less than half of its own count under either floor rule. With 
 daily count and flag allocation all from past data), the live rule is within 1.0 / 2.2 pts of the hindsight rule on all
 fires, catches 3.9 / 11.7 pts more brand-new fires and 1.9 / 1.7 pts more beat episodes, at the same ground.
 
+### Fire-regime inputs (`results/officer/livereg_*.csv`, `regime_*_importance.csv`)
++GIS model retrained with 12 fire-regime inputs, each built for season S from S-NPP VIIRS fire-cell-days (15 Feb-31 May)
+of seasons 2014..S-1 only: division calendar (10/50/90th pct fire day, share by 15 Mar / after 15 Apr, share of a usual
+season burnt by today, usual daily share at today +-7 d, days from the usual median) and local regime (share of prior
+seasons with fire in the 7x7 block, seasons since the last fire in the 3x3 block, mean fire day in the 15x15 block and
+today minus it). Same rows, labels, own/borrow rule and settings; live rule at the same matched ground. The regime inputs
+take 7-8% of model gain (median), yet:
+
+| Live rule (strict, matched ground) | All fires | Brand-new | Beat episodes |
+|---|---|---|---|
+| held-out 2023-24, published | 71.1% | 45.8% | 83.2% |
+| held-out 2023-24, + regime inputs | 71.2% | 46.2% | 83.1% |
+| 2026, published | 67.5% | 47.6% | 82.3% |
+| 2026, + regime inputs | 67.3% | 47.7% | 81.8% |
+
+No gain: the existing fire-history and day-of-year inputs already carry the regime. Not adopted.
+
 ### Live input timing (`results/officer/livelat_fwd*.csv`)
 Freshness of each input measured on 2026-10-20 12:17 IST (Earth Engine, FIRMS NRT):
 
