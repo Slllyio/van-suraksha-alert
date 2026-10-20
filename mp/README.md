@@ -168,6 +168,24 @@ No division keeps less than half of its own count under either floor rule. With 
 daily count and flag allocation all from past data), the live rule is within 1.0 / 2.2 pts of the hindsight rule on all
 fires, catches 3.9 / 11.7 pts more brand-new fires and 1.9 / 1.7 pts more beat episodes, at the same ground.
 
+### Timing-group fallback (`results/officer/livefb_*.csv`, `fallback_*_groups.csv`)
+The 10 divisions with < 400 training fires (Barwani, Bhind, Datiya, Mandsaur, Mohgaon East Mandla, Morena, Rajgarh,
+Shajapur, Tikamgarh, Ujjain) take the score of their early / mid / late group model instead of their own +GIS model:
+one LightGBM per group pooled over every division of the group (same +GIS inputs and settings, plus division id and day
+minus the division's usual onset), retrained on the run's training years (held-out 2019-21; live 2019-24). Groups come
+from each division's own training fires in those years (median fire day < 26 Mar early, to 10 Apr mid, later late;
+< 20 fires mid). All other divisions keep their live scores. Live rule (floor50_quiet25), strict, matched ground:
+
+| Test | Scope | Fires | All: published / fallback | Brand-new | Beat episodes |
+|---|---|---|---|---|---|
+| held-out 2023-24 | 87 divisions | 29,690 | 71.1 / 71.2% | 45.8 / 45.9% | 83.2 / 83.4% |
+| held-out 2023-24 | the 10 | 333 | 58.0 / 59.2% | 39.9 / 42.3% | 73.7 / 73.0% |
+| 2026 | 87 divisions | 24,057 | 67.5 / 67.5% | 47.6 / 47.6% | 82.3 / 82.3% |
+| 2026 | the 10 | 274 | 60.9 / 58.0% | 46.9 / 42.7% | 71.6 / 72.0% |
+
+Better on held-out, worse on 2026, on a few hundred fires (each fire about 0.3-0.4 pts); statewide unchanged. No
+consistent gain: the 10 keep their own (borrow-if-weak) models. Per division: `livefb_divisions.csv`.
+
 ### Fire-regime inputs (`results/officer/livereg_*.csv`, `regime_*_importance.csv`)
 +GIS model retrained with 12 fire-regime inputs, each built for season S from S-NPP VIIRS fire-cell-days (15 Feb-31 May)
 of seasons 2014..S-1 only: division calendar (10/50/90th pct fire day, share by 15 Mar / after 15 Apr, share of a usual
