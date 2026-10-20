@@ -168,6 +168,29 @@ No division keeps less than half of its own count under either floor rule. With 
 daily count and flag allocation all from past data), the live rule is within 1.0 / 2.2 pts of the hindsight rule on all
 fires, catches 3.9 / 11.7 pts more brand-new fires and 1.9 / 1.7 pts more beat episodes, at the same ground.
 
+### Live input timing (`results/officer/livelat_fwd*.csv`)
+Freshness of each input measured on 2026-10-20 12:17 IST (Earth Engine, FIRMS NRT):
+
+| Input | Models assume | Actually on hand |
+|---|---|---|
+| FIRMS VIIRS NRT (3 satellites) | every detection of the issue day | night passes (~02:00 IST) by morning; the ~13:30 day pass arrives ~16:30 IST |
+| GFS 00Z of the issue day | out ~10:00 IST | not yet on Earth Engine at 12:17 IST (NOAA NOMADS has it ~09:30 IST) |
+| ERA5-Land soil moisture | 5 days old | 14 days old on Earth Engine |
+| MODIS MOD09A1 / MOD11A2 8-day | usable 9 days after start | newest composite started 20 days ago |
+| HLS (dryness npz) | current 10-day step | newest scene 9 days old |
+
+So the live rule is an evening alert (issue ~17:00-18:00 IST for days +1 and +2, after the day pass), and MODIS, soil
+moisture and HLS arrive later than in training. Cost, 2026 rescored with the saved models (no retraining), MODIS 21 days
+old, soil moisture 15 days old, HLS dryness 10 days later (rebuilding these columns with the original timing reproduces the
+stored values exactly):
+
+| Live rule, 2026 (fires strict, matched ground) | All fires | Brand-new | Beat episodes | Ground |
+|---|---|---|---|---|
+| inputs as in training (published `live_fwd`) | 67.5% | 47.6% | 82.3% | 21.9% |
+| inputs as they actually arrive | 66.7% | 47.3% | 82.1% | 22.0% |
+
+The realistic delays cost 0.8 / 0.3 / 0.2 pts, inside the live rule's bootstrap intervals; no retraining needed.
+
 ### Stale AlphaEarth map (`results/officer/livestale_fwd*.csv`)
 What 2027 would face if the 2026 AlphaEarth embedding is not yet published: the 2026 season rescored with the saved live
 models, ae00-ae15 from the 2024 embedding (one year staler) through each division's same PCA (`field-system/pc_models/
