@@ -1,4 +1,4 @@
-"""Daily live fire flags for MP (floor50_quiet25 rule). Standalone: needs numpy, pandas, lightgbm.
+"""Daily live fire flags for MP (floor50 + quiet reserve rule, quiet share 35%). Standalone: needs numpy, pandas, lightgbm.
 
 Usage:
   python live_score.py --models pc_models --features <dir> --state season_state.csv --date 2026-04-05 --out <dir>
@@ -18,11 +18,11 @@ Outputs (in --out)
 Rule (as in the PC research, results/officer/live_*):
   share_div  = 10% x today's mean score / this season's mean daily score up to yesterday, clipped 1-40%
                (10% during the season's first 7 issue days)
-  own_count  = round(k x share_div x squares), k from meta.json (0.6032: matched to the 2026 ground of the reference)
-  floor      = round(0.5 x own_count) kept by the division: 25% on its quiet squares, the rest on others (best raw score;
+  own_count  = round(k x share_div x squares), k from meta.json (0.5844 at the 35% quiet share, fitted on the five 2026 check days to the same flagged-or-next ground as k 0.6032 at 25%)
+  floor      = round(0.5 x own_count) kept by the division: 35% on its quiet squares, the rest on others (best raw score;
                spare slots move between the two groups)
   pool       = sum of own_count - all floors, given statewide to the highest calibrated % squares not yet flagged;
-               25% of the pool to quiet squares.
+               35% of the pool to quiet squares.
 """
 import argparse, json, lzma
 from pathlib import Path

@@ -12012,7 +12012,7 @@
  "rounds": 600,
  "target": "fire (VIIRS S-NPP/NOAA-20/NOAA-21, type 0, seasonal rules) in the square on day +1 or +2",
  "live_rule": {
-  "k": 0.6032226562499998,
+  "k": 0.5844,
   "base_share": 0.1,
   "share_clip": [
    0.01,
@@ -12020,8 +12020,8 @@
   ],
   "first_week_share": 0.1,
   "floor": 0.5,
-  "quiet": 0.25,
+  "quiet": 0.35,
   "quiet_def": "no type-0 detection within 10 cells (5 km) on days t-6..t",
-  "pool": "statewide by calibrated %; 25% of the pool to quiet squares"
+  "pool": "statewide by calibrated %; 35% of the pool to quiet squares"
  }
 }

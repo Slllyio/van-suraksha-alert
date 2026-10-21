@@ -164,6 +164,19 @@ ground. Strict, each fire once.
 | floor50 | 71.6 / 41.4 / 81.9 / 82.8; 0.24 | 69.2 / 37.7 / 76.4 / 81.9; 0.38 |
 | **floor50 + quiet25 (live rule)** | **71.1 / 45.8 / 79.7 / 83.2; 0.24** | **67.5 / 47.6 / 72.1 / 82.3; 0.38** |
 
+**Update 21 Oct 2026: the live quiet share is now 35%** (Akkshay's choice). The same rule with the quiet share as a parameter
+(`QF`, applied to the floor and the pool; vanagni `prithvi_finetune/analysis/live_quiet_curve/`), matched ground, 2026 / held-out 2023-24:
+
+| Quiet share | All fires | Brand-new | Beats |
+|---|---|---|---|
+| 25% (tables above) | 67.5 / 71.1 | 47.6 / 45.8 | 82.3 / 83.2 |
+| **35% (live now)** | 65.4 / 69.5 | 52.3 / 49.6 | 81.3 / 83.0 |
+| 50% | 61.7 / 66.1 | 57.9 / 54.0 | 79.3 / 81.4 |
+| 75% | 53.0 / 57.2 | 65.0 / 60.4 | 72.8 / 75.8 |
+
+`field-system/pc_models/meta.json` now has `quiet` 0.35 and `k` 0.5844. That k was fitted by the field app on the five 2026
+check days so the ground matches the 25% rule's (28.57%); replace it with the PC's bisected value for 35% when available.
+
 No division keeps less than half of its own count under either floor rule. With no hindsight anywhere (calibration,
 daily count and flag allocation all from past data), the live rule is within 1.0 / 2.2 pts of the hindsight rule on all
 fires, catches 3.9 / 11.7 pts more brand-new fires and 1.9 / 1.7 pts more beat episodes, at the same ground.
