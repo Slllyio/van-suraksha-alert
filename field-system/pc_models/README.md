@@ -15,7 +15,7 @@ Target: a fire (VIIRS S-NPP / NOAA-20 / NOAA-21, type 0, seasonal rules) in the 
 Checks done on the PC:
 - Every saved model, reloaded, reproduces the stored 2026 +GIS scores exactly (max abs difference 0 for all 87).
 - `live_score.py` run on the shrunk models (`models/*.txt.xz`) with the 2026-04-05 feature tables and season state reproduces
-  `field-system/pc_check/live_flags_2026-04-05.parquet` exactly: 430,776 squares, 23,858 flags, 0 disagreements,
+  `field-system/pc_check/live_flags_2026-04-05.parquet` exactly: 430,776 squares, 23,233 flags (35% quiet share), 0 disagreements,
   every division's count identical (pct differs by < 1e-7).
 
 ## Inputs for cloud scoring
@@ -55,7 +55,7 @@ the previous year (the `ndvi_peak` window); GFS and ERA5 soil moisture from 1 Oc
 Checks (2026-04-05, all 87 divisions, built from raw inputs only: fire cell-days, MODIS composites, HLS npz, GFS, ERA5
 soil moisture, static tables):
 - every one of the 128 feature columns and `quiet` is identical to the pipeline's tables in all 87 divisions (0 difference);
-- scored with `live_score.py`: 23,858 flags, 0 disagreements with `field-system/pc_check`, raw scores identical;
+- scored with `live_score.py`: 23,233 flags (35% quiet share), 0 disagreements with `field-system/pc_check`, raw scores identical;
 - the same through the one-command `daily_run.py`.
 
 Inputs per issue day (see the script's docstring): one parquet per division with `cell` (mp_grid cell), `quiet` (no
