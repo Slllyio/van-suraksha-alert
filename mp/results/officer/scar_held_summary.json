@@ -1,0 +1,39 @@
+{
+ "mode": "held",
+ "years": [
+  2022,
+  2023,
+  2024
+ ],
+ "divisions": 87,
+ "viirs_key": {
+  "events": 50991,
+  "all": 73.2,
+  "new": 39.9,
+  "ground_pct_mean_div": 20.3
+ },
+ "alert_all": {
+  "events": 47434,
+  "new_events": 8253,
+  "all": 80.8,
+  "new": 42.9
+ },
+ "alert_scar": {
+  "events": 40025,
+  "new_events": 6615,
+  "all": 81.8,
+  "new": 44.9
+ },
+ "scarsq_scar": {
+  "events": 40025,
+  "new_events": 6615,
+  "all": 83.8,
+  "new": 49.3
+ },
+ "alert_noscar": {
+  "events": 4316,
+  "new_events": 1088,
+  "all": 71.7,
+  "new": 32.6
+ }
+}

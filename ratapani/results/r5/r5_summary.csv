@@ -1,0 +1,6 @@
+exp,base_rate_pct,recall,precision_strict,lift,recall_new
+horizon t+1,0.107,0.751,0.008,5.988,
+horizon t+1..t+2,0.212,0.726,0.014,5.634,
+horizon t+1..t+3,0.317,0.715,0.02,5.366,
+horizon t+2_only,0.107,0.703,0.007,5.201,
+"leaf-fall (+6 feats), t+1..t+2",0.212,0.737,0.014,5.654,0.387

@@ -1,0 +1,5 @@
+period,rule,fires,new_fires,strict_all,strict_new,strict_old,beat_recall_first,ground_pct,flags,caught_per_100_flags,divisions_losing_half,losing_divisions
+2023-2024,current,29690,7551,0.721,0.419,0.824,0.813,20.3,9261708,0.231,0,
+2023-2024,floor50,29690,7551,0.716,0.414,0.819,0.828,20.35,8755736,0.243,0,
+2023-2024,floor50_quiet25,29690,7551,0.711,0.458,0.797,0.832,20.24,8688052,0.243,0,
+2023-2024,per_division,29690,7551,0.658,0.397,0.747,0.804,20.24,7673099,0.255,0,

@@ -1,0 +1,4 @@
+season,divisions,weak,fires,new_fires,strict_all_model,strict_all_rule,strict_new_model,strict_new_rule,strict_old_model,strict_old_rule,event_recall_first,event_recall_any,rule_event_recall_first,rule_event_recall_any,beat_recall_first,beat_recall_any,rule_beat_recall_first,rule_beat_recall_any,flagged_pct,covered_pct,beat_share_flagged,beats_flagged_per_range_day
+2025,87,14,30057,3914,0.743,0.498,0.343,0.039,0.803,0.567,0.743,0.759,0.498,0.548,0.841,0.856,0.643,0.692,10.0,20.92,30.98,3.05
+2026,87,14,24057,4491,0.697,0.454,0.359,0.045,0.775,0.548,0.697,0.713,0.454,0.495,0.806,0.819,0.604,0.649,10.0,21.79,33.25,3.28
+both,87,14,54114,8405,0.723,0.479,0.352,0.042,0.791,0.559,0.723,0.739,0.479,0.525,0.826,0.839,0.626,0.673,10.0,21.36,32.12,3.17

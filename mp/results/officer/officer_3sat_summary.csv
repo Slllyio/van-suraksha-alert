@@ -1,0 +1,6 @@
+view,divisions,cell_recall,event_recall_first,event_recall_any,beat_recall_first,beat_recall_any,covered_pct,flagged_pct,beats_flagged_per_range_day,beat_share_flagged
+own (all divisions),87,0.804,0.77,0.779,0.841,0.85,19.739,10.0,2.828,28.638
+borrow (all divisions),87,0.805,0.77,0.78,0.835,0.845,18.919,10.0,2.668,26.97
+recommended (borrow if weak),87,0.805,0.77,0.779,0.841,0.85,19.507,10.0,2.788,28.273
+weak divisions: own,22,0.777,0.771,0.778,0.861,0.865,21.699,10.0,3.262,33.131
+weak divisions: borrow,22,0.788,0.783,0.79,0.865,0.868,20.78,10.0,3.104,31.688

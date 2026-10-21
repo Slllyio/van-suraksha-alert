@@ -1,0 +1,11 @@
+label_set,s20
+divisions,87
+fires,46578
+new_fires,10855
+new_share,0.233
+strict_all_model,0.742
+strict_all_rule,0.532
+strict_new_model,0.418
+strict_new_rule,0.087
+strict_old_model,0.84
+strict_old_rule,0.667

@@ -1,0 +1,9 @@
+test,scope,scores,divisions,fires,new_fires,strict_all,strict_new,strict_old,beat_recall_first
+held 2023-2024,all 87,published,87,29690,7551,0.711,0.458,0.797,0.832
+held 2023-2024,10 fallback,published,10,333,168,0.58,0.399,0.764,0.737
+held 2023-2024,all 87,fallback,87,29690,7551,0.712,0.459,0.798,0.834
+held 2023-2024,10 fallback,fallback,10,333,168,0.592,0.423,0.764,0.73
+fwd 2026,all 87,published,87,24057,4491,0.675,0.476,0.721,0.823
+fwd 2026,10 fallback,published,10,274,96,0.609,0.469,0.685,0.716
+fwd 2026,all 87,fallback,87,24057,4491,0.675,0.476,0.721,0.823
+fwd 2026,10 fallback,fallback,10,274,96,0.58,0.427,0.663,0.72

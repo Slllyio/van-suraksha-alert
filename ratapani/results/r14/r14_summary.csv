@@ -1,0 +1,5 @@
+exp,recall,recall_new,recall_min,recall_max
+Prithvi instead of AlphaEarth,0.779,0.442,0.666,0.885
+base (AlphaEarth),0.769,0.45,0.678,0.852
+base + Prithvi,0.776,0.461,0.676,0.862
+no embeddings,0.757,0.427,0.644,0.864

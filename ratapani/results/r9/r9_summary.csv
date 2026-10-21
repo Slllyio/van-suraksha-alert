@@ -1,0 +1,4 @@
+exp,recall,recall_new,recall_min
+base (+leaf),0.764,0.456,0.662
+base + FWI,0.759,0.435,0.643
+base - raw weather + FWI,0.758,0.443,0.638

@@ -1,0 +1,5 @@
+truth,model,fire_celldays,recall,recall_new
+all-sat truth,3 satellites,46881.0,0.824,0.471
+all-sat truth,S-NPP only,46881.0,0.804,0.527
+snpp truth,3 satellites,23913.0,0.846,0.491
+snpp truth,S-NPP only,23913.0,0.828,0.542

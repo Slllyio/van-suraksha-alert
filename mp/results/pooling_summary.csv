@@ -1,0 +1,6 @@
+model,recall,recall_new,worst_division,best_division
+A other 8 only,0.773,0.442,0.645,0.862
+B own only,0.833,0.551,0.729,0.931
+C all 9 pooled,0.814,0.483,0.706,0.912
+D pooled + division id,0.822,0.505,0.727,0.922
+"E pooled, own x5 weight",0.824,0.506,0.716,0.92
