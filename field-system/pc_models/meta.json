@@ -12022,6 +12022,7 @@
   "floor": 0.5,
   "quiet": 0.35,
   "quiet_def": "no type-0 detection within 10 cells (5 km) on days t-6..t",
-  "pool": "statewide by calibrated %; 35% of the pool to quiet squares"
+  "pool": "statewide by calibrated %; 35% of the pool to quiet squares",
+  "changed": "2026-10-21: quiet share 0.25 -> 0.35 (owner's choice from the live quiet-share curve); k re-bisected on 2026 (calibrated on 2025)"
  }
 }

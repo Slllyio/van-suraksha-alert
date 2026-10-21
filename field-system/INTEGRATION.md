@@ -423,7 +423,7 @@ A quiet square has no VIIRS point within 10 squares (5 km, measured as a box, as
 
 The catch rates (71/68% of fires, 46/48% of brand-new fires, 83/82% of beats) are the PC's results; this test does not measure them.
 
-**Checked against the PC (19 Oct 2026, `pc_check/`).** The PC sent 5 days of 2026 (12 and 17 Mar, 5 and 22 Apr, 10 May): its scores, its division per square, its counts and the squares its own rule flagged.
+**Checked against the PC (19 Oct 2026 at 25%; redone 21 Oct 2026 at 35% on 12 Mar, 5 Apr and 10 May, `pc_check/`).** The PC sent 5 days of 2026 (12 and 17 Mar, 5 and 22 Apr, 10 May): its scores, its division per square, its counts and the squares its own rule flagged.
 - **Same squares:** the app, working out quiet squares from its own points, picked 99.8-99.9% of the PC's squares on every day. The same total was flagged each day, and no division fell below half its count.
 - **Quiet squares:** the app's quiet squares were identical to the PC's.
 - **The few differences:** all are squares with the same calibrated %, where the app breaks the tie by raw score.
@@ -431,6 +431,7 @@ The catch rates (71/68% of fires, 46/48% of brand-new fires, 83/82% of beats) ar
   - About 8% of the PC's flags fall on squares outside the beat map.
   - Boundary squares are scored once by each division holding them.
   - The PC's counts carry a scale factor (k = 0.603) and last season's shrink, so the share flagged swings from 2.5% to 20.6% of squares a day. The app's own fallback count does not reproduce that.
+- **At 35% (21 Oct):** same squares 99.93 / 99.81 / 99.63% on 12 Mar / 5 Apr / 10 May, same totals, quiet share 35.0-35.3%. The switch to 35% (k 0.58740234375) was the owner's pick of 21 Oct; the PC's `meta.json` has it. Details in `pc_check/APP_CHECK.md`.
 - **Results:** `pc_check/app_vs_pc.csv`.
 
 ## 24 h spread map (19 Oct 2026)

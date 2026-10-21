@@ -1,0 +1,4 @@
+day,pc_flags,app_flags,same_squares_pct,divisions_same_count,quiet_flags_app,quiet_flags_pc,quiet_share_pc,sum_own
+2026-03-12,86325,86325,99.93,69/87,30229,30226,35.0,86325
+2026-04-05,23233,23233,99.81,72/87,8197,8193,35.3,23233
+2026-05-10,10442,10442,99.63,66/87,3657,3656,35.0,10442
