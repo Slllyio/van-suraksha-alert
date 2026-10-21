@@ -7,7 +7,7 @@ lists read back). Not rehearsed here: the Docker build itself, HTTPS, the NASA t
 cloud session).
 
 ## What you need (your accounts)
-1. **A server.** Ubuntu 22.04/24.04, 2 vCPU, 8 GB RAM, 40 GB disk, in **Mumbai** (FSI's portal and Bhuvan are Indian
+1. **A server.** Ubuntu 22.04/24.04, 2-4 vCPU, 16 GB RAM, 40 GB disk, in **Mumbai** (the evening run peaked at 6.2 GB and took 7 min here, so 8 GB is the floor and 16 GB leaves room for the app and the HLS read; FSI's portal and Bhuvan are Indian
    government sites and may refuse foreign addresses). Any provider; AWS Lightsail Mumbai is the simplest.
 2. **A read-only deploy key** for this repository (the installer prints it; you paste it at Settings > Deploy keys, write unticked).
 3. **A NASA Earthdata token** (urs.earthdata.nasa.gov > Generate Token), typed into `deploy/.env` on the server by hand.

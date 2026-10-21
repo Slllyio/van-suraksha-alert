@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-time setup of a fresh Ubuntu 22.04/24.04 server (2 vCPU, 8 GB RAM, 40 GB disk is enough; pick a Mumbai region:
+# One-time setup of a fresh Ubuntu 22.04/24.04 server (2 vCPU, 16 GB RAM, 40 GB disk; pick a Mumbai region:
 # FSI's portal and Bhuvan are Indian government sites and may refuse foreign addresses).
 #   curl -fsSL <raw url of this file> -o install.sh && sudo bash install.sh
 # It asks for nothing: the secrets go into /srv/fire/field-system/deploy/.env, which you fill in by hand afterwards.
