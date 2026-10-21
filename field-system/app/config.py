@@ -84,10 +84,10 @@ MP_CELLS = os.environ.get("FS_MP_CELLS", "/mnt/project-files/ratapani/mp_grid/mp
 DAILY_RULE = os.environ.get("FS_DAILY_RULE", "pool")
 # Quiet-square share of the floor and of the pool (Akkshay 21 Oct 2026: 35%; the PC's live-rule curve, vanagni c04a9e1) and
 # k, the multiplier on the danger-scaled count that keeps the ground flagged-or-next equal to the hindsight yardstick's.
-# k = 0.5844 is fitted here at 35% on the PC's five 2026 check days (the PC's own 25% rule, k 0.6032, gives 28.57% ground;
-# this app at 25% gives 28.58%); replace it with the PC's bisected value when the Prithvi thread sends it.
+# k = 0.58740234375 is the PC's own value at 35% (bisected on 2026, ground covered 21.9%; its 25% k was 0.60322265625).
+# The app's own fit on the five 2026 check days, used until the PC's arrived, was 0.5844.
 QUIET_SHARE = float(os.environ.get("FS_QUIET_SHARE", "0.35"))
-DAILY_K = float(os.environ.get("FS_DAILY_K", "0.5844"))
+DAILY_K = float(os.environ.get("FS_DAILY_K", "0.58740234375"))
 # A photo or report this far outside a predicted cell is flagged (the cell is 500 m; GPS is +-10-30 m in forest).
 CELL_MARGIN_KM = float(os.environ.get("FS_CELL_MARGIN_KM", "0.1"))
 # A cell check counts as an inspection (not just an arrival) when photos inside the cell, taken in the task window,

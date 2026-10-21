@@ -18,7 +18,7 @@ Outputs (in --out)
 Rule (as in the PC research, results/officer/live_*):
   share_div  = 10% x today's mean score / this season's mean daily score up to yesterday, clipped 1-40%
                (10% during the season's first 7 issue days)
-  own_count  = round(k x share_div x squares), k from meta.json (0.5844 at the 35% quiet share, fitted on the five 2026 check days to the same flagged-or-next ground as k 0.6032 at 25%)
+  own_count  = round(k x share_div x squares), k from meta.json (0.58740234375 at the 35% quiet share, bisected on 2026 to keep the ground covered at 21.9%; 0.60322265625 at 25%)
   floor      = round(0.5 x own_count) kept by the division: 35% on its quiet squares, the rest on others (best raw score;
                spare slots move between the two groups)
   pool       = sum of own_count - all floors, given statewide to the highest calibrated % squares not yet flagged;

@@ -388,7 +388,7 @@ This is the final daily rule from `research/ceiling/DAILY_RULE_SPEC.md`, built i
 - `score` (the raw score).
 
 Optional fields:
-- `counts` {division: n}, the danger-scaled count per division. Without it the engine computes the count itself: 10% of the division's squares, times today's mean score divided by the season's mean daily score up to yesterday. The share is clipped to 1-40%, and is a plain 10% in the season's first week. The result is multiplied by k (`FS_DAILY_K`, 0.5844), which keeps the ground flagged the same as the tested rule's.
+- `counts` {division: n}, the danger-scaled count per division. Without it the engine computes the count itself: 10% of the division's squares, times today's mean score divided by the season's mean daily score up to yesterday. The share is clipped to 1-40%, and is a plain 10% in the season's first week. The result is multiplied by k (`FS_DAILY_K`, 0.58740234375), which keeps the ground flagged the same as the tested rule's.
 - `base_share` {division: share}, last season's overshoot shrink.
 
 Sending the same day again replaces that day's list.
@@ -400,7 +400,7 @@ Sending the same day again replaces that day's list.
 
 A quiet square has no VIIRS point within 10 squares (5 km, measured as a box, as in the PC's rule) in the 7 days before the 16:00 IST issue time. The engine works this out from its own points, so the pipeline doesn't need to send it. Ties go to the raw score.
 
-**Settings.** `FS_DAILY_RULE=division` makes each division fill exactly its own count instead. `FS_QUIET_SHARE` (0.35) and `FS_DAILY_K` (0.5844) are the quiet share and the count multiplier; change them together (25% goes with k 0.6032).
+**Settings.** `FS_DAILY_RULE=division` makes each division fill exactly its own count instead. `FS_QUIET_SHARE` (0.35) and `FS_DAILY_K` (0.58740234375) are the quiet share and the count multiplier; change them together (25% goes with k 0.60322265625).
 
 **What eNetra gets.**
 - `GET /api/v1/daily_list?division=&day=` returns the division's squares with %, beat and range. Each square has a `reason`: "division", "quiet square" or "statewide".
