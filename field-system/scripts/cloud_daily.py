@@ -356,15 +356,19 @@ def big_watch(t, S, out, a, live):
     subprocess.run([sys.executable, str(BIG / "big_watch.py"), str(t.date()), "--out", str(out)] + (["--firms"] + firms if firms else []),
                    check=True, cwd=str(BIG), timeout=3600)
     A = pd.read_parquet(out / f"big_watch_{t.date()}.parquet")
-    D = A[A.top2 & A.division.isin(live)]                # same division start dates as the daily list
-    body = dict(issue_date=str(t.date()), model_version="large-fires watch", cell=D.cell.tolist(),
+    # fixed per-division score cuts from the 2025 season (Akkshay 21 Oct, "Switch"; watch/README.md "Season cuts"): 2026 caught
+    # 64% of 200 ha+ fires against 46% for the daily top 1-2%. The flag count varies by day. Cuts are refreshed each June.
+    c1, c2 = ("top1_cut", "top2_cut") if "top2_cut" in A else ("top1", "top2")
+    D = A[A[c2] & A.division.isin(live)].copy()          # same division start dates as the daily list
+    D["rank_in_division"] = D.groupby("division").score.rank(ascending=False, method="first").astype(int)
+    body = dict(issue_date=str(t.date()), model_version="large-fires watch (season cuts)", cell=D.cell.tolist(),
                 division=[APP_NAME.get(d, d) for d in D.division], rank_in_division=D.rank_in_division.tolist(),
-                top1=D.top1.tolist(), top2=D.top2.tolist())
+                top1=D[c1].tolist(), top2=D[c2].tolist())
     if "size_score" in A:                          # every square, for the officials' new-fire order (app/big_fire.py)
         U = A.drop_duplicates("cell")
         body.update(size_cell=U.cell.tolist(), size_score=U.size_score.round(5).tolist())
     STATUS["big_posted"] = post(a, "/api/v1/big_watch_scores", body)
-    print(t.date(), "big-fire watch top1", int(D.top1.sum()), "top2", len(D), flush=True)
+    print(t.date(), "big-fire watch", c1, int(D[c1].sum()), c2, len(D), flush=True)
 
 
 def main():

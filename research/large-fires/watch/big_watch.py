@@ -57,6 +57,10 @@ def score_day(day, extra_firms=None):
     D['rank_in_division'] = D.groupby('division').score.rank(ascending=False, method='first').astype(int)
     n = D.groupby('division').cell.transform('size')
     D['top1'] = D.rank_in_division <= np.ceil(0.01 * n); D['top2'] = D.rank_in_division <= np.ceil(0.02 * n)
+    # season cuts (21 Oct, ../README.md 'Late season and the live rule'): fixed per-division score cuts from the 2025 season,
+    # so busy days get more flags and quiet days fewer, like the tested season rule. 2026: 64% vs 46% of 200 ha+ (daily ranks).
+    cuts = json.load(open(HERE + 'cuts_2025.json'))
+    D['top1_cut'] = D.score >= D.division.map(cuts['top1']).fillna(np.inf); D['top2_cut'] = D.score >= D.division.map(cuts['top2']).fillna(np.inf)
     return D
 
 

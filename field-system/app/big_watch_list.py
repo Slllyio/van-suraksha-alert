@@ -27,7 +27,7 @@ ORDER_COEF = (-2.638, 0.5788, 0.1730)      # intercept, logit(size), points
 def store(con, body, now_utc):
     """body: issue_date, model_version, cell [ids], division [per row], rank_in_division, top1 [bool], top2 [bool];
     optional size_cell + size_score (every square: chance a fire starting there passes 200 ha, for the new-fire order).
-    Only top-2% rows are kept; tier 1 = top 1%, tier 2 = the next 1%. Sending a day again replaces it."""
+    Only top-2 rows are kept (above the division's fixed season cut; the runner sends the cut flags); tier 1 = top-1 cut, tier 2 = the next. Sending a day again replaces it."""
     from .daily_list import cells
     day = body["issue_date"]                  # tables come from db.init(); executescript() would COMMIT the caller's work
     all_c, _, _, all_beat = cells()
@@ -61,7 +61,7 @@ def division_view(con, day, division, beats):
         b = beats.by_uid.get(r["beat_uid"], {})
         r["beat"], r["range"] = b.get("beat", ""), b.get("range", "")
     return {"issue_date": day, "division": division, "top1": sum(r["tier"] == 1 for r in rows), "top2": len(rows),
-            "note": "may see a big fire (200 ha+) in the next 2 days; about 1 in 100 of these squares gets one", "cells": rows}
+            "note": "may see a big fire (200 ha+) in the next 2 days; rank only, the number of squares changes with the day", "cells": rows}
 
 
 def size_at(con, latlons, issue_date):
