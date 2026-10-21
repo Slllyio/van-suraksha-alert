@@ -1,0 +1,16 @@
+item,points
+2 dots,1
+3-4 dots,3
+5-8 dots,7
+9+ dots,12
+dots spread over 1 km or more,3
+hottest dot 20 MW or more,3
+first seen at night,2
+first seen 15 Mar - 15 Apr,2
+first seen 16 Apr - 15 May,-1
+first seen after 15 May,-3
+division with many big fires (top third),3
+division with few big fires (bottom third),-3
+10+ VIIRS dots within 10 km in last 3 days,3
+mostly farmland around (>50% within 1 km),-3
+steep or broken ground (slope 8 deg+),0

@@ -1,0 +1,213 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fire Field Checks</title><meta name="theme-color" content="#0f5132">
+<link rel="stylesheet" href="/static/app.css"><script src="/static/common.js"></script></head><body>
+<div id="login" style="display:none"></div>
+<div class="app">
+<header><h1>Fire alerts · my area</h1><span class="sp"></span><button onclick="logout()">Sign out</button></header>
+<div class="wrap"><div id="who" class="muted"></div><div id="day"></div><div id="outbox"></div><div id="main"></div></div></div>
+<script>
+let ME, HERE = null, CUR = null, SHOTS = [];
+const DEVICE = (() => { try { let d = localStorage.getItem('fs-device'); if (!d) { d = crypto.randomUUID(); localStorage.setItem('fs-device', d); } return d; } catch (e) { return null; } })();
+// Positions are queued about once a minute and sent when there is signal: they record the route
+// to the fire and mark an alert "reached" when the phone comes within 200 m of it.
+let lastPos = 0;
+const posQ = () => { try { return JSON.parse(localStorage.getItem('fs-pos') || '[]'); } catch (e) { return []; } };
+navigator.geolocation?.watchPosition(p => { HERE = p.coords;
+  if (Date.now() - lastPos < 60000) return; lastPos = Date.now();
+  const q = posQ(); q.push({lat: p.coords.latitude, lon: p.coords.longitude, acc_m: p.coords.accuracy, utc: new Date(nowMs()).toISOString().replace(/\.\d+Z$/, 'Z'), device_id: DEVICE});
+  try { localStorage.setItem('fs-pos', JSON.stringify(q.slice(-2000))); } catch (e) {}
+  sendPos(); }, () => {}, {enableHighAccuracy: true, maximumAge: 30000});
+async function sendPos() { if (sendPos.busy) return; sendPos.busy = true;   // 500 at a time; drop only what was sent
+  try { for (let q = posQ(); q.length; q = posQ()) { const batch = q.slice(0, 500);
+      const r = await fetch('/api/positions', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(batch)});
+      if (!r.ok) break;
+      localStorage.setItem('fs-pos', JSON.stringify(posQ().slice(batch.length)));
+      if ((await r.json()).reached.length) list(); } } catch (e) {} finally { sendPos.busy = false; } }
+const km = (a, b, c, d) => { const r = x => x * Math.PI / 180, s = Math.sin(r(c - a) / 2) ** 2 + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(r(d - b) / 2) ** 2; return 12742 * Math.asin(Math.sqrt(s)); };
+
+// Reports made without signal wait in the phone (IndexedDB) and are sent when the network is back.
+const idb = () => new Promise((ok, no) => { const q = indexedDB.open('fs-outbox', 1); q.onupgradeneeded = () => q.result.createObjectStore('out', {autoIncrement: true}); q.onsuccess = () => ok(q.result); q.onerror = no; });
+async function outbox(op, val, key) { const d = await idb(); return new Promise((ok, no) => { const t = d.transaction('out', 'readwrite').objectStore('out');
+  const q = op === 'add' ? t.add(val) : op === 'del' ? t.delete(key) : op === 'keys' ? t.getAllKeys() : op === 'put' ? t.put(val, key) : t.get(key); q.onsuccess = () => ok(q.result); q.onerror = no; }); }
+// A report leaves the phone only when the server has stored it. A refused one (photo unreadable, cause needed, alert no
+// longer in your beat) stays, with the reason, until the guard discards it. Each report carries client_ref, so a resend
+// after a lost answer is stored once. Reports belong to the person who made them: another person signed in on the phone
+// never sends them.
+function flush() {
+  if (flush.busy) return flush.busy;   // one at a time: send(), the 'online' event and "Send now" can overlap
+  return flush.busy = (async () => { try {
+    const keys = await outbox('keys'), why = [], held = []; let left = keys.length, other = 0, offline = false;
+    for (const k of keys) { const it = await outbox('get', null, k);
+      if (it.owner != null && ME && it.owner !== ME.id) { other++; continue; }
+      if (offline) continue;
+      const fd = new FormData();
+      Object.entries(it.fields).forEach(([a, b]) => b !== '' && b != null && fd.append(a, b)); it.photos.forEach((p, j) => fd.append('photos', p, 'photo' + j + '.jpg'));
+      try { const r = await fetch(it.url || `/api/incidents/${it.iid}/reports`, {method: 'POST', body: fd});
+        if (r.ok) { await outbox('del', null, k); left--; continue; }
+        if (r.status === 401 || r.status >= 500) { offline = true; continue; }   // signed out or server busy: keep it, try later
+        const d = (await r.json().catch(() => ({}))).detail; it.error = typeof d === 'string' ? d : 'server error ' + r.status;
+        await outbox('put', it, k); why.push(`${it.iid == null ? 'Fire reported here' : 'Alert ' + it.iid}: ${it.error}`); held.push(k);
+      } catch (e) { offline = true; } }
+    document.getElementById('outbox').innerHTML = left ? `<div class="banner">${left} report${left>1?'s':''} saved on this phone, not sent yet${why.length ? '' : ': will send when there is signal'}.
+      ${why.map((w, j) => `<div><b>Not accepted:</b> ${esc(w)} <button class="btn alt" onclick="discard(${held[j]})">Discard</button></div>`).join('')}
+      ${other ? `<div>${other} of them made by another person: they go when that person signs in.</div>` : ''}
+      <button class="btn alt" onclick="flush()">Send now</button></div>` : '';
+    return left - other;
+  } finally { flush.busy = null; } })();
+}
+async function discard(k) { if (!confirm('Delete this report from the phone? It has not reached the server.')) return; await outbox('del', null, k); flush(); }
+window.addEventListener('online', () => { sendPos(); flush().then(list); });
+
+// Crew-day log (patrol pilot): start and end of the working day with crew size, so travel time counts.
+async function dayBar() {
+  const s = await api('/api/shifts/current').catch(() => null), el = document.getElementById('day');
+  el.innerHTML = s ? `<div class="card"><b>Day started ${fmt(s.start_utc)} IST</b> · crew ${s.crew_size}
+      <div class="acts"><button class="btn alt" onclick="dayGo('end')">End day</button> <button class="btn warn" onclick="form(null)">Report a fire here</button></div></div>`
+    : `<div class="card"><b>Starting work?</b> <label>People in your crew today <input class="inp" id="crew-n" type="number" min="1" inputmode="numeric" style="width:5em"></label>
+      <div class="muted">One phone per crew. If each person starts their own day, enter 1.</div>
+      <div class="acts"><button class="btn" onclick="dayGo('start')">Start day</button> <button class="btn warn" onclick="form(null)">Report a fire here</button></div></div>`;
+}
+async function dayGo(what) {
+  const body = {lat: HERE?.latitude ?? null, lon: HERE?.longitude ?? null, device_id: DEVICE};
+  if (what === 'start') {
+    body.crew_size = +document.getElementById('crew-n').value;
+    if (!(body.crew_size >= 1)) return alert('Enter how many people are in your crew today.');
+  }
+  try { await api('/api/shifts/' + what, {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(body)}); }
+  catch (e) { return alert('No signal: try again when online.'); }
+  dayBar();
+}
+async function list() {
+  const inc = await api('/api/incidents?days=14');
+  INCS_BY_ID = Object.fromEntries(inc.map(i => [i.id, i]));
+  const open = inc.filter(i => ['new', 'revisit'].includes(i.status)), done = inc.filter(i => !['new', 'revisit'].includes(i.status));
+  const dist = i => HERE ? km(HERE.latitude, HERE.longitude, i.lat, i.lon) : null;
+  open.sort((a, b) => (b.overdue - a.overdue) || (dist(a) ?? 0) - (dist(b) ?? 0));
+  const card = i => { const d = dist(i); if (KIND(i) === 'predicted') return cellCard(i, d); return `<div class="card alert"><h3>${pill(i)} ${esc(i.beat)}</h3>
+    <div class="muted">Seen ${ago(i.first_seen_utc)} (${fmt(i.first_seen_utc)} IST) · ${i.n_detections} satellite point${i.n_detections>1?'s':''}${d != null ? ` · <b>${d.toFixed(1)} km from you</b>` : ''}</div>
+    ${i.big_fire_flag ? `<div style="background:#b02a37;color:#fff;border-radius:6px;padding:6px 8px;margin:6px 0"><b>May become a big fire.</b> Go with extra crew if you can, and tell your range officer when you reach it.</div>` : ''}
+    <div class="muted">Visit by ${fmt(i.due_utc)} IST${i.arrived_utc ? ' · <b>reached ' + fmt(i.arrived_utc) + '</b>' : ''}</div>${alsoBeats(i)}${driftLine(i)}
+    <div class="acts"><a class="btn alt" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=${i.lat},${i.lon}">Navigate</a>
+    <button class="btn" onclick="form(${i.id})">Report visit</button></div></div>`; };
+  document.getElementById('main').innerHTML = `<h2>To visit (${open.length})</h2>` + (open.map(card).join('') || '<p class="muted">No open fire alerts in your area.</p>')
+    + `<h2>Done in the last 14 days (${done.length})</h2>` + done.map(i => `<div class="card alert"><b>${KIND(i) === 'predicted' ? 'Cell check · ' : KIND(i) === 'chance' ? 'Fire you found · ' : ''}${esc(i.beat)}</b> ${pill(i)}<div class="muted">${fmt(i.first_seen_utc)} IST · ${OUTCOME[i.outcome] || ''}</div></div>`).join('');
+}
+// Patrol pilot: a 500 m square the model picked. It counts as reached once the phone is inside it.
+function cellCard(i, d) {
+  return `<div class="card alert" style="border-left-color:#6a1b9a"><h3>${pill(i)} Check this square · ${esc(i.beat)}</h3>
+    <div class="muted">A 500 m forest square picked for a fire check${d != null ? ` · <b>${d.toFixed(1)} km from you</b>` : ''}</div>
+    <div class="muted">Check between ${fmt(i.due_from_utc)} and ${fmt(i.due_utc)} IST${i.arrived_utc ? ' · <b>inside the square ' + fmt(i.arrived_utc) + '</b>' : ''}</div>
+    ${i.near_active_fire ? '<div><b>A fire was seen within 1.5 km in the last 3 days.</b></div>' : ''}
+    <div class="muted">Walk through the square looking for fire or fresh burn. Take photos at 2 or more spots at least 100 m apart inside it: without that the square counts as reached, not checked.</div>
+    <div class="acts"><a class="btn alt" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=${i.lat},${i.lon}">Navigate to centre</a>
+    <button class="btn" onclick="form(${i.id})">Report check</button></div></div>`;
+}
+// Not shown to guards (Akkshay, 15 Oct: burn scars are for officials to monitor). Kept for reuse.
+// Burn scar seen by Sentinel-2 / Landsat: one line, plus a small sketch (north up, scale bar) when there is an outline.
+// Waiting or not visible: the visit still happens, a small or litter fire often leaves no scar.
+const DIRS = ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west'];
+// Where to look: the fire is anywhere inside its satellite pixel, so search half the pixel + 100 m on all sides
+// (search_m from the alert's FIRMS scan/track: ~300 m mid-swath, ~500 m at the edge; big-fires README 15d), and
+// fronts move about 30 m an hour (fuel-map/ratapani/timing/README.md).
+function driftLine(i) {
+  const h = Math.max(0, (nowMs() - Date.parse(i.last_seen_utc)) / 3.6e6);
+  if (h > 48) return '';   // continuity README: a dark fire is still burning ~1 in 3 at 12-24 h, ~1 in 10 after 48 h (false-alarm level)
+  const m = Math.min((i.search_m || 400) + h * 30, 2000), d = m >= 1000 ? (m / 1000).toFixed(1) + ' km' : Math.round(m / 50) * 50 + ' m';
+  return `<div class="muted">Search up to ${d} around the point, on all sides: the fire can be anywhere in the satellite pixel, and may have spread since.</div>`;
+}
+function scarCard(i) {
+  const s = i.burn_scar; if (!s) return '';
+  if (s.live_status === 'waiting' || s.live_status === 'no_pre' || s.scar_found === 'unknown')
+    return '<div class="muted">Burn scar: waiting for a clear satellite image. Please still visit.</div>';
+  if (s.scar_found === 'none_visible')
+    return '<div class="muted">Burn scar: none visible from satellite (small or litter fires often leave none). Please still visit.</div>';
+  const kx = 111320 * Math.cos(i.lat * Math.PI / 180), ky = 110540, rings = [];
+  if (s.geometry) (s.geometry.type === 'Polygon' ? [s.geometry.coordinates] : s.geometry.coordinates).forEach(p => rings.push(p[0]));
+  const pts = rings.map(r => r.map(([x, y]) => [(x - i.lon) * kx, (y - i.lat) * ky]));
+  let far = [0, 0]; pts.flat().forEach(p => { if (Math.hypot(...p) > Math.hypot(...far)) far = p; });
+  const fd = Math.hypot(...far), dir = DIRS[Math.round(((Math.atan2(far[0], far[1]) * 180 / Math.PI + 360) % 360) / 45) % 8];
+  const word = s.scar_found === 'faint' ? 'Possible burn scar (faint)' : 'Burn scar';
+  const line = `<div><b>${word}${s.scar_ha ? ', at least ' + s.scar_ha + ' ha' : ''}</b>${fd > 150 ? `, reaches at least ${(fd / 1000).toFixed(1)} km ${dir} of the point` : ''}${s.provisional ? ' (provisional)' : ''}
+    <span class="muted">· images ${s.pre_date} to ${s.post_date}</span></div>`;
+  if (!pts.length) return line;
+  // sketch: 220 x 160 px, north up, alert point marked, outline dashed while provisional
+  const all = pts.flat().concat([[0, 0]]), xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const W = 220, H = 160, pad = 18, sc = Math.min((W - 2 * pad) / Math.max(x1 - x0, 200), (H - 2 * pad) / Math.max(y1 - y0, 200));
+  const cx = (W - (x1 - x0) * sc) / 2 - x0 * sc, cy = (H + (y1 - y0) * sc) / 2 + y0 * sc;
+  const X = x => (cx + x * sc).toFixed(1), Y = y => (cy - y * sc).toFixed(1);
+  const col = s.scar_found === 'faint' ? '#e08e1a' : '#c0392b';
+  const bar = [100, 200, 500, 1000, 2000].find(m => m * sc >= 40) || 2000;
+  return line + `<svg class="scar-sketch" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+    ${pts.map(r => `<polygon points="${r.map(p => X(p[0]) + ',' + Y(p[1])).join(' ')}" fill="${col}" fill-opacity="${s.provisional ? .15 : .35}" stroke="${col}" stroke-width="2"${s.provisional ? ' stroke-dasharray="5 4"' : ''}/>`).join('')}
+    <circle cx="${X(0)}" cy="${Y(0)}" r="5" fill="#ff6a00" stroke="#fff" stroke-width="2"/>
+    <g transform="translate(${W - 16},20)"><path d="M0,-12 L5,4 L0,0 L-5,4 Z" fill="#333"/><text x="0" y="16" font-size="10" text-anchor="middle" fill="#333">N</text></g>
+    <g transform="translate(10,${H - 10})"><path d="M0,0 h${(bar * sc).toFixed(1)}" stroke="#333" stroke-width="2"/><text x="0" y="-4" font-size="10" fill="#333">${bar >= 1000 ? bar / 1000 + ' km' : bar + ' m'}</text></g>
+    <text x="${+X(0) + 8}" y="${+Y(0) + 4}" font-size="10" fill="#333">alert</text></svg>`;
+}
+function opt(name, v, label) { return `<label class="opt"><input type="radio" name="${name}" value="${v}"> ${label}</label>`; }
+function form(id) {
+  // id null = a fire found with no task ("Report a fire here"), saved at the phone's position
+  CUR = id == null ? {id: null, kind: 'chance'} : INCS_BY_ID?.[id] || {id}; SHOTS = [];
+  const k = KIND(CUR), title = k === 'chance' ? 'Report a fire you found' : k === 'predicted' ? `Report check · square ${id}` : `Report visit · alert ${id}`;
+  document.getElementById('main').innerHTML = `<button class="btn alt" onclick="list()">Back</button>
+  <h2>${title}</h2><p class="muted">${k === 'chance' ? 'Stand at the fire. Its place is taken from your phone.' : k === 'predicted' ? 'Take photos at 2 or more spots inside the square, at least 100 m apart, even if there is no fire.' : 'Take photos at the fire spot.'} The phone's location is saved with each photo.</p>
+  <fieldset><legend>What did you find?</legend>${OUTCOMES_FOR[k].map(o => opt('outcome', o, OUTCOME[o])).join('')}</fieldset>
+  <fieldset><legend>If you found fire or burnt ground: how old is the burn?</legend>${Object.entries(BURN_AGE).map(([a, b]) => opt('burn_age', a, b)).join('')}</fieldset>
+  <fieldset><legend>If you found fire: did it cross into, or come from, another beat?</legend>${Object.entries(CROSSED).map(([a, b]) => opt('crossed', a, b)).join('')}
+   <label>Beats it touched (names)<input class="inp" id="beats_touched" placeholder="e.g. Kevlajhir, Bari"></label></fieldset>
+  <fieldset><legend>If the fire was fought: how?</legend>${Object.entries(SUPPRESSION).map(([a, b]) => opt('supp', a, b)).join('')}
+   <label>Time it was done<input class="inp" id="supp_time" type="datetime-local"></label></fieldset>
+  ${k === 'predicted' ? `<fieldset><legend>People met in or near the square (optional)</legend><label>How many<input class="inp" id="people_met" type="number" min="0" inputmode="numeric" style="width:6em"></label>
+   ${Object.entries(ENFORCEMENT).map(([a, b]) => opt('enf', a, b)).join('')}</fieldset>` : ''}
+  ${k === 'predicted' ? '' : `<fieldset><legend>How did you first hear of this fire?</legend>${Object.entries(KNOWN).map(([a, b]) => opt('known', a, b)).join('')}</fieldset>`}
+  <fieldset><legend>Photos (1 to 6)</legend><input type="file" id="ph" accept="image/*" capture="environment" onchange="addShot(this)">
+   <div class="photos" id="shots"></div><div class="muted" id="gps"></div></fieldset>
+  <fieldset><legend>Fire details (same as the FSI feedback form)</legend>
+   <label>Land type<select class="inp" id="land_type"><option value="">–</option><option>Forest</option><option>Plantation</option><option>Grassland / open forest</option><option>Agriculture land</option><option>Other</option></select></label>
+   <label>Type of fire<select class="inp" id="fire_type"><option value="">–</option><option>Ground / litter fire</option><option>Surface fire</option><option>Crown fire</option></select></label>
+   <label>Burnt area (hectares, estimate)<input class="inp" id="area_ha" type="number" step="0.1" min="0" inputmode="decimal"></label>
+   <label>Likely cause${CUR.cause_required ? ' <b style="color:#b02a37">(required for this alert if you found a fire or burn)</b>' : ''}<select class="inp" id="cause"><option value="">–</option><option>Mahua collection</option><option>Tendu leaf</option><option>Grazing / fresh grass</option><option>Farm residue burning</option><option>Controlled burning / fire line</option><option>Smoking / campfire</option><option>Deliberate</option><option>Unknown</option></select></label>
+   <label>Action taken<select class="inp" id="action"><option value="">–</option><option>Put out by crew</option><option>Fire line cut</option><option>Already out on arrival</option><option>Needs more crew</option><option>None needed</option></select></label>
+   <label>Time the fire was put out (if it was)<input class="inp" id="fire_out" type="datetime-local"></label>
+   <label>Crew size<input class="inp" id="crew" type="number" min="0" inputmode="numeric"></label>
+   <label>Notes<textarea class="inp" id="notes" rows="3"></textarea></label></fieldset>
+  <button class="btn" style="width:100%" onclick="send()">Submit report</button><p id="err" class="muted"></p>`;
+}
+function addShot(inp) {
+  const f = inp.files[0]; if (!f) return; if (SHOTS.length >= 6) return alert('Up to 6 photos');
+  SHOTS.push({file: f, dev_lat: HERE?.latitude ?? null, dev_lon: HERE?.longitude ?? null, dev_acc: HERE?.accuracy ?? null, dev_utc: new Date(nowMs()).toISOString()});   // server-corrected clock
+  document.getElementById('shots').innerHTML = SHOTS.map(s => `<img src="${URL.createObjectURL(s.file)}">`).join('');
+  document.getElementById('gps').textContent = HERE ? `Location saved (±${Math.round(HERE.accuracy)} m)` : 'No location yet. Turn on GPS and allow location for this page.';
+  inp.value = '';
+}
+async function send() {
+  const outcome = document.querySelector('input[name=outcome]:checked')?.value;
+  if (!outcome) return document.getElementById('err').textContent = 'Choose what you found.';
+  if (!SHOTS.length) return document.getElementById('err').textContent = 'Add at least one photo.';
+  const burn_age = document.querySelector('input[name=burn_age]:checked')?.value ?? '';
+  if (['active_fire', 'burnt_out', 'controlled_burn'].includes(outcome) && !burn_age) return document.getElementById('err').textContent = 'Choose how old the burn is.';
+  if (CUR.cause_required && ['active_fire', 'burnt_out'].includes(outcome) && !document.getElementById('cause').value)
+    return document.getElementById('err').textContent = 'Choose the likely cause (Unknown is fine if you cannot tell).';
+  if (CUR.id == null && !HERE) return document.getElementById('err').textContent = 'No location yet. Turn on GPS and wait a moment.';
+  const v = id => document.getElementById(id).value;
+  const fields = {outcome, visited_utc: SHOTS[0].dev_utc.replace(/\.\d+Z$/, 'Z'), device_lat: HERE?.latitude ?? '', device_lon: HERE?.longitude ?? '', device_acc_m: HERE?.accuracy ?? '',
+    land_type: v('land_type'), fire_type: v('fire_type'), area_ha: v('area_ha'), cause: v('cause'), action: v('action'), crew: v('crew'), notes: v('notes'), device_id: DEVICE ?? '',
+    first_known_by: document.querySelector('input[name=known]:checked')?.value ?? '', burn_age,
+    crosses_beat_boundary: document.querySelector('input[name=crossed]:checked')?.value ?? '', beats_touched: v('beats_touched'),
+    suppression: document.querySelector('input[name=supp]:checked')?.value ?? '',
+    people_met: document.getElementById('people_met')?.value ?? '', enforcement: document.querySelector('input[name=enf]:checked')?.value ?? '',
+    suppression_utc: v('supp_time') ? new Date(v('supp_time')).toISOString().replace(/\.\d+Z$/, 'Z') : '',
+    fire_out_utc: v('fire_out') ? new Date(v('fire_out')).toISOString().replace(/\.\d+Z$/, 'Z') : '',
+    photo_meta: JSON.stringify(SHOTS.map(s => ({dev_lat: s.dev_lat, dev_lon: s.dev_lon, dev_utc: s.dev_utc})))};
+  fields.client_ref = crypto.randomUUID ? crypto.randomUUID() : DEVICE + '-' + Date.now() + '-' + Math.random();   // the same report is stored once
+  const key = await outbox('add', {iid: CUR.id, url: CUR.id == null ? '/api/chance_finds' : null, fields, photos: SHOTS.map(s => s.file), owner: ME.id});
+  await flush();
+  const it = await outbox('get', null, key);
+  document.getElementById('main').innerHTML = `<div class="card"><h2>${!it ? 'Report sent' : it.error ? 'Report not accepted' : 'Saved on phone'}</h2>
+    <p>${!it ? 'Thank you. Your range officer will check it.' : it.error ? 'The server did not take it: ' + esc(it.error) + '. It is kept on this phone; see the note at the top.' : 'No signal. It will send by itself when the phone is back online.'}</p>
+    <button class="btn" onclick="list()">Back to alerts</button></div>`;
+}
+let INCS_BY_ID = {};
+(async () => { ME = await api('/api/me'); setClock(ME); document.getElementById('who').textContent = `${ME.name} · ${ME.beat}`; await flush(); dayBar(); await list(); })().catch(e => console.warn(e));
+</script></body></html>

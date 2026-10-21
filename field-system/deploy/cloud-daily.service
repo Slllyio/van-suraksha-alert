@@ -1,0 +1,11 @@
+[Unit]
+Description=Evening 2-day fire list and big-fire watch list (field-system/scripts/cloud_daily.sh)
+After=network-online.target
+
+[Service]
+Type=oneshot
+# FS_SERVICE_KEY and FS_URL come from the host's secret store, never from this file.
+EnvironmentFile=-/etc/field-system/cloud-daily.env
+WorkingDirectory=/opt/field-system/scripts
+ExecStart=/opt/field-system/scripts/cloud_daily.sh
+TimeoutStartSec=4h

@@ -1,0 +1,36 @@
+# One small server runs everything: the app, the 17:15 IST evening run, and HTTPS (Caddy).
+#   cp env.example .env   (fill in the secrets by hand on the server, never in git or chat)
+#   docker compose up -d
+services:
+  app:
+    build: .
+    image: fire-app
+    command: python run.py
+    working_dir: /mnt/project-files/field-system
+    env_file: .env
+    environment: {FS_HOST: 0.0.0.0, FS_PORT: "8000", FS_SECURE_COOKIE: "1", FS_SCAR_LIVE: "0"}   # weekly scar check stays off on the server until its inputs are moved too
+    volumes: ["/srv/fire:/mnt/project-files"]
+    restart: unless-stopped          # the app refuses to start on a failed migration or locked DB; this retries it
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/healthz"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+  runner:
+    image: fire-app
+    command: bash /mnt/project-files/field-system/deploy/nightly_loop.sh
+    working_dir: /mnt/project-files/field-system/scripts
+    env_file: .env
+    environment: {FS_URL: "http://app:8000", LF_SC: "/mnt/project-files/field-system/var/lf/"}   # big_watch scratch caches
+    volumes: ["/srv/fire:/mnt/project-files"]
+    depends_on: [app]
+    restart: unless-stopped
+  caddy:
+    image: caddy:2
+    ports: ["80:80", "443:443"]
+    environment: {SITE: "${SITE}"}
+    volumes: ["./Caddyfile:/etc/caddy/Caddyfile:ro", "caddy_data:/data"]
+    depends_on: [app]
+    restart: unless-stopped
+volumes:
+  caddy_data:
