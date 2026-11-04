@@ -1,0 +1,14 @@
+{
+  "core_z": 0.18,
+  "core_tree_drop": 0.15,
+  "core_min_px": 25,
+  "grow_z": -0.5,
+  "grow_tree_drop": 0.10,
+  "grow_px": 2,
+  "small_z": 1.15,
+  "small_tree_drop": 0.20,
+  "small_min_px": 6,
+  "clear_post_tree": 0.30,
+  "clear_tree_drop": 0.25,
+  "rec_fraction": 0.5
+}

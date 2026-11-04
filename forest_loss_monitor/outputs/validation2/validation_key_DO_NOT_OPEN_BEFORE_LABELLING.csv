@@ -1,0 +1,511 @@
+sample_id,stratum,row,col,x,y,map_year,zone_id,lon,lat,Division,Range,Beat,forest_zone,hansen_year,treecover2000
+1,high_score_unmapped,17089,7494,-235035.0,-195525.0,0,5703,76.220094,22.218129,Khandwa,Punasa,Sukwa,teak_belt,0,0
+2,stable_low_tree,3403,12185,-94305.0,215055.0,0,2437,77.559077,25.938693,Sheopur,Vijaypur_East,Budera,mixed_dry_deciduous,0,0
+3,stable_near_loss,14611,12416,-87375.0,-121185.0,0,3804,77.648102,22.903801,Obedullahganj,Barkhera,Karmoda,teak_belt,0,0
+4,clearing,9855,29644,429465.0,21495.0,2018,2003,82.726993,24.137012,Singrauli,Waidhan,Duddhichua,sal_belt,0,12
+5,stable_tree,17726,19174,115365.0,-214635.0,0,1024,79.617703,22.058343,South_Seoni,Seoni,Belgaon,teak_belt,0,0
+6,clearing,12087,15842,15405.0,-45465.0,2021,1176,78.650974,23.589561,South_Sagar,Sagar,Vishanpur,mixed_dry_deciduous,0,0
+7,small,8987,22903,227235.0,47535.0,2023,3016,80.741013,24.413064,Satna,Uchehara,Bandraha,sal_belt,0,0
+8,partial,18813,17926,77925.0,-247245.0,2020,3537,79.253321,21.766035,PTR MP,Karmajhiri,Sapat,teak_belt,0,0
+9,stable_tree,3606,10178,-154515.0,208965.0,0,2400,76.959024,25.879,Sheopur,Khadi,Khadi,mixed_dry_deciduous,0,0
+10,stable_tree,18419,22849,225615.0,-235425.0,0,4472,80.682667,21.859165,North_Balaghat,Birsa_Damoh,Gidori_Part-II,sal_belt,0,6
+11,stable_tree,14689,25635,309195.0,-123525.0,0,8865,81.513736,22.855752,Anuppur,Rajendra_Gram,Khursi,sal_belt,0,0
+12,clearing,13701,21899,197115.0,-93885.0,2022,107,80.425325,23.14066,West_Mandla,Niwas,Jugthar,sal_belt,0,0
+13,high_score_unmapped,10154,11201,-123825.0,12525.0,0,6806,77.281683,24.108313,Guna,Maksudangarh,Maksudangarh-_A,mixed_dry_deciduous,0,0
+14,clearing,17178,7506,-234675.0,-198195.0,2020,5678,76.223996,22.194073,Khandwa,Punasa,Kelwabujurg,teak_belt,0,0
+15,small,12063,11013,-129465.0,-44745.0,2023,2670,77.231168,23.590975,Sehore,Sehore,Umarjhir,teak_belt,0,3
+16,small,8079,27887,376755.0,74775.0,2024,3206,82.222021,24.6309,Rewa,Hanumana,Korhawa,sal_belt,0,0
+17,high_score_unmapped,17065,7297,-240945.0,-194805.0,0,5676,76.162662,22.223772,Khandwa,Punasa,East_Gunjari,teak_belt,0,0
+18,high_score_unmapped,13554,25817,314655.0,-89475.0,0,811,81.574036,23.162012,South_Shahdol,Burhar,Amlai,sal_belt,0,0
+19,stable_tree,15101,11907,-102645.0,-135885.0,0,2652,77.500223,22.770211,Sehore,Rehti,Neelkachhar,teak_belt,0,0
+20,clearing,15566,8798,-195915.0,-149835.0,2025,7640,76.593642,22.635764,Dewas,Panigoan,Loharda_S,teak_belt,0,0
+21,high_score_unmapped,9534,21124,173865.0,31125.0,0,1259,80.212802,24.271584,South_Panna,Pawai,Sunehi,mixed_dry_deciduous,0,0
+22,stable_tree,17851,11215,-123405.0,-218385.0,0,6509,77.304708,22.023895,Harda,Borpani,South_Bobada,teak_belt,0,45
+23,stable_tree,13464,23564,247065.0,-86775.0,0,7342,80.914296,23.198027,Dindori,Shahpur,Jamgaon,sal_belt,0,0
+24,clearing,12693,12003,-99765.0,-63645.0,2019,3491,77.523493,23.422479,Raisen,Raisen_West,Sarar,teak_belt,0,0
+25,clearing,18225,7578,-232515.0,-229605.0,2018,6943,76.24971,21.910762,FDC_Khandwa,Khandwa V,Temi,plantation_mprvvn,0,0
+26,high_score_unmapped,16211,6520,-264255.0,-169185.0,0,6270,75.932145,22.45148,Indore,Choral,Rajpura,mixed_dry_deciduous,0,0
+27,small,9925,28588,397785.0,19395.0,2024,1925,82.414782,24.126162,Singrauli,East_Sarai,Pidarwah,sal_belt,0,3
+28,partial,10074,28682,400605.0,14925.0,2022,1914,82.441315,24.085135,Singrauli,East_Sarai,Badanmada,sal_belt,0,0
+29,small,18646,16822,44805.0,-242235.0,2020,1439,78.93329,21.81252,South_Chhindwara,Sillewani,Gulsi,teak_belt,0,12
+30,stable_near_loss,16720,20859,165915.0,-184455.0,0,5160,80.110693,22.326525,Lamta_Proj_N_Balaghat,Lamta,North._Padriganj,plantation_mprvvn,0,0
+31,stable_near_loss,15232,16384,31665.0,-139815.0,0,4850,78.808344,22.737648,Narsinghpur,Gadarwara,Gotitoriya,teak_belt,0,0
+32,high_score_unmapped,18094,18285,88695.0,-225675.0,0,1014,79.358681,21.9603,South_Seoni,Rukhar,Jogiwara,teak_belt,25,0
+33,high_score_unmapped,16358,22193,205935.0,-173595.0,0,5935,80.500627,22.420035,Kanha Tiger Reserve,Khatia,Samaiya,sal_belt,0,0
+34,partial,15644,13605,-51705.0,-152175.0,2023,6460,77.996935,22.625551,Hoshangabad,Sohagpur,North_Bagra,teak_belt,23,0
+35,high_score_unmapped,13458,2190,-394155.0,-86595.0,0,6120,74.648866,23.170715,Jhabua,Thandla,Madalda,mixed_dry_deciduous,0,0
+36,high_score_unmapped,9355,22246,207525.0,36495.0,0,1283,80.545109,24.316078,South_Panna,Saleha,Bijadah,mixed_dry_deciduous,0,0
+37,partial,16003,12735,-77805.0,-162945.0,2018,6421,77.74355,22.527283,Hoshangabad,Itarsi,Sothiya,teak_belt,0,0
+38,high_score_unmapped,19512,8735,-197805.0,-268215.0,0,8251,76.590555,21.566593,Burhanpur,Navra,Gondwadi,teak_belt,0,0
+39,high_score_unmapped,11218,23409,242415.0,-19395.0,0,8351,80.879765,23.806829,BTR,Panpatha_Buffer,Barmani,sal_belt,0,0
+40,small,16085,12583,-82365.0,-165405.0,2022,6404,77.69935,22.50485,Hoshangabad,Itarsi,Imlipani,teak_belt,0,0
+41,stable_low_tree,4830,9615,-171405.0,172245.0,0,2416,76.794939,25.545706,Sheopur,Sheopur,Bandhali,mixed_dry_deciduous,0,0
+42,small,15011,2642,-380595.0,-133185.0,2022,7470,74.793033,22.7535,Dhar,Sardarpur,Dattigaon_North,mixed_dry_deciduous,0,0
+43,clearing,93,14880,-13455.0,314355.0,2025,4964,78.36482,26.838539,Morena,Morena,Usedgath,mixed_dry_deciduous,0,0
+44,partial,12339,22011,200475.0,-53025.0,2020,5377,80.463591,23.509037,Kundam_Proj_Katni,Rampur,Jhinna Pirariya,plantation_mprvvn,0,45
+45,small,18693,18754,102765.0,-243645.0,2019,3566,79.49369,21.797187,PTR MP,Khawasa,Piparia,teak_belt,0,0
+46,clearing,19798,8147,-215445.0,-276795.0,2019,8265,76.421494,21.486881,Burhanpur,Nepanagar,Badnapur,teak_belt,0,0
+47,small,15563,14031,-38925.0,-149745.0,2023,6462,78.121215,22.647843,Hoshangabad,Sohagpur,Pathrai,teak_belt,0,0
+48,clearing,13345,26282,328605.0,-83205.0,2023,884,81.711645,23.215842,South_Shahdol,Keshwahi,Rampur,sal_belt,0,0
+49,clearing,9910,28609,398415.0,19845.0,2023,1925,82.4211,24.130067,Singrauli,East_Sarai,Pidarwah,sal_belt,17,37
+50,high_score_unmapped,17396,22961,228975.0,-204735.0,0,6000,80.719752,22.135828,Kanha Tiger Reserve,Samnapur,Samnapur,sal_belt,0,0
+51,stable_near_loss,18915,17855,75795.0,-250305.0,0,3537,79.23258,21.738496,PTR MP,Karmajhiri,Sapat,teak_belt,0,0
+52,clearing,16191,12516,-84375.0,-168585.0,2024,6403,77.679988,22.476037,Hoshangabad,Itarsi,Golandoh_Kasda,teak_belt,0,0
+53,high_score_unmapped,8960,9756,-167175.0,48345.0,0,6774,76.851152,24.42771,Guna,Binaganj,Mragwas,mixed_dry_deciduous,0,0
+54,partial,18758,17957,78855.0,-245595.0,2020,3546,79.262396,21.780893,PTR MP,Gumtara,Gumtara,teak_belt,0,0
+55,high_score_unmapped,17527,21628,188985.0,-208665.0,0,4606,80.331638,22.105432,North_Balaghat,West_Baihar,Amwahi,sal_belt,0,27
+56,clearing,3547,10788,-136215.0,210735.0,2021,5295,77.141351,25.896651,Kuno_Palpur,Palpur West,Jakhoda,mixed_dry_deciduous,0,0
+57,clearing,8572,5285,-301305.0,59985.0,2023,4796,75.526145,24.513296,Neemuch,Rampura,Khemla_East,mixed_dry_deciduous,0,0
+58,stable_tree,10382,25495,304995.0,5685.0,0,3048,81.499084,24.022592,SANJAY_DUBRI,BEOHARI,BHAMRAHA,sal_belt,0,3
+59,small,16330,14181,-34425.0,-172755.0,2021,2712,78.165526,22.440198,Satpura_TR,Bori,Dhain,teak_belt,0,15
+60,partial,18808,17880,76545.0,-247095.0,2020,3547,79.239988,21.767454,PTR MP,Gumtara,Chhindewani,teak_belt,0,0
+61,high_score_unmapped,17993,10137,-155745.0,-222645.0,0,6588,76.991919,21.982678,Harda,Makrai,Sunderpani,teak_belt,0,0
+62,high_score_unmapped,18067,20451,153675.0,-224865.0,0,1782,79.987817,21.962825,South_Balaghat,Lal_Barra,Pandhapani,sal_belt,0,0
+63,high_score_unmapped,7550,21668,190185.0,90645.0,0,4307,80.381232,24.806955,North_Panna,Vishramganj,Itwan,mixed_dry_deciduous,0,0
+64,stable_tree,15451,15156,-5175.0,-146385.0,0,2844,78.44963,22.678633,Satpura_TR,PipariyaBuffer,NorthBargondi,teak_belt,0,0
+65,clearing,2847,10474,-145635.0,231735.0,2024,2407,77.04528,26.085477,Sheopur,Khadi,Shyampur,mixed_dry_deciduous,0,0
+66,clearing,3753,10849,-134385.0,204555.0,2021,5288,77.160178,25.840997,Kuno_Palpur,Palpur East,Pipalbawadi West,mixed_dry_deciduous,0,0
+67,stable_near_loss,19688,3902,-342795.0,-273495.0,0,2530,75.192505,21.495134,Sendhwa,Warla,Hingwa,teak_belt,0,0
+68,stable_tree,19685,8027,-219045.0,-273405.0,0,8274,76.386287,21.517028,Burhanpur,Nepanagar,Mandwa,teak_belt,0,0
+69,high_score_unmapped,16295,24089,262815.0,-171705.0,0,7015,81.05343,22.428962,East_Mandla,Mawai,Satiya,sal_belt,0,0
+70,clearing,9723,29682,430605.0,25455.0,2021,2009,82.739357,24.172436,Singrauli,Waidhan,Morwa,sal_belt,0,0
+71,high_score_unmapped,16875,23124,233865.0,-189105.0,0,5893,80.769542,22.27626,Kanha Tiger Reserve,Garhi,Arandi,sal_belt,0,4
+72,clearing,7103,10235,-152805.0,104055.0,2023,6789,76.987089,24.931984,Guna,Fatehgarh,Kapasi,mixed_dry_deciduous,0,3
+73,stable_near_loss,18920,17896,77025.0,-250455.0,0,3536,79.24446,21.737084,PTR MP,Karmajhiri,Chhindimatta,teak_belt,0,0
+74,stable_near_loss,11461,14948,-11415.0,-26685.0,0,1140,78.387986,23.759103,South_Sagar,Rahatgarh,Darkoli,mixed_dry_deciduous,0,0
+75,clearing,9741,29272,418305.0,24915.0,2024,2008,82.618177,24.170791,Singrauli,Waidhan,Medhauli,sal_belt,0,0
+76,high_score_unmapped,10146,28586,397725.0,12765.0,0,2011,82.412416,24.066357,Singrauli,Waidhan,North_Amilia,sal_belt,0,27
+77,high_score_unmapped,8745,28762,403005.0,54795.0,0,1968,82.475762,24.444273,Singrauli,Karthua,Sherva,sal_belt,0,0
+78,partial,14589,10425,-147105.0,-120525.0,2019,2607,77.065707,22.905471,Sehore,Icchawar,Jamali,teak_belt,0,0
+79,stable_low_tree,7210,4202,-333795.0,100845.0,0,4805,75.196311,24.875636,Neemuch,Ratangarh,Banda_Second,mixed_dry_deciduous,0,0
+80,partial,18857,17894,76965.0,-248565.0,2019,3537,79.243975,21.754158,PTR MP,Karmajhiri,Sapat,teak_belt,0,0
+81,small,10493,29534,426165.0,2355.0,2019,2016,82.689043,23.965201,Singrauli,Waidhan,Suideeh,sal_belt,0,0
+82,stable_low_tree,6564,10968,-130815.0,120225.0,0,6750,77.203353,25.079892,Guna,Bamori,Musredi,mixed_dry_deciduous,0,0
+83,stable_tree,16224,14957,-11145.0,-169575.0,0,2874,78.391692,22.469234,Satpura_TR,WestPachmarhi,Richhgarh,teak_belt,0,78
+84,small,4456,12808,-75615.0,183465.0,2021,2269,77.747203,25.654412,Shivpuri,Satanwara,Dholagrah,mixed_dry_deciduous,0,0
+85,stable_near_loss,9954,28595,397995.0,18525.0,0,1925,82.416614,24.118261,Singrauli,East_Sarai,Pidarwah,sal_belt,0,0
+86,stable_low_tree,15497,18506,95325.0,-147765.0,0,4124,79.427735,22.663405,North_Seoni,Lakhanadon,Wast_Khutkhamriya,teak_belt,0,0
+87,high_score_unmapped,3381,10407,-147645.0,215715.0,0,2403,77.026844,25.940608,Sheopur,Khadi,Ocha,mixed_dry_deciduous,0,0
+88,high_score_unmapped,18714,18994,109965.0,-244275.0,0,989,79.563263,21.791031,South_Seoni,Khawasa,Pindarai_Butte,teak_belt,0,22
+89,high_score_unmapped,17932,10711,-138525.0,-220815.0,0,6554,77.158484,22.000745,Harda,Magardha,West_Churni,teak_belt,0,0
+90,partial,15624,13682,-49395.0,-151575.0,2018,6470,78.019391,22.631039,Hoshangabad,Sohagpur,West_Mahandrawadi,teak_belt,0,18
+91,stable_tree,9816,18509,95415.0,22665.0,0,7832,79.439451,24.201759,Damoh,Hatta,Singpur,teak_belt,0,0
+92,high_score_unmapped,9979,27271,358275.0,17775.0,0,2026,82.02572,24.120774,Singrauli,West_Sarai,Gadaigao,sal_belt,0,0
+93,stable_tree,15816,14556,-23175.0,-157335.0,0,2834,78.274596,22.579618,Satpura_TR,Matkuli,Sonpur,teak_belt,0,6
+94,high_score_unmapped,10802,12195,-94005.0,-6915.0,0,483,77.576303,23.934859,Vidisha,Shamshabad,Thana,mixed_dry_deciduous,0,0
+95,stable_near_loss,3207,10673,-139665.0,220935.0,0,5237,77.105956,25.98847,Kuno_Palpur,Agra West,Metoni South,mixed_dry_deciduous,0,0
+96,stable_near_loss,9889,29267,418155.0,20475.0,0,2010,82.615449,24.130771,Singrauli,Waidhan,Navanagar,sal_belt,0,0
+97,small,8955,13839,-44685.0,48495.0,2024,8757,78.059249,24.4371,Ashok_Nagar,Mungaoli,Gunheru,mixed_dry_deciduous,0,0
+98,small,7519,3962,-340995.0,91575.0,2024,4812,75.127228,24.790469,Neemuch,Ratangarh,Gunjalia,mixed_dry_deciduous,0,0
+99,stable_tree,9581,28227,386955.0,29715.0,0,1890,82.310942,24.221903,Singrauli,Bargawan,Purani_Deoser,sal_belt,0,37
+100,partial,16564,21472,184305.0,-179775.0,2024,5062,80.289771,22.366815,Mohgaon_Proj_West_Mandla,Nainpur,Turur,plantation_mprvvn,0,27
+101,partial,11425,16791,43875.0,-25605.0,2019,1061,78.930572,23.768298,South_Sagar,Dhana,Hilgan,mixed_dry_deciduous,0,0
+102,stable_tree,6605,22785,223695.0,118995.0,0,2918,80.716976,25.05854,Satna,Chitrakoot,Nakeila,sal_belt,0,37
+103,clearing,17679,20555,156795.0,-213225.0,2019,5191,80.019212,22.067644,Lamta_Proj_S_Balaghat,Lalburra,West_Bhagdahi,plantation_mprvvn,0,12
+104,partial,9905,29334,420165.0,19995.0,2018,2018,82.635085,24.12592,Singrauli,Waidhan,Waidhan,sal_belt,0,0
+105,stable_tree,17542,15090,-7155.0,-209115.0,0,188,78.430652,22.112226,West_Chhindwara,Jamai,Padhar,teak_belt,0,0
+106,small,5083,12910,-72555.0,164655.0,2021,5110,77.778606,25.484709,Madhav_National_Park,East,Karai_North,mixed_dry_deciduous,0,12
+107,clearing,10065,28670,400245.0,15195.0,2022,1914,82.437847,24.087661,Singrauli,East_Sarai,Badanmada,sal_belt,23,0
+108,stable_low_tree,10108,21816,194625.0,13905.0,0,1309,80.415033,24.113803,South_Panna,Shahnagar,Deora,mixed_dry_deciduous,0,0
+109,partial,17117,20781,163575.0,-196365.0,2024,5167,80.086702,22.219223,Lamta_Proj_N_Balaghat,Lamta,West_Nagarwada,plantation_mprvvn,0,22
+110,clearing,9932,28671,400275.0,19185.0,2018,1925,82.439218,24.123653,Singrauli,East_Sarai,Pidarwah,sal_belt,0,0
+111,small,2929,15759,12915.0,229275.0,2024,6627,78.628988,26.069862,Gwalior,Benhat,Davgarh,mixed_dry_deciduous,0,0
+112,clearing,12550,13837,-44745.0,-59355.0,2024,530,78.061899,23.463645,Vidisha,Vidisha,Dargawa,mixed_dry_deciduous,0,0
+113,high_score_unmapped,3375,10795,-136005.0,215895.0,0,5232,77.14296,25.943269,Kuno_Palpur,Agra West,Kauwakhoh,mixed_dry_deciduous,0,0
+114,stable_low_tree,7115,4322,-330195.0,103695.0,0,4820,75.231287,24.9021,Neemuch,Ratangarh,Tal,mixed_dry_deciduous,0,0
+115,stable_tree,13951,12482,-85395.0,-101385.0,0,3847,77.666287,23.08264,Obedullahganj,Chiklod,South_Amarthon,teak_belt,0,0
+116,clearing,15631,7620,-231255.0,-151785.0,2024,7504,76.250114,22.613548,Dewas,Bagli,Behari,teak_belt,0,0
+117,small,1653,13870,-43755.0,267555.0,2024,4956,78.061835,26.415107,Morena,Morena,Noorabad,mixed_dry_deciduous,0,0
+118,stable_tree,19256,19438,123285.0,-260535.0,0,5203,79.690748,21.643224,Lamta_Proj_S_Balaghat,Waraseoni,Ramjitola,plantation_mprvvn,0,21
+119,partial,16909,21422,182805.0,-190125.0,2018,5165,80.273965,22.273535,Lamta_Proj_N_Balaghat,Lamta,Sukdi,plantation_mprvvn,0,22
+120,partial,9075,14645,-20505.0,44895.0,2019,4193,78.297798,24.405094,North_Sagar,Khurai,Mohasa,mixed_dry_deciduous,0,7
+121,small,17808,7640,-230655.0,-217095.0,2022,6936,76.265826,22.023989,FDC_Khandwa,Khandwa IV,Salai I,plantation_mprvvn,0,0
+122,high_score_unmapped,12686,25919,317715.0,-63435.0,0,851,81.609424,23.396414,South_Shahdol,Jaitpur,Badodi,sal_belt,0,0
+123,stable_near_loss,14927,12545,-83505.0,-130665.0,0,2581,77.686357,22.818425,Sehore,Budhni,Jarrapur,teak_belt,0,0
+124,high_score_unmapped,17535,1697,-408945.0,-208905.0,0,7446,74.537369,22.06323,Dhar,Kukshi,Katarkheda,mixed_dry_deciduous,0,0
+125,high_score_unmapped,15517,21617,188655.0,-148365.0,0,101,80.335904,22.649888,West_Mandla,Mandla,Tindni,sal_belt,0,0
+126,stable_near_loss,9841,29361,420975.0,21915.0,0,2003,82.643597,24.143032,Singrauli,Waidhan,Duddhichua,sal_belt,0,0
+127,clearing,12096,15867,16155.0,-45735.0,2021,1159,78.658322,23.587117,South_Sagar,Sagar,Bilhara,mixed_dry_deciduous,0,3
+128,high_score_unmapped,19216,22966,229125.0,-259335.0,0,1797,80.713057,21.642743,South_Balaghat,Lanji_East,Harradehi,sal_belt,13,0
+129,partial,16953,21381,181575.0,-191445.0,2018,5156,80.261874,22.261754,Lamta_Proj_N_Balaghat,Lamta,Lotmara,plantation_mprvvn,18,31
+130,stable_low_tree,3947,9667,-169845.0,198735.0,0,2343,76.807353,25.785062,Sheopur,Budera,Heerapur_North,mixed_dry_deciduous,0,0
+131,stable_near_loss,13411,27104,353265.0,-85185.0,0,8845,81.952107,23.192815,Anuppur,Kotma,Kalyanpur,sal_belt,0,0
+132,small,9867,23258,237885.0,21135.0,2024,2928,80.841785,24.173273,Satna,Maihar,Bhadanpur,sal_belt,0,0
+133,stable_low_tree,8091,27739,372315.0,74415.0,0,3208,82.178085,24.628683,Rewa,Hanumana,Munahai,sal_belt,0,0
+134,stable_tree,17860,7872,-223695.0,-218655.0,0,6937,76.33346,22.010865,FDC_Khandwa,Khandwa IV,Salai II,plantation_mprvvn,0,0
+135,stable_low_tree,11881,15179,-4485.0,-39285.0,0,3369,78.456027,23.645409,Raisen,Begumganj,Kheri,teak_belt,0,0
+136,partial,19348,8507,-204645.0,-263295.0,2021,5596,76.523883,21.610198,Khandwa,Gudi,Takalkheda,teak_belt,0,0
+137,high_score_unmapped,13977,22504,215265.0,-102165.0,0,7371,80.601399,23.06363,Dindori,Shahpura,Silthar,sal_belt,0,0
+138,stable_tree,10344,26608,338385.0,6825.0,0,3084,81.827563,24.026247,SANJAY_DUBRI,MADWAS,BIDAURA,sal_belt,0,32
+139,stable_low_tree,17537,5938,-281715.0,-208965.0,0,5449,75.769861,22.089435,Khargone,Kasrawad,Pipalgon,teak_belt,0,0
+140,stable_near_loss,13083,24052,261705.0,-75345.0,0,657,81.059316,23.298899,Umaria,Pali,Magthar,sal_belt,0,0
+141,clearing,19243,17823,74835.0,-260145.0,2020,3558,79.222823,21.649659,PTR MP,Gumtara,Totladoh,teak_belt,0,0
+142,partial,19736,4332,-329895.0,-274935.0,2023,2538,75.317238,21.48476,Sendhwa,Warla,North_Dugani,teak_belt,0,3
+143,stable_low_tree,3179,13399,-57885.0,221775.0,0,6689,77.922181,26.001123,Gwalior,Ghatigaon_North,Simriya_North,mixed_dry_deciduous,0,0
+144,stable_tree,12780,22157,204855.0,-66255.0,0,5360,80.504679,23.389085,Kundam_Proj_Katni,Karopani,Daigawan,plantation_mprvvn,0,27
+145,partial,17993,9863,-163965.0,-222645.0,2018,6947,76.91233,21.981879,FDC_Khandwa,Khandwa VI,Khari,plantation_mprvvn,0,11
+146,partial,19632,8894,-193035.0,-271815.0,2023,8241,76.637046,21.534641,Burhanpur,Navra,Amulla,teak_belt,0,0
+147,clearing,16055,12684,-79335.0,-164505.0,2018,6406,77.728756,22.513125,Hoshangabad,Itarsi,Jamani,teak_belt,0,12
+148,stable_near_loss,18781,18028,80985.0,-246285.0,0,3538,79.282953,21.774558,PTR MP,Karmajhiri,Alikatta,teak_belt,0,0
+149,clearing,17675,20561,156975.0,-213105.0,2019,5191,80.020968,22.06871,Lamta_Proj_S_Balaghat,Lalburra,West_Bhagdahi,plantation_mprvvn,0,0
+150,stable_low_tree,4117,11332,-119895.0,193635.0,0,5219,77.305541,25.743539,Kuno_Palpur,Agra East,Kadwai North,mixed_dry_deciduous,0,0
+151,high_score_unmapped,7462,16655,39795.0,93285.0,0,793,78.893729,24.841529,Tikamgarh,Tikamgarh,Kari_No-2,mixed_dry_deciduous,0,0
+152,stable_tree,9337,12644,-80535.0,37035.0,0,8764,77.706272,24.332271,Ashok_Nagar,Mungaoli,Rajpur,mixed_dry_deciduous,0,0
+153,stable_low_tree,10892,27281,358575.0,-9615.0,0,3149,82.022067,23.873561,SANJAY_DUBRI,Village,Village,sal_belt,0,0
+154,high_score_unmapped,6792,10956,-131175.0,113385.0,0,6754,77.200398,25.018116,Guna,Bamori,Sair_Salaia,mixed_dry_deciduous,0,3
+155,clearing,11624,15179,-4485.0,-31575.0,2024,1143,78.456004,23.715,South_Sagar,Rahatgarh,Kalipathar,mixed_dry_deciduous,0,27
+156,stable_tree,16748,23857,255855.0,-185295.0,0,5960,80.983542,22.307375,Kanha Tiger Reserve,Motinala,Mukuta,sal_belt,0,0
+157,stable_low_tree,7704,11114,-126435.0,86025.0,0,6822,77.249714,24.771521,Guna,North_Guna,Bhoorakhedi,mixed_dry_deciduous,0,0
+158,stable_tree,7398,26561,336975.0,95205.0,0,3177,81.833857,24.824074,Rewa,Chakghat,Dhakhara,sal_belt,0,0
+159,high_score_unmapped,10986,12258,-92115.0,-12435.0,0,485,77.595215,23.885146,Vidisha,Shamshabad,Zeri,mixed_dry_deciduous,0,11
+160,stable_tree,12610,19483,124635.0,-61155.0,0,7871,79.720132,23.443239,Damoh,Singrampur,Dhari,teak_belt,0,30
+161,partial,18764,18019,80715.0,-245775.0,2020,3543,79.28037,21.779178,PTR MP,Gumtara,Chhadiya,teak_belt,0,0
+162,stable_low_tree,2437,13459,-56085.0,244035.0,0,6663,77.939282,26.202248,Gwalior,Game_Range_Tighra,Lakhanpura,mixed_dry_deciduous,0,0
+163,clearing,16583,23188,235785.0,-180345.0,2019,6023,80.789525,22.355073,Kanha Tiger Reserve,Sijhora,Mohad-2,sal_belt,0,0
+164,high_score_unmapped,20706,8440,-206655.0,-304035.0,0,8167,76.509922,21.241923,Burhanpur,Bodarli,Usarni,teak_belt,0,0
+165,partial,3149,10652,-140295.0,222675.0,2021,5228,77.099498,26.004129,Kuno_Palpur,Agra West,Chaudaripura,mixed_dry_deciduous,0,0
+166,partial,8511,5293,-301065.0,61815.0,2024,4796,75.528139,24.529855,Neemuch,Rampura,Khemla_East,mixed_dry_deciduous,0,0
+167,high_score_unmapped,16671,8538,-203715.0,-182985.0,0,5556,76.522192,22.335536,Khandwa,Chandgarh,South_Bahedi,teak_belt,0,0
+168,high_score_unmapped,18013,15631,9075.0,-223245.0,0,277,78.587873,21.984613,West_Chhindwara,Saori,Tikadi,teak_belt,0,0
+169,stable_near_loss,11699,18552,96705.0,-33825.0,0,7793,79.448482,23.691817,Damoh,Damoh,Patna,teak_belt,0,0
+170,stable_near_loss,7663,21711,191475.0,87255.0,0,4260,80.393549,24.776203,North_Panna,Devendranagar,Brijpur,mixed_dry_deciduous,0,0
+171,stable_near_loss,9652,26877,346455.0,27585.0,0,2095,81.911736,24.211867,Sidhi,Madwas,Shikara_East,sal_belt,0,0
+172,high_score_unmapped,8390,5824,-285135.0,65445.0,0,5065,75.684644,24.565509,Mandsaur,Bhanpura,Kailashpura,mixed_dry_deciduous,0,0
+173,stable_near_loss,19212,19396,122025.0,-259215.0,0,5208,79.678683,21.65524,Lamta_Proj_S_Balaghat,Waraseoni,Sukli,plantation_mprvvn,0,0
+174,high_score_unmapped,11766,17401,62175.0,-35835.0,0,1056,79.109734,23.675365,South_Sagar,Dhana,Akla_East,mixed_dry_deciduous,0,0
+175,stable_near_loss,20091,7747,-227445.0,-285585.0,0,8276,76.307035,21.405868,Burhanpur,Nepanagar,Nimna,teak_belt,0,0
+176,stable_tree,10102,16345,30495.0,14085.0,0,4150,78.80008,24.126843,North_Sagar,Banda,Khajra,mixed_dry_deciduous,0,0
+177,high_score_unmapped,9348,11369,-118785.0,36705.0,0,6733,77.329332,24.326934,Guna,Aron,Kirrya_A,mixed_dry_deciduous,0,0
+178,stable_low_tree,7101,4029,-338985.0,104115.0,0,4807,75.144206,24.904062,Neemuch,Ratangarh,Dabdakalan,mixed_dry_deciduous,0,0
+179,stable_low_tree,6494,11692,-109095.0,122325.0,0,2137,77.418478,25.100472,Shivpuri,Baderwas,Piproda,mixed_dry_deciduous,0,0
+180,clearing,4947,11481,-115425.0,168735.0,2023,2252,77.352053,25.519031,Shivpuri,Pohari,Lokhari,mixed_dry_deciduous,23,3
+181,clearing,7961,21262,178005.0,78315.0,2020,4300,80.259272,24.697055,North_Panna,Panna,Sunehra,mixed_dry_deciduous,0,0
+182,stable_tree,7296,11533,-113865.0,98265.0,0,6825,77.373062,24.882947,Guna,North_Guna,Dungasara,mixed_dry_deciduous,0,0
+183,clearing,13585,25806,314325.0,-90405.0,2019,821,81.570619,23.153682,South_Shahdol,Burhar,Patna,sal_belt,0,0
+184,high_score_unmapped,16614,15103,-6765.0,-181275.0,0,231,78.434309,22.363618,West_Chhindwara,Sangakheda,Bichbehri,teak_belt,0,0
+185,stable_low_tree,15501,8413,-207465.0,-147885.0,0,7552,76.481003,22.651944,Dewas,Jinwani,Donglapani_S,teak_belt,0,0
+186,clearing,9810,29587,427755.0,22845.0,2019,2003,82.710562,24.149644,Singrauli,Waidhan,Duddhichua,sal_belt,0,0
+187,high_score_unmapped,20758,8168,-214815.0,-305595.0,0,8167,76.431569,21.226787,Burhanpur,Bodarli,Usarni,teak_belt,0,0
+188,partial,2347,12017,-99345.0,246735.0,2024,4987,77.506608,26.224524,Morena,Sabalgarh,Jalalgarh,mixed_dry_deciduous,0,0
+189,stable_low_tree,17701,1483,-415365.0,-213885.0,0,8553,74.476542,22.016664,Barwani,Pati,Kotbandhni,teak_belt,0,0
+190,small,15089,12554,-83235.0,-135525.0,2021,2575,77.689255,22.774565,Sehore,Budhni,Budhani,teak_belt,0,0
+191,clearing,18789,17842,75405.0,-246525.0,2019,3547,79.228996,21.772655,PTR MP,Gumtara,Chhindewani,teak_belt,0,0
+192,clearing,9840,29645,429495.0,21945.0,2024,2003,82.727419,24.141064,Singrauli,Waidhan,Duddhichua,sal_belt,24,0
+193,small,16326,8456,-206175.0,-172635.0,2023,7594,76.496911,22.428672,Dewas,Kantaphod,Surmanya_B,teak_belt,0,0
+194,high_score_unmapped,17205,8367,-208845.0,-199005.0,0,5651,76.474584,22.19025,Khandwa,Mundi,Bhogani,teak_belt,0,0
+195,high_score_unmapped,14460,10881,-133425.0,-116655.0,0,2631,77.19874,22.94158,Sehore,Ladkui,Moyajhir,teak_belt,0,0
+196,partial,16042,12662,-79995.0,-164115.0,2018,6406,77.72232,22.516614,Hoshangabad,Itarsi,Jamani,teak_belt,0,0
+197,high_score_unmapped,8086,27596,368025.0,74565.0,0,3205,82.13576,24.631022,Rewa,Hanumana,Kailashpur,sal_belt,0,0
+198,stable_low_tree,14797,10693,-139065.0,-126765.0,0,2637,77.144667,22.849847,Sehore,Ladkui,Sankota,teak_belt,0,0
+199,stable_low_tree,3076,10919,-132285.0,224865.0,0,2469,77.179253,26.024593,Sheopur,Virpur,Nimkheda_North,mixed_dry_deciduous,0,0
+200,small,16798,7432,-236895.0,-186795.0,2020,5705,76.2007,22.296681,Khandwa,Punasa,W_Bakhatgad,teak_belt,0,3
+201,stable_tree,8534,20149,144615.0,61125.0,0,3702,79.927607,24.545239,Panna_TR,Hinota,Majhauli,mixed_dry_deciduous,0,0
+202,clearing,4250,10978,-130515.0,189645.0,2021,5306,77.200104,25.706677,Kuno_Palpur,Palpur West,Setakhera East,mixed_dry_deciduous,0,0
+203,small,16797,13900,-42855.0,-186765.0,2018,2861,78.084015,22.313501,Satpura_TR,TawaBuffer,WestKapildharaBuffer,teak_belt,0,19
+204,partial,18985,19507,125355.0,-252405.0,2023,5202,79.711402,21.716501,Lamta_Proj_S_Balaghat,Waraseoni,Poniya,plantation_mprvvn,23,4
+205,high_score_unmapped,3335,15346,525.0,217095.0,0,7754,78.505239,25.959905,Datiya,Seondha,Lanch,mixed_dry_deciduous,0,0
+206,stable_tree,15898,3997,-339945.0,-159795.0,0,7425,75.194772,22.522282,Dhar,Dhar,Ambakundi,mixed_dry_deciduous,0,0
+207,clearing,18093,22409,212415.0,-225645.0,2024,5172,80.556338,21.949241,Lamta_Proj_N_Balaghat,Ukwa,Pola,plantation_mprvvn,0,0
+208,high_score_unmapped,8488,14386,-28275.0,62505.0,0,8728,78.22084,24.56393,Ashok_Nagar,Chanderi,Kanawata_West,mixed_dry_deciduous,0,0
+209,stable_tree,9361,23223,236835.0,36315.0,0,2943,80.833876,24.310424,Satna,Maihar,Vanshipur,sal_belt,0,0
+210,clearing,8538,5223,-303165.0,61005.0,2023,4802,75.507582,24.522152,Neemuch,Rampura,Salarmala,mixed_dry_deciduous,0,0
+211,partial,16208,22117,203655.0,-169095.0,2024,6985,80.479082,22.460946,East_Mandla,Jagmandal,Kumharra,sal_belt,24,0
+212,partial,6948,24915,287595.0,108705.0,2018,3168,81.348102,24.955498,Rewa,Atraila,Deokhar,sal_belt,0,0
+213,stable_near_loss,10975,7191,-244125.0,-12105.0,0,2484,76.102257,23.872362,Shajapur,Susner,Susner,mixed_dry_deciduous,0,0
+214,stable_near_loss,6862,14227,-33045.0,111285.0,0,2233,78.172649,25.004172,Shivpuri,Pichore,Silpura,mixed_dry_deciduous,0,0
+215,stable_tree,11245,24660,279945.0,-20205.0,0,3983,81.247958,23.793477,North_Shahdol,Jaisinghnagar,Banchachr,sal_belt,0,0
+216,stable_near_loss,16515,23197,236055.0,-178305.0,0,6025,80.792462,22.373451,Kanha Tiger Reserve,Sijhora,Sijhora,sal_belt,0,0
+217,stable_near_loss,18857,17918,77685.0,-248565.0,0,3537,79.250935,21.754124,PTR MP,Karmajhiri,Sapat,teak_belt,0,0
+218,partial,15653,13583,-52365.0,-152445.0,2023,6460,77.990523,22.623092,Hoshangabad,Sohagpur,North_Bagra,teak_belt,0,0
+219,partial,2651,15188,-4215.0,237615.0,2020,6622,78.457879,26.145239,Gwalior,Benhat,Aroli,mixed_dry_deciduous,0,0
+220,stable_near_loss,18965,17616,68625.0,-251805.0,0,3551,79.163214,21.725262,PTR MP,Gumtara,Pulpuldoh,teak_belt,0,27
+221,small,1716,14331,-29925.0,265665.0,2023,4963,78.200369,26.398353,Morena,Morena,Shanichara,mixed_dry_deciduous,0,0
+222,small,15978,14154,-35235.0,-162195.0,2019,2807,78.157412,22.535524,Satpura_TR,Kamti,Madai,teak_belt,0,0
+223,partial,11089,16997,50055.0,-15525.0,2022,1088,78.991558,23.8591,South_Sagar,Garhakota,Parsoria,mixed_dry_deciduous,0,0
+224,high_score_unmapped,7464,22062,202005.0,93225.0,0,4264,80.498491,24.828802,North_Panna,Devendranagar,Gajana,mixed_dry_deciduous,0,0
+225,high_score_unmapped,6613,10754,-137235.0,118755.0,0,6742,77.139859,25.066086,Guna,Bamori,Bitthalpur,mixed_dry_deciduous,0,0
+226,stable_near_loss,9085,17829,75015.0,44595.0,0,4234,79.239709,24.400774,North_Sagar,Shahgarh,Heerapur_North,mixed_dry_deciduous,0,0
+227,stable_near_loss,8616,20119,143715.0,58665.0,0,3710,79.918483,24.523115,Panna_TR,Amanganj,Motowa,mixed_dry_deciduous,0,0
+228,high_score_unmapped,16076,6534,-263835.0,-165135.0,0,6254,75.935523,22.488109,Indore,Choral,Bai,mixed_dry_deciduous,0,0
+229,stable_near_loss,15681,9310,-180555.0,-153285.0,0,7572,76.743498,22.606386,Dewas,Kannod,Kiloda,teak_belt,0,0
+230,high_score_unmapped,9256,27948,378585.0,39465.0,0,2054,82.231039,24.311859,Sidhi_FDCM,Deosar,Dhonga_West,plantation_mprvvn,0,0
+231,clearing,4925,11485,-115305.0,169395.0,2023,2255,77.353194,25.524998,Shivpuri,Pohari,Pohari,mixed_dry_deciduous,0,0
+232,partial,18765,17895,76995.0,-245805.0,2019,3547,79.244403,21.779085,PTR MP,Gumtara,Chhindewani,teak_belt,0,0
+233,high_score_unmapped,9008,25084,292665.0,46905.0,0,3228,81.386011,24.396846,Rewa,Rewa,Marwa_East,sal_belt,0,0
+234,stable_near_loss,9021,17883,76635.0,46515.0,0,7975,79.255783,24.418028,Chhatarpur,Bada_Malehra,Eastbineda,mixed_dry_deciduous,0,36
+235,stable_low_tree,8327,28924,407865.0,67335.0,0,3156,82.527148,24.556198,SANJAY_DUBRI,Bagdara,Harma,sal_belt,0,0
+236,high_score_unmapped,9593,21502,185205.0,29355.0,0,1252,80.324283,24.254349,South_Panna,Pawai,Pipraiyadon,mixed_dry_deciduous,0,0
+237,clearing,18218,21985,199695.0,-229395.0,2020,1683,80.432726,21.916971,South_Balaghat,Balaghat,Mate_1,sal_belt,19,55
+238,small,18960,13363,-58965.0,-251655.0,2019,1632,77.930137,21.726991,South_Betul,Tapti,Badori,teak_belt,0,0
+239,partial,16550,21451,183675.0,-179355.0,2023,5056,80.283704,22.370678,Mohgaon_Proj_West_Mandla,Nainpur,Manegaon,plantation_mprvvn,23,27
+240,stable_near_loss,16680,8102,-216795.0,-183255.0,0,5672,76.395258,22.331422,Khandwa,Mundi,West_Tikari,teak_belt,0,0
+241,stable_low_tree,9571,13068,-67815.0,30015.0,0,487,77.831956,24.269493,Vidisha,Sironj,Bamorishala,mixed_dry_deciduous,0,0
+242,stable_near_loss,18749,17944,78465.0,-245325.0,0,3546,79.25864,21.783351,PTR MP,Gumtara,Gumtara,teak_belt,0,0
+243,stable_near_loss,9091,28109,383415.0,44415.0,0,1958,82.2799,24.355384,Singrauli,Karthua,Bharra,sal_belt,0,0
+244,high_score_unmapped,9910,29166,415125.0,19845.0,0,2010,82.585468,24.125867,Singrauli,Waidhan,Navanagar,sal_belt,0,0
+245,stable_near_loss,14648,12418,-87315.0,-122295.0,0,3803,77.648751,22.893784,Obedullahganj,Barkhera,Kairi,teak_belt,0,0
+246,high_score_unmapped,9963,11360,-119055.0,18255.0,0,458,77.328154,24.160388,Vidisha,North_Lateri,Madhawta,mixed_dry_deciduous,0,0
+247,stable_low_tree,8022,21835,195195.0,76485.0,0,3011,80.428904,24.678547,Satna,Singhpur,Shivrajpur,sal_belt,0,0
+248,stable_near_loss,9093,14638,-20715.0,44355.0,0,4193,78.295735,24.400217,North_Sagar,Khurai,Mohasa,mixed_dry_deciduous,0,0
+249,stable_near_loss,13993,20087,142755.0,-102645.0,0,6146,79.893572,23.067255,Jabalpur,Bargi,Jodhepur,teak_belt,0,0
+250,high_score_unmapped,16973,20812,164505.0,-192045.0,0,8689,80.096188,22.258137,Barghat Project,Keolari,Paundi,plantation_mprvvn,0,0
+251,clearing,90,14874,-13635.0,314445.0,2025,4964,78.363011,26.839351,Morena,Morena,Usedgath,mixed_dry_deciduous,0,0
+252,high_score_unmapped,15287,9023,-189165.0,-141465.0,0,7636,76.658273,22.712117,Dewas,Panigoan,Kalwar,teak_belt,0,0
+253,stable_low_tree,11163,4169,-334785.0,-17745.0,0,3285,75.213349,23.805286,Ratlam,Sailana,Jaora,mixed_dry_deciduous,0,0
+254,stable_tree,7607,11590,-112155.0,88935.0,0,6821,77.390698,24.798847,Guna,North_Guna,Bhadora,mixed_dry_deciduous,0,0
+255,high_score_unmapped,4547,15180,-4455.0,180735.0,0,7732,78.455656,25.631542,Datiya,Datiya,Maniharpura,mixed_dry_deciduous,0,0
+256,partial,18962,17726,71925.0,-251715.0,2019,3552,79.19511,21.725934,PTR MP,Gumtara,Palaspani,teak_belt,0,0
+257,high_score_unmapped,16634,14714,-18435.0,-181875.0,0,245,78.320995,22.358111,West_Chhindwara,Sangakheda,Unchetemru,teak_belt,0,0
+258,stable_low_tree,12559,11191,-124125.0,-59625.0,0,2660,77.284734,23.457088,Sehore,Sehore,Hathiyakheda,teak_belt,0,0
+259,stable_low_tree,16490,22818,224685.0,-177555.0,0,6013,80.68217,22.38182,Kanha Tiger Reserve,Sarhi,Matigahan,sal_belt,0,0
+260,clearing,10049,22941,228375.0,15675.0,2021,2939,80.747342,24.125367,Satna,Maihar,Sadhera,sal_belt,0,0
+261,partial,18691,15924,17865.0,-243585.0,2019,1405,78.67275,21.80084,South_Chhindwara,Lawaghoghri,West_Palaspani,teak_belt,0,25
+262,clearing,15354,2746,-377475.0,-143475.0,2019,7471,74.825969,22.661356,Dhar,Sardarpur,Dattigaon_South,mixed_dry_deciduous,0,0
+263,high_score_unmapped,4153,11045,-128505.0,192555.0,0,5289,77.219864,25.733117,Kuno_Palpur,Palpur East,Rampur,mixed_dry_deciduous,0,1
+264,stable_low_tree,12355,17497,65055.0,-53505.0,0,4727,79.137208,23.515763,Noradehi,Singpur,Simria,mixed_dry_deciduous,0,0
+265,stable_tree,17455,12069,-97785.0,-206505.0,0,379,77.552094,22.132899,West_Betul,Saoligarh,Kamtha,teak_belt,0,0
+266,stable_near_loss,9780,21602,188205.0,23745.0,0,1250,80.353118,24.203371,South_Panna,Pawai,Padraha,mixed_dry_deciduous,0,0
+267,high_score_unmapped,16453,21723,191835.0,-176445.0,0,6995,80.363305,22.396016,East_Mandla,Jagmandal,Sara,sal_belt,0,0
+268,stable_near_loss,9868,28628,398985.0,21105.0,0,1885,82.427045,24.141295,Singrauli,Bargawan,Manihari,sal_belt,13,21
+269,partial,18864,17766,73125.0,-248775.0,2019,3549,79.206847,21.752436,PTR MP,Gumtara,Dantfadiya,teak_belt,0,0
+270,high_score_unmapped,16482,21724,191865.0,-177315.0,0,5021,80.363487,22.388157,Mohgaon_Proj_East_Mandla,Anjania,Sonf,plantation_mprvvn,0,0
+271,stable_near_loss,16240,2623,-381165.0,-170055.0,0,7407,74.796734,22.420601,Dhar,Bagh,Geta,mixed_dry_deciduous,0,0
+272,partial,18168,22205,206295.0,-227895.0,2018,5170,80.496797,21.929702,Lamta_Proj_N_Balaghat,Ukwa,Hirri,plantation_mprvvn,18,37
+273,partial,18959,17734,72165.0,-251625.0,2019,3552,79.197433,21.726736,PTR MP,Gumtara,Palaspani,teak_belt,0,0
+274,partial,18757,17951,78675.0,-245565.0,2019,3546,79.260658,21.781173,PTR MP,Gumtara,Gumtara,teak_belt,0,0
+275,partial,17142,7512,-234495.0,-197115.0,2020,5678,76.225575,22.20385,Khandwa,Punasa,Kelwabujurg,teak_belt,0,0
+276,stable_near_loss,17119,20776,163425.0,-196425.0,0,5167,80.085241,22.218696,Lamta_Proj_N_Balaghat,Lamta,West_Nagarwada,plantation_mprvvn,0,12
+277,clearing,9745,29282,418605.0,24795.0,2024,2008,82.621095,24.169631,Singrauli,Waidhan,Medhauli,sal_belt,0,0
+278,small,9531,24157,264855.0,31215.0,2022,2885,81.109028,24.260049,Satna,Amarpatan,Gidhaila,sal_belt,0,0
+279,stable_tree,11551,25123,293835.0,-29385.0,0,3913,81.382461,23.708179,North_Shahdol,Amjhor,Dholar,sal_belt,0,0
+280,high_score_unmapped,8013,21271,178275.0,76755.0,0,4300,80.261751,24.682945,North_Panna,Panna,Sunehra,mixed_dry_deciduous,0,0
+281,clearing,17050,7520,-234255.0,-194355.0,2019,5703,76.22748,22.228804,Khandwa,Punasa,Sukwa,teak_belt,0,0
+282,high_score_unmapped,8266,20968,169185.0,69165.0,0,3677,80.171059,24.615417,Panna_TR,Panna_Buffer,Jhalai,mixed_dry_deciduous,0,0
+283,partial,14600,23271,238275.0,-120855.0,2024,5000,80.823035,22.891735,Mohgaon_Proj_Dindori,Chabi,Dadarghughari,plantation_mprvvn,0,4
+284,partial,16500,21902,197205.0,-177855.0,2019,6995,80.415276,22.382648,East_Mandla,Jagmandal,Sara,sal_belt,0,37
+285,stable_near_loss,9953,28595,397995.0,18555.0,0,1925,82.416622,24.118531,Singrauli,East_Sarai,Pidarwah,sal_belt,0,12
+286,high_score_unmapped,511,16442,33405.0,301815.0,0,8488,78.83532,26.724917,Bhind,Ater,Baderi,mixed_dry_deciduous,0,0
+287,stable_low_tree,19579,7246,-242475.0,-270225.0,0,8199,76.159733,21.542473,Burhanpur,Dhulkot,Gambhirpura,teak_belt,0,0
+288,stable_near_loss,14755,12390,-88155.0,-125505.0,0,3801,77.640749,22.864762,Obedullahganj,Barkhera,Choka,teak_belt,0,28
+289,high_score_unmapped,17106,7513,-234465.0,-196035.0,0,5701,76.225701,22.213606,Khandwa,Punasa,South_Paldi,teak_belt,0,0
+290,stable_low_tree,3731,11019,-129285.0,205215.0,0,5287,77.210963,25.847378,Kuno_Palpur,Palpur East,Pipalbawadi East,mixed_dry_deciduous,0,0
+291,partial,18819,17917,77655.0,-247425.0,2020,3537,79.250702,21.764422,PTR MP,Karmajhiri,Sapat,teak_belt,0,0
+292,clearing,13537,20677,160455.0,-88965.0,2018,6202,80.067803,23.189089,Jabalpur,Panager,Kakertela,teak_belt,0,6
+293,high_score_unmapped,10035,11325,-120105.0,16095.0,0,455,77.317994,24.140815,Vidisha,North_Lateri,Isherwas,mixed_dry_deciduous,0,0
+294,partial,16188,12518,-84315.0,-168495.0,2024,6403,77.680566,22.476853,Hoshangabad,Itarsi,Golandoh_Kasda,teak_belt,0,0
+295,partial,18746,18038,81285.0,-245235.0,2020,3539,79.285909,21.784027,PTR MP,Karmajhiri,Bison Camp,teak_belt,0,0
+296,stable_low_tree,15810,16441,33375.0,-157155.0,0,7184,78.824614,22.581067,East_Chhindwara,West_Batkakhapa,Digdhar,teak_belt,0,0
+297,partial,18822,17800,74145.0,-247515.0,2019,3549,79.216767,21.763771,PTR MP,Gumtara,Dantfadiya,teak_belt,0,0
+298,partial,9832,29094,412965.0,22185.0,2020,1997,82.564873,24.147532,Singrauli,Waidhan,Amlori,sal_belt,0,0
+299,stable_near_loss,17173,7503,-234765.0,-198045.0,0,5678,76.2231,22.195415,Khandwa,Punasa,Kelwabujurg,teak_belt,0,0
+300,small,10557,10879,-133485.0,435.0,2024,6801,77.187729,23.998426,Guna,Maksudangarh,Baroda_-_A,mixed_dry_deciduous,0,11
+301,partial,16008,12729,-77985.0,-163095.0,2018,6421,77.741808,22.525921,Hoshangabad,Itarsi,Sothiya,teak_belt,0,0
+302,clearing,20001,7743,-227565.0,-282885.0,2019,8284,76.305481,21.430242,Burhanpur,Nepanagar,Zhanzer,teak_belt,0,0
+303,stable_tree,16150,16775,43395.0,-167355.0,0,7177,78.92178,22.488741,East_Chhindwara,West_Batkakhapa,Atariya,teak_belt,0,0
+304,stable_tree,3722,10766,-136875.0,205485.0,0,5302,77.135266,25.849183,Kuno_Palpur,Palpur West,Meghpura West,mixed_dry_deciduous,0,0
+305,partial,9657,26871,346275.0,27435.0,2024,2095,81.90993,24.210552,Sidhi,Madwas,Shikara_East,sal_belt,0,0
+306,stable_tree,19925,23024,230865.0,-280605.0,0,1794,80.726678,21.450379,South_Balaghat,Lanji_East,Dhiri,sal_belt,0,63
+307,clearing,9892,29314,419565.0,20385.0,2018,2018,82.629293,24.129594,Singrauli,Waidhan,Waidhan,sal_belt,0,0
+308,stable_near_loss,16191,23416,242625.0,-168585.0,0,7036,80.857804,22.460243,East_Mandla,Motinala,Chhapartala,sal_belt,0,0
+309,clearing,9903,29317,419655.0,20055.0,2018,2018,82.630085,24.126593,Singrauli,Waidhan,Waidhan,sal_belt,0,0
+310,stable_low_tree,16479,4876,-313575.0,-177225.0,0,7415,75.454673,22.370206,Dhar,Dhamnod,Bharudpura_North,mixed_dry_deciduous,0,0
+311,stable_tree,9970,20917,167655.0,18045.0,0,1261,80.150152,24.154187,South_Panna,Pawai,Talgawan_East,mixed_dry_deciduous,0,0
+312,stable_low_tree,7915,29472,424305.0,79695.0,0,3153,82.69294,24.663478,SANJAY_DUBRI,Bagdara,Garhwa,sal_belt,0,0
+313,high_score_unmapped,2559,16319,29715.0,240375.0,0,7744,78.797005,26.169898,Datiya,Seondha,Bader,mixed_dry_deciduous,0,0
+314,stable_low_tree,2630,13183,-64365.0,238245.0,0,6656,77.856762,26.149634,Gwalior,Game_Range_Ghatigoan,Tilawali,mixed_dry_deciduous,0,0
+315,high_score_unmapped,15054,21405,182295.0,-134475.0,0,4070,80.275688,22.775997,North_Seoni,Ghansor,Jhuki,teak_belt,0,0
+316,stable_near_loss,14611,23252,237705.0,-121185.0,0,5000,80.817427,22.88884,Mohgaon_Proj_Dindori,Chabi,Dadarghughari,plantation_mprvvn,0,37
+317,partial,9891,29312,419505.0,20415.0,2018,2018,82.628712,24.12988,Singrauli,Waidhan,Waidhan,sal_belt,0,0
+318,high_score_unmapped,3336,13119,-66285.0,217065.0,0,6686,77.838548,25.958257,Gwalior,Ghatigaon_North,Pannaghora,mixed_dry_deciduous,0,0
+319,stable_tree,18548,18621,98775.0,-239295.0,0,3517,79.455389,21.836719,PTR MP,Kurai,Pathri,teak_belt,0,32
+320,stable_tree,19791,5251,-302325.0,-276585.0,0,5463,75.583475,21.475141,Khargone,Sirwel,Hathi_Gudiya,teak_belt,0,0
+321,stable_low_tree,6109,13185,-64305.0,133875.0,0,2166,77.861991,25.207162,Shivpuri,Karera,Kumrahua,mixed_dry_deciduous,0,0
+322,partial,19189,19441,123375.0,-258525.0,2025,5203,79.691778,21.661372,Lamta_Proj_S_Balaghat,Waraseoni,Ramjitola,plantation_mprvvn,0,0
+323,clearing,15602,13833,-44865.0,-150915.0,2021,6393,78.063447,22.637128,Hoshangabad,Hoshangabad,North_Dolariya,teak_belt,0,27
+324,partial,16019,12740,-77655.0,-163425.0,2022,6421,77.745033,22.522957,Hoshangabad,Itarsi,Sothiya,teak_belt,0,22
+325,partial,18979,17695,70995.0,-252225.0,2020,3552,79.186099,21.721368,PTR MP,Gumtara,Palaspani,teak_belt,0,0
+326,stable_tree,14384,11875,-103605.0,-114375.0,0,3867,77.489399,22.964327,Obedullahganj,Dahod,Jawra,teak_belt,0,55
+327,stable_tree,15829,23867,256155.0,-157725.0,0,7226,80.991091,22.55622,Dindori,Amarpur,Dholbeeja,sal_belt,0,0
+328,stable_low_tree,4500,13011,-69525.0,182145.0,0,2299,77.807895,25.642769,Shivpuri,Satanwara,Zopry,mixed_dry_deciduous,0,0
+329,stable_near_loss,16868,14115,-36405.0,-188895.0,0,3327,78.146674,22.294424,Rampur_Bhatodi_Proj,Rampur,Kundikheda,plantation_mprvvn,0,45
+330,stable_tree,7945,17038,51285.0,78795.0,0,710,79.006904,24.710405,Tikamgarh,Baldevgarh,Narayanpur,mixed_dry_deciduous,0,0
+331,stable_low_tree,20302,7073,-247665.0,-291915.0,0,8173,76.113127,21.345776,Burhanpur,Burhanpur,Bholana,teak_belt,0,0
+332,small,11930,10661,-140025.0,-40755.0,2019,3352,77.127307,23.626112,Rajgarh,Narsinghgarh,Kotra,mixed_dry_deciduous,0,6
+333,small,14369,11642,-110595.0,-113925.0,2020,2648,77.421186,22.96793,Sehore,Rehti,Khajuri,teak_belt,0,0
+334,clearing,13701,21917,197655.0,-93885.0,2022,107,80.430599,23.140595,West_Mandla,Niwas,Jugthar,sal_belt,0,0
+335,stable_tree,14458,11039,-128685.0,-116595.0,0,2631,77.24496,22.942502,Sehore,Ladkui,Moyajhir,teak_belt,0,3
+336,stable_tree,11369,14180,-34455.0,-23925.0,0,6869,78.161833,23.783689,FDCM_Vidisha,Basoda,Rashulpur,plantation_mprvvn,0,0
+337,stable_tree,8588,27585,367695.0,59505.0,0,2068,82.128746,24.495202,Sidhi,Bahri,Kubri,sal_belt,0,0
+338,partial,19219,17831,75075.0,-259425.0,2020,3558,79.225176,21.656152,PTR MP,Gumtara,Totladoh,teak_belt,0,0
+339,stable_tree,16591,16526,35925.0,-180585.0,0,7099,78.848863,22.369468,East_Chhindwara,Chhindi,Jogimuaar,teak_belt,0,40
+340,high_score_unmapped,17680,6972,-250695.0,-213255.0,0,8641,76.071122,22.055727,Barwah,Sanawad,Badud,teak_belt,0,0
+341,stable_near_loss,16521,14305,-30705.0,-178485.0,0,2849,78.201785,22.388536,Satpura_TR,TawaBuffer,BhatodiBuffer,teak_belt,0,0
+342,small,3522,11459,-116085.0,211485.0,2023,2458,77.342064,25.905016,Sheopur,Vijaypur_West,Piparwas_Ii,mixed_dry_deciduous,0,3
+343,partial,15571,21431,183075.0,-149985.0,2022,5041,80.281413,22.635897,Mohgaon_Proj_West_Mandla,Kanchangaon,Jargi,plantation_mprvvn,0,21
+344,high_score_unmapped,2579,16308,29385.0,239775.0,0,7744,78.793695,26.164484,Datiya,Seondha,Bader,mixed_dry_deciduous,0,0
+345,partial,8451,20534,156165.0,63615.0,2018,3738,80.041881,24.566637,Panna_TR,Amanganj,Sauth_Talgaon,mixed_dry_deciduous,0,12
+346,partial,10063,28864,406065.0,15255.0,2019,2007,82.495095,24.086753,Singrauli,Waidhan,Khutar,sal_belt,0,0
+347,partial,17355,14315,-30405.0,-203505.0,2023,3333,78.205197,22.16262,Rampur_Bhatodi_Proj,Chopna,Rajegoan,plantation_mprvvn,0,0
+348,stable_tree,18532,18457,93855.0,-238815.0,0,3524,79.407832,21.841342,PTR MP,Kurai,West Murer,teak_belt,0,37
+349,stable_near_loss,13567,25785,313695.0,-89865.0,0,813,81.564578,23.158677,South_Shahdol,Burhar,Bamhori,sal_belt,0,0
+350,stable_tree,10580,29734,432165.0,-255.0,0,1998,82.747229,23.940064,Singrauli,Waidhan,Barahpan,sal_belt,0,0
+351,partial,16674,21311,179475.0,-183075.0,2024,5057,80.242483,22.337556,Mohgaon_Proj_West_Mandla,Nainpur,N.Patwahi(North,plantation_mprvvn,24,32
+352,high_score_unmapped,15309,21614,188565.0,-142125.0,0,97,80.335804,22.706229,West_Mandla,Mandla,Phoolsagar,sal_belt,0,0
+353,clearing,10510,24613,278535.0,1845.0,2023,3970,81.238244,23.992705,North_Shahdol,Godawal,Chhataini,sal_belt,0,12
+354,high_score_unmapped,16522,21437,183255.0,-178515.0,0,5056,80.279727,22.378309,Mohgaon_Proj_West_Mandla,Nainpur,Manegaon,plantation_mprvvn,0,12
+355,high_score_unmapped,10290,21444,183465.0,8445.0,0,1322,80.30456,24.065829,South_Panna,Shahnagar,Rohaniya,mixed_dry_deciduous,0,0
+356,partial,18897,17867,76155.0,-249765.0,2020,3537,79.236086,21.743357,PTR MP,Karmajhiri,Sapat,teak_belt,0,0
+357,high_score_unmapped,9152,29374,421365.0,42585.0,0,1930,82.65331,24.329421,Singrauli,Gorbi,Bagaiya,sal_belt,0,0
+358,stable_low_tree,8279,21314,179565.0,68775.0,0,4291,80.273525,24.610774,North_Panna,Panna,Garhi_Padariya,mixed_dry_deciduous,0,0
+359,stable_low_tree,15601,16810,44445.0,-150885.0,0,4897,78.932467,22.637411,Narsinghpur,Kareli,Chhindkheda,teak_belt,0,0
+360,stable_near_loss,17631,20432,153105.0,-211785.0,0,8661,79.983605,22.080995,Barghat Project,Pandia Chhapara,Durenda,plantation_mprvvn,0,0
+361,clearing,13564,25893,316935.0,-89775.0,2021,8803,81.59624,23.158863,Anuppur,Anuppur,Khutwa,sal_belt,0,25
+362,high_score_unmapped,18807,18297,89055.0,-247065.0,0,3529,79.360926,21.767096,PTR MP,Karmajhiri,Khamreeth,teak_belt,0,40
+363,stable_tree,10147,28678,400485.0,12735.0,0,2001,82.439544,24.065406,Singrauli,Waidhan,Chaura,sal_belt,0,0
+364,stable_tree,20775,8660,-200055.0,-306105.0,0,8164,76.573739,21.224033,Burhanpur,Bodarli,Panjadevi,teak_belt,0,0
+365,stable_near_loss,16286,13429,-56985.0,-171435.0,0,2744,77.946285,22.451487,Satpura_TR,Churna(Bhaura),Mallupura,teak_belt,0,0
+366,clearing,17007,21356,180825.0,-193065.0,2024,5156,80.254405,22.247209,Lamta_Proj_N_Balaghat,Lamta,Lotmara,plantation_mprvvn,24,28
+367,stable_tree,8741,18715,101595.0,54915.0,0,8041,79.502512,24.492469,Chhatarpur,Bijawar,Northshahgarh,mixed_dry_deciduous,0,0
+368,stable_tree,13717,12761,-77025.0,-94365.0,0,3835,77.747643,23.146424,Obedullahganj,Chiklod,Barbatpur,teak_belt,0,24
+369,stable_near_loss,13010,24640,279345.0,-73155.0,0,615,81.232191,23.315733,Umaria,Ghunghunti,Kachodar,sal_belt,0,0
+370,stable_near_loss,20081,7779,-226485.0,-285285.0,0,8276,76.316246,21.40871,Burhanpur,Nepanagar,Nimna,teak_belt,0,0
+371,high_score_unmapped,13744,14400,-27855.0,-95175.0,0,3764,78.227934,23.140694,Obedullahganj,Bamhori,Bajani,teak_belt,0,0
+372,stable_near_loss,15650,13618,-51315.0,-152355.0,0,6460,78.000736,22.623938,Hoshangabad,Sohagpur,North_Bagra,teak_belt,0,27
+373,stable_tree,18411,18028,80985.0,-235185.0,0,3601,79.283538,21.874811,PTR MP,Kumbhpani,Kumbhpani,teak_belt,0,0
+374,stable_near_loss,19666,7752,-227295.0,-272835.0,0,8269,76.306605,21.52106,Burhanpur,Nepanagar,East_Dahinala,teak_belt,0,0
+375,stable_tree,15589,14847,-14445.0,-150525.0,0,2839,78.359441,22.641201,Satpura_TR,PipariyaBuffer,Dokarikheda,teak_belt,0,0
+376,small,16319,6748,-257415.0,-172425.0,2023,6275,75.999145,22.42332,Indore,Choral,Surtipura_Paschim,mixed_dry_deciduous,0,0
+377,stable_near_loss,16365,3025,-369105.0,-173805.0,0,7411,74.914764,22.389514,Dhar,Bagh,Reharada,mixed_dry_deciduous,0,0
+378,stable_low_tree,13179,13224,-63135.0,-78225.0,0,3463,77.882638,23.29271,Raisen,Raisen_East,Amravad,teak_belt,0,0
+379,partial,11421,16783,43635.0,-25485.0,2018,1061,78.92822,23.769387,South_Sagar,Dhana,Hilgan,mixed_dry_deciduous,0,0
+380,stable_tree,19466,22918,227685.0,-266835.0,0,1804,80.698043,21.575201,South_Balaghat,Lanji_East,Muhdhidader,sal_belt,0,59
+381,small,18640,21048,171585.0,-242055.0,2019,1669,80.159278,21.805811,South_Balaghat,Balaghat,Balaghat_1,sal_belt,0,0
+382,high_score_unmapped,17946,7605,-231705.0,-221235.0,0,6939,76.256283,21.986458,FDC_Khandwa,Khandwa V,Bamjhar,plantation_mprvvn,0,0
+383,high_score_unmapped,17882,370,-448755.0,-219315.0,0,8941,74.154887,21.958869,Alirajpur,Mathwad,Akadia,mixed_dry_deciduous,0,0
+384,high_score_unmapped,13484,14339,-29685.0,-87375.0,0,3771,78.209906,23.21107,Obedullahganj,Bamhori,Kundali,teak_belt,0,0
+385,stable_tree,7443,22938,228285.0,93855.0,0,2954,80.758544,24.830976,Satna,Majhgawan,Keilashpur,sal_belt,0,0
+386,high_score_unmapped,14602,25761,312975.0,-120915.0,0,8860,81.551109,22.878588,Anuppur,Rajendra_Gram,Chhindpani,sal_belt,0,56
+387,stable_near_loss,5057,12915,-72405.0,165435.0,0,5122,77.780059,25.491758,Madhav_National_Park,Madhya,Pipra,mixed_dry_deciduous,0,11
+388,stable_tree,19725,5867,-283845.0,-274605.0,0,5481,75.761342,21.496309,Khargone,Titraniya,Jamli,teak_belt,0,0
+389,high_score_unmapped,15977,7704,-228735.0,-162165.0,0,7668,76.27619,22.520198,Dewas,Punjapura,Ratatalai,teak_belt,0,0
+390,clearing,11565,15797,14055.0,-29805.0,2021,1162,78.637891,23.730921,South_Sagar,Sagar,Hinnod,mixed_dry_deciduous,0,0
+391,clearing,18468,18844,105465.0,-236895.0,2019,3514,79.52026,21.857979,PTR MP,Kurai,Rukhad,teak_belt,0,28
+392,stable_tree,8385,4296,-330975.0,65595.0,0,4778,75.232142,24.558108,Neemuch,Manasa,Suwasra_Bujurg,mixed_dry_deciduous,0,0
+393,high_score_unmapped,8440,29409,422415.0,63945.0,0,1909,82.66976,24.521867,Singrauli,Chitrangi,Mauharia,sal_belt,0,0
+394,clearing,16056,12661,-80025.0,-164535.0,2018,6406,77.72205,22.512821,Hoshangabad,Itarsi,Jamani,teak_belt,0,0
+395,partial,18842,17829,75015.0,-248115.0,2019,3549,79.225148,21.758312,PTR MP,Gumtara,Dantfadiya,teak_belt,0,0
+396,partial,9794,29108,413385.0,23325.0,2018,2012,82.569323,24.15771,Singrauli,Waidhan,Padari,sal_belt,0,12
+397,clearing,9833,29319,419715.0,22155.0,2020,2010,82.631269,24.145525,Singrauli,Waidhan,Navanagar,sal_belt,0,0
+398,high_score_unmapped,18258,21150,174645.0,-230595.0,0,5192,80.190169,21.908985,Lamta_Proj_S_Balaghat,Lamta,Dhapewada,plantation_mprvvn,0,24
+399,high_score_unmapped,3888,11389,-118185.0,200505.0,0,2459,77.322015,25.805704,Sheopur,Vijaypur_West,Silpura_I,mixed_dry_deciduous,0,0
+400,clearing,10637,28310,389445.0,-1965.0,2023,1924,82.327147,23.935465,Singrauli,East_Sarai,Majhauli_Path,sal_belt,23,0
+401,stable_tree,12506,19450,123645.0,-58035.0,0,7882,79.710698,23.471475,Damoh,Singrampur,Saipura,teak_belt,0,21
+402,high_score_unmapped,10274,23408,242385.0,8925.0,0,5860,80.884082,24.062413,Katni,Vijayraghav_Garh,Kareha,teak_belt,0,0
+403,stable_tree,11690,15857,15855.0,-33555.0,0,1162,78.655511,23.697057,South_Sagar,Sagar,Hinnod,mixed_dry_deciduous,0,0
+404,stable_tree,19077,16392,31905.0,-255165.0,0,1465,78.808272,21.696033,South_Chhindwara,Sousar,Rampeth,teak_belt,0,0
+405,clearing,10626,28315,389595.0,-1635.0,2023,1924,82.328707,23.938406,Singrauli,East_Sarai,Majhauli_Path,sal_belt,0,0
+406,stable_tree,18996,18931,108075.0,-252735.0,0,8703,79.544395,21.714745,Barghat Project,Seoni,Wahidabad,plantation_mprvvn,0,0
+407,partial,19195,17808,74385.0,-258705.0,2020,3558,79.218546,21.662687,PTR MP,Gumtara,Totladoh,teak_belt,0,0
+408,partial,9777,29288,418785.0,23835.0,2018,2010,82.622595,24.160923,Singrauli,Waidhan,Navanagar,sal_belt,0,0
+409,stable_tree,15932,4019,-339285.0,-160815.0,0,7429,75.201414,22.513212,Dhar,Dhar,Chakaliya,mixed_dry_deciduous,0,0
+410,stable_low_tree,9976,18201,86175.0,17865.0,0,7830,79.348198,24.158954,Damoh,Hatta,Shehzadpura,teak_belt,0,0
+411,stable_near_loss,16649,21297,179055.0,-182325.0,0,5057,80.238494,22.344374,Mohgaon_Proj_West_Mandla,Nainpur,N.Patwahi(North,plantation_mprvvn,0,18
+412,stable_tree,9885,21337,180255.0,20595.0,0,1256,80.274465,24.175847,South_Panna,Pawai,Sijahati,mixed_dry_deciduous,0,0
+413,partial,8323,4369,-328785.0,67455.0,2021,4773,75.253343,24.57534,Neemuch,Manasa,Paldi,mixed_dry_deciduous,0,0
+414,high_score_unmapped,16284,13573,-52665.0,-171375.0,0,2731,77.98826,22.452173,Satpura_TR,Churna(Bhaura),BanglapuraJal,teak_belt,0,0
+415,small,17244,21469,184215.0,-200175.0,2023,5146,80.286435,22.182635,Lamta_Proj_N_Balaghat,Baihar,Bhadukota,plantation_mprvvn,0,0
+416,stable_tree,18570,11457,-116145.0,-239955.0,0,410,77.376658,21.829624,West_Betul,Taodi,Palanga_North,teak_belt,0,0
+417,stable_tree,9408,27916,377625.0,34905.0,0,1947,82.220419,24.270939,Singrauli,Jiyavan,Chataniha,sal_belt,0,0
+418,clearing,10530,29321,419775.0,1245.0,2018,1994,82.625953,23.956854,Singrauli,Mada,Suidih,sal_belt,0,0
+419,high_score_unmapped,16243,13356,-59175.0,-170145.0,0,6481,77.924956,22.463056,Hoshangabad,Sukhatawa,Mandikho,teak_belt,0,0
+420,clearing,13927,2378,-388515.0,-100665.0,2024,6104,74.707573,23.045106,Jhabua,Thandla,Amargarh,mixed_dry_deciduous,0,0
+421,partial,17789,20067,142155.0,-216525.0,2025,8700,79.877065,22.039176,Barghat Project,Behrai,Ulat East,plantation_mprvvn,0,31
+422,clearing,16141,12568,-82815.0,-167085.0,2023,6424,77.695067,22.48966,Hoshangabad,Itarsi,Tangana,teak_belt,0,0
+423,stable_tree,16336,23526,245925.0,-172935.0,0,7042,80.889165,22.42048,East_Mandla,Motinala,Medha,sal_belt,0,31
+424,clearing,9765,29238,417285.0,24195.0,2021,2010,82.607938,24.164559,Singrauli,Waidhan,Navanagar,sal_belt,0,0
+425,high_score_unmapped,18088,18285,88695.0,-225495.0,0,1014,79.358692,21.961925,South_Seoni,Rukhar,Jogiwara,teak_belt,25,0
+426,high_score_unmapped,4146,10979,-130485.0,192765.0,0,5298,77.200122,25.734853,Kuno_Palpur,Palpur West,Lader South,mixed_dry_deciduous,0,0
+427,partial,19184,17797,74055.0,-258375.0,2020,3558,79.215374,21.665683,PTR MP,Gumtara,Totladoh,teak_belt,0,0
+428,partial,15181,26461,333975.0,-138285.0,2022,8783,81.751934,22.717659,Anuppur,Amarkantak,Amarkantak,sal_belt,3,45
+429,high_score_unmapped,6143,12116,-96375.0,132855.0,0,2196,77.54388,25.196348,Shivpuri,Kolaras,Rai,mixed_dry_deciduous,0,0
+430,stable_tree,17683,23204,236265.0,-213345.0,0,4491,80.789083,22.057053,North_Balaghat,East_Baihar,Bakal,sal_belt,0,27
+431,stable_tree,13775,13140,-65655.0,-96105.0,0,3849,77.858776,23.131216,Obedullahganj,Chilwaha,Arjani,teak_belt,0,20
+432,small,16797,13901,-42825.0,-186765.0,2018,2861,78.084306,22.313501,Satpura_TR,TawaBuffer,WestKapildharaBuffer,teak_belt,0,19
+433,high_score_unmapped,9060,11281,-121425.0,45345.0,0,6736,77.302606,24.404721,Guna,Aron,Pura,mixed_dry_deciduous,0,0
+434,clearing,9862,29119,413715.0,21285.0,2020,1997,82.572001,24.13922,Singrauli,Waidhan,Amlori,sal_belt,0,0
+435,partial,3063,10578,-142515.0,225255.0,2021,5228,77.077084,26.027233,Kuno_Palpur,Agra West,Chaudaripura,mixed_dry_deciduous,0,0
+436,small,3004,15716,11625.0,227025.0,2021,7757,78.616086,26.049549,Datiya,Seondha,Maraseni,mixed_dry_deciduous,0,0
+437,stable_near_loss,14784,12327,-90045.0,-126375.0,0,3801,77.62238,22.856805,Obedullahganj,Barkhera,Choka,teak_belt,0,0
+438,high_score_unmapped,18166,20258,147885.0,-227835.0,0,1780,79.931478,21.936534,South_Balaghat,Lal_Barra,Navegaon_1,sal_belt,0,0
+439,partial,20020,8544,-203535.0,-283455.0,2021,8233,76.537258,21.428232,Burhanpur,Khaknar,North_Bhoragath,teak_belt,0,0
+440,clearing,9818,29135,414195.0,22605.0,2018,2010,82.577091,24.151007,Singrauli,Waidhan,Navanagar,sal_belt,0,27
+441,stable_near_loss,13593,25807,314355.0,-90645.0,0,821,81.570861,23.151511,South_Shahdol,Burhar,Patna,sal_belt,0,0
+442,high_score_unmapped,12555,14079,-37485.0,-59505.0,0,6882,78.132986,23.462475,FDCM_Vidisha,Garhi,Jamanpani,plantation_mprvvn,0,0
+443,stable_tree,12059,21595,187995.0,-44625.0,0,5798,80.342422,23.586341,Katni,Dheemarkheda,Dharwara,teak_belt,0,4
+444,clearing,8571,5199,-303885.0,60015.0,2023,4802,75.500681,24.513083,Neemuch,Rampura,Salarmala,mixed_dry_deciduous,0,0
+445,clearing,17469,14938,-11715.0,-206925.0,2024,178,78.386439,22.131977,West_Chhindwara,Jamai,Bankatawa,teak_belt,0,0
+446,stable_low_tree,16366,4965,-310905.0,-173835.0,0,7459,75.479903,22.401316,Dhar,Mandu,Sevarimal,mixed_dry_deciduous,0,0
+447,high_score_unmapped,11666,24618,278685.0,-32835.0,0,907,81.233236,23.679716,South_Shahdol,Khannoudhi,Rupola,sal_belt,0,0
+448,clearing,9812,29105,413295.0,22785.0,2018,1997,82.568287,24.152861,Singrauli,Waidhan,Amlori,sal_belt,0,4
+449,stable_tree,17942,13873,-43665.0,-221115.0,0,4389,78.077133,22.003294,North_Betul,Ranipur,East_Sajpur,teak_belt,0,27
+450,stable_tree,6040,12906,-72675.0,135945.0,0,2202,77.778845,25.225492,Shivpuri,Kolaras,Sunaj,mixed_dry_deciduous,0,0
+451,stable_tree,9439,21985,199695.0,33975.0,0,1297,80.467617,24.294321,South_Panna,Saleha,Mantola,mixed_dry_deciduous,0,0
+452,high_score_unmapped,19959,4286,-331275.0,-281625.0,0,2531,75.305363,21.424059,Sendhwa,Warla,Jamthi,teak_belt,0,0
+453,small,3948,15414,2565.0,198705.0,2022,7747,78.525563,25.79382,Datiya,Seondha,Dhanoli,mixed_dry_deciduous,0,0
+454,stable_tree,17754,21550,186645.0,-215475.0,0,1844,80.308131,22.044206,South_Balaghat,Lougur,Kurwahi_1,sal_belt,0,54
+455,stable_near_loss,3858,13027,-69045.0,201405.0,0,2262,77.811755,25.816713,Shivpuri,Satanwara,Bhangrah,mixed_dry_deciduous,0,25
+456,stable_near_loss,16047,6495,-265005.0,-164265.0,0,6277,75.924001,22.495773,Indore,Choral,Talai,mixed_dry_deciduous,0,3
+457,stable_tree,12301,17863,76035.0,-51885.0,0,4685,79.244837,23.529908,Noradehi,Mohli,Mohli-N,mixed_dry_deciduous,0,0
+458,partial,18844,17826,74925.0,-248175.0,2020,3549,79.224275,21.757774,PTR MP,Gumtara,Dantfadiya,teak_belt,0,0
+459,partial,16214,12494,-85035.0,-169275.0,2022,6403,77.673612,22.469773,Hoshangabad,Itarsi,Golandoh_Kasda,teak_belt,0,0
+460,stable_near_loss,4145,10987,-130245.0,192795.0,0,5289,77.20251,25.735143,Kuno_Palpur,Palpur East,Rampur,mixed_dry_deciduous,0,0
+461,stable_near_loss,11359,23951,258675.0,-23625.0,0,8337,81.038623,23.766144,BTR,Manpur_Buffer,Kuchwahi,sal_belt,0,0
+462,stable_low_tree,8824,25433,303135.0,52425.0,0,3227,81.49036,24.444729,Rewa,Rewa,Mahadandi,sal_belt,0,0
+463,stable_tree,17714,15175,-4605.0,-214275.0,0,7960,78.455383,22.065638,Chhindwara_Project,Navegaon,Khumkal,plantation_mprvvn,0,0
+464,high_score_unmapped,8682,4762,-316995.0,56685.0,0,4793,75.372042,24.48051,Neemuch,Rampura,Doodhlai,mixed_dry_deciduous,0,0
+465,partial,14438,19460,123945.0,-115995.0,2023,6232,79.708863,22.948285,Jabalpur,Shahpura,Pati,teak_belt,0,27
+466,partial,18885,18631,99075.0,-249405.0,2019,992,79.457639,21.745388,South_Seoni,Khawasa,Riddi,teak_belt,0,22
+467,high_score_unmapped,11012,24034,261165.0,-13215.0,0,8416,81.064877,23.85969,BTR,Panpatha,Sejwahi,sal_belt,0,45
+468,small,10372,15311,-525.0,5985.0,2022,4175,78.494837,24.05402,North_Sagar,Khurai,Balop_1,mixed_dry_deciduous,0,0
+469,high_score_unmapped,4570,15080,-7455.0,180045.0,0,7725,78.425797,25.6253,Datiya,Datiya,Chopra,mixed_dry_deciduous,0,0
+470,clearing,16563,23206,236325.0,-179745.0,2024,6025,80.794861,22.360412,Kanha Tiger Reserve,Sijhora,Sijhora,sal_belt,0,0
+471,stable_near_loss,16871,7564,-232935.0,-188985.0,0,5706,76.239464,22.277476,Khandwa,Punasa,W_Indhawadi,teak_belt,0,0
+472,clearing,9689,21570,187245.0,26475.0,2019,1260,80.344011,24.228122,South_Panna,Pawai,Surru,mixed_dry_deciduous,0,0
+473,high_score_unmapped,10645,28375,391395.0,-2205.0,0,1924,82.346238,23.93283,Singrauli,East_Sarai,Majhauli_Path,sal_belt,0,0
+474,high_score_unmapped,12025,19499,125115.0,-43605.0,0,7907,79.726297,23.601605,Damoh,Tejgarh,Guda_Hardua,teak_belt,0,32
+475,partial,19052,17733,72135.0,-254415.0,2019,3555,79.197013,21.701537,PTR MP,Gumtara,Mohgaon,teak_belt,0,0
+476,high_score_unmapped,11403,16836,45225.0,-24945.0,0,1061,78.943841,23.774218,South_Sagar,Dhana,Hilgan,mixed_dry_deciduous,0,0
+477,stable_low_tree,5280,13517,-54345.0,158745.0,0,2148,77.959882,25.432069,Shivpuri,Karera,Amola,mixed_dry_deciduous,0,0
+478,stable_low_tree,8268,21225,176895.0,69105.0,0,4291,80.247196,24.614048,North_Panna,Panna,Garhi_Padariya,mixed_dry_deciduous,0,0
+479,clearing,7566,19511,125475.0,90165.0,2019,8086,79.741146,24.808966,Chhatarpur,Chhatarpur,Ganj,mixed_dry_deciduous,0,0
+480,high_score_unmapped,19733,8720,-198255.0,-274845.0,0,8257,76.587063,21.506651,Burhanpur,Navra,Navra,teak_belt,0,25
+481,stable_low_tree,12886,12035,-98805.0,-69435.0,0,8473,77.533271,23.370277,Bhopal,Samardha,Amoni,teak_belt,0,0
+482,stable_tree,16275,7976,-220575.0,-171105.0,0,7657,76.356807,22.44061,Dewas,Punjapura,Katukya_N,teak_belt,0,0
+483,high_score_unmapped,2904,15037,-8745.0,230025.0,0,6631,78.412655,26.076664,Gwalior,Benhat,Gunhar,mixed_dry_deciduous,0,0
+484,stable_near_loss,9867,29106,413325.0,21135.0,0,1997,82.568122,24.137967,Singrauli,Waidhan,Amlori,sal_belt,0,0
+485,stable_near_loss,7931,21250,177645.0,79215.0,0,4300,80.255823,24.705218,North_Panna,Panna,Sunehra,mixed_dry_deciduous,0,0
+486,stable_near_loss,15585,13772,-46695.0,-150405.0,0,6395,78.045625,22.641681,Hoshangabad,Hoshangabad,North_Mahendrwadi,teak_belt,0,40
+487,stable_low_tree,10457,9235,-182805.0,3435.0,0,3360,76.702547,24.020687,Rajgarh,Rajgarh,Jalpa,mixed_dry_deciduous,0,0
+488,stable_near_loss,12108,15837,15255.0,-46095.0,0,1176,78.649498,23.583876,South_Sagar,Sagar,Vishanpur,mixed_dry_deciduous,0,0
+489,high_score_unmapped,12469,25350,300645.0,-56925.0,0,823,81.443715,23.458406,South_Shahdol,Gohparu,Bareli,sal_belt,0,0
+490,stable_near_loss,16970,21385,181695.0,-191955.0,0,5156,80.262977,22.257136,Lamta_Proj_N_Balaghat,Lamta,Lotmara,plantation_mprvvn,0,0
+491,stable_low_tree,16840,9059,-188085.0,-188055.0,0,5504,76.674547,22.291628,Khandwa,Baldi,Anjaniya,teak_belt,0,0
+492,partial,19021,17716,71625.0,-253485.0,2019,3554,79.192128,21.70996,PTR MP,Gumtara,Umrighat,teak_belt,0,0
+493,stable_near_loss,16343,22051,201675.0,-173145.0,0,6979,80.459307,22.424628,East_Mandla,Jagmandal,Dhutka,sal_belt,0,0
+494,clearing,15563,13935,-41805.0,-149745.0,2022,6467,78.09319,22.647772,Hoshangabad,Sohagpur,South_Kharda,teak_belt,0,12
+495,stable_near_loss,18169,18112,83505.0,-227925.0,0,7087,79.308314,21.940252,East_Chhindwara,Chaurai,Sankh,teak_belt,0,0
+496,small,14565,20730,162045.0,-119805.0,2023,22,80.080026,22.910556,West_Mandla,Barela,Godri,sal_belt,0,9
+497,clearing,11496,14954,-11235.0,-27735.0,2022,1149,78.38976,23.749627,South_Sagar,Rahatgarh,Parasari_kalan,mixed_dry_deciduous,0,0
+498,high_score_unmapped,12449,23483,244635.0,-56325.0,0,668,80.895514,23.47321,Umaria,Umaria,Karkali,sal_belt,0,0
+499,stable_tree,18397,20346,150525.0,-234765.0,0,1860,79.956351,21.87371,South_Balaghat,Waraseoni,Kangjhari,sal_belt,0,9
+500,stable_tree,19982,6840,-254655.0,-282315.0,0,8207,76.044193,21.431432,Burhanpur,Dhulkot,Palaspani,teak_belt,0,0
+501,partial,18892,17779,73515.0,-249615.0,2020,3550,79.210576,21.744831,PTR MP,Gumtara,Kokiwada,teak_belt,0,0
+502,partial,17055,7527,-234045.0,-194505.0,2018,5703,76.229539,22.22748,Khandwa,Punasa,Sukwa,teak_belt,0,0
+503,clearing,4948,11491,-115125.0,168705.0,2023,2252,77.355039,25.518781,Shivpuri,Pohari,Lokhari,mixed_dry_deciduous,23,0
+504,clearing,9821,29619,428715.0,22515.0,2023,2003,82.71991,24.146413,Singrauli,Waidhan,Duddhichua,sal_belt,23,0
+505,high_score_unmapped,9171,21969,199215.0,42015.0,0,1298,80.46397,24.366944,South_Panna,Saleha,Mudia,mixed_dry_deciduous,0,0
+506,clearing,9749,29537,426255.0,24675.0,2023,2009,82.696331,24.166551,Singrauli,Waidhan,Morwa,sal_belt,0,0
+507,clearing,9761,29228,416985.0,24315.0,2024,2010,82.60502,24.165719,Singrauli,Waidhan,Navanagar,sal_belt,0,0
+508,small,17554,14132,-35895.0,-209475.0,2023,4428,78.152107,22.108599,North_Betul,Sarni,Vikrampur,teak_belt,0,0
+509,clearing,3631,10844,-134535.0,208215.0,2021,5295,77.158342,25.874036,Kuno_Palpur,Palpur West,Jakhoda,mixed_dry_deciduous,0,0
+510,stable_low_tree,13857,1243,-422565.0,-98565.0,0,6125,74.374786,23.055591,Jhabua,Thandla,Palashdor,mixed_dry_deciduous,0,0
