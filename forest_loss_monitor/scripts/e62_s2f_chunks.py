@@ -64,7 +64,8 @@ def one(f, t):
         return 0
     tile, r, c = f.stem.split("_")
     s = t.loc[tile]
-    h, w = np.load(f)["cls"].shape
+    z0 = np.load(f)
+    h, w = z0["cls"].shape if "cls" in z0.files else z0["y_ln2020"].shape
     fl, yr = np.zeros((h, w), "uint8"), np.zeros((h, w), "uint8")
     z = ZB[np.ix_(np.arange(h) // 3 + s.row + int(r) // 3, np.arange(w) // 3 + s.col + int(c) // 3)]
     for ro in range(0, h, TILE):
@@ -96,7 +97,9 @@ def sweep(th, repeat):
     t = pd.read_csv(WORK / "tiles.csv", keep_default_na=False).set_index("tile")
     t0 = time.time()
     while True:
-        todo = [f for f in sorted(D.glob("*.npz")) if not (OUTD / f.name).exists()]
+        files = {f.name: f for f in (WORK / "map10m_stats").glob("*.npz")}
+        files.update({f.name: f for f in D.glob("*.npz")})
+        todo = [files[n] for n in sorted(files) if not (OUTD / n).exists()]
         print("chunks to process", len(todo), int(time.time() - t0), "s", flush=True)
         with ThreadPoolExecutor(th) as ex:
             for i, ok in enumerate(ex.map(lambda f: safe(f, t), todo)):

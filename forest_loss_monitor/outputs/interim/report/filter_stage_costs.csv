@@ -1,0 +1,17 @@
+stage,points,precision,recall,flagged,real,background_real
+net + rolling + scrub-to-farm,Guna,0.326,0.806,92,53,4
+net + rolling + scrub-to-farm,Statewide,0.005,0.754,481,90,0
+"net, no rolling",Guna,0.339,0.691,73,50,3
+"net, no rolling",Statewide,0.017,0.651,336,77,0
++ NDVI fall >= .20,Guna,0.689,0.526,48,41,2
++ NDVI fall >= .20,Statewide,0.106,0.604,266,71,0
+net + NBR fall >= .15 only,Guna,0.474,0.683,65,49,3
+net + NBR fall >= .15 only,Statewide,0.102,0.608,277,72,0
+net + 5 px only,Guna,0.474,0.683,65,49,3
+net + 5 px only,Statewide,0.026,0.579,282,69,0
++ NDVI .20 and NBR .15,Guna,0.689,0.526,48,41,2
++ NDVI .20 and NBR .15,Statewide,0.106,0.567,241,67,0
++ both falls + 2 px,Guna,0.686,0.518,47,40,2
++ both falls + 2 px,Statewide,0.106,0.534,214,63,0
++ both falls + 5 px,Guna,0.963,0.441,33,31,2
++ both falls + 5 px,Statewide,0.305,0.493,172,57,0

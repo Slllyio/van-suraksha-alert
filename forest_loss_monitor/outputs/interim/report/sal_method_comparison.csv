@@ -1,0 +1,8 @@
+method,points,protocol,n,real,precision,p_range,recall,r_range,most_chosen
+LandTrendr,LandTrendr points only,held out by beat,148,35,0.546,"[0.26, 0.85]",0.553,"[0.29, 0.71]","mag 2000, drop 2000"
+Yearly NDVI/NBR break differencing,LandTrendr points only,held out by beat,148,35,0.032,"[0.0, 0.83]",0.561,"[0.37, 0.74]","NDVI 0.25, NBR 0.2, 3 px"
+Yearly NDVI/NBR break differencing,all sal points,held out by beat,214,45,0.031,"[0.01, 0.73]",0.588,"[0.38, 0.78]","NDVI 0.25, NBR 0.2, 3 px"
+Wide net + filter,LandTrendr points only,held out by beat,148,35,0.376,"[0.24, 0.75]",0.503,"[0.33, 0.65]","NDVI 0.2, NBR 0.15, 5 px"
+Wide net + filter,all sal points,held out by beat,214,45,0.351,"[0.27, 0.71]",0.537,"[0.39, 0.7]","NDVI 0.2, NBR 0.15, 5 px"
+Hansen 2018-25,LandTrendr points only,held out by beat,148,35,0.693,"[0.37, 1.0]",0.212,"[0.06, 0.4]",as published
+Hansen 2018-25,all sal points,held out by beat,214,45,0.673,"[0.38, 0.91]",0.187,"[0.06, 0.38]",as published

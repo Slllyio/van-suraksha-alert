@@ -1,0 +1,31 @@
+method,zone,my_precision,my_recall,case,implied_prevalence,corrected_p_uniform,corrected_r_uniform,corrected_p_if_flags_are_where_my_misses_are
+rule,all,0.181,0.424,miss rate 75% (14/55),0.003,0.183,0.109,0.711
+rule,all,0.181,0.424,miss rate 55%,0.002,0.182,0.191,0.402
+rule,all,0.181,0.424,miss rate 85%,0.005,0.185,0.065,1.0
+rule,mixed_dry_deciduous,0.104,0.279,miss rate 75% (14/55),0.003,0.106,0.072,0.409
+rule,mixed_dry_deciduous,0.104,0.279,miss rate 55%,0.002,0.105,0.126,0.231
+rule,mixed_dry_deciduous,0.104,0.279,miss rate 85%,0.005,0.108,0.043,0.694
+rule,plantation_mprvvn,0.455,0.639,miss rate 75% (14/55),0.008,0.458,0.164,1.0
+rule,plantation_mprvvn,0.455,0.639,miss rate 55%,0.004,0.456,0.288,1.0
+rule,plantation_mprvvn,0.455,0.639,miss rate 85%,0.013,0.461,0.097,1.0
+rule,sal_belt,0.284,0.533,miss rate 75% (14/55),0.004,0.286,0.137,1.0
+rule,sal_belt,0.284,0.533,miss rate 55%,0.002,0.285,0.241,0.632
+rule,sal_belt,0.284,0.533,miss rate 85%,0.007,0.289,0.081,1.0
+rule,teak_belt,0.099,0.314,miss rate 75% (14/55),0.002,0.1,0.081,0.388
+rule,teak_belt,0.099,0.314,miss rate 55%,0.001,0.099,0.142,0.22
+rule,teak_belt,0.099,0.314,miss rate 85%,0.003,0.102,0.048,0.659
+filter + 2 px,all,0.207,0.321,miss rate 75% (14/55),0.003,0.209,0.082,0.815
+filter + 2 px,all,0.207,0.321,miss rate 55%,0.002,0.208,0.145,0.461
+filter + 2 px,all,0.207,0.321,miss rate 85%,0.005,0.211,0.049,1.0
+filter + 2 px,mixed_dry_deciduous,0.12,0.254,miss rate 75% (14/55),0.003,0.122,0.066,0.471
+filter + 2 px,mixed_dry_deciduous,0.12,0.254,miss rate 55%,0.002,0.121,0.115,0.266
+filter + 2 px,mixed_dry_deciduous,0.12,0.254,miss rate 85%,0.005,0.124,0.039,0.799
+filter + 2 px,plantation_mprvvn,0.326,0.176,miss rate 75% (14/55),0.008,0.33,0.045,1.0
+filter + 2 px,plantation_mprvvn,0.326,0.176,miss rate 55%,0.004,0.327,0.079,0.724
+filter + 2 px,plantation_mprvvn,0.326,0.176,miss rate 85%,0.013,0.333,0.027,1.0
+filter + 2 px,sal_belt,0.472,0.442,miss rate 75% (14/55),0.004,0.473,0.113,1.0
+filter + 2 px,sal_belt,0.472,0.442,miss rate 55%,0.002,0.472,0.199,1.0
+filter + 2 px,sal_belt,0.472,0.442,miss rate 85%,0.007,0.475,0.067,1.0
+filter + 2 px,teak_belt,0.134,0.314,miss rate 75% (14/55),0.002,0.136,0.081,0.528
+filter + 2 px,teak_belt,0.134,0.314,miss rate 55%,0.001,0.135,0.142,0.298
+filter + 2 px,teak_belt,0.134,0.314,miss rate 85%,0.003,0.137,0.048,0.895

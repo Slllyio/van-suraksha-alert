@@ -1,0 +1,13 @@
+view,minimum,ha,chunks,share_of_no_minimum
+default: more recall 66/68,none,326.2,9,100.0
+"default: more recall 66/68, scrub-to-farm pixels",none,0.0,9,
+default: more recall 66/68,0.1 ha,298.7,9,91.6
+"default: more recall 66/68, scrub-to-farm pixels",0.1 ha,0.0,9,
+default: more recall 66/68,0.5 ha,218.4,9,67.0
+"default: more recall 66/68, scrub-to-farm pixels",0.5 ha,0.0,9,
+balanced 97/51,none,207.2,9,100.0
+balanced 97/51,0.1 ha,190.2,9,91.8
+balanced 97/51,0.5 ha,126.5,9,61.1
+maximum recall 26/79,none,2861.9,9,100.0
+maximum recall 26/79,0.1 ha,2481.9,9,86.7
+maximum recall 26/79,0.5 ha,1894.9,9,66.2
