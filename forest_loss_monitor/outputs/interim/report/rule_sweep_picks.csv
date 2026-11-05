@@ -1,0 +1,121 @@
+obj,rep,cfg,zone,forest,tree_drop,ndvi_drop,recent,rolling,ndvi_fall,nbr_fall,npix
+guna recall at P>=.75,0,517,,trees,0.12,0.05,True,False,0.0,0.15,3
+guna F1,0,5017,,trees,0.06,0.05,True,False,0.0,0.15,3
+statewide F1,0,11238,,woody,0.06,0.05,True,True,0.2,0.1,5
+mean of guna and statewide F1,0,11463,,woody,0.06,0.05,False,True,0.15,0.1,5
+zone-aware F1,0,8499,teak_belt,woody,0.1,0.05,False,True,0.2,0.2,9
+zone-aware F1,0,6171,sal_belt,woody,0.12,0.08,True,True,0.05,0.2,2
+zone-aware F1,0,5648,plantation_mprvvn,trees,0.06,0.03,True,True,0.0,0.2,5
+zone-aware F1,0,708,mixed_dry_deciduous,trees,0.12,0.05,True,True,0.15,0.05,5
+guna recall at P>=.75,0,518,,trees,0.12,0.05,True,False,0.0,0.15,5
+guna F1,0,593,,trees,0.12,0.05,True,False,0.15,0.15,5
+statewide F1,0,11243,,woody,0.06,0.05,True,True,0.2,0.15,5
+mean of guna and statewide F1,0,11223,,woody,0.06,0.05,True,True,0.15,0.2,5
+zone-aware F1,0,8494,teak_belt,woody,0.1,0.05,False,True,0.2,0.15,9
+zone-aware F1,0,6204,sal_belt,woody,0.12,0.08,True,True,0.15,0.0,9
+zone-aware F1,0,5648,plantation_mprvvn,trees,0.06,0.03,True,True,0.0,0.2,5
+zone-aware F1,0,8223,mixed_dry_deciduous,woody,0.1,0.05,True,True,0.15,0.2,5
+guna recall at P>=.75,0,518,,trees,0.12,0.05,True,False,0.0,0.15,5
+guna F1,0,10745,,woody,0.06,0.08,True,True,0.2,0.2,1
+statewide F1,0,11243,,woody,0.06,0.05,True,True,0.2,0.15,5
+mean of guna and statewide F1,0,9497,,woody,0.08,0.08,False,True,0.2,0.2,3
+zone-aware F1,0,4374,teak_belt,trees,0.08,0.03,False,False,0.2,0.2,9
+zone-aware F1,0,6179,sal_belt,woody,0.12,0.08,True,True,0.1,0.0,9
+zone-aware F1,0,20,plantation_mprvvn,trees,0.12,0.08,True,False,0.0,0.2,1
+zone-aware F1,0,6247,mixed_dry_deciduous,woody,0.12,0.08,True,True,0.2,0.2,3
+guna recall at P>=.75,0,3016,,trees,0.08,0.08,True,False,0.0,0.15,2
+guna F1,0,4517,,trees,0.06,0.08,True,False,0.0,0.15,3
+statewide F1,0,11618,,woody,0.06,0.03,True,False,0.2,0.15,5
+mean of guna and statewide F1,0,10347,,woody,0.08,0.03,False,False,0.15,0.2,3
+zone-aware F1,0,8109,teak_belt,woody,0.1,0.05,True,False,0.2,0.05,9
+zone-aware F1,0,9172,sal_belt,woody,0.08,0.08,True,True,0.05,0.2,3
+zone-aware F1,0,5648,plantation_mprvvn,trees,0.06,0.03,True,True,0.0,0.2,5
+zone-aware F1,0,7068,mixed_dry_deciduous,woody,0.12,0.03,True,False,0.1,0.15,5
+guna recall at P>=.75,0,518,,trees,0.12,0.05,True,False,0.0,0.15,5
+guna F1,0,593,,trees,0.12,0.05,True,False,0.15,0.15,5
+statewide F1,0,6204,,woody,0.12,0.08,True,True,0.15,0.0,9
+mean of guna and statewide F1,0,7093,,woody,0.12,0.03,True,False,0.15,0.15,5
+zone-aware F1,0,374,teak_belt,trees,0.12,0.08,False,False,0.2,0.2,9
+zone-aware F1,0,6204,sal_belt,woody,0.12,0.08,True,True,0.15,0.0,9
+zone-aware F1,0,1102,plantation_mprvvn,trees,0.12,0.03,True,False,0.2,0.0,3
+zone-aware F1,0,7093,mixed_dry_deciduous,woody,0.12,0.03,True,False,0.15,0.15,5
+guna recall at P>=.75,1,518,,trees,0.12,0.05,True,False,0.0,0.15,5
+guna F1,1,593,,trees,0.12,0.05,True,False,0.15,0.15,5
+statewide F1,1,9862,,woody,0.08,0.05,False,False,0.2,0.1,3
+mean of guna and statewide F1,1,11223,,woody,0.06,0.05,True,True,0.15,0.2,5
+zone-aware F1,1,374,teak_belt,trees,0.12,0.08,False,False,0.2,0.2,9
+zone-aware F1,1,6204,sal_belt,woody,0.12,0.08,True,True,0.15,0.0,9
+zone-aware F1,1,11523,plantation_mprvvn,woody,0.06,0.03,True,False,0.0,0.2,5
+zone-aware F1,1,8223,mixed_dry_deciduous,woody,0.1,0.05,True,True,0.15,0.2,5
+guna recall at P>=.75,1,518,,trees,0.12,0.05,True,False,0.0,0.15,5
+guna F1,1,593,,trees,0.12,0.05,True,False,0.15,0.15,5
+statewide F1,1,9987,,woody,0.08,0.05,False,True,0.2,0.1,3
+mean of guna and statewide F1,1,11223,,woody,0.06,0.05,True,True,0.15,0.2,5
+zone-aware F1,1,8499,teak_belt,woody,0.1,0.05,False,True,0.2,0.2,9
+zone-aware F1,1,6204,sal_belt,woody,0.12,0.08,True,True,0.15,0.0,9
+zone-aware F1,1,4102,plantation_mprvvn,trees,0.08,0.03,True,False,0.2,0.0,3
+zone-aware F1,1,6723,mixed_dry_deciduous,woody,0.12,0.05,True,True,0.15,0.2,5
+guna recall at P>=.75,1,503,,trees,0.12,0.05,True,False,0.0,0.0,5
+guna F1,1,578,,trees,0.12,0.05,True,False,0.15,0.0,5
+statewide F1,1,6229,,woody,0.12,0.08,True,True,0.2,0.0,9
+mean of guna and statewide F1,1,9968,,woody,0.08,0.05,False,True,0.15,0.15,5
+zone-aware F1,1,8234,teak_belt,woody,0.1,0.05,True,True,0.2,0.05,9
+zone-aware F1,1,6204,sal_belt,woody,0.12,0.08,True,True,0.15,0.0,9
+zone-aware F1,1,1062,plantation_mprvvn,trees,0.12,0.03,True,False,0.1,0.1,3
+zone-aware F1,1,708,mixed_dry_deciduous,trees,0.12,0.05,True,True,0.15,0.05,5
+guna recall at P>=.75,1,3012,,trees,0.08,0.08,True,False,0.0,0.1,3
+guna F1,1,4517,,trees,0.06,0.08,True,False,0.0,0.15,3
+statewide F1,1,11243,,woody,0.06,0.05,True,True,0.2,0.15,5
+mean of guna and statewide F1,1,10767,,woody,0.06,0.08,False,False,0.0,0.15,3
+zone-aware F1,1,8124,teak_belt,woody,0.1,0.05,True,False,0.2,0.2,9
+zone-aware F1,1,9222,sal_belt,woody,0.08,0.08,True,True,0.15,0.2,3
+zone-aware F1,1,1020,plantation_mprvvn,trees,0.12,0.03,True,False,0.0,0.2,1
+zone-aware F1,1,227,mixed_dry_deciduous,trees,0.12,0.08,True,True,0.2,0.0,3
+guna recall at P>=.75,1,518,,trees,0.12,0.05,True,False,0.0,0.15,5
+guna F1,1,593,,trees,0.12,0.05,True,False,0.15,0.15,5
+statewide F1,1,11618,,woody,0.06,0.03,True,False,0.2,0.15,5
+mean of guna and statewide F1,1,11223,,woody,0.06,0.05,True,True,0.15,0.2,5
+zone-aware F1,1,4118,teak_belt,trees,0.08,0.03,True,False,0.2,0.15,5
+zone-aware F1,1,6004,sal_belt,woody,0.12,0.08,True,False,0.0,0.0,9
+zone-aware F1,1,5648,plantation_mprvvn,trees,0.06,0.03,True,True,0.0,0.2,5
+zone-aware F1,1,7093,mixed_dry_deciduous,woody,0.12,0.03,True,False,0.15,0.15,5
+guna recall at P>=.75,2,518,,trees,0.12,0.05,True,False,0.0,0.15,5
+guna F1,2,593,,trees,0.12,0.05,True,False,0.15,0.15,5
+statewide F1,2,11243,,woody,0.06,0.05,True,True,0.2,0.15,5
+mean of guna and statewide F1,2,11223,,woody,0.06,0.05,True,True,0.15,0.2,5
+zone-aware F1,2,11440,teak_belt,woody,0.06,0.05,False,True,0.1,0.15,1
+zone-aware F1,2,6204,sal_belt,woody,0.12,0.08,True,True,0.15,0.0,9
+zone-aware F1,2,4723,plantation_mprvvn,trees,0.06,0.08,True,True,0.15,0.2,5
+zone-aware F1,2,8223,mixed_dry_deciduous,woody,0.1,0.05,True,True,0.15,0.2,5
+guna recall at P>=.75,2,503,,trees,0.12,0.05,True,False,0.0,0.0,5
+guna F1,2,503,,trees,0.12,0.05,True,False,0.0,0.0,5
+statewide F1,2,10347,,woody,0.08,0.03,False,False,0.15,0.2,3
+mean of guna and statewide F1,2,10347,,woody,0.08,0.03,False,False,0.15,0.2,3
+zone-aware F1,2,374,teak_belt,trees,0.12,0.08,False,False,0.2,0.2,9
+zone-aware F1,2,9238,sal_belt,woody,0.08,0.08,True,True,0.2,0.1,5
+zone-aware F1,2,1020,plantation_mprvvn,trees,0.12,0.03,True,False,0.0,0.2,1
+zone-aware F1,2,7068,mixed_dry_deciduous,woody,0.12,0.03,True,False,0.1,0.15,5
+guna recall at P>=.75,2,518,,trees,0.12,0.05,True,False,0.0,0.15,5
+guna F1,2,593,,trees,0.12,0.05,True,False,0.15,0.15,5
+statewide F1,2,11243,,woody,0.06,0.05,True,True,0.2,0.15,5
+mean of guna and statewide F1,2,11223,,woody,0.06,0.05,True,True,0.15,0.2,5
+zone-aware F1,2,609,teak_belt,trees,0.12,0.05,True,False,0.2,0.05,9
+zone-aware F1,2,6204,sal_belt,woody,0.12,0.08,True,True,0.15,0.0,9
+zone-aware F1,2,5648,plantation_mprvvn,trees,0.06,0.03,True,True,0.0,0.2,5
+zone-aware F1,2,9973,mixed_dry_deciduous,woody,0.08,0.05,False,True,0.15,0.2,5
+guna recall at P>=.75,2,518,,trees,0.12,0.05,True,False,0.0,0.15,5
+guna F1,2,593,,trees,0.12,0.05,True,False,0.15,0.15,5
+statewide F1,2,10368,,woody,0.08,0.03,False,False,0.2,0.15,5
+mean of guna and statewide F1,2,10368,,woody,0.08,0.03,False,False,0.2,0.15,5
+zone-aware F1,2,8374,teak_belt,woody,0.1,0.05,False,False,0.2,0.2,9
+zone-aware F1,2,6204,sal_belt,woody,0.12,0.08,True,True,0.15,0.0,9
+zone-aware F1,2,1102,plantation_mprvvn,trees,0.12,0.03,True,False,0.2,0.0,3
+zone-aware F1,2,227,mixed_dry_deciduous,trees,0.12,0.08,True,True,0.2,0.0,3
+guna recall at P>=.75,2,518,,trees,0.12,0.05,True,False,0.0,0.15,5
+guna F1,2,593,,trees,0.12,0.05,True,False,0.15,0.15,5
+statewide F1,2,10743,,woody,0.06,0.08,True,True,0.2,0.15,5
+mean of guna and statewide F1,2,11223,,woody,0.06,0.05,True,True,0.15,0.2,5
+zone-aware F1,2,374,teak_belt,trees,0.12,0.08,False,False,0.2,0.2,9
+zone-aware F1,2,6204,sal_belt,woody,0.12,0.08,True,True,0.15,0.0,9
+zone-aware F1,2,5648,plantation_mprvvn,trees,0.06,0.03,True,True,0.0,0.2,5
+zone-aware F1,2,6723,mixed_dry_deciduous,woody,0.12,0.05,True,True,0.15,0.2,5
