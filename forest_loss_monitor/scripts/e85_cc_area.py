@@ -82,7 +82,7 @@ def fetch():
     d, _, shift = shift_of()
     im = t_image(shift)
     seen = {json.loads(l)["cid"] for l in open(F)} if F.exists() else set()
-    q = d[(~d.cid.isin(seen)) & (d.y >= 0)].assign(o=lambda z: z.set.map(ORDER.index), ry=lambda z: (z.y_m // 10000).astype(int)).sort_values(["o", "ry", "x"])
+    q = d[~d.cid.isin(seen)].assign(o=lambda z: z.set.map(ORDER.index), ry=lambda z: (z.y_m // 10000).astype(int)).sort_values(["o", "ry", "x"])
     with open(F, "a") as o:
         for i in range(0, len(q), BATCH):
             wait = 30
