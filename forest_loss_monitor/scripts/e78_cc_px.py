@@ -18,7 +18,7 @@ PID0 = 700000
 def main():
     init_retry()
     d = pd.read_csv(GT / "guna_cc_labels.csv")
-    d = d[d.set.isin(["bamori_fp", "recall_kit", "recent_new", "random"])].assign(pid=lambda q: q.cid + PID0, ry=lambda q: (q.y_m // 10000).astype(int)).rename(columns={"y": "label", "y_m": "y"})
+    d = d[d.set.isin(["bamori_fp", "recall_kit", "recent_new", "random", "new_flag"])].assign(pid=lambda q: q.cid + PID0, ry=lambda q: (q.y_m // 10000).astype(int)).rename(columns={"y": "label", "y_m": "y"})
     seen = {json.loads(l)["pid"] for l in open(F)} if F.exists() else set()
     d = d[~d.pid.isin(seen)].sort_values(["ry", "x"])
     n = 0

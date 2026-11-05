@@ -17,7 +17,7 @@ SCALE = 10 if HALF == 25 else 30
 YS = list(range(2017, 2026))
 COL = "GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL"
 BATCH = 20
-ORDER = ["bamori_fp", "recall_kit", "recent_new", "felling", "reference", "random", "bamori_tp"]
+ORDER = ["new_flag", "bamori_fp", "recall_kit", "recent_new", "felling", "reference", "random", "bamori_tp"]
 
 
 def stack():
