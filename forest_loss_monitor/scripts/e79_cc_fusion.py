@@ -25,7 +25,7 @@ from e63_cascade import NETS, feats, triggers
 from e78_cc_px import F as PX_NEW, PID0
 
 warnings.filterwarnings("ignore")
-REPEATS = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+REPEATS = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 10
 TARGETS = (.9, .8, .7, .5)
 SEED = 20261106
 
