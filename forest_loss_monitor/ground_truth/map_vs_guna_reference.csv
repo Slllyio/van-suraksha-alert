@@ -1,0 +1,5 @@
+product,precision,p_ci,recall,r_ci
+"Current map, exact pixel",1.0,"[1.0, 1.0]",0.009,"[0.0, 0.033]"
+"Map + small patches, exact pixel",1.0,"[1.0, 1.0]",0.009,"[0.0, 0.033]"
+"Current map, 3x3 box, like e_Netra's 50 m box",1.0,"[1.0, 1.0]",0.009,"[0.0, 0.033]"
+"Map + small patches, 3x3 box, like e_Netra's 50 m box",1.0,"[1.0, 1.0]",0.009,"[0.0, 0.033]"

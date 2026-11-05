@@ -1,0 +1,21 @@
+test,n,real,precision,p_ci,recall,r_ci,flagged_ha
+"held-out beats, tuned on the other half",144,35,0.548,"[0.314, 1.0]",0.438,"[0.177, 0.769]",
+"reverse split, rule (-0.8, 0.08, 3)",140,20,0.148,"[0.021, 0.396]",0.403,"[0.072, 0.81]",
+"round2 ALL | Guna rule everywhere (-1.6, 0.15, 25)",510,40,0.151,"[np.float64(0.096), np.float64(0.219)]",0.645,"[np.float64(0.428), np.float64(0.904)]",22803.0
+"round2 deciduous | Guna rule everywhere (-1.6, 0.15, 25)",338,11,0.072,"[np.float64(0.017), np.float64(0.156)]",0.555,"[np.float64(0.173), np.float64(1.0)]",16447.0
+"round2 mixed_dry_deciduous | Guna rule everywhere (-1.6, 0.15, 25)",159,4,0.008,"[np.float64(0.0), np.float64(0.029)]",0.079,"[np.float64(0.0), np.float64(1.0)]",9642.0
+"round2 plantation_mprvvn | Guna rule everywhere (-1.6, 0.15, 25)",43,4,0.185,"[np.float64(0.041), np.float64(0.382)]",1.0,"[np.float64(1.0), np.float64(1.0)]",2254.0
+"round2 sal_belt | Guna rule everywhere (-1.6, 0.15, 25)",129,25,0.448,"[np.float64(0.325), np.float64(0.599)]",0.66,"[np.float64(0.41), np.float64(1.0)]",4101.0
+"round2 teak_belt | Guna rule everywhere (-1.6, 0.15, 25)",179,7,0.161,"[np.float64(0.036), np.float64(0.341)]",1.0,"[np.float64(1.0), np.float64(1.0)]",6805.0
+round2 ALL | Guna rule in mixed dry only,510,40,0.158,"[np.float64(0.109), np.float64(0.222)]",0.535,"[np.float64(0.347), np.float64(0.821)]",18110.0
+round2 deciduous | Guna rule in mixed dry only,338,11,0.047,"[np.float64(0.018), np.float64(0.09)]",0.281,"[np.float64(0.088), np.float64(0.878)]",12645.0
+round2 mixed_dry_deciduous | Guna rule in mixed dry only,159,4,0.008,"[np.float64(0.0), np.float64(0.029)]",0.079,"[np.float64(0.0), np.float64(1.0)]",9642.0
+round2 plantation_mprvvn | Guna rule in mixed dry only,43,4,0.211,"[np.float64(0.054), np.float64(0.415)]",1.0,"[np.float64(1.0), np.float64(1.0)]",1972.0
+round2 sal_belt | Guna rule in mixed dry only,129,25,0.527,"[np.float64(0.393), np.float64(0.663)]",0.66,"[np.float64(0.41), np.float64(1.0)]",3493.0
+round2 teak_belt | Guna rule in mixed dry only,179,7,0.172,"[np.float64(0.055), np.float64(0.302)]",0.469,"[np.float64(0.142), np.float64(1.0)]",3003.0
+round2 ALL | current map,510,40,0.266,"[np.float64(0.192), np.float64(0.345)]",0.535,"[np.float64(0.347), np.float64(0.821)]",10737.0
+round2 deciduous | current map,338,11,0.113,"[np.float64(0.043), np.float64(0.198)]",0.281,"[np.float64(0.088), np.float64(0.878)]",5272.0
+round2 mixed_dry_deciduous | current map,159,4,0.036,"[np.float64(0.0), np.float64(0.115)]",0.079,"[np.float64(0.0), np.float64(1.0)]",2269.0
+round2 plantation_mprvvn | current map,43,4,0.211,"[np.float64(0.054), np.float64(0.415)]",1.0,"[np.float64(1.0), np.float64(1.0)]",1972.0
+round2 sal_belt | current map,129,25,0.527,"[np.float64(0.393), np.float64(0.663)]",0.66,"[np.float64(0.41), np.float64(1.0)]",3493.0
+round2 teak_belt | current map,179,7,0.172,"[np.float64(0.055), np.float64(0.302)]",0.469,"[np.float64(0.142), np.float64(1.0)]",3003.0

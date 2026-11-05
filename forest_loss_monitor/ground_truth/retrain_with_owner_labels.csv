@@ -1,0 +1,22 @@
+test,train,precision,recall,flagged_ha
+guna_heldout_beats,my labels only,0.12,0.148,
+guna_heldout_beats,owner only,0.137,0.598,
+guna_heldout_beats,both,0.115,0.33,
+round2 ALL,my labels only,0.024,0.499,111727.0
+round2 deciduous,my labels only,0.024,0.19,16929.0
+round2 mixed_dry_deciduous,my labels only,0.016,0.157,10360.0
+round2 plantation_mprvvn,my labels only,0.214,1.0,1947.0
+round2 sal_belt,my labels only,0.02,0.66,92851.0
+round2 teak_belt,my labels only,0.037,0.221,6569.0
+round2 ALL,owner only,0.002,0.894,2150849.0
+round2 deciduous,owner only,0.002,0.867,1166949.0
+round2 mixed_dry_deciduous,owner only,0.002,0.725,416954.0
+round2 plantation_mprvvn,owner only,0.002,1.0,174221.0
+round2 sal_belt,owner only,0.003,0.898,809679.0
+round2 teak_belt,owner only,0.001,1.0,749995.0
+round2 ALL,both,0.003,0.748,1486282.0
+round2 deciduous,both,0.002,0.814,947462.0
+round2 mixed_dry_deciduous,both,0.003,0.725,277219.0
+round2 plantation_mprvvn,both,0.005,1.0,86384.0
+round2 sal_belt,both,0.004,0.66,452436.0
+round2 teak_belt,both,0.001,0.898,670242.0

@@ -1,5 +1,25 @@
 # Forest loss in Madhya Pradesh's recorded forest, 2018-2025
 
+> **Read this first (5 Nov 2026). The figures further down are superseded; do not use them.**
+> The 11,509 ha map and the 5,000-10,000 ha estimate below came from an AlphaEarth model that caught 1% of the owner's losses on the owner's
+> Guna reference, and my own labels caught only 14 of 55 of those losses. The 26% precision and 54% recall below rest on those weak labels.
+>
+> **Current method:** the owner's e_Netra rule at 10 m (`e32`, `e33`), extended with a 2023-25 window, a shrub-to-crop class, a water mask and an approximate year.
+>
+> | Test | Precision | Recall |
+> |---|---:|---:|
+> | Owner's Guna reference, 10 m map, 281 of 284 points | 56% (32-89) | 48% (31-77) |
+> | Round-2 random points, my weak labels, rule at points | 17% (9-27) | 48% (28-72) |
+>
+> - **Rough state figure, from points only:** about 15,300 ha flagged, not error-corrected, inflated by a 50 m box, and missing most scrub-to-farm conversion. True area is unknown and may be much larger: the owner marked 6 of 180 random Guna forest points as loss.
+> - **Known misses:** only 29 of 222 Bamori polygons get any flagged pixel. Dynamic World rates most of them as non-forest before the change, so a separate rabi-cycle signal is being tested (`e39`).
+> - **Year of change is weak:** 27 of 50 fellings fall within a year of the recorded date, which is itself an estimate.
+> - **Accuracy outside Guna rests on my weak labels only.**
+> - **State map incomplete:** 630 of about 3,220 chunks. The GEE project hit its monthly limit (Restricted Mode), which slows all work on the project until 1 December unless the tier changes.
+> - **Parivesh records:** 1,036 approved MP proposals, 543 with polygons, 379 whose polygon area is within 0.5-2x of the approved area, 292 of those centred inside recorded forest. Approval does not prove felling. Not yet scored.
+>
+> Everything below describes the earlier AlphaEarth route and is kept as a record.
+
 **Status: an indicative map, not a pin-point one.** Use the state and zone totals below with their ranges. Treat individual mapped patches and beat figures as leads to check on imagery or in the field: about 1 in 4 mapped pixels was real loss in independent testing.
 
 ## Key numbers

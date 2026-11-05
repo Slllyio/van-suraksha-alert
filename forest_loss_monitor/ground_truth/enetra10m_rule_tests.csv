@@ -1,0 +1,33 @@
+test,rule,precision,p_ci,recall,r_ci,flagged_ha
+guna_reference,owner rule current,0.585,"[0.367, 0.914]",0.383,"[0.25, 0.643]",
+guna_reference,owner rule recent_boost,0.639,"[0.403, 0.929]",0.48,"[0.309, 0.76]",
+guna_reference,recent + water mask,0.639,"[0.403, 0.929]",0.48,"[0.309, 0.76]",
+guna_reference,recent + late,0.639,"[0.403, 0.929]",0.48,"[0.309, 0.76]",
+guna_reference,recent + late + water,0.639,"[0.403, 0.929]",0.48,"[0.309, 0.76]",
+guna_reference,recent + shrub-to-crop,0.643,"[0.408, 0.929]",0.488,"[0.314, 0.786]",
+guna_reference,recent + late + shrub-to-crop + water,0.643,"[0.408, 0.929]",0.488,"[0.314, 0.786]",
+guna_reference,shrub-to-crop alone,1.0,"[1.0, 1.0]",0.051,"[0.01, 0.115]",
+round2 ALL,owner rule current,0.178,,0.333,,10005.0
+round2 deciduous,owner rule current,0.107,,0.365,,7264.0
+round2 sal_belt,owner rule current,0.489,,0.359,,2047.0
+round2 ALL,owner rule recent_boost,0.18,,0.364,,10778.0
+round2 deciduous,owner rule recent_boost,0.106,,0.403,,8082.0
+round2 sal_belt,owner rule recent_boost,0.492,,0.359,,2033.0
+round2 ALL,recent + water mask,0.18,,0.364,,10764.0
+round2 deciduous,recent + water mask,0.106,,0.403,,8068.0
+round2 sal_belt,recent + water mask,0.492,,0.359,,2033.0
+round2 ALL,recent + late,0.17,,0.483,,15141.0
+round2 deciduous,recent + late,0.087,,0.403,,9834.0
+round2 sal_belt,recent + late,0.361,,0.548,,4227.0
+round2 ALL,recent + late + water,0.171,,0.483,,15015.0
+round2 deciduous,recent + late + water,0.087,,0.403,,9820.0
+round2 sal_belt,recent + late + water,0.361,,0.548,,4227.0
+round2 ALL,recent + shrub-to-crop,0.175,,0.364,,11075.0
+round2 deciduous,recent + shrub-to-crop,0.102,,0.403,,8364.0
+round2 sal_belt,recent + shrub-to-crop,0.489,,0.359,,2047.0
+round2 ALL,recent + late + shrub-to-crop + water,0.168,,0.483,,15312.0
+round2 deciduous,recent + late + shrub-to-crop + water,0.085,,0.403,,10102.0
+round2 sal_belt,recent + late + shrub-to-crop + water,0.36,,0.548,,4241.0
+round2 ALL,shrub-to-crop alone,0.0,,0.0,,880.0
+round2 deciduous,shrub-to-crop alone,0.0,,0.0,,866.0
+round2 sal_belt,shrub-to-crop alone,0.0,,0.0,,14.0
