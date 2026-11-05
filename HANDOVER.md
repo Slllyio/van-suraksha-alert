@@ -29,7 +29,7 @@ eNetra keeps its own users, app, dashboard, SMS/push and officer lists; the engi
 
 | Repository | Use it? | What is in it |
 |---|---|---|
-| **Slllyio/van-suraksha-alert** (private) | **Yes, this is the one** | `field-system/` = the engine. `mp/` = the 87-division model study (PR #1, merged). PR #3 (draft) adds the hosting bundle, the server's seed data, the fixed-cut watch list and the 35% reference days: it must be merged before you deploy. PR #4 (draft) is a separate forest-loss monitor still in progress. |
+| **Slllyio/van-suraksha-alert** (private) | **Yes, this is the one** | `field-system/` = the engine. `mp/` = the 87-division model study (PR #1, merged). PR #5 (draft; it contains all of PR #3) adds the hosting bundle, the server's seed data, the fixed-cut watch list, the 35% reference days and this guide: it must be merged before you deploy. PR #4 (draft) is a separate forest-loss monitor still in progress. |
 | same repo, top-level `src/`, `dashboard/`, `scripts/`, `models/`, `*.png` | No, history | The earlier Guna-division Streamlit system (Feb-Jun 2026). Not used by the engine. A GitHub Action on `main` still commits a daily Guna alert file; it can be switched off. |
 | Slllyio/vanagni (private) | Reference only | Research history. Draft PR #7 has `docs/SYSTEM.md` (system description), #8 the Prithvi fine-tune, #9 the burn-scar answer key. |
 | Slllyio/jwala_gemini, wildfire-prediction, wildfire | **No** | Old copies, folded into vanagni in Sep 2026. Do not clone them for this work. |
@@ -95,7 +95,7 @@ Secrets the server needs (typed into `field-system/deploy/.env` on the server, n
 
 ## 6. Data inventory
 
-**Tier 1: what the server needs, already in git (PR #3, via LFS).** `field-system/data/` 78 MB (beat layer 52 MB,
+**Tier 1: what the server needs, already in git (PR #5, via LFS).** `field-system/data/` 78 MB (beat layer 52 MB,
 roads raster, industry mask, spread and runway models), `field-system/seed/` 209 MB (cloud input series and big-fire
 history the first run starts from), `field-system/pc_models/` (87 division models, calibration, `meta.json`, static inputs).
 
@@ -124,7 +124,7 @@ The local SQLite database `field-system/var/field.db` is test data and is **not*
 
 | When | Job | How |
 |---|---|---|
-| Now | Merge PR #3, pick the server, run `install.sh`, set the secrets above | deploy/README.md |
+| Now | Merge PR #5, pick the server, run `install.sh`, set the secrets above | deploy/README.md |
 | Before Feb 2027 | Trial run of the evening list on the real server for a few weeks | `GET /api/v1/health` |
 | Before Feb 2027 | Static season inputs: keep the 2025 AlphaEarth map until 2026 is published, then `pc_models/make_static_season.py` | pc_models/README.md |
 | Before Feb 2027 | `scar_hist_2027.npz` for the big-fire list; calibration refit on the 2026 season | deploy/README.md "Left for later" |
