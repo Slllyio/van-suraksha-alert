@@ -1,0 +1,9 @@
+set,why,n
+Bamori polygons,"a trees under 0.30, woody under 0.40",157
+Bamori polygons,"d passes in another 2-year pair, fixed periods miss it",1
+Bamori polygons,"g open before: trees under 0.30, woody at least 0.40",52
+Guna reference losses,"a trees under 0.30, woody under 0.40",1
+Guna reference losses,"b NDVI drop ok, tree drop under 0.12",1
+Guna reference losses,"d passes in another 2-year pair, fixed periods miss it",3
+Guna reference losses,"g open before: trees under 0.30, woody at least 0.40",2
+Guna reference losses,"h forest, no drop in either signal",2

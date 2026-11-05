@@ -1,0 +1,31 @@
+config,group,flagged,true,precision,p_lo,p_hi,recall,r_lo,r_hi,area_ha
+rule,ALL,96,21,0.162,0.084,0.268,0.462,0.262,0.706,15200
+rule,mixed_dry_deciduous,28,1,0.014,0.0,0.055,0.079,0.0,1.0,5776
+rule,plantation_mprvvn,6,2,0.178,0.0,0.721,0.463,0.0,1.0,1080
+rule,sal_belt,31,16,0.36,0.202,0.631,0.548,0.317,0.828,4241
+rule,teak_belt,31,2,0.162,0.0,0.421,0.604,0.0,0.891,4102
+rule + NDVI and NBR falls,ALL,80,20,0.195,0.1,0.329,0.409,0.225,0.638,11166
+rule + NDVI and NBR falls,mixed_dry_deciduous,25,1,0.016,0.0,0.067,0.079,0.0,1.0,5001
+rule + NDVI and NBR falls,plantation_mprvvn,4,2,0.5,0.0,1.0,0.463,0.0,1.0,385
+rule + NDVI and NBR falls,sal_belt,24,15,0.483,0.281,0.835,0.446,0.255,0.732,2572
+rule + NDVI and NBR falls,teak_belt,27,2,0.207,0.0,0.509,0.604,0.0,0.891,3208
+rule + NBR fall,ALL,83,20,0.182,0.094,0.307,0.409,0.225,0.638,11973
+rule + NBR fall,mixed_dry_deciduous,26,1,0.016,0.0,0.064,0.079,0.0,1.0,5113
+rule + NBR fall,plantation_mprvvn,4,2,0.5,0.0,1.0,0.463,0.0,1.0,385
+rule + NBR fall,sal_belt,26,15,0.38,0.221,0.719,0.446,0.255,0.732,3267
+rule + NBR fall,teak_belt,27,2,0.207,0.0,0.509,0.604,0.0,0.891,3208
+tree drop .08,ALL,102,21,0.144,0.075,0.239,0.462,0.262,0.706,17124
+tree drop .08,mixed_dry_deciduous,29,1,0.014,0.0,0.054,0.079,0.0,1.0,5857
+tree drop .08,plantation_mprvvn,7,2,0.141,0.0,0.587,0.463,0.0,1.0,1363
+tree drop .08,sal_belt,34,16,0.268,0.15,0.47,0.548,0.317,0.828,5690
+tree drop .08,teak_belt,32,2,0.157,0.0,0.414,0.604,0.0,0.891,4214
+tree drop .08 + NBR fall,ALL,88,20,0.155,0.079,0.268,0.409,0.225,0.638,14085
+tree drop .08 + NBR fall,mixed_dry_deciduous,27,1,0.016,0.0,0.063,0.079,0.0,1.0,5194
+tree drop .08 + NBR fall,plantation_mprvvn,5,2,0.288,0.0,1.0,0.463,0.0,1.0,668
+tree drop .08 + NBR fall,sal_belt,28,15,0.28,0.16,0.516,0.446,0.255,0.732,4432
+tree drop .08 + NBR fall,teak_belt,28,2,0.175,0.0,0.452,0.604,0.0,0.891,3791
+tree drop .08 + NDVI and NBR falls,ALL,83,20,0.18,0.094,0.304,0.409,0.225,0.638,12113
+tree drop .08 + NDVI and NBR falls,mixed_dry_deciduous,26,1,0.016,0.0,0.066,0.079,0.0,1.0,5082
+tree drop .08 + NDVI and NBR falls,plantation_mprvvn,5,2,0.288,0.0,1.0,0.463,0.0,1.0,668
+tree drop .08 + NDVI and NBR falls,sal_belt,24,15,0.483,0.281,0.835,0.446,0.255,0.732,2572
+tree drop .08 + NDVI and NBR falls,teak_belt,28,2,0.175,0.0,0.452,0.604,0.0,0.891,3791

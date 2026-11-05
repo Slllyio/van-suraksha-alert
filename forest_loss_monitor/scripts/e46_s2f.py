@@ -125,7 +125,7 @@ def chips():
     init_retry()
     CH.mkdir(parents=True, exist_ok=True)
     t = list(pd.read_csv(RAND).itertuples())
-    with ThreadPoolExecutor(4) as ex:
+    with ThreadPoolExecutor(1) as ex:
         for i, _ in enumerate(ex.map(chip, t)):
             if i % 20 == 0:
                 print(i, flush=True)

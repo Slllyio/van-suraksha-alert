@@ -1,0 +1,33 @@
+view,model,points,op,recall,precision,p_sd,r_sd,positives
+ts,logistic,Bamori,max F1,0.845,,,,
+ts,logistic,Bamori,precision >= 75%,0.836,,,,
+ts,logistic,Bamori,recall >= 70%,0.845,,,,
+ts,logistic,Bamori,tight rule,0.774,,,,
+ts,logistic,random300,current filter + 2 px,0.462,0.75,,,
+ts,logistic,random300,max F1,0.615,0.572,0.009,0.063,
+ts,logistic,random300,precision >= 75%,0.59,0.768,0.03,0.036,
+ts,logistic,random300,recall >= 70%,0.641,0.61,0.007,0.036,
+ts,logistic,round2 statewide,current filter + 2 px,0.0,0.0,,,
+ts,logistic,round2 statewide,max F1,0.0,0.0,0.0,0.0,
+ts,logistic,round2 statewide,precision >= 75%,0.0,0.0,0.0,0.0,
+ts,logistic,round2 statewide,recall >= 70%,0.0,0.0,0.0,0.0,
+ts,logistic,round2 mixed_dry_deciduous,max F1,0.0,0.0,,,4.0
+ts,logistic,round2 plantation_mprvvn,max F1,0.0,,,,4.0
+ts,logistic,round2 sal_belt,max F1,0.0,0.0,,,25.0
+ts,logistic,round2 teak_belt,max F1,0.0,0.0,,,7.0
+ts,hgb,Bamori,max F1,0.84,,,,
+ts,hgb,Bamori,precision >= 75%,0.83,,,,
+ts,hgb,Bamori,recall >= 70%,0.842,,,,
+ts,hgb,Bamori,tight rule,0.774,,,,
+ts,hgb,random300,current filter + 2 px,0.462,0.75,,,
+ts,hgb,random300,max F1,0.538,0.52,0.073,0.109,
+ts,hgb,random300,precision >= 75%,0.41,0.687,0.08,0.096,
+ts,hgb,random300,recall >= 70%,0.615,0.573,0.034,0.0,
+ts,hgb,round2 statewide,current filter + 2 px,0.0,0.0,,,
+ts,hgb,round2 statewide,max F1,0.0,0.0,0.0,0.0,
+ts,hgb,round2 statewide,precision >= 75%,0.0,0.0,0.0,0.0,
+ts,hgb,round2 statewide,recall >= 70%,0.0,0.0,0.0,0.0,
+ts,hgb,round2 mixed_dry_deciduous,max F1,0.0,0.0,,,4.0
+ts,hgb,round2 plantation_mprvvn,max F1,0.0,,,,4.0
+ts,hgb,round2 sal_belt,max F1,0.0,0.0,,,25.0
+ts,hgb,round2 teak_belt,max F1,0.0,0.0,,,7.0

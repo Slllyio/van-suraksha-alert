@@ -1,0 +1,120 @@
+level,year,class,zone,Division,unfiltered_ha,filter_only_ha,recommended_ha,kept_pct
+state,,,,,3389.0,2444.2,2581.1,76.2
+year x class,2018.0,clearing,,,10.5,6.7,7.2,68.4
+year x class,2018.0,shrub_to_crop,,,3.2,0.4,0.6,18.2
+year x class,2018.0,tree_to_shrub,,,39.2,6.7,10.6,27.0
+year x class,2019.0,clearing,,,22.0,19.3,19.3,87.8
+year x class,2019.0,shrub_to_crop,,,11.9,11.2,11.0,93.1
+year x class,2019.0,tree_to_shrub,,,53.4,33.6,36.1,67.6
+year x class,2020.0,clearing,,,200.5,179.0,179.1,89.3
+year x class,2020.0,shrub_to_crop,,,104.2,85.2,84.8,81.3
+year x class,2020.0,tree_to_shrub,,,381.5,247.0,260.3,68.2
+year x class,2021.0,clearing,,,123.3,107.3,107.7,87.3
+year x class,2021.0,shrub_to_crop,,,52.4,44.8,45.5,86.7
+year x class,2021.0,tree_to_shrub,,,358.3,218.0,236.4,66.0
+year x class,2022.0,clearing,,,128.0,108.4,108.4,84.7
+year x class,2022.0,shrub_to_crop,,,70.2,63.3,63.0,89.7
+year x class,2022.0,tree_to_shrub,,,565.1,315.0,376.9,66.7
+year x class,2023.0,clearing,,,176.6,157.9,157.8,89.3
+year x class,2023.0,shrub_to_crop,,,82.8,73.2,72.2,87.2
+year x class,2023.0,tree_to_shrub,,,717.6,539.8,570.4,79.5
+year x class,2024.0,clearing,,,23.7,21.0,21.1,89.0
+year x class,2024.0,shrub_to_crop,,,9.9,8.2,8.3,83.4
+year x class,2024.0,tree_to_shrub,,,185.4,156.1,160.8,86.7
+year x class,2025.0,clearing,,,7.7,5.1,5.2,67.3
+year x class,2025.0,shrub_to_crop,,,3.5,1.6,1.7,49.2
+year x class,2025.0,tree_to_shrub,,,58.3,35.8,36.9,63.4
+zone,,,mixed_dry_deciduous,,2267.2,1872.6,1857.2,81.9
+zone,,,plantation_mprvvn,,348.5,188.4,348.5,100.0
+zone,,,sal_belt,,520.7,206.0,201.8,38.8
+zone,,,teak_belt,,252.5,177.3,173.6,68.7
+zone x class,,clearing,mixed_dry_deciduous,,593.4,539.6,537.7,90.6
+zone x class,,shrub_to_crop,mixed_dry_deciduous,,310.5,275.1,272.2,87.7
+zone x class,,tree_to_shrub,mixed_dry_deciduous,,1363.3,1057.9,1047.2,76.8
+zone x class,,clearing,plantation_mprvvn,,7.6,3.9,7.6,100.0
+zone x class,,shrub_to_crop,plantation_mprvvn,,3.2,0.8,3.2,100.0
+zone x class,,tree_to_shrub,plantation_mprvvn,,337.6,183.6,337.6,100.0
+zone x class,,clearing,sal_belt,,54.4,32.5,32.2,59.2
+zone x class,,shrub_to_crop,sal_belt,,14.8,5.1,5.0,33.8
+zone x class,,tree_to_shrub,sal_belt,,451.5,168.5,164.6,36.5
+zone x class,,clearing,teak_belt,,36.7,28.6,28.2,76.8
+zone x class,,shrub_to_crop,teak_belt,,9.6,6.8,6.5,68.2
+zone x class,,tree_to_shrub,teak_belt,,206.3,142.0,138.9,67.3
+division,,,,Alirajpur,11.0,6.1,5.9,53.8
+division,,,,Anuppur,25.1,15.1,15.0,60.0
+division,,,,Ashok_Nagar,81.3,68.5,68.1,83.7
+division,,,,BTR,11.2,2.5,2.4,21.7
+division,,,,Barghat Project,8.8,4.5,8.8,100.0
+division,,,,Barwah,0.0,0.0,0.0,0.0
+division,,,,Barwani,0.0,0.0,0.0,100.0
+division,,,,Bhind,15.5,13.7,13.6,87.9
+division,,,,Bhopal,4.4,3.7,3.7,84.1
+division,,,,Burhanpur,0.8,0.1,0.1,7.4
+division,,,,Chhatarpur,14.8,11.2,11.1,75.1
+division,,,,Chhindwara_Project,2.0,0.8,2.0,100.0
+division,,,,Damoh,3.1,1.4,1.3,42.0
+division,,,,Datiya,72.7,47.3,46.6,64.1
+division,,,,Dewas,24.3,20.3,20.0,82.3
+division,,,,Dhar,0.2,0.2,0.2,78.9
+division,,,,Dindori,20.7,6.7,6.5,31.3
+division,,,,East_Chhindwara,0.0,0.0,0.0,100.0
+division,,,,East_Mandla,197.4,68.3,66.9,33.9
+division,,,,FDC_Khandwa,0.5,0.0,0.5,100.0
+division,,,,Guna,819.2,722.5,717.2,87.5
+division,,,,Gwalior,209.2,165.5,164.1,78.4
+division,,,,Harda,108.4,78.4,76.6,70.6
+division,,,,Hoshangabad,6.0,4.6,4.5,76.0
+division,,,,Jabalpur,1.6,1.0,1.0,61.2
+division,,,,Jhabua,0.3,0.3,0.3,96.8
+division,,,,Kanha Tiger Reserve,62.8,31.3,30.7,48.9
+division,,,,Katni,17.8,12.4,12.2,68.8
+division,,,,Khandwa,3.8,1.6,1.5,38.5
+division,,,,Khargone,0.0,0.0,0.0,100.0
+division,,,,Kundam_Proj_Katni,3.7,3.2,3.7,100.0
+division,,,,Kuno_Palpur,78.9,65.1,64.6,81.9
+division,,,,Lamta_Proj_N_Balaghat,183.1,82.4,183.1,100.0
+division,,,,Lamta_Proj_S_Balaghat,20.5,11.4,20.5,100.0
+division,,,,Madhav_National_Park,37.6,20.3,20.0,53.1
+division,,,,Mandsaur,19.0,10.1,10.0,52.4
+division,,,,Mohgaon_Proj_Dindori,0.9,0.2,0.9,100.0
+division,,,,Mohgaon_Proj_East_Mandla,25.5,16.1,25.5,100.0
+division,,,,Mohgaon_Proj_West_Mandla,88.9,62.6,88.9,100.0
+division,,,,Morena,33.9,27.7,27.6,81.3
+division,,,,Narsinghpur,7.4,6.4,6.3,85.5
+division,,,,Neemuch,79.2,65.2,64.7,81.7
+division,,,,Noradehi,0.0,0.0,0.0,0.0
+division,,,,North_Balaghat,57.0,18.2,17.4,30.5
+division,,,,North_Betul,11.2,4.4,4.3,37.9
+division,,,,North_Sagar,34.0,29.8,29.6,86.8
+division,,,,North_Seoni,0.1,0.1,0.1,75.0
+division,,,,North_Shahdol,0.0,0.0,0.0,0.0
+division,,,,Obedullahganj,2.9,2.4,2.3,80.8
+division,,,,PTR MP,8.1,6.7,6.6,82.2
+division,,,,Panna_TR,3.2,0.9,0.8,26.2
+division,,,,Raisen,4.6,3.1,3.1,67.5
+division,,,,Rajgarh,3.7,3.2,3.2,86.1
+division,,,,Rampur_Bhatodi_Proj,14.4,7.2,14.4,100.0
+division,,,,Rewa,2.5,0.2,0.2,6.7
+division,,,,SANJAY_DUBRI,6.0,1.8,1.7,28.4
+division,,,,Satna,49.8,31.1,30.8,61.9
+division,,,,Satpura_TR,0.8,0.4,0.4,51.8
+division,,,,Sehore,0.5,0.5,0.4,88.0
+division,,,,Sendhwa,0.9,0.7,0.7,74.4
+division,,,,Sheopur,80.2,64.1,63.1,78.8
+division,,,,Shivpuri,529.8,446.8,443.4,83.7
+division,,,,Sidhi,5.8,3.1,3.1,53.6
+division,,,,Singrauli,18.3,2.8,2.7,14.8
+division,,,,South_Balaghat,6.2,2.6,2.6,41.3
+division,,,,South_Betul,4.4,1.4,1.4,30.6
+division,,,,South_Chhindwara,0.1,0.1,0.1,100.0
+division,,,,South_Panna,15.4,8.5,8.4,54.8
+division,,,,South_Sagar,39.2,24.3,24.1,61.6
+division,,,,South_Seoni,0.1,0.0,0.0,22.2
+division,,,,South_Shahdol,31.9,15.1,14.9,46.8
+division,,,,Tikamgarh,8.3,4.8,4.8,57.0
+division,,,,Umaria,13.9,3.4,3.2,23.3
+division,,,,Umaria_Project,0.2,0.0,0.2,100.0
+division,,,,Vidisha,80.6,66.6,65.9,81.7
+division,,,,West_Betul,26.2,18.2,17.8,67.8
+division,,,,West_Chhindwara,14.8,9.2,9.1,61.5
+division,,,,West_Mandla,12.2,3.8,3.7,30.3

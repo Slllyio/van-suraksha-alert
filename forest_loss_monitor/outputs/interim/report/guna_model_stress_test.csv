@@ -1,0 +1,17 @@
+test,method,precision,p_ci,recall,r_ci,flagged,real,p_mean,r_mean,p_sd,r_sd,bg_real,base_precision,base_recall,base_flagged,base_real
+Guna held-out,filter + 2 px,0.776,"[0.553, 0.986]",0.454,"[0.297, 0.734]",48.0,43.0,,,,,,,,,
+Guna held-out,logistic max F1,0.968,"[0.895, 1.0]",0.509,"[0.299, 0.766]",41.0,39.0,0.914,0.531,0.091,0.051,2/6,,,,
+Guna held-out,logistic precision >= 75%,0.739,"[0.414, 0.991]",0.598,"[0.369, 0.847]",43.0,39.0,0.81,0.551,0.115,0.059,3/6,,,,
+shuffled labels (should be poor),logistic max F1,0.763,,0.589,,,,,,,,,,,,
+"statewide, never seen: round2",logistic max F1,0.024,,0.445,,95.0,22.0,,,,,,0.199,0.409,77.0,20.0
+round2 mixed_dry_deciduous,logistic max F1,0.016,,0.079,,28.0,1.0,,,,,,0.016,0.079,,
+round2 plantation_mprvvn,logistic max F1,0.22,,0.731,,9.0,3.0,,,,,,0.5,0.463,,
+round2 sal_belt,logistic max F1,0.385,,0.388,,24.0,13.0,,,,,,0.483,0.446,,
+round2 teak_belt,logistic max F1,0.01,,0.825,,34.0,5.0,,,,,,0.223,0.604,,
+"statewide, never seen: round1",logistic max F1,0.272,,0.399,,96.0,29.0,,,,,,0.214,0.273,80.0,23.0
+"statewide, never seen: round2",logistic precision >= 75%,0.028,,0.55,,116.0,26.0,,,,,,0.199,0.409,77.0,20.0
+round2 mixed_dry_deciduous,logistic precision >= 75%,0.013,,0.079,,31.0,1.0,,,,,,0.016,0.079,,
+round2 plantation_mprvvn,logistic precision >= 75%,0.221,,1.0,,14.0,4.0,,,,,,0.5,0.463,,
+round2 sal_belt,logistic precision >= 75%,0.331,,0.548,,31.0,16.0,,,,,,0.483,0.446,,
+round2 teak_belt,logistic precision >= 75%,0.01,,0.825,,40.0,5.0,,,,,,0.223,0.604,,
+"statewide, never seen: round1",logistic precision >= 75%,0.255,,0.441,,108.0,32.0,,,,,,0.214,0.273,80.0,23.0
