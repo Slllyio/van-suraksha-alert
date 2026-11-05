@@ -1,0 +1,5 @@
+forest_zone,forest_ha,covered_ha,clearing,tree_to_shrub,shrub_to_crop,total,coverage_pct,partly_covered,rate_pct_of_covered,rate_excl_shrub_to_crop
+mixed_dry_deciduous,3011396.94,1305413.28,449.51,1183.4,265.46,1898.37,43.3,True,0.14,0.12
+sal_belt,2373515.73,364756.86,54.42,451.51,14.8,520.73,15.4,True,0.14,0.14
+plantation_mprvvn,350754.75,84722.22,7.6,337.62,3.24,348.46,24.2,True,0.41,0.41
+teak_belt,3581792.1,349192.62,36.68,206.3,9.56,252.54,9.7,True,0.07,0.07

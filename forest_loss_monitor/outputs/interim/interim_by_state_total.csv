@@ -1,0 +1,2 @@
+state,forest_ha,covered_ha,clearing,tree_to_shrub,shrub_to_crop,total,coverage_pct,partly_covered,rate_pct_of_covered,rate_excl_shrub_to_crop
+covered area,9317459.52,2104084.98,548.21,2178.83,293.06,3020.1,22.6,True,0.14,0.13
