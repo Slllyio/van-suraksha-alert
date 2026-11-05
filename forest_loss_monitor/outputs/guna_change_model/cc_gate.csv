@@ -1,0 +1,7 @@
+method,precision,p_range,recall,r_range,ref_real,ref_false,random_flag_pct,random_woody_flag_pct,bamori_rejected,forest_to_crop,shrub_to_crop,fellings
+stage 1,0.213,0.12-0.33,0.894,0.70-1.00,53,54,33.5,20.0,94/112,37/37,131/131,51/51
+stage 1 + woody gate,0.216,0.13-0.33,0.894,0.70-1.00,53,47,9.0,20.0,13/112,12/37,33/131,51/51
+stage 1 + falls on 2 px,0.438,0.25-0.68,0.577,0.36-0.86,47,14,4.8,3.9,18/112,29/37,89/131,51/51
+stage 1 + woody gate + falls on 2 px,0.441,0.26-0.68,0.577,0.36-0.86,47,13,1.8,3.9,4/112,11/37,28/131,51/51
+stage 1 + falls on 5 px,0.704,0.43-0.97,0.543,0.33-0.82,43,6,3.8,3.3,10/112,23/37,75/131,51/51
+stage 1 + woody gate + falls on 5 px,0.712,0.43-0.99,0.543,0.33-0.82,43,5,1.5,3.3,3/112,8/37,26/131,51/51
