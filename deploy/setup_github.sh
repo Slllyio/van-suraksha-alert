@@ -27,7 +27,8 @@ git push -u origin HEAD
 # Step 3: Set FIRMS secret for GitHub Actions
 echo ""
 echo "[3/4] Setting FIRMS_MAP_KEY secret for GitHub Actions..."
-gh secret set FIRMS_MAP_KEY --body "e9440d63e8365cde82400a3e991fdc5e" --repo "$(gh api user --jq .login)/$REPO_NAME"
+: "${FIRMS_MAP_KEY:?set FIRMS_MAP_KEY in your shell first}"
+gh secret set FIRMS_MAP_KEY --body "$FIRMS_MAP_KEY" --repo "$(gh api user --jq .login)/$REPO_NAME"
 
 echo ""
 echo "[4/4] Done!"
