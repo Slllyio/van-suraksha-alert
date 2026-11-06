@@ -2,6 +2,7 @@
 Reference scores use the same area weights and whole 5 km blocks; thresholds come from inner folds. Also fused with the time-series model, with a shuffled-label control. Usage: e83_cc_pxmodel.py [repeats]"""
 import json
 import sys
+import sys
 import warnings
 
 sys.path.insert(0, "E:/FIRE/forest_loss_monitor/scripts")
@@ -17,7 +18,7 @@ from e49_ts import series_feats, ts_pass
 from e63_cascade import NETS, feats, triggers
 
 warnings.filterwarnings("ignore")
-REPEATS = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+REPEATS = int(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].isdigit() else 10
 TOP = 3                      # strongest pixels of the 25 in the box, about 0.03 ha
 CACHE = WORK / "cc_px_feats.npz"
 TARGETS = (.9, .8, .7, .6, .5)
