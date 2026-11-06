@@ -1,0 +1,8 @@
+stratum,area_ha,n,real,p,p_plan,est_ha,se_ha
+1 final map,1267.5,65,51,0.785,0.78,994.5,64.629
+"2 sieve-removed, not cropland before",5040.96,83,27,0.325,0.327,1639.83,259.222
+"3 sieve-removed, already cropland",1658.44,25,1,0.04,0.058,66.338,64.997
+"4 unflagged, net fired, not cropland before",6232.33,23,2,0.087,0.104,541.942,366.17
+"5 unflagged, net fired, already cropland",5500.38,28,2,0.071,0.086,392.884,267.706
+"6 unflagged, net quiet, not cropland before",10204.26,31,1,0.032,0.047,329.17,323.817
+"7 unflagged, net quiet, already cropland",9643.57,44,2,0.045,0.056,438.344,302.83
