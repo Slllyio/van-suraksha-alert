@@ -1,4 +1,4 @@
-Range,forest_ha,new_farmland_ha,new_without_oldfield_filter_ha,cropland_2023_25_ha,cropland_2017_19_ha,first_2020,first_2021,first_2022,first_2023,first_2024,first_2025,new_farmland_pct_of_forest
-Tarana,3734.4,5.7,43.1,1814.2,2028.3,0.4,0.4,0.4,0.5,3.5,0.3,0.2
-Ujjain,794.9,0.0,5.0,319.2,372.1,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-ALL,4529.2,5.7,48.2,2133.4,2400.4,0.4,0.4,0.4,0.5,3.5,0.3,0.1
+Range,forest_ha,new_farmland_ha,new_without_oldfield_filter_ha,cropland_2023_25_ha,cropland_2017_19_ha,new_farmland_pct_of_forest
+Tarana,3734.4,0.0,43.1,1814.2,2028.3,0.0
+Ujjain,794.9,0.0,5.0,319.2,372.1,0.0
+ALL,4529.2,0.0,48.2,2133.4,2400.4,0.0

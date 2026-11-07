@@ -1,5 +1,5 @@
-Range,forest_ha,new_farmland_ha,new_without_oldfield_filter_ha,cropland_2023_25_ha,cropland_2017_19_ha,first_2020,first_2022,first_2023,first_2025,new_farmland_pct_of_forest
-Ladkui,131.9,0.6,4.2,123.7,114.8,0.2,0.2,0.2,0.1,0.5
-Rehti,0.2,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Veerpura,0.1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-ALL,132.2,0.6,4.2,123.7,114.8,0.2,0.2,0.2,0.1,0.5
+Range,forest_ha,new_farmland_ha,new_without_oldfield_filter_ha,cropland_2023_25_ha,cropland_2017_19_ha,new_farmland_pct_of_forest
+Ladkui,131.9,0.0,4.2,123.7,114.8,0.0
+Rehti,0.2,0.0,0.0,0.0,0.0,0.0
+Veerpura,0.1,0.0,0.0,0.0,0.0,0.0
+ALL,132.2,0.0,4.2,123.7,114.8,0.0

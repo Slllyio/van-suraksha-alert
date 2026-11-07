@@ -116,7 +116,8 @@ def tables(div):
     OUTD.mkdir(parents=True, exist_ok=True)
     d = MPD / div
     g = json.load(open(d / "grid.json"))
-    thr = json.load(open(OLD_M))["threshold"]
+    m = json.load(open(OLD_M))
+    thr = m.get("threshold_mp", m["threshold"])        # 0.2 set from the blind-labelled spots of 4 divisions (e117)
     P = np.zeros((10, g["ny"], g["nx"]), "uint8")
     have = np.zeros((g["ny"], g["nx"]), bool)
     for f in d.glob("*_*.npy"):
