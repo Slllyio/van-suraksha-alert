@@ -155,7 +155,7 @@ def tables(div):
     t["new_farmland_pct_of_forest"] = 100 * t.new_farmland_ha / t.forest_ha
     by_beat = t.set_index(["Range", "Beat"]).sort_values("new_farmland_ha", ascending=False)
     by_range = t.groupby("Range").sum(numeric_only=True)
-    by_range.loc[div] = by_range.sum()
+    by_range.loc["ALL"] = by_range.sum()
     by_range["new_farmland_pct_of_forest"] = 100 * by_range.new_farmland_ha / by_range.forest_ha
     by_beat.round(1).to_csv(OUTD / f"{div}_newfarm_by_beat.csv")
     by_range.round(1).to_csv(OUTD / f"{div}_newfarm_by_range.csv")
