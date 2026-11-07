@@ -1,0 +1,622 @@
+set,id,cls,ha,det_ha,group2015,flagged,crop_label
+Bamori change polygons,F001,bare_to_crop,1.48,1.04,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F002,bare_to_crop,0.62,0.19,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F003,bare_to_crop,9.91,0.56,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F004,bare_to_crop,2.81,0.07,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F005,bare_to_crop,1.59,1.58,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F006,bare_to_crop,1.48,1.48,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F007,bare_to_crop,1.1300000000000001,1.1,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F008,bare_to_crop,48.410000000000004,6.72,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F009,bare_to_crop,3.61,1.1400000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F010,bare_to_crop,2.77,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F011,bare_to_crop,1.43,1.43,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F012,bare_to_crop,0.36,0.36,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F013,bare_to_crop,1.85,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F014,bare_to_crop,0.98,0.01,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F015,bare_to_crop,0.38,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,True
+Bamori change polygons,F016,bare_to_crop,5.1000000000000005,4.71,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F017,bare_to_crop,3.37,1.57,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F018,bare_to_crop,2.25,2.16,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F019,bare_to_crop,0.62,0.06,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F020,bare_to_crop,0.51,0.38,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F021,bare_to_crop,0.61,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F022,bare_to_crop,3.21,0.64,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F023,bare_to_crop,1.51,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F024,bare_to_crop,1.8800000000000001,0.62,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F025,bare_to_crop,1.37,1.1400000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F026,bare_to_crop,0.71,0.29,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F027,bare_to_crop,16.44,9.950000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F028,bare_to_crop,4.04,4.04,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F029,bare_to_crop,3.47,1.29,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F030,bare_to_crop,2.54,0.76,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F031,bare_to_crop,1.73,1.3,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F032,bare_to_crop,1.53,0.67,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F033,bare_to_crop,0.62,0.49,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F034,bare_to_crop,1.75,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F035,bare_to_crop,8.97,5.24,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F036,bare_to_crop,1.98,1.27,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F037,bare_to_crop,0.92,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F038,bare_to_crop,0.7000000000000001,0.6,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F039,bare_to_crop,0.65,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F040,bare_to_crop,0.31,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,True
+Bamori change polygons,F041,bare_to_crop,1.1500000000000001,0.85,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),True,True
+Bamori change polygons,F042,bare_to_crop,0.66,0.66,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),True,True
+Bamori change polygons,F043,bare_to_crop,2.37,1.8800000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F044,bare_to_crop,0.67,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F045,bare_to_crop,0.58,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F046,bare_to_crop,0.54,0.5,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F047,bare_to_crop,0.49,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F048,bare_to_crop,0.41000000000000003,0.29,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F049,bare_to_crop,0.34,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F050,bare_to_crop,0.37,0.37,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F051,bare_to_crop,1.6400000000000001,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,True
+Bamori change polygons,F052,bare_to_crop,0.44,0.44,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F053,forest_to_bare,16.02,7.1000000000000005,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+Bamori change polygons,F054,forest_to_crop,10.09,10.08,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F055,forest_to_crop,9.450000000000001,8.88,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F056,forest_to_crop,2.2,0.47000000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F057,forest_to_crop,1.42,1.35,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F058,forest_to_crop,4.4,1.82,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F059,forest_to_crop,2.65,1.83,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F060,forest_to_crop,2.48,2.45,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F061,forest_to_crop,0.8300000000000001,0.73,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F062,forest_to_crop,15.49,11.8,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F063,forest_to_crop,11.98,10.17,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F064,forest_to_crop,2.58,2.4,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F065,forest_to_crop,3.2,3.0700000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F066,forest_to_crop,21.53,16.11,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F067,forest_to_crop,15.33,9.23,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F068,forest_to_crop,8.14,6.43,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F069,forest_to_crop,6.0600000000000005,5.95,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F070,forest_to_crop,4.26,2.3000000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F071,forest_to_crop,4.09,4.09,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F072,forest_to_crop,2.09,2.07,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F073,forest_to_crop,21.3,19.34,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F074,forest_to_crop,18.330000000000002,2.75,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),True,True
+Bamori change polygons,F075,forest_to_crop,13.08,10.91,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F076,forest_to_crop,12.21,2.9,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F077,forest_to_crop,11.27,8.290000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F078,forest_to_crop,8.950000000000001,8.370000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F079,forest_to_crop,7.08,5.51,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F080,forest_to_crop,5.44,4.54,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F081,forest_to_crop,3.85,3.0500000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F082,forest_to_crop,2.49,1.53,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F083,forest_to_crop,0.87,0.87,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F084,forest_to_crop,6.8500000000000005,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F085,forest_to_crop,3.42,1.06,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F086,forest_to_crop,11.69,6.95,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F087,forest_to_crop,4.63,0.43,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F088,forest_to_crop,17.97,13.73,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F089,forest_to_crop,23.8,20.29,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F090,forest_to_crop,0.79,0.79,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F091,shrub_to_crop,8.5,8.5,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F092,shrub_to_crop,2.57,0.99,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F093,shrub_to_crop,0.84,0.63,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F094,shrub_to_crop,0.8200000000000001,0.8200000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F095,shrub_to_crop,0.62,0.17,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F096,shrub_to_crop,0.44,0.03,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),True,True
+Bamori change polygons,F097,shrub_to_crop,0.4,0.04,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F098,shrub_to_crop,0.39,0.06,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F099,shrub_to_crop,0.41000000000000003,0.4,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F100,shrub_to_crop,0.34,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F101,shrub_to_crop,5.2,4.93,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F102,shrub_to_crop,0.9400000000000001,0.42,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F103,shrub_to_crop,0.52,0.52,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F104,shrub_to_crop,0.52,0.07,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F105,shrub_to_crop,0.41000000000000003,0.36,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F106,shrub_to_crop,0.35000000000000003,0.35000000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F107,shrub_to_crop,0.56,0.47000000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F108,shrub_to_crop,3.61,1.8900000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F109,shrub_to_crop,2.74,2.74,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F110,shrub_to_crop,2.62,2.62,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F111,shrub_to_crop,2.15,2.15,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F112,shrub_to_crop,1.69,1.61,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F113,shrub_to_crop,1.58,0.9400000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F114,shrub_to_crop,1.46,1.46,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F115,shrub_to_crop,1.19,1.19,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F116,shrub_to_crop,1.11,0.43,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F117,shrub_to_crop,0.88,0.47000000000000003,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),True,True
+Bamori change polygons,F118,shrub_to_crop,0.93,0.37,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F119,shrub_to_crop,0.51,0.1,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F120,shrub_to_crop,0.51,0.24,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F121,shrub_to_crop,0.48,0.25,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F122,shrub_to_crop,0.45,0.45,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F123,shrub_to_crop,0.42,0.28,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F124,shrub_to_crop,0.34,0.29,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F125,shrub_to_crop,11.4,10.52,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F126,shrub_to_crop,7.03,5.94,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F127,shrub_to_crop,1.79,0.9,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F128,shrub_to_crop,1.1400000000000001,1.11,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F129,shrub_to_crop,1.06,0.58,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F130,shrub_to_crop,0.85,0.8300000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F131,shrub_to_crop,0.55,0.21,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F132,shrub_to_crop,0.47000000000000003,0.06,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),True,True
+Bamori change polygons,F133,shrub_to_crop,2.37,1.41,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F134,shrub_to_crop,2.34,1.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F135,shrub_to_crop,2.0300000000000002,0.58,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F136,shrub_to_crop,1.34,1.1500000000000001,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),True,True
+Bamori change polygons,F137,shrub_to_crop,1.29,1.27,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F138,shrub_to_crop,0.75,0.24,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F139,shrub_to_crop,0.81,0.28,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F140,shrub_to_crop,0.33,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F141,shrub_to_crop,0.31,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F142,shrub_to_crop,0.32,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F143,shrub_to_crop,0.27,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F144,shrub_to_crop,4.68,4.55,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F145,shrub_to_crop,3.8000000000000003,3.74,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F146,shrub_to_crop,1.86,1.17,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F147,shrub_to_crop,1.44,1.44,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F148,shrub_to_crop,0.64,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F149,shrub_to_crop,0.53,0.19,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F150,shrub_to_crop,0.35000000000000003,0.35000000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F151,shrub_to_crop,0.23,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F152,shrub_to_crop,3.7800000000000002,2.2600000000000002,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F153,shrub_to_crop,2.44,0.26,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F154,shrub_to_crop,1.6,0.93,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F155,shrub_to_crop,1.22,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F156,shrub_to_crop,0.46,0.27,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F157,shrub_to_crop,0.49,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F158,shrub_to_crop,0.44,0.03,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F159,shrub_to_crop,0.34,0.34,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F160,shrub_to_crop,0.25,0.25,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F161,shrub_to_crop,1.22,0.54,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F162,shrub_to_crop,2.44,2.44,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F163,shrub_to_crop,2.16,0.04,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F164,shrub_to_crop,1.96,1.16,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F165,shrub_to_crop,1.86,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F166,shrub_to_crop,1.37,1.37,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F167,shrub_to_crop,1.26,1.18,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F168,shrub_to_crop,0.91,0.14,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F169,shrub_to_crop,1.04,0.29,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F170,shrub_to_crop,0.7000000000000001,0.7000000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F171,shrub_to_crop,12.47,4.91,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F172,shrub_to_crop,8.97,6.79,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F173,shrub_to_crop,5.2,2.44,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F174,shrub_to_crop,3.67,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F175,shrub_to_crop,3.11,3.11,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F176,shrub_to_crop,2.5300000000000002,2.5300000000000002,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F177,shrub_to_crop,2.29,0.8300000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F178,shrub_to_crop,2.0100000000000002,1.3800000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F179,shrub_to_crop,1.8800000000000001,1.8800000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F180,shrub_to_crop,1.77,1.6,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F181,shrub_to_crop,1.45,0.97,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F182,shrub_to_crop,1.26,0.13,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F183,shrub_to_crop,0.64,0.58,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F184,shrub_to_crop,0.58,0.58,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F185,shrub_to_crop,0.46,0.46,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F186,shrub_to_crop,0.44,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F187,shrub_to_crop,0.35000000000000003,0.35000000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F188,shrub_to_crop,0.37,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F189,shrub_to_crop,0.33,0.31,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F190,shrub_to_crop,5.41,4.01,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F191,shrub_to_crop,1.23,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,True
+Bamori change polygons,F192,shrub_to_crop,0.78,0.76,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F193,shrub_to_crop,0.81,0.81,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F194,shrub_to_crop,1.84,0.9,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F195,shrub_to_crop,1.57,0.04,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F196,shrub_to_crop,0.96,0.73,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F197,shrub_to_crop,0.91,0.87,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F198,shrub_to_crop,0.25,0.25,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F199,shrub_to_crop,5.3,4.12,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F200,shrub_to_crop,3.6,2.97,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F201,shrub_to_crop,1.78,1.74,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F202,shrub_to_crop,1.41,0.97,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F203,shrub_to_crop,1.25,1.24,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F204,shrub_to_crop,0.91,0.72,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F205,shrub_to_crop,0.84,0.68,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F206,shrub_to_crop,0.84,0.38,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F207,shrub_to_crop,0.78,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F208,shrub_to_crop,0.58,0.5700000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F209,shrub_to_crop,0.48,0.25,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F210,shrub_to_crop,0.42,0.41000000000000003,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),True,True
+Bamori change polygons,F211,shrub_to_crop,1.26,0.35000000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F212,shrub_to_crop,0.8,0.04,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F213,shrub_to_crop,0.71,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+Bamori change polygons,F214,shrub_to_crop,0.68,0.68,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F215,shrub_to_crop,0.74,0.74,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F216,shrub_to_crop,8.33,8.14,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F217,shrub_to_crop,1.77,0.89,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F218,shrub_to_crop,1.3900000000000001,0.47000000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F219,shrub_to_crop,1.02,0.79,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F220,shrub_to_crop,1.02,0.56,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F221,shrub_to_crop,0.87,0.26,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+Bamori change polygons,F222,unspecified,0.29,0.23,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",0,c,3.41,2.23,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",1,c,9.120000000000001,1.11,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",2,c,1.11,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",3,c,0.07,0.07,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",4,c,2.79,0.81,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",5,c,0.43,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",6,f,3.16,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",7,c2,1.25,0.1,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",8,b,6.99,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",9,c2,2.12,2.12,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",10,f,78.09,1.56,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",11,c,2.12,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",12,b,4.5,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",13,c,1.6300000000000001,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,True
+"land-cover polygons 2022, interior",15,c,0.81,0.81,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",16,c,0.81,0.11,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),True,True
+"land-cover polygons 2022, interior",17,c,0.51,0.04,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",18,f,20.42,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",19,b,3.7,1.95,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",20,c,3.24,3.06,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",21,f,41.480000000000004,11.43,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",22,c2,0.46,0.42,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",23,c,0.8,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,True
+"land-cover polygons 2022, interior",24,c,2.81,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",25,c,1.87,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",26,c2,6.17,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",27,c,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",28,f,6.16,1.75,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",29,c2,3.61,1.6400000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",30,c,0.02,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",31,c2,1.32,1.07,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",32,c2,3.61,3.3200000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",33,c,5.83,3.2600000000000002,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",34,c,1.8,1.1500000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",35,c2,0.13,0.13,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",36,c2,0.02,0.02,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",37,c,0.07,0.02,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",38,c,0.54,0.54,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",39,c,5.2700000000000005,1.33,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",40,c,14.33,7.91,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",41,f,23.42,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",42,c2,2.45,1.94,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",43,b,33.12,0.05,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",44,c,0.84,0.8300000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",45,c,5.42,0.14,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",46,c2,0.24,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",47,c2,0.21,0.09,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",48,c,0.32,0.32,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",49,c2,0.11,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",50,c2,0.51,0.51,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",51,b,1.81,1.57,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",52,f,8.67,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",53,c2,2.2600000000000002,0.17,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",54,c2,5.49,4.17,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",55,c,2.15,1.33,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",56,f,51.36,4.87,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",57,c2,0.05,0.05,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",58,c2,0.74,0.74,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",59,c,0.5700000000000001,0.5700000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",60,c,2.58,1.71,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",61,c2,2.18,2.06,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",62,c,3.15,2.16,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",63,b,34.45,2.2800000000000002,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",64,b,2.99,0.06,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",65,c,2.46,0.9,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",66,f,286.16,18.73,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",67,c2,1.57,1.56,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",68,c2,4.55,1.96,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",69,c,8.91,4.03,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",70,c,7.58,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,True
+"land-cover polygons 2022, interior",71,c2,3.21,0.5700000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",72,f,49.21,0.5700000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",73,c2,2.06,1.37,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",74,c,3.46,0.08,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",75,c,1.72,0.03,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",76,f,12.74,0.52,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",77,c2,0.3,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",78,c,0.32,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",79,c,0.61,0.11,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",80,df,69.78,0.01,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",81,b,24.23,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",82,df,48.52,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",83,c,6.55,2.06,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",84,df,50.88,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",85,b,76.35000000000001,0.62,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",86,c2,7.91,0.22,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",87,df,71.29,0.31,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",88,b,35.92,13.08,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",89,c2,1.96,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",90,f,24.5,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",91,c,3.29,3.24,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",92,c2,6.95,6.0600000000000005,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",93,df,27.67,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",94,b,2.86,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",95,c,2.0,1.87,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",96,c,3.22,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,True
+"land-cover polygons 2022, interior",97,f,2.3000000000000003,1.1,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",98,c2,3.46,0.06,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",99,f,24.44,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",100,c,3.06,0.78,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",101,c,11.61,5.28,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",102,c2,0.48,0.41000000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",103,c2,0.15,0.03,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",104,c,0.33,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,True
+"land-cover polygons 2022, interior",105,c,55.58,2.12,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),True,True
+"land-cover polygons 2022, interior",106,c2,3.18,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",107,c2,0.74,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",108,c2,0.12,0.03,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",109,c,2.99,0.71,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",110,c2,0.15,0.15,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",111,c2,1.3,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",112,b,2.14,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",113,c,0.01,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",114,f,0.11,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",115,b,3.31,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",116,c2,0.31,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",117,c,0.05,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",118,c,0.13,0.11,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",120,c2,0.01,0.01,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",121,b,0.02,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",122,c,1.31,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",123,c,1.26,0.56,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",124,c2,1.47,0.96,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",125,c,0.85,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",126,b,4.33,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",127,c,0.98,0.08,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",128,df,62.42,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",129,df,46.38,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",130,c2,0.98,0.56,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",131,c2,1.1300000000000001,0.48,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",132,c2,0.9500000000000001,0.9500000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",133,df,9.51,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",134,b,5.13,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",135,c2,0.24,0.24,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",136,c2,0.48,0.07,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",137,c,0.86,0.86,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",138,c2,0.99,0.9,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",139,c2,0.61,0.5700000000000001,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",140,f,12.86,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",141,b,3.21,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",142,c2,1.21,1.21,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",143,b,2.5,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",144,c,2.02,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",145,df,1.55,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",146,f,4.15,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",147,c2,3.45,0.36,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,True
+"land-cover polygons 2022, interior",148,c,2.19,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",149,c2,0.06,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",150,b,0.75,0.41000000000000003,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+"land-cover polygons 2022, interior",151,c,0.22,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",152,df,1.86,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+"land-cover polygons 2022, interior",153,c2,0.73,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,True
+"land-cover polygons 2022, interior",154,f,4.91,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,RNEW_002,loss,0.32,0.22,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,RNEW_007,no_change,0.38,0.31,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,RNEW_006,loss,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,RNEW_000,loss,0.65,0.6,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,RNEW_004,loss,0.27,0.15,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,RNEW_003,loss,0.32,0.32,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,RNEW_005,loss,0.31,0.28,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,RNEW_001,no_change,0.28,0.26,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,RNEW_008,loss,0.29,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.01,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.25,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.24,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.23,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.23,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.22,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.26,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.24,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.23,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.02,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.23,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.24,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.24,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.13,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.24,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.22,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.11,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),True,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.26,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,"other or not surveyed (tank, river, outside survey)",False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False
+e_Netra field and reference sites,,no_change,0.25,0.0,new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),False,False

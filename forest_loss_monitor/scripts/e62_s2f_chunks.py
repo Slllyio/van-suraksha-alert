@@ -50,7 +50,7 @@ def part(x0, y1, h, w):
     while True:
         try:
             a = img.sampleRectangle(region=roi, defaultValue=0).getInfo()["properties"]
-            return np.array(a["f"], "uint8"), np.array(a["y"], "uint8")
+            return np.array(a["f"], "uint8")[::-1], np.array(a["y"], "uint8")[::-1]      # sampleRectangle rows come south to north here (see e100_s2f_flipfix.py)
         except Exception as e:
             if "Too Many" not in str(e):
                 raise
@@ -78,7 +78,7 @@ def one(f, t):
             fl[ro:ro + a.shape[0], co:co + a.shape[1]], yr[ro:ro + a.shape[0], co:co + a.shape[1]] = a, b
     n = ndimage.uniform_filter(fl.astype("float32"), 5, mode="constant") * 25
     tmp = out.with_suffix(".tmp.npz")
-    np.savez_compressed(tmp, f=fl, y=yr, maj=(np.rint(n) >= MIN_MAJ) & (fl > 0))
+    np.savez_compressed(tmp, f=fl, y=yr, maj=(np.rint(n) >= MIN_MAJ) & (fl > 0), flipfix=True)
     tmp.replace(out)
     return 1
 
@@ -97,9 +97,12 @@ def sweep(th, repeat):
     t = pd.read_csv(WORK / "tiles.csv", keep_default_na=False).set_index("tile")
     t0 = time.time()
     while True:
-        files = {f.name: f for f in (WORK / "map10m_stats").glob("*.npz")}
-        files.update({f.name: f for f in D.glob("*.npz")})
-        todo = [files[n] for n in sorted(files) if not (OUTD / n).exists()]
+        stats = {f.name: f for f in (WORK / "map10m_stats").glob("*.npz")}
+        old = {f.name: f for f in D.glob("*.npz") if f.name not in stats}
+        from e72_map_wide import priority_names
+        pri = priority_names()
+        todo = [stats[n] for n in sorted(stats) if not (OUTD / n).exists()] + [old[n] for n in sorted(old) if not (OUTD / n).exists()]   # finished new-layout chunks first
+        todo = sorted(todo, key=lambda f: f.name not in pri)                                                                          # priority divisions before all
         print("chunks to process", len(todo), int(time.time() - t0), "s", flush=True)
         with ThreadPoolExecutor(th) as ex:
             for i, ok in enumerate(ex.map(lambda f: safe(f, t), todo)):

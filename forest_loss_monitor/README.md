@@ -1,3 +1,7 @@
+> **Current method (6 Nov 2026).** Stored per-pixel statistics in `work/map10m_stats` (yearly Oct-Nov NDVI, NBR and BSI at 10 m; Dynamic World and NDVI windows at 30 m). Default deciduous view: wide net + scrub-to-farm, NBR fall >= 0.15, 3 px, 0.1 ha minimum. Sal zone: LandTrendr at 30 m. Forest flooded by new reservoirs is masked out and reported separately.
+> Loss year (tree loss, deciduous zones): fitted break minus one year, within 1 year of the true date for 34 of 51 of the owner's dated fellings (67%); exact for 8 of 51. Sal: LandTrendr year (not checked against dates). Scrub-to-farm: first winter-crop season.
+> Caveats: 30 m Dynamic World makes patch edges coarser than 10 m: unfiltered area on three overlap chunks ran 4-8% below the old 10 m rule, with about 95% of patches found. Accuracy figures rest on the owner's Guna labels and my lower-quality 30 m chip labels, and are not proven outside Guna.
+
 # Forest loss in Madhya Pradesh's recorded forest, 2018-2025
 
 > **Read this first (5 Nov 2026). The figures further down are superseded; do not use them.**

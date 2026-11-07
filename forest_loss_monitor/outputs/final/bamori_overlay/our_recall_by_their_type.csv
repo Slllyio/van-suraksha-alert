@@ -1,0 +1,11 @@
+type,abrupt,their_ha,ours_flags_ha,recall,our_class_mix
+rabi farm,False,98.2,51.5,0.525,"{'clearing': 9.3, 'tree_to_shrub': 6.3, 'scrub_to_farm': 35.9}"
+rabi farm,True,256.9,174.5,0.679,"{'clearing': 59.3, 'tree_to_shrub': 34.4, 'scrub_to_farm': 80.8}"
+kharif / rainfed,False,33.9,3.8,0.112,"{'clearing': 3.3, 'tree_to_shrub': 0.0, 'scrub_to_farm': 0.5}"
+kharif / rainfed,True,76.3,26.9,0.353,"{'clearing': 25.3, 'tree_to_shrub': 1.5, 'scrub_to_farm': 0.1}"
+grass / grazing,False,12.2,2.2,0.177,"{'clearing': 0.4, 'tree_to_shrub': 1.7, 'scrub_to_farm': 0.0}"
+grass / grazing,True,40.2,19.6,0.487,"{'clearing': 7.8, 'tree_to_shrub': 11.7, 'scrub_to_farm': 0.0}"
+shrub regrowth,False,35.2,5.1,0.146,"{'clearing': 0.1, 'tree_to_shrub': 5.0, 'scrub_to_farm': 0.1}"
+shrub regrowth,True,64.4,24.0,0.373,"{'clearing': 0.0, 'tree_to_shrub': 23.9, 'scrub_to_farm': 0.2}"
+bare / open,False,98.1,19.2,0.195,"{'clearing': 5.6, 'tree_to_shrub': 12.8, 'scrub_to_farm': 0.7}"
+bare / open,True,215.2,95.2,0.442,"{'clearing': 31.8, 'tree_to_shrub': 62.7, 'scrub_to_farm': 0.7}"

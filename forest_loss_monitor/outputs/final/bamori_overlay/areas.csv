@@ -1,0 +1,12 @@
+item,ha
+Bamori range forest in both footprints,38979.1
+"ours (default view, all classes)",3771.2
+"theirs, confirmed 2019-24",930.5
+"theirs, 2025 unconfirmed",351.6
+both,422.0
+ours only,3321.9
+ours inside their 2025,27.2
+theirs only,508.5
+our precision against theirs (any year incl. 2025),0.119
+our recall of their confirmed 2019-24,0.454
+ours only but within 30 m of theirs (edge),303.1

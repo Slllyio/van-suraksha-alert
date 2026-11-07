@@ -1,0 +1,11 @@
+item,est_ha,lo,hi,se,spots,pct_of_forest
+all loss (my labels),8521,4569.0,12474.0,2017.0,78.0,3.82
+"tree loss, not farmland",1491,816.0,2167.0,345.0,18.0,0.67
+"new farmland (my labels, all beat land)",7030,3088.0,10972.0,2011.0,60.0,3.15
+tree loss inside new-crop map,484,77.0,891.0,208.0,5.0,0.22
+"mapped tree loss (default view, clearing + tree-to-shrub)",2460,,,,,1.1
+"new farmland on 2015 forest land, Guna thread sample-adjusted",5910,,,,,2.65
+combined: tree loss + new farmland - overlap,6917,5944.0,7890.0,497.0,,3.1
+woody cover (DW trees >= 0.30) 2017,62953,,,,,28.24
+woody cover (DW trees >= 0.30) 2025,47367,,,,,21.24
+forest (beat area),222959,,,,,100.0

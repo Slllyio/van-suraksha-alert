@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import ee
 import numpy as np
+import pandas as pd
 
 from common import *
 from e32_enetra10m import A_EARLY, A_LATE, B_EARLY, B_LATE, S2, dw_mean, ndvi_mean
@@ -100,9 +101,33 @@ def fetch(s, r, c, h, w, out):
     return 0
 
 
+def priority_names():
+    """Chunks touching the divisions listed in work/priority_divisions.txt go first."""
+    f = WORK / "priority_divisions.txt"
+    if not f.exists():
+        return set()
+    import rasterio
+    divs = [l.strip() for l in open(f) if l.strip()]
+    b = pd.read_csv(OUT / "beat_lookup.csv")
+    with rasterio.open(WORK / "zone_beat.tif") as s:
+        z = np.isin(s.read(1), b[b.Division.isin(divs)].zone_id.values)
+    return {j[5].name for j in jobs() if z[j[0].row + j[1] // 3:j[0].row + (j[1] + 900) // 3, j[0].col + j[2] // 3:j[0].col + (j[2] + 900) // 3].any()}
+
+
+def guna_distance():
+    """Chunk-centre distance (zone grid cells) to the Guna division centroid: the owner's rollout runs outward from Guna."""
+    import rasterio
+    b = pd.read_csv(OUT / "beat_lookup.csv")
+    with rasterio.open(WORK / "zone_beat.tif") as s:
+        r, c = np.nonzero(np.isin(s.read(1), b[b.Division == "Guna"].zone_id.values))
+    r0, c0 = r.mean(), c.mean()
+    return {j[5].name: float(np.hypot(j[0].row + (j[1] + 450) / 3 - r0, j[0].col + (j[2] + 450) / 3 - c0)) for j in jobs()}
+
+
 def ordered():
-    js = [(*j[:5], W / j[5].name, j[5].exists()) for j in jobs()]
-    return [j[:6] for j in sorted(js, key=lambda j: j[6]) if not j[5].exists()]
+    pri, dist = priority_names(), guna_distance()
+    js = [(*j[:5], W / j[5].name) for j in jobs()]
+    return [j for j in sorted(js, key=lambda j: (j[5].name not in pri, dist[j[5].name])) if not j[5].exists()]
 
 
 def state(th):
