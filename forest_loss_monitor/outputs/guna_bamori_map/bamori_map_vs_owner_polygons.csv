@@ -1,0 +1,5 @@
+owner_polygons,polygons,area_ha,polygons_with_flag_0_1ha_plus,area_flagged_ha,area_flagged_pct
+validated change: forest_to_crop,37,302.3,28,142.2,47.0
+validated change: shrub_to_crop,131,222.7,83,107.8,48.4
+validated change: bare_to_crop,52,155.3,22,35.8,23.1
+rejected candidates,112,247.9,8,4.7,1.9

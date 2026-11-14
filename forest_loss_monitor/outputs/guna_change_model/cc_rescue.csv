@@ -1,0 +1,21 @@
+method,precision,p_range,recall,r_range,real,false,background_losses,random_flag_pct,forest_to_crop,shrub_to_crop,bamori_rejected
+falls on 2 px,0.438,0.25-0.68,0.577,0.36-0.86,47,14,2/6,4.8,29/37,89/131,18/112
+"falls on 2 px, or leaf-on VH above 90% of random land",0.442,0.25-0.67,0.691,0.46-0.97,50,19,3/6,9.5,31/37,97/131,31/112
+"falls on 2 px, or leaf-on VH above 95% of random land",0.45,0.25-0.68,0.691,0.46-0.97,50,16,3/6,7.2,31/37,94/131,29/112
+"falls on 2 px, or leaf-on VH above 98% of random land",0.447,0.25-0.68,0.683,0.45-0.96,49,16,3/6,5.8,31/37,91/131,25/112
+"falls on 2 px, or dry VH above 90% of random land",0.388,0.23-0.57,0.691,0.46-0.97,50,24,3/6,8.5,31/37,97/131,28/112
+"falls on 2 px, or dry VH above 95% of random land",0.407,0.23-0.63,0.586,0.37-0.87,48,17,2/6,7.0,31/37,94/131,22/112
+"falls on 2 px, or dry VH above 98% of random land",0.412,0.23-0.64,0.586,0.37-0.87,48,15,2/6,5.2,29/37,91/131,21/112
+"falls on 2 px, or either VH above 90% of random land",0.401,0.24-0.58,0.789,0.55-0.99,51,24,4/6,8.2,33/37,97/131,34/112
+"falls on 2 px, or either VH above 95% of random land",0.421,0.23-0.64,0.691,0.46-0.97,50,18,3/6,7.2,32/37,93/131,27/112
+"falls on 2 px, or either VH above 98% of random land",0.445,0.26-0.68,0.594,0.37-0.87,49,14,2/6,5.8,30/37,91/131,24/112
+falls on 5 px,0.704,0.43-0.97,0.543,0.33-0.82,43,6,2/6,3.8,23/37,75/131,10/112
+"falls on 5 px, or leaf-on VH above 90% of random land",0.647,0.40-0.90,0.674,0.44-0.95,48,12,3/6,8.8,25/37,86/131,25/112
+"falls on 5 px, or leaf-on VH above 95% of random land",0.657,0.40-0.93,0.657,0.41-0.93,46,9,3/6,6.2,25/37,82/131,23/112
+"falls on 5 px, or leaf-on VH above 98% of random land",0.654,0.40-0.93,0.649,0.41-0.92,45,9,3/6,4.8,25/37,79/131,17/112
+"falls on 5 px, or dry VH above 90% of random land",0.466,0.27-0.71,0.691,0.46-0.97,50,20,3/6,7.8,27/37,86/131,24/112
+"falls on 5 px, or dry VH above 95% of random land",0.514,0.28-0.81,0.586,0.37-0.87,48,13,2/6,6.0,25/37,82/131,16/112
+"falls on 5 px, or dry VH above 98% of random land",0.624,0.36-0.92,0.569,0.35-0.84,46,9,2/6,4.2,23/37,77/131,14/112
+"falls on 5 px, or either VH above 90% of random land",0.473,0.27-0.71,0.789,0.55-0.99,51,20,4/6,7.5,28/37,86/131,30/112
+"falls on 5 px, or either VH above 95% of random land",0.549,0.31-0.84,0.674,0.44-0.96,48,13,3/6,6.2,26/37,82/131,21/112
+"falls on 5 px, or either VH above 98% of random land",0.702,0.44-0.95,0.577,0.36-0.85,47,8,2/6,4.8,24/37,79/131,16/112

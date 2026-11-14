@@ -1,0 +1,6 @@
+detector,real,false_alarms,point_precision,area_precision,area_recall,background_false,background_losses,random_flag_pct,fellings,bamori_conversions,bamori_rejected
+sudden: yearly-break patch of 0.5 ha or more,50,23,0.685,0.419,0.78,10,4/6,14.0,49/51,164/170,80/112
+"small: strong yearly break in the box, no patch needed",1,2,0.333,0.074,0.009,1,0/6,0.0,0/51,0/170,0/112
+"gradual: trend or start-to-end change, yearly break weak",0,1,0.0,0.0,0.0,1,0/6,0.8,1/51,3/170,3/112
+all three together,51,26,0.662,0.38,0.789,12,4/6,14.8,50/51,167/170,83/112
+sudden + small,51,25,0.671,0.399,0.789,11,4/6,14.0,49/51,164/170,80/112

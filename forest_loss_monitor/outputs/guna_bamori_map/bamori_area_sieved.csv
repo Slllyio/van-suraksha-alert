@@ -1,0 +1,9 @@
+net,sieve,forest_ha,net_ha,after_sieve_ha,patches,share_of_forest_pct
+stage 1,"NDVI fall >= 0.15, NBR fall >= 0.15, on 2 px",39547,19700,1500,573,3.79
+stage 1,"NDVI fall >= 0.15, NBR fall >= 0.15, on 5 px",39547,19700,1499,573,3.79
+strict,"NDVI fall >= 0.15, NBR fall >= 0.15, on 2 px",39547,8048,1268,491,3.21
+strict,"NDVI fall >= 0.15, NBR fall >= 0.15, on 5 px",39547,8048,1268,491,3.21
+stage 1,"NDVI fall >= 0.15, NBR fall >= 0.12, on 2 px",39547,19700,1636,611,4.14
+stage 1,"NDVI fall >= 0.15, NBR fall >= 0.12, on 5 px",39547,19700,1634,609,4.13
+strict,"NDVI fall >= 0.15, NBR fall >= 0.12, on 2 px",39547,8048,1365,511,3.45
+strict,"NDVI fall >= 0.15, NBR fall >= 0.12, on 5 px",39547,8048,1363,509,3.45

@@ -1,0 +1,5 @@
+kind_of_loss,losses,share_of_loss_by_area_pct,background,sudden,small,gradual,any
+"gradual, 0.5 ha or more",10,8.5,0,10,0,0,10
+"sudden, 0.5 ha or more",40,69.5,4,40,0,0,40
+"sudden, under 0.5 ha",5,22.0,2,0,1,0,1
+all losses,55,100.0,6,50,1,0,51
