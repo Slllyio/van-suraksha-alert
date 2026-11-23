@@ -1,0 +1,47 @@
+{
+ "raw": {
+  "mean_auc": 0.586,
+  "by_region": {
+   "Khandwa": 0.5689,
+   "Dewas": 0.6371,
+   "South_Betul": 0.6384,
+   "South_Chhindwara": 0.6445,
+   "South_Balaghat": 0.4065,
+   "Dindori": 0.4125,
+   "Umaria": 0.7301,
+   "Chhatarpur": 0.6772,
+   "Panna_TR": 0.487,
+   "Satpura_TR": 0.6579
+  }
+ },
+ "frozen": {
+  "mean_auc": 0.7034,
+  "by_region": {
+   "Khandwa": 0.6575,
+   "Dewas": 0.6834,
+   "South_Betul": 0.7912,
+   "South_Chhindwara": 0.7032,
+   "South_Balaghat": 0.5954,
+   "Dindori": 0.6827,
+   "Umaria": 0.7432,
+   "Chhatarpur": 0.7359,
+   "Panna_TR": 0.6262,
+   "Satpura_TR": 0.8148
+  }
+ },
+ "finetune": {
+  "mean_auc": 0.7181,
+  "by_region": {
+   "Khandwa": 0.6788,
+   "Dewas": 0.6958,
+   "South_Betul": 0.7778,
+   "South_Chhindwara": 0.7117,
+   "South_Balaghat": 0.7012,
+   "Dindori": 0.7227,
+   "Umaria": 0.6947,
+   "Chhatarpur": 0.7627,
+   "Panna_TR": 0.656,
+   "Satpura_TR": 0.78
+  }
+ }
+}

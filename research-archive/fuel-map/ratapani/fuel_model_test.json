@@ -1,0 +1,22 @@
+{
+ "main": {
+  "pipeline_lean": 0.2949,
+  "fuel_only_fsi": 0.1836,
+  "fuel_only_cont": 0.2019,
+  "fuel_only_season": 0.1971,
+  "stack_base": 0.2914,
+  "stack_fsi": 0.291,
+  "stack_cont": 0.29,
+  "random": 0.166
+ },
+ "truelead_strict": {
+  "pipeline_lean": 0.3894,
+  "fuel_only_fsi": 0.2264,
+  "fuel_only_cont": 0.2535,
+  "fuel_only_season": 0.2449,
+  "stack_base": 0.3843,
+  "stack_fsi": 0.3801,
+  "stack_cont": 0.3789,
+  "random": 0.1884
+ }
+}

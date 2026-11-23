@@ -1,0 +1,130 @@
+{
+ "cell_seasons": 28174,
+ "mean_share": 0.146,
+ "most_rate": 0.085,
+ "models": {
+  "ignition + access + history only": {
+   "spearman_share": 0.436,
+   "auc_most": 0.778,
+   "auc_by_season": [
+    0.803,
+    0.814,
+    0.802,
+    0.742,
+    0.818,
+    0.726,
+    0.76,
+    0.801,
+    0.778,
+    0.735
+   ]
+  },
+  "canopy": {
+   "spearman_share": 0.437,
+   "auc_most": 0.779,
+   "auc_by_season": [
+    0.803,
+    0.813,
+    0.803,
+    0.748,
+    0.82,
+    0.725,
+    0.765,
+    0.801,
+    0.779,
+    0.733
+   ]
+  },
+  "canopy + fuel map v3": {
+   "spearman_share": 0.437,
+   "auc_most": 0.779,
+   "auc_by_season": [
+    0.802,
+    0.814,
+    0.802,
+    0.753,
+    0.816,
+    0.725,
+    0.764,
+    0.806,
+    0.777,
+    0.733
+   ]
+  },
+  "canopy + raw HLS (same pixels)": {
+   "spearman_share": 0.443,
+   "auc_most": 0.783,
+   "auc_by_season": [
+    0.8,
+    0.816,
+    0.822,
+    0.714,
+    0.845,
+    0.714,
+    0.802,
+    0.794,
+    0.766,
+    0.754
+   ]
+  },
+  "canopy + Prithvi": {
+   "spearman_share": 0.447,
+   "auc_most": 0.796,
+   "auc_by_season": [
+    0.825,
+    0.838,
+    0.824,
+    0.741,
+    0.843,
+    0.727,
+    0.827,
+    0.798,
+    0.772,
+    0.766
+   ]
+  },
+  "canopy + v3 + Prithvi": {
+   "spearman_share": 0.447,
+   "auc_most": 0.799,
+   "auc_by_season": [
+    0.826,
+    0.84,
+    0.826,
+    0.746,
+    0.851,
+    0.721,
+    0.831,
+    0.809,
+    0.768,
+    0.767
+   ]
+  }
+ },
+ "auc_gain": {
+  "canopy + Prithvi vs canopy": {
+   "mean": 0.0172,
+   "seasons_better": 7,
+   "of": 10
+  },
+  "canopy + fuel map v3 vs canopy": {
+   "mean": 0.0002,
+   "seasons_better": 4,
+   "of": 10
+  },
+  "canopy + raw HLS (same pixels) vs canopy": {
+   "mean": 0.0037,
+   "seasons_better": 5,
+   "of": 10
+  },
+  "canopy + Prithvi vs canopy + raw HLS (same pixels)": {
+   "mean": 0.0135,
+   "seasons_better": 9,
+   "of": 10
+  },
+  "canopy + v3 + Prithvi vs canopy + fuel map v3": {
+   "mean": 0.0194,
+   "seasons_better": 7,
+   "of": 10
+  }
+ }
+}

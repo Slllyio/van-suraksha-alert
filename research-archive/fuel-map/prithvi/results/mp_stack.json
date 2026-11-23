@@ -1,0 +1,124 @@
+{
+ "cells": 128592,
+ "most_rate": 0.1353,
+ "by_region_rate": {
+  "Chhatarpur": 0.175,
+  "Dewas": 0.198,
+  "Dindori": 0.047,
+  "Khandwa": 0.2,
+  "Panna_TR": 0.066,
+  "Satpura_TR": 0.041,
+  "South_Balaghat": 0.169,
+  "South_Betul": 0.087,
+  "South_Chhindwara": 0.193,
+  "Umaria": 0.14
+ },
+ "A_region_held_out": {
+  "controls + Prithvi": {
+   "mean_auc": 0.7356,
+   "by_region": {
+    "Khandwa": 0.699,
+    "Dewas": 0.682,
+    "South_Betul": 0.741,
+    "South_Chhindwara": 0.724,
+    "South_Balaghat": 0.721,
+    "Dindori": 0.691,
+    "Umaria": 0.781,
+    "Chhatarpur": 0.753,
+    "Panna_TR": 0.746,
+    "Satpura_TR": 0.818
+   }
+  },
+  "controls + Prithvi + GPU frozen": {
+   "mean_auc": 0.7405,
+   "by_region": {
+    "Khandwa": 0.694,
+    "Dewas": 0.675,
+    "South_Betul": 0.77,
+    "South_Chhindwara": 0.718,
+    "South_Balaghat": 0.735,
+    "Dindori": 0.704,
+    "Umaria": 0.791,
+    "Chhatarpur": 0.753,
+    "Panna_TR": 0.738,
+    "Satpura_TR": 0.827
+   }
+  },
+  "controls + Prithvi + GPU finetune": {
+   "mean_auc": 0.7404,
+   "by_region": {
+    "Khandwa": 0.7,
+    "Dewas": 0.696,
+    "South_Betul": 0.773,
+    "South_Chhindwara": 0.726,
+    "South_Balaghat": 0.728,
+    "Dindori": 0.712,
+    "Umaria": 0.772,
+    "Chhatarpur": 0.764,
+    "Panna_TR": 0.7,
+    "Satpura_TR": 0.833
+   }
+  },
+  "controls + GPU finetune": {
+   "mean_auc": 0.7284,
+   "by_region": {
+    "Khandwa": 0.684,
+    "Dewas": 0.707,
+    "South_Betul": 0.774,
+    "South_Chhindwara": 0.717,
+    "South_Balaghat": 0.733,
+    "Dindori": 0.72,
+    "Umaria": 0.755,
+    "Chhatarpur": 0.747,
+    "Panna_TR": 0.714,
+    "Satpura_TR": 0.733
+   }
+  },
+  "controls + GPU raw": {
+   "mean_auc": 0.6928,
+   "by_region": {
+    "Khandwa": 0.686,
+    "Dewas": 0.68,
+    "South_Betul": 0.729,
+    "South_Chhindwara": 0.691,
+    "South_Balaghat": 0.71,
+    "Dindori": 0.608,
+    "Umaria": 0.765,
+    "Chhatarpur": 0.712,
+    "Panna_TR": 0.697,
+    "Satpura_TR": 0.65
+   }
+  },
+  "gains": {
+   "controls + Prithvi + GPU finetune vs controls + Prithvi": {
+    "mean": 0.0048,
+    "regions_better": 8,
+    "of": 10
+   },
+   "controls + Prithvi + GPU frozen vs controls + Prithvi": {
+    "mean": 0.0049,
+    "regions_better": 5,
+    "of": 10
+   },
+   "controls + Prithvi + GPU finetune vs controls + Prithvi + GPU frozen": {
+    "mean": -0.0001,
+    "regions_better": 7,
+    "of": 10
+   },
+   "controls + GPU finetune vs controls + Prithvi": {
+    "mean": -0.0072,
+    "regions_better": 4,
+    "of": 10
+   },
+   "controls + GPU finetune vs controls + GPU raw": {
+    "mean": 0.0356,
+    "regions_better": 8,
+    "of": 10
+   },
+   "ci_finetune_stack": [
+    -0.0084,
+    0.0159
+   ]
+  }
+ }
+}

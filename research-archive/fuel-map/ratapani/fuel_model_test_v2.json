@@ -1,0 +1,16 @@
+{
+ "main": {
+  "pipeline_lean": 0.2949,
+  "fuel_only_season": 0.1844,
+  "stack_base": 0.2914,
+  "stack_season_v2": 0.2883,
+  "random": 0.166
+ },
+ "truelead_strict": {
+  "pipeline_lean": 0.3894,
+  "fuel_only_season": 0.2267,
+  "stack_base": 0.3843,
+  "stack_season_v2": 0.3811,
+  "random": 0.1884
+ }
+}

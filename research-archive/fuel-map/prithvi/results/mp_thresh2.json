@@ -1,0 +1,562 @@
+{
+ "0.02": {
+  "rate": 0.309,
+  "auc": {
+   "controls": {
+    "mean": 0.6323,
+    "by_region": {
+     "Khandwa": 0.657,
+     "Dewas": 0.612,
+     "South_Betul": 0.659,
+     "South_Chhindwara": 0.635,
+     "South_Balaghat": 0.715,
+     "Dindori": 0.519,
+     "Umaria": 0.689,
+     "Chhatarpur": 0.678,
+     "Panna_TR": 0.649,
+     "Satpura_TR": 0.51
+    }
+   },
+   "controls + Prithvi": {
+    "mean": 0.6734,
+    "by_region": {
+     "Khandwa": 0.673,
+     "Dewas": 0.634,
+     "South_Betul": 0.663,
+     "South_Chhindwara": 0.64,
+     "South_Balaghat": 0.684,
+     "Dindori": 0.615,
+     "Umaria": 0.708,
+     "Chhatarpur": 0.722,
+     "Panna_TR": 0.667,
+     "Satpura_TR": 0.728
+    }
+   },
+   "controls + Prithvi + GPU blend": {
+    "mean": 0.6758,
+    "by_region": {
+     "Khandwa": 0.672,
+     "Dewas": 0.644,
+     "South_Betul": 0.683,
+     "South_Chhindwara": 0.649,
+     "South_Balaghat": 0.666,
+     "Dindori": 0.638,
+     "Umaria": 0.716,
+     "Chhatarpur": 0.724,
+     "Panna_TR": 0.643,
+     "Satpura_TR": 0.723
+    }
+   }
+  },
+  "gains": {
+   "prithvi_vs_controls": {
+    "mean": 0.0411,
+    "better": 9,
+    "ci": [
+     0.0071,
+     0.0881
+    ],
+    "by_region": {
+     "Khandwa": 0.016,
+     "Dewas": 0.022,
+     "South_Betul": 0.004,
+     "South_Chhindwara": 0.005,
+     "South_Balaghat": -0.031,
+     "Dindori": 0.096,
+     "Umaria": 0.019,
+     "Chhatarpur": 0.044,
+     "Panna_TR": 0.018,
+     "Satpura_TR": 0.218
+    }
+   },
+   "gpu_on_top": {
+    "mean": 0.0024,
+    "better": 6,
+    "ci": [
+     -0.0067,
+     0.0109
+    ],
+    "by_region": {
+     "Khandwa": -0.001,
+     "Dewas": 0.01,
+     "South_Betul": 0.02,
+     "South_Chhindwara": 0.009,
+     "South_Balaghat": -0.018,
+     "Dindori": 0.023,
+     "Umaria": 0.008,
+     "Chhatarpur": 0.002,
+     "Panna_TR": -0.024,
+     "Satpura_TR": -0.005
+    }
+   },
+   "all_vs_controls": {
+    "mean": 0.0435,
+    "better": 8,
+    "ci": [
+     0.0058,
+     0.0899
+    ],
+    "by_region": {
+     "Khandwa": 0.015,
+     "Dewas": 0.032,
+     "South_Betul": 0.024,
+     "South_Chhindwara": 0.014,
+     "South_Balaghat": -0.049,
+     "Dindori": 0.119,
+     "Umaria": 0.027,
+     "Chhatarpur": 0.046,
+     "Panna_TR": -0.006,
+     "Satpura_TR": 0.213
+    }
+   }
+  }
+ },
+ "0.1": {
+  "rate": 0.262,
+  "auc": {
+   "controls": {
+    "mean": 0.6441,
+    "by_region": {
+     "Khandwa": 0.656,
+     "Dewas": 0.63,
+     "South_Betul": 0.667,
+     "South_Chhindwara": 0.65,
+     "South_Balaghat": 0.723,
+     "Dindori": 0.525,
+     "Umaria": 0.71,
+     "Chhatarpur": 0.679,
+     "Panna_TR": 0.66,
+     "Satpura_TR": 0.541
+    }
+   },
+   "controls + Prithvi": {
+    "mean": 0.6864,
+    "by_region": {
+     "Khandwa": 0.673,
+     "Dewas": 0.646,
+     "South_Betul": 0.684,
+     "South_Chhindwara": 0.658,
+     "South_Balaghat": 0.693,
+     "Dindori": 0.641,
+     "Umaria": 0.723,
+     "Chhatarpur": 0.728,
+     "Panna_TR": 0.671,
+     "Satpura_TR": 0.747
+    }
+   },
+   "controls + Prithvi + GPU blend": {
+    "mean": 0.6874,
+    "by_region": {
+     "Khandwa": 0.673,
+     "Dewas": 0.655,
+     "South_Betul": 0.681,
+     "South_Chhindwara": 0.666,
+     "South_Balaghat": 0.686,
+     "Dindori": 0.652,
+     "Umaria": 0.733,
+     "Chhatarpur": 0.735,
+     "Panna_TR": 0.643,
+     "Satpura_TR": 0.75
+    }
+   }
+  },
+  "gains": {
+   "prithvi_vs_controls": {
+    "mean": 0.0423,
+    "better": 9,
+    "ci": [
+     0.0087,
+     0.088
+    ],
+    "by_region": {
+     "Khandwa": 0.017,
+     "Dewas": 0.016,
+     "South_Betul": 0.017,
+     "South_Chhindwara": 0.008,
+     "South_Balaghat": -0.03,
+     "Dindori": 0.116,
+     "Umaria": 0.013,
+     "Chhatarpur": 0.049,
+     "Panna_TR": 0.011,
+     "Satpura_TR": 0.206
+    }
+   },
+   "gpu_on_top": {
+    "mean": 0.001,
+    "better": 6,
+    "ci": [
+     -0.0067,
+     0.0069
+    ],
+    "by_region": {
+     "Khandwa": 0.0,
+     "Dewas": 0.009,
+     "South_Betul": -0.003,
+     "South_Chhindwara": 0.008,
+     "South_Balaghat": -0.007,
+     "Dindori": 0.011,
+     "Umaria": 0.01,
+     "Chhatarpur": 0.007,
+     "Panna_TR": -0.028,
+     "Satpura_TR": 0.003
+    }
+   },
+   "all_vs_controls": {
+    "mean": 0.0433,
+    "better": 8,
+    "ci": [
+     0.0053,
+     0.0907
+    ],
+    "by_region": {
+     "Khandwa": 0.017,
+     "Dewas": 0.025,
+     "South_Betul": 0.014,
+     "South_Chhindwara": 0.016,
+     "South_Balaghat": -0.037,
+     "Dindori": 0.127,
+     "Umaria": 0.023,
+     "Chhatarpur": 0.056,
+     "Panna_TR": -0.017,
+     "Satpura_TR": 0.209
+    }
+   }
+  }
+ },
+ "0.2": {
+  "rate": 0.223,
+  "auc": {
+   "controls": {
+    "mean": 0.6572,
+    "by_region": {
+     "Khandwa": 0.66,
+     "Dewas": 0.641,
+     "South_Betul": 0.68,
+     "South_Chhindwara": 0.663,
+     "South_Balaghat": 0.724,
+     "Dindori": 0.557,
+     "Umaria": 0.724,
+     "Chhatarpur": 0.686,
+     "Panna_TR": 0.683,
+     "Satpura_TR": 0.554
+    }
+   },
+   "controls + Prithvi": {
+    "mean": 0.7001,
+    "by_region": {
+     "Khandwa": 0.682,
+     "Dewas": 0.657,
+     "South_Betul": 0.691,
+     "South_Chhindwara": 0.668,
+     "South_Balaghat": 0.705,
+     "Dindori": 0.65,
+     "Umaria": 0.747,
+     "Chhatarpur": 0.739,
+     "Panna_TR": 0.699,
+     "Satpura_TR": 0.763
+    }
+   },
+   "controls + Prithvi + GPU blend": {
+    "mean": 0.702,
+    "by_region": {
+     "Khandwa": 0.671,
+     "Dewas": 0.662,
+     "South_Betul": 0.712,
+     "South_Chhindwara": 0.68,
+     "South_Balaghat": 0.695,
+     "Dindori": 0.664,
+     "Umaria": 0.751,
+     "Chhatarpur": 0.742,
+     "Panna_TR": 0.673,
+     "Satpura_TR": 0.77
+    }
+   }
+  },
+  "gains": {
+   "prithvi_vs_controls": {
+    "mean": 0.0429,
+    "better": 9,
+    "ci": [
+     0.0113,
+     0.0863
+    ],
+    "by_region": {
+     "Khandwa": 0.022,
+     "Dewas": 0.016,
+     "South_Betul": 0.011,
+     "South_Chhindwara": 0.005,
+     "South_Balaghat": -0.019,
+     "Dindori": 0.093,
+     "Umaria": 0.023,
+     "Chhatarpur": 0.053,
+     "Panna_TR": 0.016,
+     "Satpura_TR": 0.209
+    }
+   },
+   "gpu_on_top": {
+    "mean": 0.0019,
+    "better": 7,
+    "ci": [
+     -0.0068,
+     0.0095
+    ],
+    "by_region": {
+     "Khandwa": -0.011,
+     "Dewas": 0.005,
+     "South_Betul": 0.021,
+     "South_Chhindwara": 0.012,
+     "South_Balaghat": -0.01,
+     "Dindori": 0.014,
+     "Umaria": 0.004,
+     "Chhatarpur": 0.003,
+     "Panna_TR": -0.026,
+     "Satpura_TR": 0.007
+    }
+   },
+   "all_vs_controls": {
+    "mean": 0.0448,
+    "better": 8,
+    "ci": [
+     0.0088,
+     0.0892
+    ],
+    "by_region": {
+     "Khandwa": 0.011,
+     "Dewas": 0.021,
+     "South_Betul": 0.032,
+     "South_Chhindwara": 0.017,
+     "South_Balaghat": -0.029,
+     "Dindori": 0.107,
+     "Umaria": 0.027,
+     "Chhatarpur": 0.056,
+     "Panna_TR": -0.01,
+     "Satpura_TR": 0.216
+    }
+   }
+  }
+ },
+ "0.3": {
+  "rate": 0.191,
+  "auc": {
+   "controls": {
+    "mean": 0.6712,
+    "by_region": {
+     "Khandwa": 0.669,
+     "Dewas": 0.644,
+     "South_Betul": 0.68,
+     "South_Chhindwara": 0.682,
+     "South_Balaghat": 0.726,
+     "Dindori": 0.588,
+     "Umaria": 0.738,
+     "Chhatarpur": 0.691,
+     "Panna_TR": 0.709,
+     "Satpura_TR": 0.585
+    }
+   },
+   "controls + Prithvi": {
+    "mean": 0.7128,
+    "by_region": {
+     "Khandwa": 0.688,
+     "Dewas": 0.662,
+     "South_Betul": 0.712,
+     "South_Chhindwara": 0.696,
+     "South_Balaghat": 0.713,
+     "Dindori": 0.675,
+     "Umaria": 0.755,
+     "Chhatarpur": 0.735,
+     "Panna_TR": 0.722,
+     "Satpura_TR": 0.77
+    }
+   },
+   "controls + Prithvi + GPU blend": {
+    "mean": 0.7162,
+    "by_region": {
+     "Khandwa": 0.685,
+     "Dewas": 0.668,
+     "South_Betul": 0.726,
+     "South_Chhindwara": 0.697,
+     "South_Balaghat": 0.703,
+     "Dindori": 0.69,
+     "Umaria": 0.763,
+     "Chhatarpur": 0.746,
+     "Panna_TR": 0.691,
+     "Satpura_TR": 0.793
+    }
+   }
+  },
+  "gains": {
+   "prithvi_vs_controls": {
+    "mean": 0.0416,
+    "better": 9,
+    "ci": [
+     0.0145,
+     0.0772
+    ],
+    "by_region": {
+     "Khandwa": 0.019,
+     "Dewas": 0.018,
+     "South_Betul": 0.032,
+     "South_Chhindwara": 0.014,
+     "South_Balaghat": -0.013,
+     "Dindori": 0.087,
+     "Umaria": 0.017,
+     "Chhatarpur": 0.044,
+     "Panna_TR": 0.013,
+     "Satpura_TR": 0.185
+    }
+   },
+   "gpu_on_top": {
+    "mean": 0.0034,
+    "better": 7,
+    "ci": [
+     -0.006,
+     0.0116
+    ],
+    "by_region": {
+     "Khandwa": -0.003,
+     "Dewas": 0.006,
+     "South_Betul": 0.014,
+     "South_Chhindwara": 0.001,
+     "South_Balaghat": -0.01,
+     "Dindori": 0.015,
+     "Umaria": 0.008,
+     "Chhatarpur": 0.011,
+     "Panna_TR": -0.031,
+     "Satpura_TR": 0.023
+    }
+   },
+   "all_vs_controls": {
+    "mean": 0.045,
+    "better": 8,
+    "ci": [
+     0.0108,
+     0.0884
+    ],
+    "by_region": {
+     "Khandwa": 0.016,
+     "Dewas": 0.024,
+     "South_Betul": 0.046,
+     "South_Chhindwara": 0.015,
+     "South_Balaghat": -0.023,
+     "Dindori": 0.102,
+     "Umaria": 0.025,
+     "Chhatarpur": 0.055,
+     "Panna_TR": -0.018,
+     "Satpura_TR": 0.208
+    }
+   }
+  }
+ },
+ "0.5": {
+  "rate": 0.135,
+  "auc": {
+   "controls": {
+    "mean": 0.6914,
+    "by_region": {
+     "Khandwa": 0.675,
+     "Dewas": 0.67,
+     "South_Betul": 0.707,
+     "South_Chhindwara": 0.706,
+     "South_Balaghat": 0.731,
+     "Dindori": 0.625,
+     "Umaria": 0.759,
+     "Chhatarpur": 0.702,
+     "Panna_TR": 0.712,
+     "Satpura_TR": 0.627
+    }
+   },
+   "controls + Prithvi": {
+    "mean": 0.7347,
+    "by_region": {
+     "Khandwa": 0.699,
+     "Dewas": 0.677,
+     "South_Betul": 0.74,
+     "South_Chhindwara": 0.721,
+     "South_Balaghat": 0.725,
+     "Dindori": 0.693,
+     "Umaria": 0.779,
+     "Chhatarpur": 0.747,
+     "Panna_TR": 0.742,
+     "Satpura_TR": 0.824
+    }
+   },
+   "controls + Prithvi + GPU blend": {
+    "mean": 0.7353,
+    "by_region": {
+     "Khandwa": 0.69,
+     "Dewas": 0.685,
+     "South_Betul": 0.76,
+     "South_Chhindwara": 0.723,
+     "South_Balaghat": 0.72,
+     "Dindori": 0.703,
+     "Umaria": 0.783,
+     "Chhatarpur": 0.759,
+     "Panna_TR": 0.706,
+     "Satpura_TR": 0.824
+    }
+   }
+  },
+  "gains": {
+   "prithvi_vs_controls": {
+    "mean": 0.0433,
+    "better": 9,
+    "ci": [
+     0.0172,
+     0.0821
+    ],
+    "by_region": {
+     "Khandwa": 0.024,
+     "Dewas": 0.007,
+     "South_Betul": 0.033,
+     "South_Chhindwara": 0.015,
+     "South_Balaghat": -0.006,
+     "Dindori": 0.068,
+     "Umaria": 0.02,
+     "Chhatarpur": 0.045,
+     "Panna_TR": 0.03,
+     "Satpura_TR": 0.197
+    }
+   },
+   "gpu_on_top": {
+    "mean": 0.0006,
+    "better": 6,
+    "ci": [
+     -0.0095,
+     0.0084
+    ],
+    "by_region": {
+     "Khandwa": -0.009,
+     "Dewas": 0.008,
+     "South_Betul": 0.02,
+     "South_Chhindwara": 0.002,
+     "South_Balaghat": -0.005,
+     "Dindori": 0.01,
+     "Umaria": 0.004,
+     "Chhatarpur": 0.012,
+     "Panna_TR": -0.036,
+     "Satpura_TR": 0.0
+    }
+   },
+   "all_vs_controls": {
+    "mean": 0.0439,
+    "better": 8,
+    "ci": [
+     0.0147,
+     0.082
+    ],
+    "by_region": {
+     "Khandwa": 0.015,
+     "Dewas": 0.015,
+     "South_Betul": 0.053,
+     "South_Chhindwara": 0.017,
+     "South_Balaghat": -0.011,
+     "Dindori": 0.078,
+     "Umaria": 0.024,
+     "Chhatarpur": 0.057,
+     "Panna_TR": -0.006,
+     "Satpura_TR": 0.197
+    }
+   }
+  }
+ }
+}

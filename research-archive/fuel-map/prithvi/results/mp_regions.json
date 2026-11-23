@@ -1,0 +1,128 @@
+{
+ "Khandwa": {
+  "X0": 679500.0,
+  "Y1": 2432500.0,
+  "W": 1344,
+  "H": 1344,
+  "events": 1362,
+  "done": 1.0,
+  "divisions": {
+   "Khandwa": 1349,
+   "FDC_Khandwa": 7,
+   "Harda": 4
+  }
+ },
+ "Dewas": {
+  "X0": 617000.0,
+  "Y1": 2512500.0,
+  "W": 1344,
+  "H": 1344,
+  "events": 2262,
+  "done": 1.0,
+  "divisions": {
+   "Dewas": 1923,
+   "Khandwa": 153,
+   "Indore": 102
+  }
+ },
+ "South_Betul": {
+  "X0": 752000.0,
+  "Y1": 2407500.0,
+  "W": 1344,
+  "H": 1344,
+  "events": 405,
+  "done": 1.0,
+  "divisions": {
+   "South_Betul": 405
+  }
+ },
+ "South_Chhindwara": {
+  "X0": 872000.0,
+  "Y1": 2427500.0,
+  "W": 1344,
+  "H": 1344,
+  "events": 1469,
+  "done": 1.0,
+  "divisions": {
+   "South_Chhindwara": 1305,
+   "East_Chhindwara": 161,
+   "West_Chhindwara": 3
+  }
+ },
+ "South_Balaghat": {
+  "X0": 1057000.0,
+  "Y1": 2410000.0,
+  "W": 1344,
+  "H": 1344,
+  "events": 1378,
+  "done": 1.0,
+  "divisions": {
+   "South_Balaghat": 1302,
+   "North_Balaghat": 76
+  }
+ },
+ "Dindori": {
+  "X0": 1137000.0,
+  "Y1": 2535000.0,
+  "W": 1344,
+  "H": 1344,
+  "events": 1166,
+  "done": 1.0,
+  "divisions": {
+   "Dindori": 1164,
+   "East_Mandla": 2
+  }
+ },
+ "Umaria": {
+  "X0": 1104500.0,
+  "Y1": 2620000.0,
+  "W": 1344,
+  "H": 1344,
+  "events": 1662,
+  "done": 1.0,
+  "divisions": {
+   "Umaria": 1116,
+   "BTR": 402,
+   "Anuppur": 81
+  }
+ },
+ "Chhatarpur": {
+  "X0": 934500.0,
+  "Y1": 2732500.0,
+  "W": 1344,
+  "H": 1344,
+  "events": 1702,
+  "done": 1.0,
+  "divisions": {
+   "Chhatarpur": 1361,
+   "Panna_TR": 207,
+   "Damoh": 134
+  }
+ },
+ "Panna_TR": {
+  "X0": 992000.0,
+  "Y1": 2760000.0,
+  "W": 1344,
+  "H": 1344,
+  "events": 492,
+  "done": 1.0,
+  "divisions": {
+   "Panna_TR": 380,
+   "North_Panna": 104,
+   "Chhatarpur": 8
+  }
+ },
+ "Satpura_TR": {
+  "X0": 819500.0,
+  "Y1": 2510000.0,
+  "W": 1344,
+  "H": 1344,
+  "events": 644,
+  "done": 1.0,
+  "divisions": {
+   "Satpura_TR": 262,
+   "West_Chhindwara": 202,
+   "Rampur_Bhatodi_Proj": 157
+  }
+ }
+}

@@ -1,0 +1,235 @@
+{
+ "fires": 2388,
+ "models": {
+  "season | canopy + dots (as T1)": {
+   "r2_log_area": 0.14,
+   "auc_big": 0.641
+  },
+  "season | + access & place controls": {
+   "r2_log_area": 0.182,
+   "auc_big": 0.712
+  },
+  "season | + controls + fuel map v3": {
+   "r2_log_area": 0.183,
+   "auc_big": 0.716
+  },
+  "season | + controls + raw HLS": {
+   "r2_log_area": 0.186,
+   "auc_big": 0.726
+  },
+  "season | + controls + Prithvi": {
+   "r2_log_area": 0.192,
+   "auc_big": 0.715
+  },
+  "season | + controls + v3 + Prithvi": {
+   "r2_log_area": 0.199,
+   "auc_big": 0.718
+  },
+  "season + block | canopy + dots (as T1)": {
+   "r2_log_area": 0.138,
+   "auc_big": 0.638
+  },
+  "season + block | + access & place controls": {
+   "r2_log_area": 0.167,
+   "auc_big": 0.708
+  },
+  "season + block | + controls + fuel map v3": {
+   "r2_log_area": 0.17,
+   "auc_big": 0.712
+  },
+  "season + block | + controls + raw HLS": {
+   "r2_log_area": 0.177,
+   "auc_big": 0.721
+  },
+  "season + block | + controls + Prithvi": {
+   "r2_log_area": 0.178,
+   "auc_big": 0.707
+  },
+  "season + block | + controls + v3 + Prithvi": {
+   "r2_log_area": 0.182,
+   "auc_big": 0.709
+  }
+ },
+ "gains": {
+  "season | + controls + Prithvi vs + access & place controls": {
+   "r2_gain": [
+    0.011,
+    [
+     -0.005,
+     0.026
+    ]
+   ],
+   "auc_gain": [
+    0.003,
+    [
+     -0.013,
+     0.019
+    ]
+   ]
+  },
+  "season | + controls + fuel map v3 vs + access & place controls": {
+   "r2_gain": [
+    0.001,
+    [
+     -0.002,
+     0.004
+    ]
+   ],
+   "auc_gain": [
+    0.004,
+    [
+     -0.001,
+     0.01
+    ]
+   ]
+  },
+  "season | + controls + raw HLS vs + access & place controls": {
+   "r2_gain": [
+    0.004,
+    [
+     -0.009,
+     0.019
+    ]
+   ],
+   "auc_gain": [
+    0.013,
+    [
+     0.0,
+     0.027
+    ]
+   ]
+  },
+  "season | + controls + Prithvi vs + controls + raw HLS": {
+   "r2_gain": [
+    0.006,
+    [
+     -0.01,
+     0.023
+    ]
+   ],
+   "auc_gain": [
+    -0.01,
+    [
+     -0.024,
+     0.003
+    ]
+   ]
+  },
+  "season | + controls + v3 + Prithvi vs + controls + fuel map v3": {
+   "r2_gain": [
+    0.016,
+    [
+     0.002,
+     0.031
+    ]
+   ],
+   "auc_gain": [
+    0.002,
+    [
+     -0.012,
+     0.016
+    ]
+   ]
+  },
+  "season + block | + controls + Prithvi vs + access & place controls": {
+   "r2_gain": [
+    0.01,
+    [
+     -0.006,
+     0.027
+    ]
+   ],
+   "auc_gain": [
+    -0.001,
+    [
+     -0.017,
+     0.016
+    ]
+   ]
+  },
+  "season + block | + controls + fuel map v3 vs + access & place controls": {
+   "r2_gain": [
+    0.002,
+    [
+     -0.001,
+     0.005
+    ]
+   ],
+   "auc_gain": [
+    0.004,
+    [
+     -0.002,
+     0.009
+    ]
+   ]
+  },
+  "season + block | + controls + raw HLS vs + access & place controls": {
+   "r2_gain": [
+    0.009,
+    [
+     -0.004,
+     0.022
+    ]
+   ],
+   "auc_gain": [
+    0.013,
+    [
+     0.0,
+     0.025
+    ]
+   ]
+  },
+  "season + block | + controls + Prithvi vs + controls + raw HLS": {
+   "r2_gain": [
+    0.001,
+    [
+     -0.014,
+     0.017
+    ]
+   ],
+   "auc_gain": [
+    -0.014,
+    [
+     -0.03,
+     0.0
+    ]
+   ]
+  },
+  "season + block | + controls + v3 + Prithvi vs + controls + fuel map v3": {
+   "r2_gain": [
+    0.013,
+    [
+     -0.004,
+     0.028
+    ]
+   ],
+   "auc_gain": [
+    -0.003,
+    [
+     -0.02,
+     0.014
+    ]
+   ]
+  }
+ },
+ "prithvi_extra_vs": {
+  "canopy": -0.003,
+  "litter": 0.063,
+  "grass": -0.01,
+  "teak": -0.013,
+  "slope": 0.006,
+  "burnt_last": -0.012,
+  "hist_years": 0.033,
+  "doy": -0.034,
+  "dist_road": -0.036,
+  "dist_track": 0.008,
+  "dist_village": -0.037,
+  "dist_boundary": -0.007,
+  "depth_in_forest": -0.029,
+  "dist_crop_cell": -0.017,
+  "forest_1000": 0.001,
+  "forest_2000": -0.02,
+  "elev_m_mean": 0.004,
+  "elev_m_stdDev": 0.024
+ }
+}
