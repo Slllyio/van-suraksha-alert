@@ -1,0 +1,59 @@
+{
+ "n_next_detections": 8004,
+ "noise_same_look_q": [
+  180.0,
+  291.0,
+  467.0,
+  782.0
+ ],
+ "next_vs_all_prev_q_~12h": [
+  414.0,
+  657.0,
+  980.0,
+  1396.0,
+  6349
+ ],
+ "next_vs_last_q_~12h": [
+  448.0,
+  720.0,
+  1100.0,
+  1691.0
+ ],
+ "next_vs_all_prev_q_~24h": [
+  617.0,
+  865.0,
+  1188.0,
+  1652.0,
+  1616
+ ],
+ "next_vs_last_q_~24h": [
+  642.0,
+  903.0,
+  1212.0,
+  1663.0
+ ],
+ "next_vs_all_prev_q_~36h": [
+  650.0,
+  850.0,
+  1062.0,
+  1793.0,
+  39
+ ],
+ "next_vs_last_q_~36h": [
+  650.0,
+  876.0,
+  1062.0,
+  1793.0
+ ],
+ "share_next_within_375m_of_prev": 0.183,
+ "share_noise_within_375m": 0.644,
+ "share_next_within_500m_of_prev": 0.302,
+ "share_noise_within_500m": 0.777,
+ "share_next_within_750m_of_prev": 0.548,
+ "share_noise_within_750m": 0.891,
+ "share_next_within_1000m_of_prev": 0.73,
+ "share_noise_within_1000m": 0.932,
+ "excess_median_disp_last_~12h_m": 658.0,
+ "excess_median_disp_last_~24h_m": 855.0,
+ "excess_median_disp_last_~36h_m": 827.0
+}

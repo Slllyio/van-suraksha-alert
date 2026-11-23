@@ -1,0 +1,55 @@
+{
+ "n_fires": 2766,
+ "area_med": 52.54000000001321,
+ "edge_share": 0.28524945770065074,
+ "share_beyond_600_med": 0.07593643093499836,
+ "share_beyond_1000_med": 0.0,
+ "window_days_med": 10.0,
+ "window_days_q": [
+  8.0,
+  13.0,
+  16.0
+ ],
+ "nlook_(0, 1]": {
+  "n": 1918,
+  "area_med": 34.3,
+  "beyond600": 0.05,
+  "beyond1000": 0.0,
+  "edge": 0.16,
+  "hours_med": 0.0
+ },
+ "nlook_(1, 2]": {
+  "n": 432,
+  "area_med": 102.8,
+  "beyond600": 0.11,
+  "beyond1000": 0.0,
+  "edge": 0.41,
+  "hours_med": 13.3
+ },
+ "nlook_(2, 4]": {
+  "n": 300,
+  "area_med": 196.1,
+  "beyond600": 0.12,
+  "beyond1000": 0.0,
+  "edge": 0.64,
+  "hours_med": 35.8
+ },
+ "nlook_(4, 100]": {
+  "n": 116,
+  "area_med": 454.3,
+  "beyond600": 0.1,
+  "beyond1000": 0.01,
+  "edge": 0.91,
+  "hours_med": 61.5
+ },
+ "implied_radial_speed_mph_q": [
+  18.9,
+  29.7,
+  44.4
+ ],
+ "implied_speed_multi_look_q": [
+  14.3,
+  19.7,
+  27.3
+ ]
+}

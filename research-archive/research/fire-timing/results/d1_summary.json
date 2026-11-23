@@ -1,0 +1,164 @@
+{
+ "regimes": {
+  "mid": 64,
+  "late": 21,
+  "early": 2
+ },
+ "regime_members": {
+  "early": [
+   "Alirajpur",
+   "Sehore"
+  ],
+  "late": [
+   "Barwani",
+   "Bhind",
+   "Datiya",
+   "Guna",
+   "Gwalior",
+   "Kanha_Tiger_Reserve",
+   "Kuno_Palpur",
+   "Madhav_National_Park",
+   "Mandsaur",
+   "Morena",
+   "Neemuch",
+   "North_Betul",
+   "Panna_TR",
+   "Rajgarh",
+   "SANJAY_DUBRI",
+   "Satpura_TR",
+   "Sheopur",
+   "Shivpuri",
+   "Sidhi",
+   "Tikamgarh",
+   "Ujjain"
+  ]
+ },
+ "overall": {
+  "A per division": {
+   "caught": 32.1,
+   "new_caught": 14.4
+  },
+  "B statewide": {
+   "caught": 34.6,
+   "new_caught": 9.4
+  },
+  "C per regime": {
+   "caught": 34.7,
+   "new_caught": 10.0
+  },
+  "D statewide + timing": {
+   "caught": 34.7,
+   "new_caught": 9.8
+  },
+  "E per regime + timing": {
+   "caught": 34.7,
+   "new_caught": 10.9
+  }
+ },
+ "by_season": {
+  "A per division": {
+   "2025": 32.4,
+   "2026": 31.6
+  },
+  "B statewide": {
+   "2025": 35.2,
+   "2026": 33.7
+  },
+  "C per regime": {
+   "2025": 35.3,
+   "2026": 33.7
+  },
+  "D statewide + timing": {
+   "2025": 35.3,
+   "2026": 33.8
+  },
+  "E per regime + timing": {
+   "2025": 35.2,
+   "2026": 33.8
+  }
+ },
+ "by_regime": {
+  "A per division": {
+   "early": 31.6,
+   "late": 36.0,
+   "mid": 31.5
+  },
+  "B statewide": {
+   "early": 32.3,
+   "late": 40.0,
+   "mid": 33.9
+  },
+  "C per regime": {
+   "early": 33.4,
+   "late": 38.4,
+   "mid": 34.2
+  },
+  "D statewide + timing": {
+   "early": 32.3,
+   "late": 40.5,
+   "mid": 34.0
+  },
+  "E per regime + timing": {
+   "early": 33.4,
+   "late": 38.1,
+   "mid": 34.2
+  }
+ },
+ "by_month": {
+  "A per division": {
+   "2": 39.0,
+   "3": 33.1,
+   "4": 30.5,
+   "5": 31.1,
+   "6": 41.3
+  },
+  "B statewide": {
+   "2": 40.4,
+   "3": 35.7,
+   "4": 33.2,
+   "5": 31.2,
+   "6": 33.9
+  },
+  "C per regime": {
+   "2": 41.4,
+   "3": 35.7,
+   "4": 33.2,
+   "5": 31.5,
+   "6": 36.1
+  },
+  "D statewide + timing": {
+   "2": 40.3,
+   "3": 35.6,
+   "4": 33.6,
+   "5": 31.6,
+   "6": 35.2
+  },
+  "E per regime + timing": {
+   "2": 41.3,
+   "3": 35.6,
+   "4": 33.3,
+   "5": 31.6,
+   "6": 36.5
+  }
+ },
+ "C per regime vs per division, divisions better": [
+  72,
+  8,
+  86
+ ],
+ "D statewide + timing vs per division, divisions better": [
+  70,
+  8,
+  86
+ ],
+ "E per regime + timing vs per division, divisions better": [
+  75,
+  8,
+  86
+ ],
+ "B statewide vs per division, divisions better": [
+  62,
+  10,
+  86
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "config": "grid12",
+ "terra_flagged_passes": 243,
+ "fires": 188,
+ "auc_mean": {
+  "inversion": 0.7006,
+  "nearest": 0.708,
+  "kernel": 0.8758
+ },
+ "inversion_minus_nearest": [
+  -0.0039,
+  -0.0145,
+  0.0069
+ ],
+ "inversion_minus_kernel": [
+  -0.158,
+  -0.2041,
+  -0.1134
+ ],
+ "by_daynight": {
+  "D": {
+   "n": 197,
+   "inversion": 0.7166,
+   "nearest": 0.7251,
+   "kernel": 0.8794
+  },
+  "N": {
+   "n": 46,
+   "inversion": 0.6321,
+   "nearest": 0.6349,
+   "kernel": 0.8603
+  }
+ },
+ "pass_level": {
+  "passes": 5279,
+  "flagged_share": 0.046,
+  "auc_inversion": 0.7591,
+  "auc_nearest": 0.7501
+ }
+}

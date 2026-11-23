@@ -1,0 +1,44 @@
+{
+ "fires": 146,
+ "median": {
+  "area_ha": 451.35,
+  "n_viirs": 20.0,
+  "n_modis": 1.0,
+  "n_hotpix": 43.0,
+  "viirs_looks": 5.0,
+  "viirs_gap_med": 12.47,
+  "viirs_gap_max": 24.53,
+  "viirs_cover": 0.51,
+  "viirs_looks_8to12IST": 0.0,
+  "viirs_looks_other_hours": 0.0,
+  "all_looks": 6.0,
+  "all_gap_med": 12.26,
+  "all_gap_max": 24.53,
+  "all_cover": 0.61,
+  "all_looks_8to12IST": 1.0,
+  "all_looks_other_hours": 1.0
+ },
+ "fires_gaining_a_look": 110,
+ "fires_with_hotpix": 112,
+ "fires_with_modis": 92,
+ "persistence_viirs": {
+  "n": 457,
+  "mean_cos": 0.316,
+  "within90": 0.683,
+  "within45": 0.444,
+  "shuffled_95": [
+   -0.056,
+   0.066
+  ]
+ },
+ "persistence_all": {
+  "n": 528,
+  "mean_cos": 0.368,
+  "within90": 0.727,
+  "within45": 0.472,
+  "shuffled_95": [
+   -0.019,
+   0.102
+  ]
+ }
+}

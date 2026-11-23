@@ -1,0 +1,51 @@
+{
+ "pairs": 7130,
+ "fetched_ok": 6927,
+ "usable": 3780,
+ "visible": 626,
+ "visible_share": 0.166,
+ "day_visible_share": 0.177,
+ "by_kind": {
+  "2 blocks": {
+   "passes": 223,
+   "hot_to_nearest_block_centre_m": 260,
+   "position_in_block_0centre_1edge": 0.9,
+   "share_in_outer_half": 0.83,
+   "share_inside_block": 0.56,
+   "share_closer_to_cluster_centre": 0.29,
+   "hot_centre_offset_from_cluster_centre_m": 289
+  },
+  "3+ blocks": {
+   "passes": 256,
+   "hot_to_nearest_block_centre_m": 210,
+   "position_in_block_0centre_1edge": 0.83,
+   "share_in_outer_half": 0.78,
+   "share_inside_block": 0.63,
+   "share_closer_to_cluster_centre": 0.19,
+   "hot_centre_offset_from_cluster_centre_m": 314
+  },
+  "single block": {
+   "passes": 314,
+   "hot_to_nearest_block_centre_m": 303,
+   "position_in_block_0centre_1edge": 1.07,
+   "share_in_outer_half": 0.85,
+   "share_inside_block": 0.47,
+   "share_closer_to_cluster_centre": 0.0,
+   "hot_centre_offset_from_cluster_centre_m": 284
+  }
+ },
+ "two_blocks": {
+  "adjacent_<500m": {
+   "passes": 139,
+   "share_closer_to_cluster_centre": 0.26
+  },
+  "far_>=500m": {
+   "passes": 84,
+   "share_closer_to_cluster_centre": 0.33
+  }
+ },
+ "random_inside_block_reference": {
+  "position": 0.71,
+  "share_in_outer_half": 0.75
+ }
+}

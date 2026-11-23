@@ -1,0 +1,156 @@
+{
+ "note": "Bhoonidhi thread: how many more MP fires get a scene while burning if ResourceSat AWiFS (and LISS-III/IV, EOS-04) are added to Sentinel-2.\nFires and passes exactly as big-fires b18/b19c: VIIRS alerts (mp_alert_event.csv) linked within 750 m and 48 h; day passes on forest\nevents 06-11 UTC. Sentinel-2 = mp_hotpix_pairs.csv (s2, cloud < 80%, scene 0-3.5 h before the pass). Bhoonidhi scene = catalog footprint\n(Img corners) containing the pass point on the same date, pass <= 09:00 UTC (ResourceSat ~05:00-05:30 UTC; EOS-04 is a dawn/dusk SAR, any time\nthat day). No cloud screen for Bhoonidhi optical (catalog carries none).  python3 coverage.py <catalog dir>",
+ "passes": {
+  "s2": 0.22,
+  "landsat": 0.095,
+  "awifs": 0.383,
+  "s2+awifs": 0.524,
+  "liss3": 0.017,
+  "liss4": 0.009,
+  "eos04": 0.035
+ },
+ "all": {
+  "fires": 137605,
+  "s2": 0.18,
+  "landsat": 0.081,
+  "awifs": 0.308,
+  "s2+awifs": 0.404,
+  "liss3": 0.014,
+  "liss4": 0.007,
+  "eos04": 0.027
+ },
+ "by_duration": {
+  "seen 1 day": {
+   "fires": 114249,
+   "s2": 0.144,
+   "landsat": 0.065,
+   "awifs": 0.264,
+   "s2+awifs": 0.353,
+   "liss3": 0.012,
+   "liss4": 0.006,
+   "eos04": 0.021
+  },
+  "1-2 days": {
+   "fires": 14319,
+   "s2": 0.285,
+   "landsat": 0.122,
+   "awifs": 0.465,
+   "s2+awifs": 0.587,
+   "liss3": 0.021,
+   "liss4": 0.01,
+   "eos04": 0.042
+  },
+  "2-4 days": {
+   "fires": 7621,
+   "s2": 0.421,
+   "landsat": 0.195,
+   "awifs": 0.595,
+   "s2+awifs": 0.738,
+   "liss3": 0.034,
+   "liss4": 0.016,
+   "eos04": 0.07
+  },
+  "4+ days": {
+   "fires": 1416,
+   "s2": 0.689,
+   "landsat": 0.324,
+   "awifs": 0.768,
+   "s2+awifs": 0.861,
+   "liss3": 0.044,
+   "liss4": 0.026,
+   "eos04": 0.136
+  }
+ },
+ "by_year": {
+  "2017": {
+   "fires": 15012,
+   "s2": 0.043,
+   "landsat": 0.068,
+   "awifs": 0.401,
+   "s2+awifs": 0.414,
+   "liss3": 0.0,
+   "liss4": 0.0,
+   "eos04": 0.0
+  },
+  "2018": {
+   "fires": 18049,
+   "s2": 0.19,
+   "landsat": 0.059,
+   "awifs": 0.341,
+   "s2+awifs": 0.412,
+   "liss3": 0.0,
+   "liss4": 0.0,
+   "eos04": 0.0
+  },
+  "2019": {
+   "fires": 12886,
+   "s2": 0.188,
+   "landsat": 0.064,
+   "awifs": 0.306,
+   "s2+awifs": 0.409,
+   "liss3": 0.0,
+   "liss4": 0.0,
+   "eos04": 0.0
+  },
+  "2020": {
+   "fires": 7348,
+   "s2": 0.172,
+   "landsat": 0.051,
+   "awifs": 0.304,
+   "s2+awifs": 0.393,
+   "liss3": 0.0,
+   "liss4": 0.0,
+   "eos04": 0.0
+  },
+  "2021": {
+   "fires": 21048,
+   "s2": 0.185,
+   "landsat": 0.068,
+   "awifs": 0.346,
+   "s2+awifs": 0.427,
+   "liss3": 0.0,
+   "liss4": 0.0,
+   "eos04": 0.0
+  },
+  "2022": {
+   "fires": 18429,
+   "s2": 0.197,
+   "landsat": 0.075,
+   "awifs": 0.344,
+   "s2+awifs": 0.437,
+   "liss3": 0.0,
+   "liss4": 0.0,
+   "eos04": 0.072
+  },
+  "2023": {
+   "fires": 12175,
+   "s2": 0.177,
+   "landsat": 0.084,
+   "awifs": 0.349,
+   "s2+awifs": 0.431,
+   "liss3": 0.0,
+   "liss4": 0.0,
+   "eos04": 0.051
+  },
+  "2024": {
+   "fires": 10560,
+   "s2": 0.191,
+   "landsat": 0.135,
+   "awifs": 0.368,
+   "s2+awifs": 0.449,
+   "liss3": 0.1,
+   "liss4": 0.053,
+   "eos04": 0.052
+  },
+  "2025": {
+   "fires": 22098,
+   "s2": 0.239,
+   "landsat": 0.118,
+   "awifs": 0.105,
+   "s2+awifs": 0.304,
+   "liss3": 0.041,
+   "liss4": 0.018,
+   "eos04": 0.055
+  }
+ }
+}

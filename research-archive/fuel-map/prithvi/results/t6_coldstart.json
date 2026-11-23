@@ -1,0 +1,78 @@
+{
+ "cells": 3374,
+ "mean_freq": 6.44,
+ "models": {
+  "maps (terrain, land cover, access)": {
+   "spearman_freq": 0.572,
+   "auc_prone": 0.749,
+   "auc_range": [
+    0.729,
+    0.761
+   ]
+  },
+  "maps + canopy": {
+   "spearman_freq": 0.59,
+   "auc_prone": 0.76,
+   "auc_range": [
+    0.741,
+    0.77
+   ]
+  },
+  "maps + fuel map v3": {
+   "spearman_freq": 0.595,
+   "auc_prone": 0.759,
+   "auc_range": [
+    0.746,
+    0.769
+   ]
+  },
+  "maps + canopy + raw HLS, 1 season": {
+   "spearman_freq": 0.641,
+   "auc_prone": 0.79,
+   "auc_range": [
+    0.775,
+    0.798
+   ]
+  },
+  "maps + canopy + Prithvi, 1 season": {
+   "spearman_freq": 0.612,
+   "auc_prone": 0.769,
+   "auc_range": [
+    0.755,
+    0.779
+   ]
+  },
+  "maps + canopy + raw HLS, 10 seasons": {
+   "spearman_freq": 0.683,
+   "auc_prone": 0.809,
+   "auc_range": [
+    0.804,
+    0.813
+   ]
+  },
+  "maps + canopy + Prithvi, 10 seasons": {
+   "spearman_freq": 0.614,
+   "auc_prone": 0.775,
+   "auc_range": [
+    0.764,
+    0.783
+   ]
+  },
+  "raw HLS alone, 10 seasons": {
+   "spearman_freq": 0.675,
+   "auc_prone": 0.802,
+   "auc_range": [
+    0.8,
+    0.804
+   ]
+  },
+  "Prithvi alone, 10 seasons": {
+   "spearman_freq": 0.59,
+   "auc_prone": 0.765,
+   "auc_range": [
+    0.762,
+    0.768
+   ]
+  }
+ }
+}

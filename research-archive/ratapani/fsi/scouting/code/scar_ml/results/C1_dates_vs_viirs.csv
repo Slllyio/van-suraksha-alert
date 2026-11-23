@@ -1,0 +1,5 @@
+method,pixels,chips,median_abs_err_days,within_2d,window_median_days,window_holds_viirs_day
+per-pixel first persistent drop (midpoint of its window),98159,336,1.5,0.6661946433847126,5.0,0.811031082223739
+"per-pixel, upper end (first look showing the drop)",98159,336,4.0,0.37600220051141514,5.0,0.811031082223739
+"current: image-pair window (pre, post], midpoint",98159,336,1.0,0.6979696207174074,5.0,0.8567528194052506
+current: alert day of the chip event for every pixel,98159,336,1.0,0.8165934860787091,0.0,0.4793039863894294

@@ -1,0 +1,62 @@
+{
+ "issues": 2246,
+ "fires": 818,
+ "mask_pixels_vs_firms_dots": [
+  27426.0,
+  22121.0
+ ],
+ "disc": {
+  "ha": 77.6,
+  "prec": 0.5892,
+  "rec": 0.3441,
+  "sor": 0.4048
+ },
+ "box": {
+  "ha": 73.24,
+  "prec": 0.5904,
+  "rec": 0.3234,
+  "sor": 0.3901
+ },
+ "mask": {
+  "ha": 96.2,
+  "prec": 0.5153,
+  "rec": 0.3426,
+  "sor": 0.3669
+ },
+ "null": {
+  "ha": 77.78,
+  "prec": 0.5598,
+  "rec": 0.3285,
+  "sor": 0.38
+ },
+ "box_minus_disc_prec_ci": [
+  -0.0017,
+  0.003
+ ],
+ "mask_minus_disc_prec_ci": [
+  -0.07,
+  -0.0564
+ ],
+ "null_minus_disc_prec_ci": [
+  -0.0338,
+  -0.0255
+ ],
+ "wide_pixels_scan>0.5km": {
+  "n": 322,
+  "disc": {
+   "ha": 64.14,
+   "prec": 0.5675,
+   "sor": 0.3657
+  },
+  "box": {
+   "ha": 75.86,
+   "prec": 0.5189,
+   "sor": 0.3763
+  },
+  "mask": {
+   "ha": 75.4,
+   "prec": 0.4979,
+   "sor": 0.3249
+  }
+ }
+}

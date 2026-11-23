@@ -1,0 +1,225 @@
+{
+ "n_fires": 1498,
+ "fuel_tha_median": 2.47,
+ "fuel_tha_iqr": [
+  1.51,
+  4.59
+ ],
+ "end_assumption_range": [
+  1.57,
+  3.89
+ ],
+ "A_snpp_vs_n20_min1": {
+  "n": 1137,
+  "rho": 0.517,
+  "median_ratio": 0.97
+ },
+ "A_snpp_vs_n20_min2": {
+  "n": 366,
+  "rho": 0.454,
+  "median_ratio": 1.01
+ },
+ "A_after_removing_size": 0.437,
+ "B": [
+  {
+   "var": "pixel size (swath position)",
+   "n": 1498,
+   "rho": 0.007
+  },
+  {
+   "var": "share of night detections",
+   "n": 1498,
+   "rho": 0.221
+  },
+  {
+   "var": "number of passes",
+   "n": 1498,
+   "rho": -0.066
+  },
+  {
+   "var": "scar size",
+   "n": 1498,
+   "rho": -0.463
+  },
+  {
+   "var": "fire duration",
+   "n": 1498,
+   "rho": -0.036
+  },
+  {
+   "var": "day of year",
+   "n": 1498,
+   "rho": 0.207
+  },
+  {
+   "var": "max temperature",
+   "n": 1064,
+   "rho": 0.25
+  },
+  {
+   "var": "humidity",
+   "n": 1064,
+   "rho": -0.248
+  },
+  {
+   "var": "wind",
+   "n": 1064,
+   "rho": 0.054
+  },
+  {
+   "var": "rain last 30 days",
+   "n": 1064,
+   "rho": -0.045
+  },
+  {
+   "var": "canopy %",
+   "n": 1491,
+   "rho": 0.006
+  },
+  {
+   "var": "litter map v3",
+   "n": 1487,
+   "rho": 0.037
+  },
+  {
+   "var": "grass map v3",
+   "n": 1487,
+   "rho": -0.116
+  },
+  {
+   "var": "teak probability",
+   "n": 1487,
+   "rho": 0.074
+  },
+  {
+   "var": "slope",
+   "n": 1498,
+   "rho": -0.067
+  },
+  {
+   "var": "WorldCover tree share",
+   "n": 1498,
+   "rho": 0.036
+  },
+  {
+   "var": "burnt the season before",
+   "n": 1418,
+   "rho": -0.226
+  }
+ ],
+ "C_r2_heldout": {
+  "sensor + size + timing": 0.566,
+  "+ weather": 0.59,
+  "+ ground": 0.591,
+  "ground only": 0.023,
+  "canopy only": -0.019,
+  "sensor+size+timing+canopy": 0.569,
+  "+ ground shuffled (baseline)": 0.586
+ },
+ "C_n": 977,
+ "C_std_coefs": {
+  "l_area": -0.914,
+  "l_pix": 0.031,
+  "night_share": 0.157,
+  "l_npass": 0.275,
+  "l_hours": 0.322,
+  "doy": 0.001,
+  "tmax": 0.079,
+  "rh": -0.136,
+  "wind": -0.009,
+  "rain30": -0.03,
+  "canopy": -0.054,
+  "litter": 0.02,
+  "grass": -0.003,
+  "teak": 0.013,
+  "slope": -0.046,
+  "burnt_last_season": -0.024
+ },
+ "D_litter_within_canopy_band_rho": [
+  -0.051,
+  0.019,
+  0.125,
+  0.136,
+  0.16
+ ],
+ "D_by_canopy": [
+  {
+   "canopy": "(0, 20]",
+   "fires": "159",
+   "fuel_median": "2.942",
+   "map_litter": "0.479"
+  },
+  {
+   "canopy": "(20, 40]",
+   "fires": "374",
+   "fuel_median": "2.275",
+   "map_litter": "1.045"
+  },
+  {
+   "canopy": "(40, 60]",
+   "fires": "635",
+   "fuel_median": "2.41",
+   "map_litter": "1.54"
+  },
+  {
+   "canopy": "(60, 100]",
+   "fires": "323",
+   "fuel_median": "2.678",
+   "map_litter": "1.86"
+  }
+ ],
+ "D_by_month": [
+  {
+   "month": 2,
+   "fires": 221,
+   "fuel_median": 2.131,
+   "pix_km2": 0.206,
+   "scar_ha": 55.54
+  },
+  {
+   "month": 3,
+   "fires": 839,
+   "fuel_median": 2.256,
+   "pix_km2": 0.204,
+   "scar_ha": 106.72
+  },
+  {
+   "month": 4,
+   "fires": 388,
+   "fuel_median": 3.426,
+   "pix_km2": 0.207,
+   "scar_ha": 82.436
+  },
+  {
+   "month": 5,
+   "fires": 47,
+   "fuel_median": 4.193,
+   "pix_km2": 0.198,
+   "scar_ha": 43.04
+  },
+  {
+   "month": 6,
+   "fires": 3,
+   "fuel_median": 2.001,
+   "pix_km2": 0.26,
+   "scar_ha": 65.88
+  }
+ ],
+ "D_by_burnt_last": [
+  {
+   "burnt_last_season": "(-0.01, 0.05]",
+   "fires": "535",
+   "fuel_median": "3.278"
+  },
+  {
+   "burnt_last_season": "(0.05, 0.3]",
+   "fires": "599",
+   "fuel_median": "2.187"
+  },
+  {
+   "burnt_last_season": "(0.3, 1.0]",
+   "fires": "284",
+   "fuel_median": "2.317"
+  }
+ ]
+}

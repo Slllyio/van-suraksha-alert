@@ -1,0 +1,10 @@
+sample,term,coef,se,base_later,rel
+all MP,early,-0.0413,0.0024,0.1254,-0.329
+all MP,early_flag,-0.0322,0.0032,0.1254,-0.257
+all MP,early_big,-0.0479,0.0034,0.1254,-0.382
+reserves,early,-0.0276,0.0046,0.1138,-0.242
+reserves,early_flag,-0.0182,0.0069,0.1138,-0.16
+reserves,early_big,-0.0339,0.0058,0.1138,-0.298
+other,early,-0.0446,0.0028,0.127,-0.351
+other,early_flag,-0.0353,0.0037,0.127,-0.278
+other,early_big,-0.0515,0.004,0.127,-0.405

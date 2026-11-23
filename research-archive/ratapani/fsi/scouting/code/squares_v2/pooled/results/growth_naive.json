@@ -1,0 +1,26 @@
+{
+ "fires D": {
+  "raw_mean_dlog_n": 0.037,
+  "raw_mean_dlog_frp": 0.059,
+  "corr_dlog_n_vs_dlog_pixel": -0.092,
+  "corr_dlog_frp_vs_dlog_pixel": -0.22
+ },
+ "fires N": {
+  "raw_mean_dlog_n": -0.031,
+  "raw_mean_dlog_frp": -0.111,
+  "corr_dlog_n_vs_dlog_pixel": -0.268,
+  "corr_dlog_frp_vs_dlog_pixel": -0.133
+ },
+ "static D": {
+  "raw_mean_dlog_n": 0.016,
+  "raw_mean_dlog_frp": 0.05,
+  "corr_dlog_n_vs_dlog_pixel": -0.125,
+  "corr_dlog_frp_vs_dlog_pixel": -0.11
+ },
+ "static N": {
+  "raw_mean_dlog_n": 0.021,
+  "raw_mean_dlog_frp": -0.01,
+  "corr_dlog_n_vs_dlog_pixel": -0.157,
+  "corr_dlog_frp_vs_dlog_pixel": 0.082
+ }
+}

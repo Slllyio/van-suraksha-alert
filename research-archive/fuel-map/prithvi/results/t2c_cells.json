@@ -1,0 +1,67 @@
+{
+ "cell_seasons": 28174,
+ "mean_share": 0.146,
+ "most_rate": 0.085,
+ "models": {
+  "canopy": {
+   "spearman_share": 0.437,
+   "auc_most": 0.779,
+   "auc_by_season": [
+    0.803,
+    0.813,
+    0.803,
+    0.748,
+    0.82,
+    0.725,
+    0.765,
+    0.801,
+    0.779,
+    0.733
+   ]
+  },
+  "canopy + raw HLS (same pixels)": {
+   "spearman_share": 0.443,
+   "auc_most": 0.783,
+   "auc_by_season": [
+    0.8,
+    0.816,
+    0.822,
+    0.714,
+    0.845,
+    0.714,
+    0.802,
+    0.794,
+    0.766,
+    0.754
+   ]
+  },
+  "canopy + raw + Prithvi": {
+   "spearman_share": 0.452,
+   "auc_most": 0.795,
+   "auc_by_season": [
+    0.822,
+    0.836,
+    0.828,
+    0.743,
+    0.846,
+    0.72,
+    0.826,
+    0.782,
+    0.773,
+    0.774
+   ]
+  }
+ },
+ "auc_gain": {
+  "canopy + raw + Prithvi vs canopy + raw HLS (same pixels)": {
+   "mean": 0.0124,
+   "seasons_better": 9,
+   "of": 10
+  },
+  "canopy + raw HLS (same pixels) vs canopy": {
+   "mean": 0.0037,
+   "seasons_better": 5,
+   "of": 10
+  }
+ }
+}

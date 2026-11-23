@@ -1,0 +1,10 @@
+{
+ "points": 4870,
+ "inside": 1068,
+ "point_match": 0.7593632958801498,
+ "cell_match": 0.7762172284644194,
+ "cells": 512,
+ "cell_agree": 0.88671875,
+ "fsi_beats": 82,
+ "compartments": 244
+}

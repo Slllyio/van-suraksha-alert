@@ -1,0 +1,41 @@
+{
+ "cell_seasons": 21051,
+ "extra_vs_same_canopy": {
+  "years_since_burn": 0.081,
+  "feb_moist": 0.057,
+  "jan_moist": 0.058,
+  "leaf_fall": -0.113,
+  "forest_2000": -0.044,
+  "forest_1000": -0.026,
+  "teak": 0.068,
+  "litter": 0.063
+ },
+ "auc_gain_by_years_since_burn": {
+  "burnt last season": {
+   "cells": 12754,
+   "most_rate": 0.07,
+   "auc_raw": 0.726,
+   "auc_prithvi": 0.742
+  },
+  "2-3 years": {
+   "cells": 6216,
+   "most_rate": 0.05,
+   "auc_raw": 0.737,
+   "auc_prithvi": 0.748
+  },
+  "4+ years": {
+   "cells": 2081,
+   "most_rate": 0.018,
+   "auc_raw": 0.839,
+   "auc_prithvi": 0.856
+  }
+ },
+ "share_vs_years_since_burn_same_canopy": -0.157,
+ "most_rate_by_ysb": {
+  "1": 0.07,
+  "2": 0.05,
+  "3": 0.049,
+  "4": 0.045,
+  "5": 0.005
+ }
+}

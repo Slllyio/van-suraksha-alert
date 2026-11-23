@@ -1,0 +1,59 @@
+{
+ "scenes": 188,
+ "fires": 184,
+ "random_within_45": 0.25,
+ "A_scar_edge_plus_hot_line": {
+  "n": 188,
+  "within_45": 0.511,
+  "ci": [
+   0.441,
+   0.58
+  ],
+  "median_angle": 40.8
+ },
+ "N_random_point_on_burnt_edge_within_45": 0.266,
+ "B_dots_only": {
+  "n": 143,
+  "within_45": 0.427,
+  "ci": [
+   0.35,
+   0.51
+  ],
+  "median_angle": 69.2
+ },
+ "C_hot_line_vs_dots": {
+  "n": 165,
+  "within_45": 0.473,
+  "ci": [
+   0.4,
+   0.552
+  ],
+  "median_angle": 47.6
+ },
+ "remaining_burn_300m_plus_away": {
+  "A": {
+   "n": 175,
+   "within_45": 0.537,
+   "ci": [
+    0.463,
+    0.611
+   ],
+   "median_angle": 36.8
+  },
+  "N": 0.271,
+  "B": {
+   "n": 136,
+   "within_45": 0.441,
+   "ci": [
+    0.353,
+    0.522
+   ],
+   "median_angle": 60.4
+  }
+ },
+ "same_scenes_A_vs_B": {
+  "n": 143,
+  "A": 0.538,
+  "B": 0.427
+ }
+}

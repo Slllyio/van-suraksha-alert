@@ -1,0 +1,91 @@
+{
+ "n": 1203,
+ "run_m_median": 403.0132520807068,
+ "elong_median": 1.8735293905929675,
+ "u_median": 0.31374517948636527,
+ "raster_vs_poly_within45": 0.696,
+ "n_far": 765,
+ "az_frp": {
+  "n": 133,
+  "within45": 0.376,
+  "within90": 0.594,
+  "mean_cos": 0.172
+ },
+ "az_bt": {
+  "n": 83,
+  "within45": 0.301,
+  "within90": 0.542,
+  "mean_cos": 0.089
+ },
+ "az_hot": {
+  "n": 313,
+  "within45": 0.291,
+  "within90": 0.505,
+  "mean_cos": 0.037
+ },
+ "fuel_az": {
+  "n": 729,
+  "within45": 0.383,
+  "within90": 0.675,
+  "mean_cos": 0.286
+ },
+ "vill_az": {
+  "n": 79,
+  "within45": 0.354,
+  "within90": 0.684,
+  "mean_cos": 0.301
+ },
+ "burn_az": {
+  "n": 401,
+  "within45": 0.349,
+  "within90": 0.666,
+  "mean_cos": 0.283
+ },
+ "road_az": {
+  "n": 176,
+  "within45": 0.29,
+  "within90": 0.58,
+  "mean_cos": 0.112
+ },
+ "lc_az": {
+  "n": 381,
+  "within45": 0.276,
+  "within90": 0.538,
+  "mean_cos": 0.076
+ },
+ "edge_az": {
+  "n": 564,
+  "within45": 0.328,
+  "within90": 0.642,
+  "mean_cos": 0.231
+ },
+ "down_az": {
+  "n": 765,
+  "within45": 0.222,
+  "within90": 0.467,
+  "mean_cos": -0.048
+ },
+ "wind_az": {
+  "n": 765,
+  "within45": 0.259,
+  "within90": 0.503,
+  "mean_cos": 0.004
+ },
+ "load_az": {
+  "n": 765,
+  "within45": 0.306,
+  "within90": 0.573,
+  "mean_cos": 0.108
+ },
+ "mom_az": {
+  "n": 257,
+  "within45": 0.626,
+  "within90": 0.848,
+  "mean_cos": 0.586
+ },
+ "front_axis": {
+  "n": 333,
+  "within45_either_end": 0.508,
+  "random": 0.5
+ }
+}

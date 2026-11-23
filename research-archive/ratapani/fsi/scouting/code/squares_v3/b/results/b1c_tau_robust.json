@@ -1,0 +1,114 @@
+{
+ "outward": {
+  "all": {
+   "fires": 14194,
+   "cov": 0.2634,
+   "cov_ci": [
+    0.0726,
+    0.4473
+   ],
+   "cov_winsorised": 0.2373,
+   "cov_w_ci": [
+    0.0364,
+    0.4293
+   ],
+   "spearman": 0.014,
+   "spearman_ci": [
+    -0.002,
+    0.033
+   ]
+  },
+  "noise_sd_below_4.0": {
+   "fires": 2985,
+   "cov": 0.1221,
+   "cov_ci": [
+    -0.0075,
+    0.2518
+   ],
+   "cov_winsorised": 0.1194,
+   "cov_w_ci": [
+    -0.0049,
+    0.2307
+   ],
+   "spearman": 0.034,
+   "spearman_ci": [
+    -0.004,
+    0.072
+   ]
+  },
+  "noise_sd_below_1.0": {
+   "fires": 489,
+   "cov": 0.1192,
+   "cov_ci": [
+    -0.0382,
+    0.2686
+   ],
+   "cov_winsorised": 0.129,
+   "cov_w_ci": [
+    -0.0232,
+    0.2611
+   ],
+   "spearman": 0.076,
+   "spearman_ci": [
+    -0.027,
+    0.172
+   ]
+  }
+ },
+ "perpendicular_null": {
+  "all": {
+   "fires": 14194,
+   "cov": -0.0762,
+   "cov_ci": [
+    -0.2739,
+    0.1343
+   ],
+   "cov_winsorised": -0.0622,
+   "cov_w_ci": [
+    -0.2589,
+    0.1399
+   ],
+   "spearman": -0.001,
+   "spearman_ci": [
+    -0.021,
+    0.019
+   ]
+  },
+  "noise_sd_below_4.0": {
+   "fires": 2985,
+   "cov": 0.015,
+   "cov_ci": [
+    -0.1441,
+    0.1616
+   ],
+   "cov_winsorised": -0.0035,
+   "cov_w_ci": [
+    -0.1451,
+    0.1332
+   ],
+   "spearman": -0.003,
+   "spearman_ci": [
+    -0.038,
+    0.034
+   ]
+  },
+  "noise_sd_below_1.0": {
+   "fires": 489,
+   "cov": -0.0076,
+   "cov_ci": [
+    -0.1807,
+    0.1714
+   ],
+   "cov_winsorised": -0.01,
+   "cov_w_ci": [
+    -0.1738,
+    0.1672
+   ],
+   "spearman": -0.012,
+   "spearman_ci": [
+    -0.103,
+    0.087
+   ]
+  }
+ }
+}

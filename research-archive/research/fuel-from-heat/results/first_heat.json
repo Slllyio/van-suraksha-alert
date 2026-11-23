@@ -1,0 +1,67 @@
+{
+ "fires": 2640,
+ "table": [
+  {
+   "measure": "raw FRP, brightest pixel",
+   "rho_scar_size": 0.163,
+   "rho_duration": 0.034,
+   "auc_seen_again": 0.498
+  },
+  {
+   "measure": "raw FRP, summed",
+   "rho_scar_size": 0.269,
+   "rho_duration": 0.114,
+   "auc_seen_again": 0.535
+  },
+  {
+   "measure": "number of pixels",
+   "rho_scar_size": 0.356,
+   "rho_duration": 0.228,
+   "auc_seen_again": 0.589
+  },
+  {
+   "measure": "relative heat, brightest pixel",
+   "rho_scar_size": 0.178,
+   "rho_duration": 0.092,
+   "auc_seen_again": 0.541
+  },
+  {
+   "measure": "relative heat, summed",
+   "rho_scar_size": 0.301,
+   "rho_duration": 0.178,
+   "auc_seen_again": 0.578
+  }
+ ],
+ "by_quintile": [
+  {
+   "rel_max": "coolest fifth",
+   "fires": "528",
+   "scar_ha_median": "36.34",
+   "seen_again": "0.316"
+  },
+  {
+   "rel_max": "2",
+   "fires": "528",
+   "scar_ha_median": "40.148",
+   "seen_again": "0.337"
+  },
+  {
+   "rel_max": "3",
+   "fires": "528",
+   "scar_ha_median": "41.18",
+   "seen_again": "0.312"
+  },
+  {
+   "rel_max": "4",
+   "fires": "528",
+   "scar_ha_median": "52.12",
+   "seen_again": "0.345"
+  },
+  {
+   "rel_max": "hottest fifth",
+   "fires": "528",
+   "scar_ha_median": "74.814",
+   "seen_again": "0.411"
+  }
+ ]
+}

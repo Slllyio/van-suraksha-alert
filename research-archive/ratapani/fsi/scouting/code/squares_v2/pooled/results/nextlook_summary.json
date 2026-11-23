@@ -1,0 +1,105 @@
+{
+ "forecasts": 4543,
+ "fires": 1585,
+ "mean_reach_m": 472,
+ "v_m_per_clock_h": {
+  "clock": 15.0,
+  "modis": 14.8,
+  "pooled": 14.7,
+  "none": 0
+ },
+ "clock, drift c=0.0": {
+  "capture_all": 0.6159,
+  "capture_new": 0.1591,
+  "cap_minus_plain_clock": "+0.0000 (+0.0000 to +0.0000)",
+  "capn_minus_plain_clock": "+0.0000 (+0.0000 to +0.0000)"
+ },
+ "clock, drift c=0.5": {
+  "capture_all": 0.6199,
+  "capture_new": 0.179,
+  "cap_minus_plain_clock": "+0.0040 (+0.0010 to +0.0068)",
+  "capn_minus_plain_clock": "+0.0200 (+0.0136 to +0.0264)"
+ },
+ "clock, drift c=1.0": {
+  "capture_all": 0.623,
+  "capture_new": 0.1971,
+  "cap_minus_plain_clock": "+0.0071 (+0.0027 to +0.0117)",
+  "capn_minus_plain_clock": "+0.0382 (+0.0299 to +0.0464)"
+ },
+ "modis, drift c=0.0": {
+  "capture_all": 0.6145,
+  "capture_new": 0.1518,
+  "cap_minus_plain_clock": "-0.0015 (-0.0037 to +0.0010)",
+  "capn_minus_plain_clock": "-0.0071 (-0.0113 to -0.0026)"
+ },
+ "none, drift c=0.0": {
+  "capture_all": 0.6309,
+  "capture_new": 0.1731,
+  "cap_minus_plain_clock": "+0.0148 (+0.0078 to +0.0221)",
+  "capn_minus_plain_clock": "+0.0136 (-0.0021 to +0.0284)"
+ },
+ "pooled, drift c=0.0": {
+  "capture_all": 0.6162,
+  "capture_new": 0.1533,
+  "cap_minus_plain_clock": "+0.0003 (-0.0019 to +0.0023)",
+  "capn_minus_plain_clock": "-0.0058 (-0.0085 to -0.0036)"
+ },
+ "pooled, drift c=0.5": {
+  "capture_all": 0.6204,
+  "capture_new": 0.1737,
+  "cap_minus_plain_clock": "+0.0044 (+0.0011 to +0.0078)",
+  "capn_minus_plain_clock": "+0.0146 (+0.0079 to +0.0214)"
+ },
+ "pooled, drift c=1.0": {
+  "capture_all": 0.6232,
+  "capture_new": 0.1913,
+  "cap_minus_plain_clock": "+0.0073 (+0.0021 to +0.0127)",
+  "capn_minus_plain_clock": "+0.0323 (+0.0236 to +0.0411)"
+ },
+ "area_matched (1500 forecasts)": {
+  "plain_clock_reach_scaled": {
+   "1.0": {
+    "area_ha": 328.8,
+    "capture_all": 0.6179,
+    "capture_new": 0.1489
+   },
+   "1.05": {
+    "area_ha": 349.0,
+    "capture_all": 0.6408,
+    "capture_new": 0.1799
+   },
+   "1.1": {
+    "area_ha": 369.4,
+    "capture_all": 0.6682,
+    "capture_new": 0.2424
+   },
+   "1.15": {
+    "area_ha": 390.0,
+    "capture_all": 0.6913,
+    "capture_new": 0.2953
+   },
+   "1.2": {
+    "area_ha": 410.8,
+    "capture_all": 0.7153,
+    "capture_new": 0.3501
+   },
+   "1.3": {
+    "area_ha": 452.9,
+    "capture_all": 0.7591,
+    "capture_new": 0.45
+   }
+  },
+  "drift_prior": {
+   "0.5": {
+    "area_ha": 363.3,
+    "capture_all": 0.6241,
+    "capture_new": 0.1728
+   },
+   "1.0": {
+    "area_ha": 388.4,
+    "capture_all": 0.6261,
+    "capture_new": 0.1889
+   }
+  }
+ }
+}

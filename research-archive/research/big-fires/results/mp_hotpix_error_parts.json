@@ -1,0 +1,143 @@
+{
+ "observed_radius_400m": {
+  "passes": 3134,
+  "hot_pixel_to_centre_m": 222,
+  "hot_centroid_to_centre_m": 210,
+  "centroid_over_pixel_width": 0.47,
+  "outer_half": 0.805,
+  "inside": 0.6,
+  "adjacent_between": 0.53,
+  "far_between": 0.73
+ },
+ "observed_radius_600m": {
+  "passes": 3469,
+  "hot_pixel_to_centre_m": 259,
+  "hot_centroid_to_centre_m": 241,
+  "centroid_over_pixel_width": 0.54,
+  "outer_half": 0.838,
+  "inside": 0.49,
+  "adjacent_between": 0.47,
+  "far_between": 0.67
+ },
+ "observed_radius_800m": {
+  "passes": 3469,
+  "hot_pixel_to_centre_m": 272,
+  "hot_centroid_to_centre_m": 254,
+  "centroid_over_pixel_width": 0.58,
+  "outer_half": 0.847,
+  "inside": 0.46,
+  "adjacent_between": 0.44,
+  "far_between": 0.65
+ },
+ "observed_by_pixel_width": {
+  "375-400": {
+   "passes": 1177,
+   "centroid_to_centre_m": 230,
+   "over_pixel_width": 0.61,
+   "outer_half": 0.856
+  },
+  "400-450": {
+   "passes": 1003,
+   "centroid_to_centre_m": 235,
+   "over_pixel_width": 0.55,
+   "outer_half": 0.837
+  },
+  "450-550": {
+   "passes": 944,
+   "centroid_to_centre_m": 252,
+   "over_pixel_width": 0.5,
+   "outer_half": 0.833
+  },
+  "550-700": {
+   "passes": 319,
+   "centroid_to_centre_m": 274,
+   "over_pixel_width": 0.47,
+   "outer_half": 0.799
+  },
+  "700+": {
+   "passes": 26,
+   "centroid_to_centre_m": 280,
+   "over_pixel_width": 0.37,
+   "outer_half": 0.753
+  }
+ },
+ "observed_by_gap": {
+  "(0.0, 2.5]": {
+   "passes": 1331,
+   "centroid_to_centre_m": 237
+  },
+  "(2.5, 2.8]": {
+   "passes": 745,
+   "centroid_to_centre_m": 215
+  },
+  "(2.8, 3.1]": {
+   "passes": 794,
+   "centroid_to_centre_m": 246
+  },
+  "(3.1, 3.6]": {
+   "passes": 599,
+   "centroid_to_centre_m": 288
+  }
+ },
+ "gap_slope_m_per_h": 30,
+ "null_fire_at_block_centre": {
+  "passes": 3352,
+  "hot_pixel_to_centre_m": 216,
+  "hot_centroid_to_centre_m": 200,
+  "centroid_over_pixel_width": 0.47,
+  "outer_half": 0.786,
+  "inside": 0.61,
+  "adjacent_between": 0.74,
+  "far_between": 0.91
+ },
+ "null_pixel_size_only": {
+  "passes": 3346,
+  "hot_pixel_to_centre_m": 236,
+  "hot_centroid_to_centre_m": 202,
+  "centroid_over_pixel_width": 0.45,
+  "outer_half": 0.83,
+  "inside": 0.56,
+  "adjacent_between": 0.58,
+  "far_between": 0.82
+ },
+ "null_pixel_size_plus_geolocation_75m": {
+  "passes": 3336,
+  "hot_pixel_to_centre_m": 240,
+  "hot_centroid_to_centre_m": 199,
+  "centroid_over_pixel_width": 0.45,
+  "outer_half": 0.835,
+  "inside": 0.54,
+  "adjacent_between": 0.53,
+  "far_between": 0.76
+ },
+ "null_pixel_size_plus_geolocation_75m_plus_move_25mph": {
+  "passes": 3342,
+  "hot_pixel_to_centre_m": 246,
+  "hot_centroid_to_centre_m": 206,
+  "centroid_over_pixel_width": 0.46,
+  "outer_half": 0.839,
+  "inside": 0.52,
+  "adjacent_between": 0.52,
+  "far_between": 0.8
+ },
+ "null_pixel_size_plus_geolocation_150m_plus_move": {
+  "passes": 3330,
+  "hot_pixel_to_centre_m": 267,
+  "hot_centroid_to_centre_m": 221,
+  "centroid_over_pixel_width": 0.5,
+  "outer_half": 0.862,
+  "inside": 0.47,
+  "adjacent_between": 0.37,
+  "far_between": 0.76
+ },
+ "null_pixel_size_plus_geolocation_250m_plus_move": {
+  "passes": 3252,
+  "hot_pixel_to_centre_m": 307,
+  "hot_centroid_to_centre_m": 255,
+  "centroid_over_pixel_width": 0.57,
+  "outer_half": 0.886,
+  "inside": 0.39,
+  "adjacent_between": 0.28,
+  "far_between": 0.66
+ }
+}

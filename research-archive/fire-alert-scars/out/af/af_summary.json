@@ -1,0 +1,42 @@
+{
+ "2017-2024": {
+  "first_burns": 15754,
+  "snpp_dated": 0.394,
+  "firms_dated": 0.529,
+  "af_dated": 0.048,
+  "any_dated": 0.543,
+  "af_only": 0.014
+ },
+ "2017-2026": {
+  "first_burns": 20007,
+  "snpp_dated": 0.402,
+  "firms_dated": 0.54,
+  "af_dated": 0.049,
+  "any_dated": 0.554,
+  "af_only": 0.014
+ },
+ "af_vs_firms_days": {
+  "n": 695,
+  "same_day": 0.363,
+  "within_1": 0.833,
+  "firms_later_median": -1.0
+ },
+ "af_clusters": {
+  "n": 4374,
+  "with_firms_alert": 0.413,
+  "small_lt5px_with_firms": 0.353,
+  "fixed_sources_dropped": 0
+ },
+ "by_season_af_dated": {
+  "2017": 0.019,
+  "2018": 0.044,
+  "2019": 0.043,
+  "2020": 0.045,
+  "2021": 0.081,
+  "2022": 0.065,
+  "2023": 0.046,
+  "2024": 0.049,
+  "2025": 0.065,
+  "2026": 0.038
+ }
+}

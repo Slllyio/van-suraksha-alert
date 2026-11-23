@@ -1,0 +1,199 @@
+{
+ "still_burning": {
+  "residual_odd_even_spearman": 0.83,
+  "p": 8.347539031641097e-20,
+  "share_of_division_spread_explained_by_forest_month_density": 0.42,
+  "top": [
+   {
+    "division": "Rewa",
+    "n": 851,
+    "resid_pts": 16.9,
+    "obs_%": 36.8,
+    "expected_%": 19.9
+   },
+   {
+    "division": "Kuno_Palpur",
+    "n": 466,
+    "resid_pts": 16.0,
+    "obs_%": 33.7,
+    "expected_%": 17.7
+   },
+   {
+    "division": "North_Panna",
+    "n": 1100,
+    "resid_pts": 9.7,
+    "obs_%": 29.5,
+    "expected_%": 19.8
+   },
+   {
+    "division": "Katni",
+    "n": 1179,
+    "resid_pts": 7.7,
+    "obs_%": 27.8,
+    "expected_%": 20.2
+   },
+   {
+    "division": "South_Betul",
+    "n": 2060,
+    "resid_pts": 7.5,
+    "obs_%": 28.0,
+    "expected_%": 20.4
+   },
+   {
+    "division": "Satpura_TR",
+    "n": 917,
+    "resid_pts": 7.1,
+    "obs_%": 28.7,
+    "expected_%": 21.6
+   }
+  ],
+  "bottom": [
+   {
+    "division": "Lamta_Proj_S_Balaghat",
+    "n": 869,
+    "resid_pts": -6.4,
+    "obs_%": 23.7,
+    "expected_%": 30.1
+   },
+   {
+    "division": "BTR",
+    "n": 2499,
+    "resid_pts": -6.5,
+    "obs_%": 16.9,
+    "expected_%": 23.4
+   },
+   {
+    "division": "North_Shahdol",
+    "n": 1954,
+    "resid_pts": -6.6,
+    "obs_%": 13.9,
+    "expected_%": 20.5
+   },
+   {
+    "division": "Lamta_Proj_N_Balaghat",
+    "n": 555,
+    "resid_pts": -7.5,
+    "obs_%": 28.6,
+    "expected_%": 36.2
+   },
+   {
+    "division": "Kanha Tiger Reserve",
+    "n": 1460,
+    "resid_pts": -9.9,
+    "obs_%": 11.3,
+    "expected_%": 21.2
+   },
+   {
+    "division": "PTR MP",
+    "n": 453,
+    "resid_pts": -11.1,
+    "obs_%": 8.8,
+    "expected_%": 19.9
+   }
+  ]
+ },
+ "night_first": {
+  "residual_odd_even_spearman": 0.93,
+  "p": 3.5780646208776925e-32,
+  "share_of_division_spread_explained_by_forest_month_density": -0.03,
+  "top": [
+   {
+    "division": "Ratlam",
+    "n": 400,
+    "resid_pts": 28.3,
+    "obs_%": 53.0,
+    "expected_%": 24.7
+   },
+   {
+    "division": "Barwah",
+    "n": 1519,
+    "resid_pts": 19.3,
+    "obs_%": 48.1,
+    "expected_%": 28.8
+   },
+   {
+    "division": "Dindori",
+    "n": 3800,
+    "resid_pts": 14.0,
+    "obs_%": 45.5,
+    "expected_%": 31.5
+   },
+   {
+    "division": "South_Betul",
+    "n": 2010,
+    "resid_pts": 13.9,
+    "obs_%": 43.2,
+    "expected_%": 29.2
+   },
+   {
+    "division": "South_Chhindwara",
+    "n": 2944,
+    "resid_pts": 13.2,
+    "obs_%": 42.8,
+    "expected_%": 29.7
+   },
+   {
+    "division": "Mohgaon_Proj_Dindori",
+    "n": 349,
+    "resid_pts": 13.1,
+    "obs_%": 42.1,
+    "expected_%": 29.1
+   }
+  ],
+  "bottom": [
+   {
+    "division": "Chhindwara_Project",
+    "n": 236,
+    "resid_pts": -17.8,
+    "obs_%": 8.1,
+    "expected_%": 25.9
+   },
+   {
+    "division": "Gwalior",
+    "n": 456,
+    "resid_pts": -18.4,
+    "obs_%": 7.9,
+    "expected_%": 26.3
+   },
+   {
+    "division": "Shivpuri",
+    "n": 1152,
+    "resid_pts": -18.6,
+    "obs_%": 8.7,
+    "expected_%": 27.3
+   },
+   {
+    "division": "Barghat Project",
+    "n": 1375,
+    "resid_pts": -18.7,
+    "obs_%": 12.7,
+    "expected_%": 31.4
+   },
+   {
+    "division": "BTR",
+    "n": 2375,
+    "resid_pts": -19.5,
+    "obs_%": 11.0,
+    "expected_%": 30.5
+   },
+   {
+    "division": "Ashok_Nagar",
+    "n": 787,
+    "resid_pts": -21.1,
+    "obs_%": 7.0,
+    "expected_%": 28.1
+   }
+  ]
+ },
+ "night_vs_forest_share_spearman": -0.03,
+ "beat_edge": {
+  "fires_within_250m_%": 44.7,
+  "random_within_250m_%": 49.0,
+  "fires_median_m": 286,
+  "random_median_m": 257,
+  "next_day_edge_minus_interior_pts_median_div": -4.2,
+  "divisions_edge_higher_next_day": "9/86",
+  "scar_ha_edge_over_interior_median_div": 0.71,
+  "divisions_edge_bigger_scar": "4/72"
+ }
+}

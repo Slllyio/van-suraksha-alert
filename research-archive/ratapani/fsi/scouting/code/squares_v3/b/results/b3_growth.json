@@ -1,0 +1,194 @@
+{
+ "intervals": 1780,
+ "fires": 852,
+ "fires_with_pairs": 599,
+ "median_B_of_these_fires": 0.0098,
+ "obs_blend": {
+  "n": 1201,
+  "fires": 451,
+  "median_obs_ha": 82.3,
+  "pred_same": {
+   "rho": 0.498,
+   "rho_ci": [
+    0.451,
+    0.55
+   ],
+   "heldout_r2_log": 0.152,
+   "k_median": 16.477
+  },
+  "pred_class": {
+   "rho": 0.493,
+   "rho_ci": [
+    0.441,
+    0.546
+   ],
+   "heldout_r2_log": 0.12,
+   "k_median": 15.24
+  },
+  "pred_fire": {
+   "rho": 0.487,
+   "rho_ci": [
+    0.437,
+    0.531
+   ],
+   "heldout_r2_log": 0.103,
+   "k_median": 14.576
+  },
+  "pred_speedonly": {
+   "rho": 0.129,
+   "rho_ci": [
+    0.068,
+    0.19
+   ],
+   "heldout_r2_log": -0.133,
+   "k_median": 8.707
+  },
+  "pred_clock": {
+   "rho": -0.005,
+   "rho_ci": [
+    -0.057,
+    0.05
+   ],
+   "heldout_r2_log": -0.148,
+   "k_median": null
+  },
+  "rho_fire_minus_class": [
+   -0.0067,
+   -0.0179,
+   0.0051
+  ],
+  "fires_B_gt_0.2": {
+   "n": 214,
+   "fires": 34,
+   "rho_fire": 0.487,
+   "rho_class": 0.487
+  }
+ },
+ "obs_grid": {
+  "n": 1203,
+  "fires": 453,
+  "median_obs_ha": 97.2,
+  "pred_same": {
+   "rho": 0.586,
+   "rho_ci": [
+    0.541,
+    0.623
+   ],
+   "heldout_r2_log": 0.314,
+   "k_median": 19.7
+  },
+  "pred_class": {
+   "rho": 0.575,
+   "rho_ci": [
+    0.53,
+    0.615
+   ],
+   "heldout_r2_log": 0.263,
+   "k_median": 18.185
+  },
+  "pred_fire": {
+   "rho": 0.572,
+   "rho_ci": [
+    0.523,
+    0.615
+   ],
+   "heldout_r2_log": 0.248,
+   "k_median": 17.21
+  },
+  "pred_speedonly": {
+   "rho": 0.155,
+   "rho_ci": [
+    0.09,
+    0.214
+   ],
+   "heldout_r2_log": -0.142,
+   "k_median": 10.407
+  },
+  "pred_clock": {
+   "rho": 0.002,
+   "rho_ci": [
+    -0.052,
+    0.058
+   ],
+   "heldout_r2_log": -0.208,
+   "k_median": null
+  },
+  "rho_fire_minus_class": [
+   -0.0037,
+   -0.0159,
+   0.0078
+  ],
+  "fires_B_gt_0.2": {
+   "n": 214,
+   "fires": 34,
+   "rho_fire": 0.598,
+   "rho_class": 0.589
+  }
+ },
+ "photos": {
+  "photos": 340,
+  "fires": 280,
+  "area_by_photo": {
+   "n": 196,
+   "same": {
+    "rho": 0.118,
+    "rho_ci": [
+     -0.019,
+     0.273
+    ],
+    "heldout_r2_log": -0.567
+   },
+   "class": {
+    "rho": 0.119,
+    "rho_ci": [
+     -0.029,
+     0.259
+    ],
+    "heldout_r2_log": -0.633
+   },
+   "fire": {
+    "rho": 0.115,
+    "rho_ci": [
+     -0.047,
+     0.259
+    ],
+    "heldout_r2_log": -0.701
+   }
+  },
+  "share_by_photo": {
+   "n": 196,
+   "share_pred_line": {
+    "mae": 0.279,
+    "bias": 0.06,
+    "rho": 0.41
+   },
+   "share_blend": {
+    "mae": 0.147,
+    "bias": 0.058,
+    "rho": 0.772
+   },
+   "share_grid": {
+    "mae": 0.155,
+    "bias": 0.09,
+    "rho": 0.743
+   },
+   "share_nearest": {
+    "mae": 0.153,
+    "bias": 0.055,
+    "rho": 0.743
+   }
+  },
+  "photo_to_photo": {
+   "pairs": 5
+  }
+ },
+ "front_advance_30m_partA": {
+  "fires": 57,
+  "median_adv_m_h": 23.2,
+  "rho_class": 0.093,
+  "rho_fire": 0.131,
+  "fires_with_pairs": 52,
+  "median_B": 0.0454,
+  "median_v_post": 16.8
+ }
+}

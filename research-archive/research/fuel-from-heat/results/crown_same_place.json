@@ -1,0 +1,35 @@
+{
+ "all": {
+  "n": 11398,
+  "places": 1939,
+  "frp_factor_full_leafy": 0.785,
+  "ci": [
+   0.675,
+   0.913
+  ],
+  "p": 0.0017,
+  "leafy_range_within_place_median": 0.122
+ },
+ "night": {
+  "n": 2322,
+  "places": 636,
+  "frp_factor_full_leafy": 0.711,
+  "ci": [
+   0.507,
+   0.998
+  ],
+  "p": 0.0484,
+  "leafy_range_within_place_median": 0.088
+ },
+ "day": {
+  "n": 7597,
+  "places": 1656,
+  "frp_factor_full_leafy": 0.773,
+  "ci": [
+   0.635,
+   0.94
+  ],
+  "p": 0.01,
+  "leafy_range_within_place_median": 0.111
+ }
+}

@@ -1,0 +1,61 @@
+{
+ "circle": {
+  "sorensen": 0.2939,
+  "auc": 0.9241,
+  "n_fires": 1223
+ },
+ "full": {
+  "sorensen": 0.3631,
+  "auc": 0.9421,
+  "n_fires": 1223,
+  "n_feats": 38
+ },
+ "distance only": {
+  "sorensen": 0.3058,
+  "auc": 0.9234,
+  "n_fires": 1223,
+  "n_feats": 2
+ },
+ "distance + fire level": {
+  "sorensen": 0.3047,
+  "auc": 0.9241,
+  "n_fires": 1223,
+  "n_feats": 12
+ },
+ "distance + fire + physics": {
+  "sorensen": 0.3126,
+  "auc": 0.9252,
+  "n_fires": 1223,
+  "n_feats": 14
+ },
+ "distance + fire + statics + deltas": {
+  "sorensen": 0.3538,
+  "auc": 0.9384,
+  "n_fires": 1223,
+  "n_feats": 31
+ },
+ "distance + fire + statics + deltas + dryness": {
+  "sorensen": 0.3601,
+  "auc": 0.941,
+  "n_fires": 1223,
+  "n_feats": 33
+ },
+ "full minus wind & front": {
+  "sorensen": 0.3601,
+  "auc": 0.9416,
+  "n_fires": 1223,
+  "n_feats": 35
+ },
+ "full minus dryness": {
+  "sorensen": 0.3514,
+  "auc": 0.9391,
+  "n_fires": 1223,
+  "n_feats": 36
+ },
+ "full minus physics": {
+  "sorensen": 0.3606,
+  "auc": 0.9415,
+  "n_fires": 1223,
+  "n_feats": 36
+ }
+}

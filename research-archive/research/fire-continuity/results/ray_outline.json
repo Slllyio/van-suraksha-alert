@@ -1,0 +1,41 @@
+{
+ "n_fronts": 571,
+ "mean_iou": {
+  "model": 0.348,
+  "no_ground_circle": 0.343,
+  "fixed_circle": 0.347,
+  "shape_model": 0.416,
+  "shape_circle": 0.409
+ },
+ "gain_size_and_shape_vs_no_ground": [
+  0.005,
+  -0.004,
+  0.013
+ ],
+ "gain_shape_only_vs_circle": [
+  0.007,
+  0.002,
+  0.012
+ ],
+ "share_fronts_shape_better": 0.55,
+ "by_kind": {
+  "first": {
+   "model": 0.348,
+   "no_ground_circle": 0.339,
+   "shape_model": 0.407,
+   "shape_circle": 0.399
+  },
+  "independent": {
+   "model": 0.427,
+   "no_ground_circle": 0.413,
+   "shape_model": 0.494,
+   "shape_circle": 0.495
+  },
+  "separate": {
+   "model": 0.347,
+   "no_ground_circle": 0.344,
+   "shape_model": 0.418,
+   "shape_circle": 0.411
+  }
+ }
+}

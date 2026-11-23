@@ -1,0 +1,79 @@
+{
+ "base": {
+  "loso": {
+   "real94_recall@5": 0.2968,
+   "real94_recall@10": 0.4897,
+   "real94_recall@5_2017": 0.2929,
+   "real94_recall@5_2018": 0.3164,
+   "real94_recall@5_2019": 0.32,
+   "real94_recall@5_2020": 0.2559,
+   "real94_recall@5_2021": 0.299,
+   "real94_recall@5_2022": 0.286,
+   "real94_recall@5_2023": 0.2671,
+   "real94_recall@5_2024": 0.3096
+  },
+  "test": {
+   "real94_recall@5": 0.2871,
+   "real94_recall@10": 0.4879,
+   "real94_recall@5_2025": 0.2792,
+   "real94_recall@5_2026": 0.2956
+  },
+  "top_gain": {
+   "s2d_nbr_chg30": 225786.0,
+   "doy": 224063.0,
+   "rh3": 184551.0,
+   "prior": 167886.0,
+   "nb2_season": 126998.0,
+   "s2d_ndvi_chg30": 121057.0,
+   "aoi_season": 121022.0,
+   "s2d_nbr_last": 108934.0,
+   "p30": 87704.0,
+   "s2d_ndvi_mean30": 74784.0,
+   "RH2M": 69656.0,
+   "s2d_nbr_mean30": 64774.0,
+   "s2d_nbr_last_spanom": 56854.0,
+   "aoi_new7": 56825.0,
+   "d_built": 56812.0
+  }
+ },
+ "rank_base": {
+  "loso": {
+   "real94_recall@5": 0.2932,
+   "real94_recall@10": 0.4849,
+   "real94_recall@5_2017": 0.2917,
+   "real94_recall@5_2018": 0.3099,
+   "real94_recall@5_2019": 0.3152,
+   "real94_recall@5_2020": 0.2583,
+   "real94_recall@5_2021": 0.2934,
+   "real94_recall@5_2022": 0.2836,
+   "real94_recall@5_2023": 0.2712,
+   "real94_recall@5_2024": 0.2882
+  },
+  "test": {
+   "real94_recall@5": 0.2868,
+   "real94_recall@10": 0.4771,
+   "real94_recall@5_2025": 0.2864,
+   "real94_recall@5_2026": 0.2872
+  }
+ },
+ "rankavg_base": {
+  "loso": {
+   "real94_recall@5": 0.3007,
+   "real94_recall@10": 0.4944,
+   "real94_recall@5_2017": 0.2978,
+   "real94_recall@5_2018": 0.3204,
+   "real94_recall@5_2019": 0.3231,
+   "real94_recall@5_2020": 0.2614,
+   "real94_recall@5_2021": 0.3004,
+   "real94_recall@5_2022": 0.2934,
+   "real94_recall@5_2023": 0.271,
+   "real94_recall@5_2024": 0.3048
+  },
+  "test": {
+   "real94_recall@5": 0.2944,
+   "real94_recall@10": 0.4913,
+   "real94_recall@5_2025": 0.2904,
+   "real94_recall@5_2026": 0.2988
+  }
+ }
+}

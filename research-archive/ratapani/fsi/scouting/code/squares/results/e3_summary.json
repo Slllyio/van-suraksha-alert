@@ -1,0 +1,238 @@
+{
+ "3a_viirs_multi_pixel": {
+  "clusters": 424,
+  "median_pixels": 2.0,
+  "median_gap_h": 2.73,
+  "median_dist_to_hotpix_centre_m": {
+   "plain": 369,
+   "frp": 366,
+   "frp2": 380,
+   "bright": 392,
+   "psf": 392
+  },
+  "median_dist_to_nearest_hotpix_m": {
+   "plain": 242,
+   "frp": 240,
+   "frp2": 247,
+   "bright": 261,
+   "psf": 266
+  },
+  "frp_minus_plain_median_m": [
+   0.0,
+   -0.0,
+   0.0
+  ],
+  "frp_closer_share": 0.375,
+  "frp2_minus_plain_median_m": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "frp2_closer_share": 0.358,
+  "bright_minus_plain_median_m": [
+   11.4,
+   1.6,
+   30.6
+  ],
+  "bright_closer_share": 0.432,
+  "psf_minus_plain_median_m": [
+   0.0,
+   0.0,
+   16.9
+  ],
+  "psf_closer_share": 0.3
+ },
+ "3a_viirs_multi_pixel_gap_le_2h": {
+  "clusters": 41,
+  "median_pixels": 2.0,
+  "median_gap_h": 1.9,
+  "median_dist_to_hotpix_centre_m": {
+   "plain": 373,
+   "frp": 373,
+   "frp2": 380,
+   "bright": 357,
+   "psf": 382
+  },
+  "median_dist_to_nearest_hotpix_m": {
+   "plain": 210,
+   "frp": 209,
+   "frp2": 178,
+   "bright": 209,
+   "psf": 211
+  },
+  "frp_minus_plain_median_m": [
+   -0.0,
+   -7.5,
+   0.4
+  ],
+  "frp_closer_share": 0.488,
+  "frp2_minus_plain_median_m": [
+   -0.0,
+   -10.5,
+   0.9
+  ],
+  "frp2_closer_share": 0.463,
+  "bright_minus_plain_median_m": [
+   -2.6,
+   -30.4,
+   43.8
+  ],
+  "bright_closer_share": 0.512,
+  "psf_minus_plain_median_m": [
+   0.0,
+   -17.8,
+   61.9
+  ],
+  "psf_closer_share": 0.39
+ },
+ "3a_viirs_3plus_pixels": {
+  "clusters": 206,
+  "median_pixels": 3.0,
+  "median_gap_h": 2.82,
+  "median_dist_to_hotpix_centre_m": {
+   "plain": 425,
+   "frp": 425,
+   "frp2": 424,
+   "bright": 442,
+   "psf": 465
+  },
+  "median_dist_to_nearest_hotpix_m": {
+   "plain": 267,
+   "frp": 281,
+   "frp2": 276,
+   "bright": 292,
+   "psf": 296
+  },
+  "frp_minus_plain_median_m": [
+   0.1,
+   -0.0,
+   5.6
+  ],
+  "frp_closer_share": 0.408,
+  "frp2_minus_plain_median_m": [
+   5.6,
+   0.0,
+   15.0
+  ],
+  "frp2_closer_share": 0.379,
+  "bright_minus_plain_median_m": [
+   27.3,
+   6.5,
+   53.6
+  ],
+  "bright_closer_share": 0.388,
+  "psf_minus_plain_median_m": [
+   46.1,
+   20.7,
+   71.4
+  ],
+  "psf_closer_share": 0.364
+ },
+ "3a_modis_terra_multi_pixel": {
+  "clusters": 15,
+  "median_pixels": 2.0,
+  "median_gap_h": 0.22,
+  "median_dist_to_hotpix_centre_m": {
+   "plain": 283,
+   "frp": 237,
+   "frp2": 250,
+   "bright": 286,
+   "psf": 328
+  },
+  "median_dist_to_nearest_hotpix_m": {
+   "plain": 125,
+   "frp": 132,
+   "frp2": 144,
+   "bright": 131,
+   "psf": 122
+  },
+  "frp_minus_plain_median_m": [
+   10.4,
+   -63.2,
+   36.2
+  ],
+  "frp_closer_share": 0.4,
+  "frp2_minus_plain_median_m": [
+   45.2,
+   -56.9,
+   90.4
+  ],
+  "frp2_closer_share": 0.4,
+  "bright_minus_plain_median_m": [
+   124.4,
+   -4.3,
+   161.5
+  ],
+  "bright_closer_share": 0.333,
+  "psf_minus_plain_median_m": [
+   94.5,
+   10.1,
+   121.2
+  ],
+  "psf_closer_share": 0.267
+ },
+ "3a_cluster_sizes": {
+  "viirs_clusters_with_hotpix": 996,
+  "single_pixel_share": 0.574,
+  "single_pixel_median_dist_to_hotpix_centre_m": 303
+ },
+ "3b_single_viirs": {
+  "n": 572,
+  "hot_centre_inside_footprint": 0.35,
+  "inside_inner_half_area": 0.47,
+  "uniform_expectation_inner_half": 0.5,
+  "median_abs_offset_scan": 0.798,
+  "median_abs_offset_track": 0.837,
+  "uniform_expectation_median_abs_offset": 0.5
+ },
+ "3b_single_modis": {
+  "n": 29,
+  "hot_centre_inside_footprint": 0.966,
+  "inside_inner_half_area": 0.75,
+  "uniform_expectation_inner_half": 0.5,
+  "median_abs_offset_scan": 0.249,
+  "median_abs_offset_track": 0.536,
+  "uniform_expectation_median_abs_offset": 0.5
+ },
+ "3c_Terra+VIIRS": {
+  "pass_pairs": 46,
+  "hot_pixels_in_union": 8765,
+  "share_of_hot_in_overlap": 0.2,
+  "overlap_share_of_union_area": 0.063,
+  "density_lift": 3.2,
+  "lift_ci95": [
+   2.01,
+   4.81
+  ],
+  "hot_outside_overlap_share": 0.8
+ },
+ "3c_VIIRS+VIIRS": {
+  "pass_pairs": 252,
+  "hot_pixels_in_union": 18845,
+  "share_of_hot_in_overlap": 0.16,
+  "overlap_share_of_union_area": 0.143,
+  "density_lift": 1.12,
+  "lift_ci95": [
+   0.92,
+   1.3
+  ],
+  "hot_outside_overlap_share": 0.84
+ },
+ "3d_photos": {
+  "n": 203,
+  "auc_closest_centres": 0.7824,
+  "auc_kernel_centres": 0.8017,
+  "auc_closest_half_to_frp_centre": 0.7955,
+  "auc_kernel_half_to_frp_centre": 0.804,
+  "auc_closest_frp_centre": 0.793,
+  "auc_kernel_frp_centre": 0.8043,
+  "diff_closest_frp_centre_vs_centres_95": [
+   -0.0025,
+   0.0244
+  ],
+  "diff_kernel_half_vs_centres_95": [
+   -0.0014,
+   0.006
+  ]
+ }
+}

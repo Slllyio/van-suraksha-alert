@@ -1,0 +1,69 @@
+{
+ "detections": 15054,
+ "passes": 1655,
+ "places": 3256,
+ "adjust_coefs": {
+  "lpix_d": 0.997,
+  "burnt_now_d": 0.206
+ },
+ "rel_sd": 0.471,
+ "T1_places": 2582,
+ "T1_rho_halves": 0.079,
+ "T1_rho_shuffled": -0.006,
+ "T1_quintile_halfB_factor": [
+  0.974,
+  0.972,
+  1.011,
+  1.024,
+  1.022
+ ],
+ "T1_place_share_of_variance": 0.062,
+ "T1b_same_season_two_passes_rho": 0.143,
+ "T1b_n": 2967,
+ "T2_n": 9437,
+ "T2_places": 1940,
+ "T2_heat_vs_burnt_1_season_ago": {
+  "2 seasons": [
+   0.996,
+   [
+    0.963,
+    1.029
+   ]
+  ],
+  "3+ seasons": [
+   0.985,
+   [
+    0.952,
+    1.018
+   ]
+  ],
+  "not since 2017": [
+   1.013,
+   [
+    0.975,
+    1.053
+   ]
+  ]
+ },
+ "T2_raw_counts": {
+  "1 season": 3656,
+  "3+ seasons": 2261,
+  "2 seasons": 2205,
+  "not since 2017": 1315
+ },
+ "T2_since1_share_coef": [
+  0.014,
+  [
+   -0.022,
+   0.051
+  ]
+ ],
+ "T3_place_rho": {
+  "canopy": -0.253,
+  "teak": 0.21,
+  "grass": 0.218,
+  "slope": -0.168,
+  "litter": -0.218
+ },
+ "T3_n_places": 2582
+}

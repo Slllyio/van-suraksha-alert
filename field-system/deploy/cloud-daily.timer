@@ -1,0 +1,9 @@
+[Unit]
+Description=Run the evening fire lists at 17:15 IST every day (off season it only refreshes inputs)
+
+[Timer]
+OnCalendar=*-*-* 11:45:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target

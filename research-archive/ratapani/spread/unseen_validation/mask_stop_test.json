@@ -1,0 +1,84 @@
+{
+ "fires": 818,
+ "issues": 2246,
+ "active_fronts": 3121,
+ "fronts_with_a_pass_after_last_dot": 657,
+ "fronts_seen_clear": 594,
+ "issues_with_a_clear_front": 494,
+ "stop_rate_seen_clear": {
+  "n": 594,
+  "stopped": 0.672,
+  "median_true_ha": 0.0
+ },
+ "stop_rate_pass_saw_fire": {
+  "n": 14,
+  "stopped": 0.929,
+  "median_true_ha": 0.0
+ },
+ "stop_rate_no_info_or_no_pass": {
+  "n": 2513,
+  "stopped": 0.359,
+  "median_true_ha": 18.3
+ },
+ "rule": 0.4771,
+ "drop": 0.4678,
+ "half": 0.473,
+ "drop_minus_rule_ci": [
+  -0.0048,
+  -0.0036
+ ],
+ "drop_better/worse_fires": [
+  17,
+  229
+ ],
+ "half_minus_rule_ci": [
+  -0.0021,
+  -0.0016
+ ],
+ "half_better/worse_fires": [
+  13,
+  144
+ ],
+ "only_issues_with_a_clear_front": {
+  "rule": 0.5017,
+  "drop": 0.4794,
+  "half": 0.4856,
+  "n": 494
+ },
+ "stop_auc_model": 0.802,
+ "stop_auc_model_plus_masks": 0.802,
+ "stop_brier_model": 0.1778,
+ "stop_brier_plus_masks": 0.1778,
+ "calibration_plus_masks": [
+  {
+   "bin": "(-0.001, 0.2]",
+   "n": 888,
+   "said": 0.1,
+   "happened": 0.06
+  },
+  {
+   "bin": "(0.2, 0.4]",
+   "n": 474,
+   "said": 0.31,
+   "happened": 0.41
+  },
+  {
+   "bin": "(0.4, 0.6]",
+   "n": 755,
+   "said": 0.5,
+   "happened": 0.54
+  },
+  {
+   "bin": "(0.6, 0.8]",
+   "n": 601,
+   "said": 0.69,
+   "happened": 0.65
+  },
+  {
+   "bin": "(0.8, 1.0]",
+   "n": 267,
+   "said": 0.87,
+   "happened": 0.81
+  }
+ ]
+}

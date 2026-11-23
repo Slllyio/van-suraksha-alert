@@ -1,0 +1,7 @@
+segment,pairs,mean_clock_h,mean_class_move_m,sd_measurement_m,sd_sideways_wander_m,sd_between_fire_m
+12h_day>night,73512,13.08,203.0,207,553,118.3
+12h_night>day,86439,10.83,165.8,208,475,96.3
+small_day,92793,1.45,21.4,211,127,13.6
+small_night,93127,0.33,3.2,212,0,2.3
+terra_day,11912,4.79,80.4,344,541,47.1
+terra_night,6270,1.58,21.6,333,509,13.2

@@ -1,0 +1,15 @@
+{
+ "true_lead_strict_loso": {
+  "s": 0.7985,
+  "p_avg": 0.8136
+ },
+ "burns_caught_loso": {
+  "s": 0.7769,
+  "p_avg": 0.8909
+ },
+ "true_lead_strict_2025_26": {},
+ "burns_caught_2025_26": {
+  "s": 0.7663,
+  "p_avg": 0.9001
+ }
+}

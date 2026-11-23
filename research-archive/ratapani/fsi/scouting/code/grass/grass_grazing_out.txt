@@ -1,0 +1,30 @@
+Median NDTI by month, unburned 2024-25 pixels
+month                10     12     2      4      5 
+cls       dist                                     
+deciduous 1-2 km  0.197  0.164  0.131  0.093  0.112
+          2-3 km  0.198  0.167  0.133  0.090  0.111
+          <1 km   0.195  0.160  0.130  0.101  0.116
+          >3 km   0.196  0.167  0.129  0.093  0.112
+grass     1-2 km  0.183  0.135  0.099  0.074  0.088
+          2-3 km  0.186  0.141  0.099  0.067  0.085
+          <1 km   0.179  0.131  0.101  0.084  0.092
+          >3 km   0.189  0.144  0.092  0.063  0.083
+
+Hazard (% of still-unburned pixels that burn in window), pooled 2017-2026
+      cls   dist  Nov-14Feb  15Feb-Mar  Apr-Jun
+deciduous  <1 km       0.98      22.63     9.53
+deciduous 1-2 km       1.80      30.55    13.22
+deciduous 2-3 km       2.92      35.49    17.15
+deciduous  >3 km       5.25      36.19    22.80
+    grass  <1 km       2.07      14.77     5.00
+    grass 1-2 km       4.51      24.22     9.16
+    grass 2-3 km       6.58      25.89    13.05
+    grass  >3 km       9.47      24.87    13.10
+
+Grass / deciduous hazard ratio
+        Nov-14Feb  15Feb-Mar  Apr-Jun
+dist                                 
+<1 km        2.12       0.65     0.52
+1-2 km       2.50       0.79     0.69
+2-3 km       2.25       0.73     0.76
+>3 km        1.80       0.69     0.57

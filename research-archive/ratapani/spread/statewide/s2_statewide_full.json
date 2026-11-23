@@ -1,0 +1,222 @@
+{
+ "passes_tried": 3469,
+ "used": 1508,
+ "skipped": {
+  "no VIIRS look before scene": 1762,
+  "no scar": 150,
+  "< 3 hot pixels in window": 22,
+  "no clear before-fire scene": 3,
+  "error operands could not be broadcast together with shapes (212800,) (128520,) ": 2,
+  "error operands could not be broadcast together with shapes (79492,) (77112,) ": 2,
+  "error operands could not be broadcast together with shapes (62331,) (47872,) ": 2,
+  "error operands could not be broadcast together with shapes (37720,) (28564,) ": 2,
+  "error operands could not be broadcast together with shapes (63784,) (42120,) ": 1,
+  "error operands could not be broadcast together with shapes (52736,) (50882,) ": 1,
+  "error operands could not be broadcast together with shapes (46848,) (33210,) ": 1,
+  "error operands could not be broadcast together with shapes (82320,) (60557,) ": 1,
+  "error operands could not be broadcast together with shapes (48972,) (41989,) ": 1,
+  "scar < 2 ha": 1,
+  "error operands could not be broadcast together with shapes (88200,) (44220,) ": 1,
+  "error operands could not be broadcast together with shapes (76941,) (62652,) ": 1,
+  "error operands could not be broadcast together with shapes (49434,) (48972,) ": 1,
+  "error operands could not be broadcast together with shapes (64824,) (45978,) ": 1,
+  "error operands could not be broadcast together with shapes (81954,) (60291,) ": 1,
+  "error operands could not be broadcast together with shapes (224763,) (133320,) ": 1,
+  "too big": 1,
+  "error operands could not be broadcast together with shapes (101760,) (28258,) ": 1,
+  "error operands could not be broadcast together with shapes (82225,) (70587,) ": 1,
+  "error operands could not be broadcast together with shapes (81432,) (44650,) ": 1
+ },
+ "all": {
+  "n": 1508,
+  "events": 1397,
+  "blocks_only": 0.2893,
+  "rule": 0.343,
+  "scene_rule": 0.4546,
+  "same_area": 0.4223,
+  "burnt_in_scar": 0.658,
+  "burnt_ha": 187.56,
+  "new_ha": 122.74,
+  "newx_scene": 0.1044,
+  "newx_same": 0.1506,
+  "newx_rule": 0.0088,
+  "scene_rule_vs_same_area_ci": [
+   0.023,
+   0.0351
+  ],
+  "scene_rule_vs_same_area_better/worse": [
+   902,
+   515
+  ],
+  "scene_rule_vs_rule_ci": [
+   0.0945,
+   0.1087
+  ],
+  "scene_rule_vs_rule_better/worse": [
+   1173,
+   269
+  ],
+  "newx_scene_vs_newx_same_ci": [
+   -0.1094,
+   -0.0792
+  ],
+  "newx_scene_vs_newx_same_better/worse": [
+   597,
+   838
+  ]
+ },
+ "new>=1ha": {
+  "n": 1496,
+  "events": 1385,
+  "blocks_only": 0.2885,
+  "rule": 0.343,
+  "scene_rule": 0.4562,
+  "same_area": 0.4234,
+  "burnt_in_scar": 0.66,
+  "burnt_ha": 188.36,
+  "new_ha": 123.16,
+  "newx_scene": 0.1046,
+  "newx_same": 0.1516,
+  "newx_rule": 0.009,
+  "scene_rule_vs_same_area_ci": [
+   0.023,
+   0.0358
+  ],
+  "scene_rule_vs_same_area_better/worse": [
+   897,
+   514
+  ],
+  "scene_rule_vs_rule_ci": [
+   0.0962,
+   0.1101
+  ],
+  "scene_rule_vs_rule_better/worse": [
+   1169,
+   263
+  ],
+  "newx_scene_vs_newx_same_ci": [
+   -0.1109,
+   -0.0788
+  ],
+  "newx_scene_vs_newx_same_better/worse": [
+   596,
+   837
+  ]
+ },
+ "early_<=2_looks": {
+  "n": 988,
+  "events": 915,
+  "blocks_only": 0.2455,
+  "rule": 0.3056,
+  "scene_rule": 0.4243,
+  "same_area": 0.3886,
+  "burnt_in_scar": 0.7214,
+  "burnt_ha": 98.44,
+  "new_ha": 106.7,
+  "newx_scene": 0.1122,
+  "newx_same": 0.1151,
+  "newx_rule": 0.013,
+  "scene_rule_vs_same_area_ci": [
+   0.0295,
+   0.0455
+  ],
+  "scene_rule_vs_same_area_better/worse": [
+   640,
+   292
+  ],
+  "scene_rule_vs_rule_ci": [
+   0.102,
+   0.1197
+  ],
+  "scene_rule_vs_rule_better/worse": [
+   790,
+   158
+  ],
+  "newx_scene_vs_newx_same_ci": [
+   -0.0532,
+   -0.0168
+  ],
+  "newx_scene_vs_newx_same_better/worse": [
+   464,
+   472
+  ]
+ },
+ "by_sensor": {
+  "ls": {
+   "n": 236,
+   "events": 227,
+   "blocks_only": 0.2504,
+   "rule": 0.3133,
+   "scene_rule": 0.4018,
+   "same_area": 0.398,
+   "burnt_in_scar": 0.4771,
+   "burnt_ha": 209.6,
+   "new_ha": 134.66,
+   "newx_scene": 0.0927,
+   "newx_same": 0.1676,
+   "newx_rule": 0.0076,
+   "scene_rule_vs_same_area_ci": [
+    -0.0093,
+    0.0224
+   ],
+   "scene_rule_vs_same_area_better/worse": [
+    125,
+    88
+   ],
+   "scene_rule_vs_rule_ci": [
+    0.0695,
+    0.1038
+   ],
+   "scene_rule_vs_rule_better/worse": [
+    177,
+    51
+   ],
+   "newx_scene_vs_newx_same_ci": [
+    -0.1668,
+    -0.0729
+   ],
+   "newx_scene_vs_newx_same_better/worse": [
+    88,
+    132
+   ]
+  },
+  "s2": {
+   "n": 1272,
+   "events": 1170,
+   "blocks_only": 0.296,
+   "rule": 0.3473,
+   "scene_rule": 0.4602,
+   "same_area": 0.4244,
+   "burnt_in_scar": 0.676,
+   "burnt_ha": 187.32,
+   "new_ha": 120.6,
+   "newx_scene": 0.1059,
+   "newx_same": 0.1492,
+   "newx_rule": 0.0092,
+   "scene_rule_vs_same_area_ci": [
+    0.0271,
+    0.0404
+   ],
+   "scene_rule_vs_same_area_better/worse": [
+    777,
+    427
+   ],
+   "scene_rule_vs_rule_ci": [
+    0.0971,
+    0.112
+   ],
+   "scene_rule_vs_rule_better/worse": [
+    996,
+    218
+   ],
+   "newx_scene_vs_newx_same_ci": [
+    -0.1049,
+    -0.0732
+   ],
+   "newx_scene_vs_newx_same_better/worse": [
+    509,
+    706
+   ]
+  }
+ }
+}

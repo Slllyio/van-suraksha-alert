@@ -1,0 +1,29 @@
+{
+ "divisions": 87,
+ "pos_cell_days": 232862,
+ "cells": 430678,
+ "random": {
+  "recall": 56.8,
+  "recall_new": 55.6,
+  "ground_share": 55.2,
+  "median_division": 56.1
+ },
+ "history": {
+  "recall": 44.9,
+  "recall_new": 35.0,
+  "ground_share": 22.5,
+  "median_division": 43.7
+ },
+ "cal_hist": {
+  "recall": 53.2,
+  "recall_new": 31.8,
+  "ground_share": 17.5,
+  "median_division": 51.4
+ },
+ "recent": {
+  "recall": 58.9,
+  "recall_new": 9.0,
+  "ground_share": 16.8,
+  "median_division": 57.6
+ }
+}

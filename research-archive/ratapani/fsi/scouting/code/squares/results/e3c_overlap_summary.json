@@ -1,0 +1,52 @@
+{
+ "Terra+VIIRS": {
+  "pass_pairs": 46,
+  "hot_per_ha": {
+   "A": 0.221,
+   "B": 0.171,
+   "I": 0.565,
+   "AuB": 0.177
+  },
+  "share_hot_caught": {
+   "A": 0.762,
+   "B": 0.438,
+   "I": 0.2
+  },
+  "share_area": {
+   "A": 0.61,
+   "B": 0.452,
+   "I": 0.063
+  },
+  "overlap_vs_viirs_B_density_ratio": [
+   3.3,
+   2.21,
+   4.63
+  ],
+  "note": "A = first set (Terra MODIS, or earlier VIIRS), B = VIIRS set"
+ },
+ "VIIRS+VIIRS": {
+  "pass_pairs": 252,
+  "hot_per_ha": {
+   "A": 0.109,
+   "B": 0.104,
+   "I": 0.117,
+   "AuB": 0.105
+  },
+  "share_hot_caught": {
+   "A": 0.595,
+   "B": 0.565,
+   "I": 0.16
+  },
+  "share_area": {
+   "A": 0.571,
+   "B": 0.572,
+   "I": 0.143
+  },
+  "overlap_vs_viirs_B_density_ratio": [
+   1.13,
+   0.94,
+   1.32
+  ],
+  "note": "A = first set (Terra MODIS, or earlier VIIRS), B = VIIRS set"
+ }
+}

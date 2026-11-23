@@ -1,0 +1,27 @@
+{
+ "steps": 1527,
+ "fires": 809,
+ "steps_known_split": 105,
+ "share_steps_known_split": 0.069,
+ "target_dets": 3803,
+ "target_far_1200m": 304,
+ "share_target_far": 0.08,
+ "steps_with_empty_passes_between": 343,
+ "by_lead": {
+  "9-18h": {
+   "steps": 635,
+   "share_with_empty_pass": 0.342,
+   "median_empty": 0.0
+  },
+  "<3h": {
+   "steps": 744,
+   "share_with_empty_pass": 0.0,
+   "median_empty": 0.0
+  },
+  ">18h": {
+   "steps": 148,
+   "share_with_empty_pass": 0.851,
+   "median_empty": 2.0
+  }
+ }
+}

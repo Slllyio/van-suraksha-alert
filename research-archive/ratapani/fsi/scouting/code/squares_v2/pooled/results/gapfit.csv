@@ -1,0 +1,17 @@
+n,intercept_m,int_ci,speed_m_h,ci,set,slot,direction
+92793,-2.0,-6.7 to 2.5,33.5,26.7 to 40.8,fires,13:30 day,outward
+54796,-4.2,-11.0 to 1.9,33.6,25.0 to 43.2,fires,13:30 day,towards later growth
+93127,-0.3,-3.7 to 3.4,5.6,1.2 to 11.0,fires,01:30 night,outward
+64753,-3.2,-8.0 to 1.0,9.5,3.5 to 16.0,fires,01:30 night,towards later growth
+50461,-2.0,-7.9 to 3.7,38.4,29.5 to 47.7,"fires, forest+scrub",13:30 day,outward
+30921,-9.0,-17.5 to -0.4,47.5,35.6 to 60.1,"fires, forest+scrub",13:30 day,towards later growth
+37190,0.0,-5.5 to 5.9,10.3,2.4 to 19.0,"fires, forest+scrub",01:30 night,outward
+26969,-5.7,-13.4 to 2.4,13.7,2.6 to 24.3,"fires, forest+scrub",01:30 night,towards later growth
+40482,-1.7,-9.4 to 6.1,28.2,17.5 to 39.2,"fires, farm",13:30 day,outward
+23036,1.1,-8.1 to 11.4,17.8,4.7 to 32.5,"fires, farm",13:30 day,towards later growth
+54203,-1.9,-6.6 to 3.3,4.8,-2.6 to 11.5,"fires, farm",01:30 night,outward
+36330,-1.4,-7.2 to 4.5,7.1,-0.9 to 15.6,"fires, farm",01:30 night,towards later growth
+2173,-6.9,-70.0 to 20.8,19.1,-37.6 to 141.4,static null,13:30 day,outward
+2148,-10.5,-51.6 to 12.9,-0.9,-30.8 to 54.2,static null,13:30 day,towards later growth
+31515,-2.6,-14.0 to 6.6,-22.9,-39.9 to 1.4,static null,01:30 night,outward
+30175,-26.0,-36.0 to -17.7,21.6,11.3 to 32.6,static null,01:30 night,towards later growth

@@ -1,0 +1,486 @@
+Forest Fire Spread Forecasting using
+High Performance Computing System
+
+       Presentation to IFS Officers
+             (15 September 2026)
+
+                 Presented by
+
+               Dr. Manish P. Kale
+          (Scientist – F, C-DAC, Pune)
+                             ABOUT C-DAC
+• Centre for Development of Advanced Computing (C-DAC) is the premier
+  R&D organization of the Ministry of Electronics and Information Technology
+  (MeitY) for carrying out R&D in IT, Electronics and associated areas.
+
+• The setting up of C-DAC in 1988 itself was to built Supercomputers in
+  context of denial of import of Supercomputers by USA. Since then C-DAC
+  has been undertaking building of multiple generations of Supercomputer
+  starting from PARAM with 1 GF in 1988.
+
+• Important thematic areas of C-DAC are High Performance Computing,
+  Quantum Computing, AI&Multilingual computing, Strategic Electronics,
+  Software technologies, Health Informatics, Education and Training, Cyber
+  Security and Forensics.
+
+• C-DAC has centers at Bengaluru, Chennai, Delhi, Gywahati, Hyderabad,
+  Kolkata, Mohali, Mumbai, Noida, Patna, Pune and Thiruvanantpuram
+                                                           Ref: https://cdac.in/index.aspx?id=about
+SIGNIFICANT NUMBER OF HPC SYSTEMS HAVE BEEN DEVELOPED AND OPERATIONAL
+               UNDER ‘NATIONAL SUPER COMPUTING MISSION’
+
+
+
+
+               https://nsmindia.in/infrastructure/nsm-systems/
+
+
+
+
+                                                                 https://nsmindia.in/infrastructure/nsm-systems/
+             PARAM RUDRA 20 PF machine is the latest
+             machine in this series available in India at
+             present.
+             Our team has already been awarded compute
+             nodes to experiment the Forest Fire Spread
+             Forecasting
+https://nsmindia.in/               https://nsmindia.in/infrastructure/nsm-systems/
+FOREST FIRE IS A GLOBAL PHENOMENON
+
+
+
+
+Source: https://svs.gsfc.nasa.gov/vis/a000000/a004900/a004945/2021_wildfire_intensity_1080p30.mp4
+                       RATIONALE – Forest Fire Spread Forecasting
+
+• India has a system to disseminate satellite-based fire alerts to the forest department and
+  providing the weekly Forest Fire Danger Ratings
+
+• What India doesn’t have is the national level operational forest fire spread forecasting system,
+  which can provide forest fire spread forecast for next 24/48 hours
+
+• Despite India having significant High-Performance Computing (HPC) capabilities under National
+  Super Computing Mission (NSM) it has not been utilized till date for generating forest fire spread
+  forecasts at National level
+
+• The HPC utilization is required for decision grade forest fire spread forecasts using coupled
+  atmosphere-forest fire spread forecast models
+
+• The Sikkim Forest department has used the HPC based forest fire spread forecast for the first
+  time in the country for live fire and carried out ground operations based on that. The department
+  found the system useful to safeguard the forests from further burning
+                        BENEFITS OF THE SYSTEM
+
+• Decision grade forest fire spread forecasts
+• High speed data processing
+• Forecasts are available in GIS (.tif) and .KML formats
+• Forest-fire spread alerts to the registered stakeholders in
+  the user specified buffer region
+• Supports real-time ground-based forest fire control
+  operations
+• Instant report generation
+
+• Role based login
+• Transfer of the fire alerts directly to the C-DAC server by the application provided
+  by FSI
+• Facility to manually entre the ignition points
+                              HOW SYSTEM WORKS
+
+
+                                  WRF
+   Ignition location
+                                  WEATHER
+   Atmosphere                      MODEL
+   Fuel parameters                                     Computational Fluid Dynamics
+                          DATA              TECHNOLOGY
+   Fuel map                                            High Performance Computing
+   Terrain                         FIRE                Software technologies
+                                  MODEL
+
+                          USER
+
+                                  SFIRE
+Forest Department
+State and National
+Disaster Management Authorities
+                                                               https://nsmindia.in/infrastructure/nsm-systems/
+                                   DATASETS
+S   DATA                          SOURCE                        RESOLUTION/SCALE
+N
+1   ATMOSPHERIC                   GFS, IMD, C-DAC               25km to ~4 km
+2   FUEL (LOAD, DEPTH, SAVR,      Field                         Fine and coarse fuel based
+    MOISTURE, FUEL PARTCILE       investigations/FSI/Research   on their size
+    DENSITY, CALORIFIC VALUES,    institutes
+    TOTAL AND EFFECTIVE MINERAL
+    CONTENTS)
+3   LANDUSE/LANDCOVER             FSI/DEPT. OF SPACE            1:10,000, ….
+4   TERRAIN                       ALOS PALSAR                   12.5
+5   ADMINISTRATIVE BOUNDARIES     FSI/FOREST DEPARTMENTS        ……………..
+6   FIRE ALERT                    FSI/NASA FIRMS/FIELD STAFF    1KM, 375M (MODIS,VIIRS)
+Atmospheric data
+                          Atmospheric data
+       https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/
+                                                          FUEL OBSERVATIONS IN SIKKIM
+                                                                                                                                                                                         Corner tree1                                                          Corner tree2
+Elevation, slope, vegetation types, past fire records, approachability were
+considered for plot distribution                                                                                                                                                                           Fuel
+                                                                                                                                                                                                           enume
+                                                                                                                                                                                                                                                                    Fuel
+                                                                                                                                                                                                                                                                    enume
+                                                                                                                                                                                                           ration
+                                                                                                                                                                                                                                        A1                          ration
+
+
+Plot size – 0.1 ha6 or (20m×20m 1,2,3,4,5,6 in complex terrain)
+Five 1m×1m sample plots (along the two diagonals of the plot); one centre plot
+5m×5m (within 0.1ha sample plot)                                                                                                                                                                               A2
+                                                                                                                                                                                                32m                                      Fuel
+                                                                                                                                                                                                                                         enume                      A3
+                                                                                                                                                                                                                                         ration
+
+
+
+
+Enumerations inside the 0.1ha sample plot
+•All trees (>20CM) identification; their girth (cm) and height(m) estimation
+                                                                                                                                                                                                                                          A4
+•Average canopy base height (m), canopy length (m) estimation
+                                                                                                                                                                                                           Fuel                                                      Fuel
+                                                                                                                                                                                                           enume                                                     enume
+                                                                                                                                                                                                           ration                                                    ration
+
+
+
+
+•Live fuel sample (leaves of most dominant species (up-to 100 gm)) (not considered)                                                                                                      Corner tree4                                      32m                           Corner tree3
+•Fuel bed depth measurement
+Enumerations inside the 5m×5m sample plot
+•Shrub types, their count, average girth (cm) and average height (m) measurements
+Enumerations inside the 1m×1m sample plot
+•1h,10h,100h,1000h dead fuel measurements (for 1000h fuels more locations inside
+the plot may be visually seen inside the plot and more 1m×1m samples anywhere
+may be taken as deemed fit by the researcher)                                                                                                                                                               Litter                 1h fuel 10 h fuel                     dough
+
+•Litter related inventories                                                                                                                                                                                                                            100 h fuel
+
+•Grass related inventories                                                                                                                                                                                  not to scale (only approximate representation)
+•Dead shrub enumeration (name, count, height, girth and weight)
+
+1. Roy PS, Kushwaha SPS, Murthy MSR et al. (2012). Biodiversity Characterisation at Landscape Level , National Assessment, Indian Institute of Remote Sensing (IIRS) , Dehradun, India ISBN 81-901418-8-0. 2.Skowronsky NS, Clark KL, Duveneck M, Hom J (2011) Three-dimensional canopy fuel loading
+predicted using upward and downward sensing LiDAR systems. Remote Sensing of Environment 115, 703.714. 3. Clark KL Skowronski N, Gallagher M et al. Assessment of Canopy Fuel Loading Across a Heterogeneous Landscape Using LiDAR, Joint Fire Sciences Program Project 10-1-02-14 Final Report (10-1-
+02-14_final_report.pdf (firescience.gov)); 4. Stromgaard p (1985) Biomass, growth, and burning of woodland in a shifting cultivation area of South Central Africa.
+Forest Ecology and Management, 12,3-4, 163-178; 5. Watson P and Johnson W (2004) Fire frequency and time-since-fire effects on the open-forest and woodland flora of Girraween National Park, south-east Queensland, Australia. Austral Ecology, 29, 225-236. 6. Tree Data (TD) (frames.gov)
+              Field Investigations related to Fuel
+S.N          District             Forest area (Sq. km) (including                                    Sampling percent                                                Total number of sample plots
+.                                             scrub)
+1     East                    712.72 + 54.73 = 767.45                                        0.001*                                             = (767.45*.001)/100 = .0076 sqkm or 7600 sqm; Size of one
+                                                                                                                                                plot = 32m×32m = 1024 sqm. The total number of plots =
+                                                                                                                                                7600/1024 = 8 plots
+
+2     West                    773.90 + 42.00 = 815.9                                         0.001                                              = 8 plots
+
+
+3     North                   1284.05 + 206.21 = 1490.26                                     0.001                                              = 15 plots
+
+
+4     South (highly           571.82 + 3.71 = 575.53                                         0.002                                              = 11 plots
+      vulnerable to
+      forest fire)
+
+      Total area                                     3649.14                                                                                    Total plots = 8+8+15+11 = 42 plots
+
+
+
+
+      Ref: FSI SFR 2019, Sikkim
+
+
+                                                                                                                                                                                                 + Few samples of agriculture
+                                                                                                                                                                                                 residue in each district
+
+
+
+
+                            * Roy PS, Kushwaha SPS, Murthy MSR et al. (2012). Biodiversity Characterisation at Landscape Level , National Assessment, Indian Institute of Remote Sensing (IIRS) , Dehradun, India ISBN 81-901418-8-0.
+                     Field Investigations related to Fuel
+                                                                                                                                    Canopy length/diameter
+
+
+Live fuels (not considered)
+
+Canopy fuels
+
+•      Take the live fuel samples (leaves) preferably from the
+       zone from where canopy fire spreads (lower region)
+
+•      Approximately 100 gms of sample1 may be taken of the
+       dominant species                                                                                                     Tree
+                                                                                                                           Height
+
+•      The sample should be weighted for its wet weight and
+       sealed properly for laboratory analysis
+
+•      Tree height, canopy length and canopy base height
+       should be recorded
+                                                                                                                                                              Canopy Base height
+
+
+1. Bianchi OL and Defosse GE (2015). Live fuel moisture content and leaf ignition of forest species in Andean Patagonia,
+                                                                                                                                                Source: clip art
+Argentina. International Journal of Wildland Fire. https://doi.org/10.1071/WF13099
+               Field Investigations related to Fuel
+
+
+
+
+         1m            1m
+                             2m
+
+
+
+                                                                                 • Although a useful method for fuel sampling, its
+                                                                                   implementation for large area is time consuming and
+                                                                                   costly and significant expertise is required
+
+                                                                                             • As in the proposed sampling scheme adequate number
+                                                                                               of fixed sample plots (which include girth and ht
+                                                                                               estimation) will be laid down the fuel variability is likely
+                      3 D VOXEL SAMPLING                                                       to be captured. Thus considering the time availability,
+Ref: 3D fuels work plan, SERDP Project RC19_C1_1064;                                           manpower resources this method seems to be costly for
+Hawley et al. (2018). A novel approach to fuel biomass sampling for 3Dfuel characterization,
+MethodsX 5,1597-1604 (Elsevier)
+                                                                                               regional level estimations
+                                                                          https://youtu.be/gcOzMRFO0I4
+Field Investigations related to Fuel
+
+
+                                            VISUAL FUEL LOAD GUIDE
+
+                                       Sample size: 5m×5m
+
+                                       Reference: Visual Fuel Load Guide for the Swan
+                                       Coastal Plain and Darling Scarp; Government of
+                                       Western Australia, Department of Fire and
+                                       Emergency service. Environmental Protection
+                                       Branch August 2015. ISBN 978-09872070-7-4
+
+                                       Considering different nature, climatic conditions
+                                       and species of forest types in Sikkim, this method
+                                       may not be adopted unless adequately tested
+Satellite Remote Sensing of Wildfire
+            Satellite Remote Sensing is useful in fuel characterization
+
+
+
+
+                           Ref: https://www.landfire.gov
+       WRF SFIRE                                          Rothermel (Quasi Empirical model)
+                                                    Input parameters to estimate the rate of spread
+
+                                                    1. Fuel particle properties: Heat content (h), mineral (ash) content (ST and Se)
+                                                       and particle density (ρp ). Fuel particle properties are often (but not
+R = Rate of spread )(ft/min) (Flaming front of
+surface fire)
+                                                       necessarily) held constant. Heat content is the heat released during
+IR = Reaction Intensity (Btu/ft2/min) Energy           combustion (commonly used value is 8000 Btu/lb). Inorganic material in the
+release rate per unit area of fire front
+ξ = Propagation flux ratio. Proportion of the
+                                                       fuel (quality and quantity) effects the rate at which fuel burns). Total mineral
+reaction intensity that heats adjacent fuel            content is generally 0.0555 (5.55%) and effective mineral content is generally
+particles to ignition (no wind)
+ɸw = Wind factor Dimensionless multiplier
+                                                       0.0100 (1%). Particle density is generally 32lb/ft3.
+that accounts for the effect of wind in             2. Fuel array arrangements – These are related to fuel bed and include Surface
+increasing the propagating flux ratio
+ɸs = Slope factor. Dimensionless multiplier
+                                                       Area to Volume Ratio (SAV) (σ), Oven dry fuel load (w0 ), Fuel Bed Depth (δ)
+that accounts for the effect of slope in               and dead fuel moisture of extinction (Mx). Fuel particle Size, which is an
+increasing the propagating flux ratio
+ρb = bulk density (lb/ft3) Amount of oven-dry
+                                                       important parameter that influence fire spread and intensity can be quantified
+fuel per cubic foot of fuel bed                        using SAV. The ratio of fuel load to fuel depth indicates the packing of the fuel.
+Є=Effective Heating Number. Proportion of a
+fuel particle that is heated to ignition
+                                                       The dead fuel moisture of extinction is the amount of moisture at which dead
+temperature at the time flaming combustion             fuels will not sustain spreading fire.
+starts
+Qig= Heat of pre ignition (Btu/lb), Amount of
+                                                    3. Environmental values- These include fuel moisture (Mf), midflame wind speed
+heat required to ignite one pound of fuel              (U) and slope steepness (tanɸ) Fuel moisture is specified on dry weight basis;
+Rate of spread is the ratio of Heat Source(
+                                                       the fraction of moisture is the weight of water divided by dry weight of the
+propagation flux (Btu/ft2/min))/ Heat                  fuel. Wind speed is at mid flame height, the wind that affects the surface fire.
+Sink (Heat required to ignite the fuel) (Btu/ft3)
+                                                       Slope steepness is defined as a tangent (vertical rise divided by horizontal
+                                                       distance)
+                                                                          Ref: Andrews, 2018 (USDA)
+                                                                                Fire propagation
+
+The level set method has been used to estimate fire propagation after ignition.
+
+The evolution of the level set function is governed by the partial differential
+equation1,2.
+
+ ∂ψ ∂t + S∥∇ψ∥ = 0
+
+where ψ is the level set function, s is the fire spread rate, and t is time.
+
+
+1. Mandel, J.; Beezley, J.D.; Kochanski, A.K. Coupled atmosphere-wildland fire modeling with WRF-Fire version 3.3. Geosci. Model Dev. Discuss. 2011, 4, 497–545.
+
+
+2. Osher, S.; Fedkiw, R.; Piechor, K. Level set methods and dynamic implicit surfaces. Appl. Mech. Rev. 2004, 57, B15. [CrossRef]
+OUTCOME
+              SALIENT
+             FEATURES
+          ➢ Satellite and
+            ground-based
+            ignition alert
+            ingestions
+          ➢ Forest fire spread
+            forecast up-to next
+            48 hours
+          ➢ Sending alerts to
+            stakeholders in
+            specified buffer
+            well in advance
+          ➢ Instant report
+            generation
+          ➢ Role-based logins
+                                                                                  SUCCESS STORY
+                     Area saved from burning (0.54       km2   ) which otherwise was forecasted to burn
+                                                 Fire could not cross beyond this line                Location of forest department intervention (the images
+                                                                                                      shared by FD)
+
+                                                                                                                                                               Continuous communication
+                                                                                                                                                               between C-DAC and FD, Sikkim
+
+
+
+
+                                                 Forecasted fire spread                        Forecasted burnt area overlaid on Google earth
+Date of Simulation: 12 March 2024
+Time of Simulation: 17:03 hrs
+Simulation duration: 24 Hrs.
+HPC – PARAM SEVA
+
+
+Fire spread forecast         was frequently
+communicated to FD
+                                                                                                                                                         * Forecasting has dependency on data
+(Spread map was continuously communicated
+to FD on 12 March 2024 to provide the insights
+                                                                                                                                                         related to fuel, weather and
+about the spread direction)                                                                                                                              computation resources
+                                          SUCCESS STORY
+         Sentinel 2A satellite data – 19 March 2024            Simulation overlaid on Google earth
+
+
+
+
+Date of Simulation: 13 March 2024
+Time of Simulation: 12:33 Hrs. (based on NASA firms alert)
+Simulation duration: 48 Hrs.
+Area could not burn (after FD intervention) around 3.00 km2 (This was forecasted to be burnt)
+HPC used: PARAM SEVA
+                       SUCCESS STORY
+
+
+
+Watch now to see how Digital India is enabling smarter, faster
+and more informed environmental action.
+https://www.youtube.com/live/01vqYebRHik?si=ueUKrjyyMX
+D4rI_7
+Press Release: https://negd-
+media.digitalindiacorporation.in/wp-
+content/uploads/2026/07/PR_Ep-49_Sikkim-Forest-Fires-
+2.pdf
+MoU between FSI and C-DAC (in process)
+        The specific objectives are to:
+          a) Develop scientifically robust and scalable methodologies for modelling and
+          forecasting forest fire occurrence, spread, intensity, and risk across diverse forest
+          ecosystems of India.
+          b) Integrate multi-source datasets, including satellite observations, weather and
+          climate data, topographical information, vegetation characteristics, and historical
+          fire records, for enhanced prediction and decision support.
+          c) Design, test, validate, and refine AI/ML-based models and simulation
+          frameworks for near real-time forest fire forecasting and early warning applications.
+          d) Facilitate research collaboration, knowledge exchange, and joint innovation in
+          the domains of forest fire science, geospatial analytics, artificial intelligence, and
+          high-performance computing.
+          e) Strengthen institutional capacities through training, workshops, technical
+          consultations, and skill development programmes for scientists, researchers, and
+          technical personnel.
+          f) Promote technology transfer and adoption of developed methodologies, tools,
+          and systems for operational use by relevant stakeholders.
+          g) Establish mechanisms for data sharing, scientific cooperation, and
+          dissemination of research outcomes in accordance with applicable laws, policies,
+          and mutually agreed terms.
+          h) Contribute towards strengthening national capabilities for forest fire prevention,
+          preparedness, mitigation, and response through evidence-based decision support
+          systems.
+CURRENT ACTIVITIES
+
+
+
+
+                     https://nsmindia.in/infrastructure/nsm-systems/
+                                CURRENT ACTIVITIES
+
+
+
+• Time optimization for forest fire spread forecasting: Being carried out by HPC-Tech team
+  – As of now the simulation time has been optimized to 17 minutes using 16 nodes for 24
+  hours simulation (further experiments ongoing)
+
+• Multi-ignition-point ingestion in WRF SFIRE. As of now 200 points have been ingested for
+  simulation (experimental). The results are being analysed. WRF SFIRE codes are being
+  changed to make the WRF SFIRE compatible for Indian needs
+
+• The MoU signing between C-DAC and Forest Survey of India (FSI) for national level
+  implementation of ‘Forest Fire Spread Forecasting’ is underway
+NATIONAL WILDFIRE FORECASTING AND MONITORING SYSTEM
+     SATELLITE
+MODIS, VIIRS, INSAT 1D
+                         HIMALAYA              DECCAN PENINSULA                       WESTERN GHATS                 NORTH EAST      REST OF INDIA
+                                                                Forest department
+                                              FIRE ALERTS                           NATIONAL WILDFIRE FORECASTING
+                                                     FSI                               AND MONITORING SYSTEM
+
+                                               User 1                                  ORCHESTRATION
+                                               .                                       FRAMEWORK
+                                               .
+                                               .
+                                               .
+                                               .
+                                               .
+                                               .
+                                               .
+                                               .
+                                               .
+                                               User n
+
+
+                                    Master Control Facility
+                                                              FIRE ALERTS
+
+                                                • Forecasting for up-to next 48 hours
+                                                • GIS visualisation of forecasted fire polygon
+                                                • Area estimation of potential forecast
+                                                                                                                            https://nsmindia.in/
+                                                • Localised fuel parameterisation
+                           Field Staff          • Proximity based fire alert SMS
+                                                • Report generation
+Fire spread Forecasting
+                               UPCOMING ACTIVITIES
+
+• Discussion with FSI towards integration of National Forst Fire Spread Forecasting System
+  through unified portal (once the MoU is signed)
+• Development of national Fuel model in collaboration with FSI
+• High Frequency ‘Fire Danger Rating’ system development
+• Integration of AI and ML towards dynamic feature identification and dynamic updation of
+  LULC map
+• Working towards integration of ‘Forest Fire Spread Forecasting’ activity with National
+  Supercomputing Mission (NSM 2.0)
+Thank you
+

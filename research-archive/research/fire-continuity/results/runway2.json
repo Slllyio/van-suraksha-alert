@@ -1,0 +1,362 @@
+{
+ "all fronts": {
+  "ground along ray | rank": {
+   "n": 550,
+   "open_sector_farther": [
+    0.636,
+    0.598,
+    0.672
+   ],
+   "open_half_farther": 0.658,
+   "open_past500": 0.436,
+   "stop_past500": 0.251
+  },
+  "ground along ray | reg": {
+   "n": 550,
+   "open_sector_farther": [
+    0.613,
+    0.57,
+    0.656
+   ],
+   "open_half_farther": 0.616,
+   "open_past500": 0.415,
+   "stop_past500": 0.26
+  },
+  "dots only (momentum, hot side, dot axis) | rank": {
+   "n": 508,
+   "open_sector_farther": [
+    0.622,
+    0.579,
+    0.661
+   ],
+   "open_half_farther": 0.644,
+   "open_past500": 0.469,
+   "stop_past500": 0.295
+  },
+  "dots only (momentum, hot side, dot axis) | reg": {
+   "n": 508,
+   "open_sector_farther": [
+    0.62,
+    0.573,
+    0.664
+   ],
+   "open_half_farther": 0.659,
+   "open_past500": 0.453,
+   "stop_past500": 0.301
+  },
+  "ground + dots | rank": {
+   "n": 550,
+   "open_sector_farther": [
+    0.664,
+    0.622,
+    0.701
+   ],
+   "open_half_farther": 0.665,
+   "open_past500": 0.475,
+   "stop_past500": 0.256
+  },
+  "ground + dots | reg": {
+   "n": 550,
+   "open_sector_farther": [
+    0.7,
+    0.666,
+    0.736
+   ],
+   "open_half_farther": 0.645,
+   "open_past500": 0.491,
+   "stop_past500": 0.238
+  },
+  "old hazard model (c14; ray cut by neighbours and scar entry, so partly leaky)": {
+   "n": 549,
+   "open_sector_farther": [
+    0.605,
+    0.559,
+    0.651
+   ],
+   "open_half_farther": 0.572,
+   "open_past500": 0.452,
+   "stop_past500": 0.253
+  },
+  "most tree cover (c14 rule)": {
+   "n": 550,
+   "open_sector_farther": [
+    0.593,
+    0.549,
+    0.635
+   ],
+   "open_half_farther": 0.569,
+   "open_past500": 0.424,
+   "stop_past500": 0.325
+  }
+ },
+ "all fronts | real stops only": {
+  "ground along ray | rank": {
+   "n": 475,
+   "open_sector_farther": [
+    0.632,
+    0.588,
+    0.671
+   ],
+   "open_half_farther": 0.653,
+   "open_past500": 0.341,
+   "stop_past500": 0.187
+  },
+  "ground along ray | reg": {
+   "n": 474,
+   "open_sector_farther": [
+    0.618,
+    0.571,
+    0.662
+   ],
+   "open_half_farther": 0.629,
+   "open_past500": 0.357,
+   "stop_past500": 0.207
+  },
+  "dots only (momentum, hot side, dot axis) | rank": {
+   "n": 428,
+   "open_sector_farther": [
+    0.584,
+    0.536,
+    0.63
+   ],
+   "open_half_farther": 0.556,
+   "open_past500": 0.332,
+   "stop_past500": 0.243
+  },
+  "dots only (momentum, hot side, dot axis) | reg": {
+   "n": 428,
+   "open_sector_farther": [
+    0.577,
+    0.531,
+    0.624
+   ],
+   "open_half_farther": 0.579,
+   "open_past500": 0.32,
+   "stop_past500": 0.255
+  },
+  "ground + dots | rank": {
+   "n": 463,
+   "open_sector_farther": [
+    0.637,
+    0.592,
+    0.678
+   ],
+   "open_half_farther": 0.618,
+   "open_past500": 0.356,
+   "stop_past500": 0.188
+  },
+  "ground + dots | reg": {
+   "n": 458,
+   "open_sector_farther": [
+    0.662,
+    0.62,
+    0.703
+   ],
+   "open_half_farther": 0.607,
+   "open_past500": 0.382,
+   "stop_past500": 0.181
+  },
+  "old hazard model (c14; ray cut by neighbours and scar entry, so partly leaky)": {
+   "n": 468,
+   "open_sector_farther": [
+    0.637,
+    0.596,
+    0.681
+   ],
+   "open_half_farther": 0.624,
+   "open_past500": 0.391,
+   "stop_past500": 0.16
+  },
+  "most tree cover (c14 rule)": {
+   "n": 468,
+   "open_sector_farther": [
+    0.592,
+    0.545,
+    0.635
+   ],
+   "open_half_farther": 0.579,
+   "open_past500": 0.331,
+   "stop_past500": 0.229
+  }
+ },
+ "first-alert fronts": {
+  "ground along ray | rank": {
+   "n": 146,
+   "open_sector_farther": [
+    0.637,
+    0.56,
+    0.713
+   ],
+   "open_half_farther": 0.596,
+   "open_past500": 0.493,
+   "stop_past500": 0.274
+  },
+  "ground along ray | reg": {
+   "n": 146,
+   "open_sector_farther": [
+    0.548,
+    0.46,
+    0.633
+   ],
+   "open_half_farther": 0.5,
+   "open_past500": 0.452,
+   "stop_past500": 0.336
+  },
+  "dots only (momentum, hot side, dot axis) | rank": {
+   "n": 104,
+   "open_sector_farther": [
+    0.567,
+    0.473,
+    0.663
+   ],
+   "open_half_farther": 0.49,
+   "open_past500": 0.519,
+   "stop_past500": 0.375
+  },
+  "dots only (momentum, hot side, dot axis) | reg": {
+   "n": 104,
+   "open_sector_farther": [
+    0.558,
+    0.455,
+    0.653
+   ],
+   "open_half_farther": 0.538,
+   "open_past500": 0.5,
+   "stop_past500": 0.385
+  },
+  "ground + dots | rank": {
+   "n": 146,
+   "open_sector_farther": [
+    0.603,
+    0.525,
+    0.686
+   ],
+   "open_half_farther": 0.555,
+   "open_past500": 0.473,
+   "stop_past500": 0.322
+  },
+  "ground + dots | reg": {
+   "n": 146,
+   "open_sector_farther": [
+    0.616,
+    0.544,
+    0.693
+   ],
+   "open_half_farther": 0.555,
+   "open_past500": 0.486,
+   "stop_past500": 0.295
+  },
+  "old hazard model (c14; ray cut by neighbours and scar entry, so partly leaky)": {
+   "n": 145,
+   "open_sector_farther": [
+    0.586,
+    0.504,
+    0.664
+   ],
+   "open_half_farther": 0.559,
+   "open_past500": 0.469,
+   "stop_past500": 0.303
+  },
+  "most tree cover (c14 rule)": {
+   "n": 146,
+   "open_sector_farther": [
+    0.616,
+    0.532,
+    0.695
+   ],
+   "open_half_farther": 0.5,
+   "open_past500": 0.5,
+   "stop_past500": 0.37
+  }
+ },
+ "first-alert fronts | real stops only": {
+  "ground along ray | rank": {
+   "n": 131,
+   "open_sector_farther": [
+    0.626,
+    0.539,
+    0.703
+   ],
+   "open_half_farther": 0.58,
+   "open_past500": 0.412,
+   "stop_past500": 0.198
+  },
+  "ground along ray | reg": {
+   "n": 135,
+   "open_sector_farther": [
+    0.548,
+    0.46,
+    0.639
+   ],
+   "open_half_farther": 0.533,
+   "open_past500": 0.407,
+   "stop_past500": 0.281
+  },
+  "dots only (momentum, hot side, dot axis) | rank": {
+   "n": 96,
+   "open_sector_farther": [
+    0.594,
+    0.495,
+    0.688
+   ],
+   "open_half_farther": 0.49,
+   "open_past500": 0.448,
+   "stop_past500": 0.302
+  },
+  "dots only (momentum, hot side, dot axis) | reg": {
+   "n": 98,
+   "open_sector_farther": [
+    0.541,
+    0.429,
+    0.645
+   ],
+   "open_half_farther": 0.52,
+   "open_past500": 0.408,
+   "stop_past500": 0.327
+  },
+  "ground + dots | rank": {
+   "n": 132,
+   "open_sector_farther": [
+    0.629,
+    0.547,
+    0.706
+   ],
+   "open_half_farther": 0.606,
+   "open_past500": 0.402,
+   "stop_past500": 0.235
+  },
+  "ground + dots | reg": {
+   "n": 129,
+   "open_sector_farther": [
+    0.62,
+    0.534,
+    0.7
+   ],
+   "open_half_farther": 0.605,
+   "open_past500": 0.426,
+   "stop_past500": 0.24
+  },
+  "old hazard model (c14; ray cut by neighbours and scar entry, so partly leaky)": {
+   "n": 126,
+   "open_sector_farther": [
+    0.603,
+    0.52,
+    0.688
+   ],
+   "open_half_farther": 0.579,
+   "open_past500": 0.413,
+   "stop_past500": 0.198
+  },
+  "most tree cover (c14 rule)": {
+   "n": 126,
+   "open_sector_farther": [
+    0.563,
+    0.48,
+    0.648
+   ],
+   "open_half_farther": 0.54,
+   "open_past500": 0.413,
+   "stop_past500": 0.31
+  }
+ }
+}

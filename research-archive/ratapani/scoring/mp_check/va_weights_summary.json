@@ -1,0 +1,36 @@
+{
+ "tree_cover_min": 10.0,
+ "3sat": {
+  "fire_square_days_season_2022_24": 392740,
+  "closed_canopy_feb_mar": 27349,
+  "closed_share_pct": 7.0,
+  "closed_fm_only_oblique_gt56_pct": 5.3,
+  "closed_fm_best_look_ge30_pct": 34.9,
+  "est_missing_closed_fm_worst_pct": 17.1,
+  "est_missing_closed_fm_mix_pct": 7.2,
+  "est_missing_all_worst_pct": 1.41,
+  "est_missing_all_mix_pct": 0.54
+ },
+ "snpp_noaa20": {
+  "fire_square_days_season_2022_24": 334078,
+  "closed_canopy_feb_mar": 25807,
+  "closed_share_pct": 7.7,
+  "closed_fm_only_oblique_gt56_pct": 5.3,
+  "closed_fm_best_look_ge30_pct": 35.5,
+  "est_missing_closed_fm_worst_pct": 17.2,
+  "est_missing_closed_fm_mix_pct": 7.3,
+  "est_missing_all_worst_pct": 1.58,
+  "est_missing_all_mix_pct": 0.61
+ },
+ "snpp_only": {
+  "fire_square_days_season_2022_24": 186172,
+  "closed_canopy_feb_mar": 13775,
+  "closed_share_pct": 7.4,
+  "closed_fm_only_oblique_gt56_pct": 9.6,
+  "closed_fm_best_look_ge30_pct": 48.0,
+  "est_missing_closed_fm_worst_pct": 24.4,
+  "est_missing_closed_fm_mix_pct": 10.6,
+  "est_missing_all_worst_pct": 2.34,
+  "est_missing_all_mix_pct": 0.87
+ }
+}

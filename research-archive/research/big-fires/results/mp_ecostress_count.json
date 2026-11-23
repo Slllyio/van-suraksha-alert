@@ -1,0 +1,23 @@
+{
+ "granules": 21576,
+ "tiles": 76,
+ "forest_events_viirs": 178126,
+ "event_passes_within_1h": 7130,
+ "events": 4868,
+ "day_passes": 6463,
+ "by_year": {
+  "2019": 353,
+  "2020": 385,
+  "2021": 3295,
+  "2022": 974,
+  "2023": 1010,
+  "2024": 86,
+  "2025": 1027
+ },
+ "expected_visible_at_ratapani_rate": {
+  "usable_share": 0.5038461538461538,
+  "visible_share_of_usable": 0.11450381679389313,
+  "est_usable": 3592,
+  "est_visible": 411
+ }
+}

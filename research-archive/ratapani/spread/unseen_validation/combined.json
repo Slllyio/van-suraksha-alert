@@ -1,0 +1,155 @@
+{
+ "issues": 2113,
+ "fires": 759,
+ "pixel_auc": {
+  "dist": 0.7896,
+  "ground": 0.8048,
+  "hls": 0.8115,
+  "prithvi": 0.8223,
+  "nearest": 0.7821
+ },
+ "overlap_mean_by_fire": {
+  "rule": 0.4483,
+  "dist": 0.4611,
+  "ground": 0.4632,
+  "hls": 0.4661,
+  "prithvi": 0.4712,
+  "area_rule_order": 0.4621,
+  "area_hls": 0.4814,
+  "area_prithvi": 0.4868
+ },
+ "area_prithvi_minus_rule_ci": [
+  0.034,
+  0.0427
+ ],
+ "area_prithvi_vs_rule_better/worse": [
+  520,
+  191
+ ],
+ "area_prithvi_minus_prithvi_ci": [
+  0.0123,
+  0.0188
+ ],
+ "area_prithvi_vs_prithvi_better/worse": [
+  421,
+  244
+ ],
+ "area_prithvi_minus_area_rule_order_ci": [
+  0.0218,
+  0.0278
+ ],
+ "area_prithvi_vs_area_rule_order_better/worse": [
+  502,
+  160
+ ],
+ "prithvi_minus_hls_ci": [
+  0.0032,
+  0.0068
+ ],
+ "prithvi_vs_hls_better/worse": [
+  346,
+  226
+ ],
+ "prithvi_minus_ground_ci": [
+  0.0059,
+  0.01
+ ],
+ "prithvi_vs_ground_better/worse": [
+  389,
+  211
+ ],
+ "hls_minus_ground_ci": [
+  0.0013,
+  0.0046
+ ],
+ "hls_vs_ground_better/worse": [
+  319,
+  237
+ ],
+ "ground_minus_rule_ci": [
+  0.0131,
+  0.0167
+ ],
+ "ground_vs_rule_better/worse": [
+  478,
+  135
+ ],
+ "prithvi_minus_rule_ci": [
+  0.0204,
+  0.0255
+ ],
+ "prithvi_vs_rule_better/worse": [
+  521,
+  131
+ ],
+ "dist_minus_rule_ci": [
+  0.0114,
+  0.0143
+ ],
+ "dist_vs_rule_better/worse": [
+  464,
+  116
+ ],
+ "by_season": {
+  "2017": {
+   "rule": 0.417,
+   "prithvi": 0.438,
+   "area_rule_order": 0.468,
+   "area_prithvi": 0.497
+  },
+  "2018": {
+   "rule": 0.45,
+   "prithvi": 0.47,
+   "area_rule_order": 0.487,
+   "area_prithvi": 0.516
+  },
+  "2019": {
+   "rule": 0.477,
+   "prithvi": 0.505,
+   "area_rule_order": 0.495,
+   "area_prithvi": 0.528
+  },
+  "2020": {
+   "rule": 0.462,
+   "prithvi": 0.478,
+   "area_rule_order": 0.501,
+   "area_prithvi": 0.52
+  },
+  "2021": {
+   "rule": 0.467,
+   "prithvi": 0.492,
+   "area_rule_order": 0.472,
+   "area_prithvi": 0.497
+  },
+  "2022": {
+   "rule": 0.47,
+   "prithvi": 0.484,
+   "area_rule_order": 0.497,
+   "area_prithvi": 0.513
+  },
+  "2023": {
+   "rule": 0.472,
+   "prithvi": 0.51,
+   "area_rule_order": 0.48,
+   "area_prithvi": 0.521
+  },
+  "2024": {
+   "rule": 0.415,
+   "prithvi": 0.434,
+   "area_rule_order": 0.426,
+   "area_prithvi": 0.446
+  },
+  "2025": {
+   "rule": 0.483,
+   "prithvi": 0.499,
+   "area_rule_order": 0.488,
+   "area_prithvi": 0.505
+  },
+  "2026": {
+   "rule": 0.447,
+   "prithvi": 0.474,
+   "area_rule_order": 0.459,
+   "area_prithvi": 0.487
+  }
+ }
+}

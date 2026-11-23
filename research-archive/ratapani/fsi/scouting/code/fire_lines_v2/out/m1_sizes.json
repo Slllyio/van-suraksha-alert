@@ -1,0 +1,268 @@
+{
+ "forest_ha_per_yr": 795674.96,
+ "fires_per_yr": 10346.222222222223,
+ "by_size": {
+  "0-10": {
+   "fires_per_yr": 2718.3333333333335,
+   "share_ha": 0.015698420370046585,
+   "share_fires": 0.26273680140899525,
+   "mean_ha": 4.595036174126303
+  },
+  "10-50": {
+   "fires_per_yr": 4433.888888888889,
+   "share_ha": 0.13743637225934568,
+   "share_fires": 0.4285514841702822,
+   "mean_ha": 24.663378523994485
+  },
+  "50-100": {
+   "fires_per_yr": 1401.2222222222222,
+   "share_ha": 0.12391874189430319,
+   "share_fires": 0.13543322307659264,
+   "mean_ha": 70.36645468242011
+  },
+  "100-200": {
+   "fires_per_yr": 892.1111111111111,
+   "share_ha": 0.1569970230054745,
+   "share_fires": 0.08622578289445423,
+   "mean_ha": 140.02583136131523
+  },
+  "200-500": {
+   "fires_per_yr": 621.2222222222222,
+   "share_ha": 0.23957672364102048,
+   "share_fires": 0.06004338674341681,
+   "mean_ha": 306.8550885351458
+  },
+  "500-1000": {
+   "fires_per_yr": 202.0,
+   "share_ha": 0.1730590591917081,
+   "share_fires": 0.019524034537566046,
+   "mean_ha": 681.6770297029702
+  },
+  "1000-1000000000.0": {
+   "fires_per_yr": 77.44444444444444,
+   "share_ha": 0.15331365963810148,
+   "share_fires": 0.007485287168692813,
+   "mean_ha": 1575.1657962697275
+  }
+ },
+ "by_year": {
+  "2017": {
+   "forest_ha": 1152244.7999999998,
+   "fires": 10327,
+   "share_ge500": 0.38353224939700326
+  },
+  "2018": {
+   "forest_ha": 1108361.52,
+   "fires": 12593,
+   "share_ge500": 0.3370362045770048
+  },
+  "2019": {
+   "forest_ha": 620849.1599999999,
+   "fires": 8782,
+   "share_ge500": 0.3195755954634778
+  },
+  "2020": {
+   "forest_ha": 216382.68,
+   "fires": 4328,
+   "share_ge500": 0.18491905174665552
+  },
+  "2021": {
+   "forest_ha": 1178511.48,
+   "fires": 13774,
+   "share_ge500": 0.3706858078293815
+  },
+  "2022": {
+   "forest_ha": 1053360.72,
+   "fires": 12280,
+   "share_ge500": 0.4038807902386943
+  },
+  "2023": {
+   "forest_ha": 398603.16000000003,
+   "fires": 8312,
+   "share_ge500": 0.14319776090084183
+  },
+  "2024": {
+   "forest_ha": 357403.31999999995,
+   "fires": 6744,
+   "share_ge500": 0.19496125553618252
+  },
+  "2025": {
+   "forest_ha": 1075357.7999999998,
+   "fires": 15976,
+   "share_ge500": 0.2736097325001967
+  }
+ },
+ "squares": {
+  "n": 7573,
+  "spearman_all": 0.8405582610800701,
+  "spearman_big": 0.5069870136459396,
+  "spearman_all_te_vs_forest": 0.6409884022019023,
+  "top2_by_tr": {
+   "n_squares": 152,
+   "share_forest": 0.04145481552630311,
+   "share_te_all": 0.1702574600948153,
+   "share_te_big": 0.2855714831259098,
+   "te_ha_per_yr": 122724.0,
+   "te_big_ha_per_yr": 60370.020000000004,
+   "burn_rate_te": 0.33795405450686367
+  },
+  "top5_by_tr": {
+   "n_squares": 379,
+   "share_forest": 0.10038726537091079,
+   "share_te_all": 0.3406711185488111,
+   "share_te_big": 0.5474927167943081,
+   "te_ha_per_yr": 245560.59,
+   "te_big_ha_per_yr": 115740.35999999999,
+   "burn_rate_te": 0.27924357559372437
+  },
+  "top10_by_tr": {
+   "n_squares": 758,
+   "share_forest": 0.18702250658130853,
+   "share_te_all": 0.51095055379248,
+   "share_te_big": 0.7216016709119217,
+   "te_ha_per_yr": 368300.43000000005,
+   "te_big_ha_per_yr": 152547.12,
+   "burn_rate_te": 0.22480786366368155
+  },
+  "top20_by_tr": {
+   "n_squares": 1515,
+   "share_forest": 0.3428372180625866,
+   "share_te_all": 0.7332073341559864,
+   "share_te_big": 0.8853487402810767,
+   "te_ha_per_yr": 528506.28,
+   "te_big_ha_per_yr": 187163.37,
+   "burn_rate_te": 0.17598081952398117
+  },
+  "top2_by_tr_big": {
+   "n_squares": 152,
+   "share_forest": 0.04017169820959065,
+   "share_te_all": 0.14979035583134923,
+   "share_te_big": 0.2730004763938138,
+   "te_ha_per_yr": 107971.01999999999,
+   "te_big_ha_per_yr": 57712.5,
+   "burn_rate_te": 0.3068245873380427
+  },
+  "top5_by_tr_big": {
+   "n_squares": 379,
+   "share_forest": 0.09582957282533253,
+   "share_te_all": 0.2955461492484686,
+   "share_te_big": 0.48490717132339145,
+   "te_ha_per_yr": 213033.87,
+   "te_big_ha_per_yr": 102509.73000000001,
+   "burn_rate_te": 0.253776995077652
+  },
+  "top10_by_tr_big": {
+   "n_squares": 758,
+   "share_forest": 0.1811368603538736,
+   "share_te_all": 0.4620349961737021,
+   "share_te_big": 0.6964817954980573,
+   "te_ha_per_yr": 333041.4,
+   "te_big_ha_per_yr": 147236.76,
+   "burn_rate_te": 0.2098913465181653
+  },
+  "top20_by_tr_big": {
+   "n_squares": 1515,
+   "share_forest": 0.29253504931815233,
+   "share_te_all": 0.5497120943353185,
+   "share_te_big": 0.7600030993270459,
+   "te_ha_per_yr": 396240.3,
+   "te_big_ha_per_yr": 160665.21,
+   "burn_rate_te": 0.1546264846027821
+  },
+  "base_burn_rate_te": 0.08228610351726286,
+  "big_fire_persistence": {
+   "squares_with_big_tr": 872,
+   "share_with_big_te_given_tr": 0.44954128440366975,
+   "share_with_big_te_overall": 0.08094546414895022,
+   "share_te_big_ha_in_squares_with_big_tr": 0.726427765883306
+  }
+ },
+ "patch_starts": {
+  "all5": {
+   "years": 9,
+   "total_forest_ha_per_yr": 795674.96,
+   "fires_start_in_per_yr": 1127.2222222222222,
+   "start_in_forest_ha_per_yr": 161655.72,
+   "start_in_inside_ha_per_yr": 92179.68,
+   "start_in_outside_ha_per_yr": 69476.03999999998,
+   "enter_from_outside_fires_per_yr": 1473.6666666666667,
+   "enter_inside_ha_per_yr": 68968.04,
+   "enter_total_forest_ha_per_yr": 301726.51999999996,
+   "all_in_patch_ha_per_yr": 161147.72,
+   "share_of_burnt_forest_touching": 0.5823763009960751,
+   "start_in_share_of_burnt": 0.20316803736038144,
+   "start_in_outside_share_of_burnt": 0.08731711250533758,
+   "by_year": {
+    "2017": {
+     "start_in_outside": 98205.48000000001,
+     "start_in_inside": 109648.43999999999
+    },
+    "2018": {
+     "start_in_outside": 93761.28,
+     "start_in_inside": 100965.6
+    },
+    "2019": {
+     "start_in_outside": 65990.88,
+     "start_in_inside": 104249.16
+    },
+    "2020": {
+     "start_in_outside": 23942.88,
+     "start_in_inside": 59659.56
+    },
+    "2021": {
+     "start_in_outside": 102755.16,
+     "start_in_inside": 105879.95999999999
+    },
+    "2022": {
+     "start_in_outside": 88936.19999999998,
+     "start_in_inside": 99349.19999999998
+    },
+    "2023": {
+     "start_in_outside": 37185.84,
+     "start_in_inside": 67143.23999999999
+    },
+    "2024": {
+     "start_in_outside": 37431.72,
+     "start_in_inside": 75000.24
+    },
+    "2025": {
+     "start_in_outside": 77074.92000000001,
+     "start_in_inside": 107721.72
+    }
+   }
+  },
+  "tr3": {
+   "years": 4,
+   "total_forest_ha_per_yr": 721181.25,
+   "fires_start_in_per_yr": 1129.75,
+   "start_in_forest_ha_per_yr": 135217.35,
+   "start_in_inside_ha_per_yr": 78195.51,
+   "start_in_outside_ha_per_yr": 57021.84,
+   "enter_from_outside_fires_per_yr": 1787.5,
+   "enter_inside_ha_per_yr": 65720.25,
+   "enter_total_forest_ha_per_yr": 284882.67,
+   "all_in_patch_ha_per_yr": 143915.76,
+   "share_of_burnt_forest_touching": 0.5825165587707667,
+   "start_in_share_of_burnt": 0.18749426721784573,
+   "start_in_outside_share_of_burnt": 0.07906728024335075,
+   "by_year": {
+    "2022": {
+     "start_in_outside": 82980.0,
+     "start_in_inside": 98726.04
+    },
+    "2023": {
+     "start_in_outside": 31741.559999999998,
+     "start_in_inside": 53282.87999999999
+    },
+    "2024": {
+     "start_in_outside": 35595.36,
+     "start_in_inside": 57964.67999999999
+    },
+    "2025": {
+     "start_in_outside": 77770.44,
+     "start_in_inside": 102808.44
+    }
+   }
+  }
+ }
+}

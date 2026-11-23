@@ -1,0 +1,35 @@
+{
+ "visible_passes": 31,
+ "usable": 25,
+ "skipped": {
+  "one VIIRS look only": 3,
+  "before first VIIRS dot": 2,
+  "under 1 ha new burning (0.0 ha)": 1
+ },
+ "dots_true": 0.092,
+ "dots_hot_true": 0.172,
+ "hot_true": 0.185,
+ "dots_24ha": 0.023,
+ "dots_hot_24ha": 0.032,
+ "hot_24ha": 0.015,
+ "dots_vnear_true": 0.153,
+ "dots_vcentre_true": 0.153,
+ "new_within500_hot": 0.179,
+ "new_within500_lastviirs": 0.063,
+ "new_within500_anydot": 0.157,
+ "dots_hot_beats_dots_true": 10,
+ "dots_hot_worse_true": 9,
+ "dots_hot_minus_dots_ci": [
+  0.017,
+  0.163
+ ],
+ "with_viirs_within_1h": {
+  "n": 18,
+  "dots": 0.142,
+  "dots_hot": 0.141,
+  "dots_viirs_1h": 0.153,
+  "dots_viirs_1h_centre": 0.153,
+  "hot_beats_viirs1h": 4,
+  "viirs1h_beats_hot": 8
+ }
+}

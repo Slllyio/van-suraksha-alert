@@ -1,0 +1,247 @@
+{
+ "all": {
+  "fronts": 4104,
+  "model": {
+   "right": 0.681,
+   "past500_open_vs_stop": [
+    0.199,
+    0.088
+   ],
+   "open_points_at_scar_centre": 0.354
+  },
+  "tree rule": {
+   "right": 0.576,
+   "past500_open_vs_stop": [
+    0.156,
+    0.112
+   ],
+   "open_points_at_scar_centre": 0.291
+  },
+  "barrier rule": {
+   "right": 0.602,
+   "past500_open_vs_stop": [
+    0.168,
+    0.096
+   ],
+   "open_points_at_scar_centre": 0.311
+  }
+ },
+ "scar 10-50 ha": {
+  "fronts": 2434,
+  "model": {
+   "right": 0.684,
+   "past500_open_vs_stop": [
+    0.082,
+    0.019
+   ],
+   "open_points_at_scar_centre": 0.355
+  },
+  "tree rule": {
+   "right": 0.586,
+   "past500_open_vs_stop": [
+    0.06,
+    0.031
+   ],
+   "open_points_at_scar_centre": 0.291
+  },
+  "barrier rule": {
+   "right": 0.591,
+   "past500_open_vs_stop": [
+    0.064,
+    0.029
+   ],
+   "open_points_at_scar_centre": 0.298
+  }
+ },
+ "scar 50-100 ha": {
+  "fronts": 1073,
+  "model": {
+   "right": 0.684,
+   "past500_open_vs_stop": [
+    0.3,
+    0.129
+   ],
+   "open_points_at_scar_centre": 0.345
+  },
+  "tree rule": {
+   "right": 0.562,
+   "past500_open_vs_stop": [
+    0.242,
+    0.182
+   ],
+   "open_points_at_scar_centre": 0.265
+  },
+  "barrier rule": {
+   "right": 0.623,
+   "past500_open_vs_stop": [
+    0.267,
+    0.15
+   ],
+   "open_points_at_scar_centre": 0.33
+  }
+ },
+ "scar 100-200 ha": {
+  "fronts": 550,
+  "model": {
+   "right": 0.662,
+   "past500_open_vs_stop": [
+    0.479,
+    0.275
+   ],
+   "open_points_at_scar_centre": 0.371
+  },
+  "tree rule": {
+   "right": 0.564,
+   "past500_open_vs_stop": [
+    0.382,
+    0.311
+   ],
+   "open_points_at_scar_centre": 0.283
+  },
+  "barrier rule": {
+   "right": 0.619,
+   "past500_open_vs_stop": [
+    0.436,
+    0.282
+   ],
+   "open_points_at_scar_centre": 0.32
+  }
+ },
+ "scar 200-1000000000 ha": {
+  "fronts": 47,
+  "model": {
+   "right": 0.63,
+   "past500_open_vs_stop": [
+    0.707,
+    0.596
+   ],
+   "open_points_at_scar_centre": 0.319
+  },
+  "tree rule": {
+   "right": 0.489,
+   "past500_open_vs_stop": [
+    0.589,
+    0.494
+   ],
+   "open_points_at_scar_centre": 0.067
+  },
+  "barrier rule": {
+   "right": 0.538,
+   "past500_open_vs_stop": [
+    0.558,
+    0.436
+   ],
+   "open_points_at_scar_centre": 0.205
+  }
+ },
+ "dot centre 0-150 m from scar centre": {
+  "fronts": 1419,
+  "model": {
+   "right": 0.688,
+   "past500_open_vs_stop": [
+    0.107,
+    0.053
+   ],
+   "open_points_at_scar_centre": 0.319
+  },
+  "tree rule": {
+   "right": 0.561,
+   "past500_open_vs_stop": [
+    0.092,
+    0.069
+   ],
+   "open_points_at_scar_centre": 0.232
+  },
+  "barrier rule": {
+   "right": 0.587,
+   "past500_open_vs_stop": [
+    0.089,
+    0.06
+   ],
+   "open_points_at_scar_centre": 0.265
+  }
+ },
+ "dot centre 150-300 m from scar centre": {
+  "fronts": 1578,
+  "model": {
+   "right": 0.679,
+   "past500_open_vs_stop": [
+    0.205,
+    0.095
+   ],
+   "open_points_at_scar_centre": 0.359
+  },
+  "tree rule": {
+   "right": 0.581,
+   "past500_open_vs_stop": [
+    0.156,
+    0.12
+   ],
+   "open_points_at_scar_centre": 0.292
+  },
+  "barrier rule": {
+   "right": 0.6,
+   "past500_open_vs_stop": [
+    0.17,
+    0.106
+   ],
+   "open_points_at_scar_centre": 0.306
+  }
+ },
+ "dot centre 300-600 m from scar centre": {
+  "fronts": 971,
+  "model": {
+   "right": 0.67,
+   "past500_open_vs_stop": [
+    0.317,
+    0.135
+   ],
+   "open_points_at_scar_centre": 0.382
+  },
+  "tree rule": {
+   "right": 0.578,
+   "past500_open_vs_stop": [
+    0.241,
+    0.168
+   ],
+   "open_points_at_scar_centre": 0.303
+  },
+  "barrier rule": {
+   "right": 0.609,
+   "past500_open_vs_stop": [
+    0.27,
+    0.138
+   ],
+   "open_points_at_scar_centre": 0.355
+  }
+ },
+ "dot centre 600-1000000000 m from scar centre": {
+  "fronts": 136,
+  "model": {
+   "right": 0.689,
+   "past500_open_vs_stop": [
+    0.237,
+    0.051
+   ],
+   "open_points_at_scar_centre": 0.456
+  },
+  "tree rule": {
+   "right": 0.654,
+   "past500_open_vs_stop": [
+    0.235,
+    0.097
+   ],
+   "open_points_at_scar_centre": 0.22
+  },
+  "barrier rule": {
+   "right": 0.738,
+   "past500_open_vs_stop": [
+    0.26,
+    0.07
+   ],
+   "open_points_at_scar_centre": 0.424
+  }
+ },
+ "chance that a 40 deg sector points within 45 deg of the scar centre": 0.25,
+ "median dot-to-scar-centre distance m": 196.7594619762617
+}

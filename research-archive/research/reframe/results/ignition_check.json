@@ -1,0 +1,10 @@
+{
+ "first_day_fires": 4194,
+ "first_day_excluded_by_rule": 0.258,
+ "later_day_events": 1354,
+ "later_day_called_new_by_rule": 0.081,
+ "fixed5_first_day_fires_listed": 0.273,
+ "calendar_total_first_day_fires_listed": 0.48,
+ "forecast_total_first_day_fires_listed": 0.502,
+ "first_day_fires_2025_26": 725
+}

@@ -1,0 +1,258 @@
+{
+ "scenes": 50,
+ "fires": 46,
+ "median_new24_ha": 56.019999999999996,
+ "scenes_with_>=1ha_new_burning": 48,
+ "all": {
+  "n": 50,
+  "rule": 0.5215,
+  "lean": 0.5173,
+  "hot": 0.5163,
+  "hot_lean": 0.5251,
+  "hot_burnt": 0.5412,
+  "rule_same_area_as_hot_burnt": 0.5334,
+  "hot_burnt_raw": 0.6458,
+  "rule_same_area_as_raw": 0.5855,
+  "burnt_raw_in_truth": 0.9484,
+  "burnt_raw_ha": 149.74,
+  "lean_live": 0.5158,
+  "newcap_scene": 0.2391,
+  "newcap_rule_same_area": 0.103,
+  "newcap_rule": 0.0288,
+  "newxcap_scene": 0.1448,
+  "newxcap_rule_same_area": 0.0735,
+  "newx_ha": 46.14,
+  "lean_vs_rule_ci": [
+   0.0005,
+   0.0136
+  ],
+  "lean_vs_rule_better/worse": [
+   22,
+   10
+  ],
+  "lean_live_vs_rule_ci": [
+   0.0015,
+   0.0144
+  ],
+  "lean_live_vs_rule_better/worse": [
+   22,
+   9
+  ],
+  "hot_vs_rule_ci": [
+   0.0007,
+   0.019
+  ],
+  "hot_vs_rule_better/worse": [
+   26,
+   11
+  ],
+  "hot_lean_vs_rule_ci": [
+   0.0045,
+   0.0217
+  ],
+  "hot_lean_vs_rule_better/worse": [
+   29,
+   7
+  ],
+  "hot_burnt_vs_rule_same_area_as_hot_burnt_ci": [
+   0.0095,
+   0.0356
+  ],
+  "hot_burnt_vs_rule_same_area_as_hot_burnt_better/worse": [
+   33,
+   6
+  ],
+  "hot_burnt_raw_vs_rule_same_area_as_raw_ci": [
+   0.0532,
+   0.0846
+  ],
+  "hot_burnt_raw_vs_rule_same_area_as_raw_better/worse": [
+   43,
+   2
+  ],
+  "newcap_scene_vs_newcap_rule_same_area_ci": [
+   0.0788,
+   0.2178
+  ],
+  "newcap_scene_vs_newcap_rule_same_area_better/worse": [
+   33,
+   9
+  ],
+  "newxcap_scene_vs_newxcap_rule_same_area_ci": [
+   0.0234,
+   0.1412
+  ],
+  "newxcap_scene_vs_newxcap_rule_same_area_better/worse": [
+   26,
+   13
+  ]
+ },
+ "new>=1ha": {
+  "n": 48,
+  "rule": 0.5196,
+  "lean": 0.5165,
+  "hot": 0.5137,
+  "hot_lean": 0.521,
+  "hot_burnt": 0.5376,
+  "rule_same_area_as_hot_burnt": 0.528,
+  "hot_burnt_raw": 0.6401,
+  "rule_same_area_as_raw": 0.5821,
+  "burnt_raw_in_truth": 0.9477,
+  "burnt_raw_ha": 158.9,
+  "lean_live": 0.5101,
+  "newcap_scene": 0.2576,
+  "newcap_rule_same_area": 0.1072,
+  "newcap_rule": 0.0309,
+  "newxcap_scene": 0.1497,
+  "newxcap_rule_same_area": 0.0835,
+  "newx_ha": 58.66,
+  "lean_vs_rule_ci": [
+   0.0005,
+   0.0136
+  ],
+  "lean_vs_rule_better/worse": [
+   22,
+   10
+  ],
+  "lean_live_vs_rule_ci": [
+   0.0018,
+   0.0152
+  ],
+  "lean_live_vs_rule_better/worse": [
+   22,
+   8
+  ],
+  "hot_vs_rule_ci": [
+   0.0002,
+   0.0197
+  ],
+  "hot_vs_rule_better/worse": [
+   25,
+   10
+  ],
+  "hot_lean_vs_rule_ci": [
+   0.0042,
+   0.0218
+  ],
+  "hot_lean_vs_rule_better/worse": [
+   28,
+   7
+  ],
+  "hot_burnt_vs_rule_same_area_as_hot_burnt_ci": [
+   0.0101,
+   0.0363
+  ],
+  "hot_burnt_vs_rule_same_area_as_hot_burnt_better/worse": [
+   32,
+   5
+  ],
+  "hot_burnt_raw_vs_rule_same_area_as_raw_ci": [
+   0.0531,
+   0.0854
+  ],
+  "hot_burnt_raw_vs_rule_same_area_as_raw_better/worse": [
+   43,
+   2
+  ],
+  "newcap_scene_vs_newcap_rule_same_area_ci": [
+   0.0821,
+   0.2216
+  ],
+  "newcap_scene_vs_newcap_rule_same_area_better/worse": [
+   33,
+   9
+  ],
+  "newxcap_scene_vs_newxcap_rule_same_area_ci": [
+   0.0227,
+   0.1437
+  ],
+  "newxcap_scene_vs_newxcap_rule_same_area_better/worse": [
+   26,
+   13
+  ]
+ },
+ "early_<=2_looks": {
+  "n": 18,
+  "rule": 0.4438,
+  "lean": 0.4642,
+  "hot": 0.4962,
+  "hot_lean": 0.499,
+  "hot_burnt": 0.5003,
+  "rule_same_area_as_hot_burnt": 0.4647,
+  "hot_burnt_raw": 0.6167,
+  "rule_same_area_as_raw": 0.5473,
+  "burnt_raw_in_truth": 0.9133,
+  "burnt_raw_ha": 124.22,
+  "lean_live": 0.4696,
+  "newcap_scene": 0.2608,
+  "newcap_rule_same_area": 0.1091,
+  "newcap_rule": 0.034,
+  "newxcap_scene": 0.134,
+  "newxcap_rule_same_area": 0.0971,
+  "newx_ha": 121.38,
+  "lean_vs_rule_ci": [
+   0.0072,
+   0.0318
+  ],
+  "lean_vs_rule_better/worse": [
+   12,
+   1
+  ],
+  "lean_live_vs_rule_ci": [
+   0.0073,
+   0.0322
+  ],
+  "lean_live_vs_rule_better/worse": [
+   11,
+   1
+  ],
+  "hot_vs_rule_ci": [
+   0.0101,
+   0.0454
+  ],
+  "hot_vs_rule_better/worse": [
+   13,
+   2
+  ],
+  "hot_lean_vs_rule_ci": [
+   0.0125,
+   0.0478
+  ],
+  "hot_lean_vs_rule_better/worse": [
+   14,
+   0
+  ],
+  "hot_burnt_vs_rule_same_area_as_hot_burnt_ci": [
+   0.02,
+   0.0604
+  ],
+  "hot_burnt_vs_rule_same_area_as_hot_burnt_better/worse": [
+   14,
+   0
+  ],
+  "hot_burnt_raw_vs_rule_same_area_as_raw_ci": [
+   0.0526,
+   0.0934
+  ],
+  "hot_burnt_raw_vs_rule_same_area_as_raw_better/worse": [
+   18,
+   0
+  ],
+  "newcap_scene_vs_newcap_rule_same_area_ci": [
+   0.0999,
+   0.2974
+  ],
+  "newcap_scene_vs_newcap_rule_same_area_better/worse": [
+   16,
+   1
+  ],
+  "newxcap_scene_vs_newxcap_rule_same_area_ci": [
+   0.0305,
+   0.1819
+  ],
+  "newxcap_scene_vs_newxcap_rule_same_area_better/worse": [
+   12,
+   3
+  ]
+ }
+}

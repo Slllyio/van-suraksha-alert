@@ -1,0 +1,74 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fire Review Queue</title>
+<link rel="stylesheet" href="/static/vendor/leaflet.css">
+<link rel="stylesheet" href="/static/app.css">
+<script src="/static/vendor/leaflet.js"></script>
+<script src="/static/common.js"></script>
+<style>
+.case{background:#fff;border:1px solid #ddd;border-radius:10px;padding:14px;margin:14px auto;max-width:1100px}
+.case h2{margin:0 0 4px;font-size:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cmap{height:320px;border-radius:8px}.ph{display:inline-block;margin:4px;text-align:center;font-size:12px}
+.ph img{height:110px;border-radius:6px;display:block}.chips img{height:150px;margin:4px;border-radius:6px}
+.q{background:#fff6e0;border-left:4px solid #e0a800;padding:6px 10px;margin:6px 0}
+label.v{display:block;margin:3px 0}textarea{width:100%;min-height:60px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<div id="login" style="display:none"></div>
+<div class="app">
+<header><h1>Fire review (blind to arm)</h1><span class="sp"></span><a href="/" style="color:#fff">Control room</a><span id="who"></span><button onclick="logout()">Sign out</button></header>
+<p class="muted" style="max-width:1100px;margin:10px auto">Each case is a fire where the field burn age and the satellite grouping disagree.
+Arm, beat and task source are hidden. Two reviewers decide; a third settles a split. Your verdict is not shown to the others.</p>
+<div id="cases"></div></div>
+<script>
+const VERDICT = {confirmed_start: 'Confirmed start (first day of a fire)', continuation: 'Continuation of an earlier fire',
+  older_burn: 'Older burn (not a start)', unclassifiable: 'Unclassifiable'};
+const sat = () => L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom: 18, attribution: 'Esri imagery'});
+async function load() {
+  const me = await api('/api/me'); setClock(me);
+  document.getElementById('who').textContent = me.name;
+  const cs = await api('/api/review/fires'), box = document.getElementById('cases');
+  if (!cs.length) { box.innerHTML = '<div class="case">No cases waiting for review.</div>'; return; }
+  box.innerHTML = cs.map((c, k) => `<div class="case" id="c${k}">
+    <h2>Case ${k + 1} of ${cs.length}</h2><div class="muted">Needs ${esc(c.needs)}${c.my_verdict ? ` · your verdict: ${esc(VERDICT[c.my_verdict.verdict])}` : ''}</div>
+    <div class="q">${esc(c.question || '')}</div>
+    <div class="grid"><div><div class="cmap" id="m${k}"></div>
+      <div class="muted">Blue: field reports · white: photos · red: satellite points · red outline: burn scar</div></div>
+    <div>
+      <b>Found on the ground</b> ${fmt(c.discovered_utc)} IST<br>
+      <b>Satellite fire first seen</b> ${c.satellite_fire_first_utc ? fmt(c.satellite_fire_first_utc) + ' IST' : 'none on record'}${c.grouping ? ` · grouping: ${esc(c.grouping.replace(/_/g, ' '))}` : ' · grouping not imported yet'}
+      ${c.reports.map(r => `<div style="margin-top:8px"><b>${esc(OUTCOME[r.outcome] || r.outcome)}</b> · ${esc(BURN_AGE[r.burn_age] || 'burn age not given')} · photo proof ${esc(r.evidence || '')}
+        <div class="muted">visited ${fmt(r.visited_utc)} · sent ${fmt(r.submitted_utc)} IST</div>
+        ${r.photos.map(p => `<a class="ph" href="/api/photos/${p.id}?thumb=false" target="_blank"><img src="/api/photos/${p.id}"><span>photo ${fmt(p.taken_utc)}<br>phone ${fmt(p.dev_utc)}</span></a>`).join('')}</div>`).join('')}
+      <div style="margin-top:8px"><b>Satellite alerts nearby</b>${c.nearby_alerts.length ? c.nearby_alerts.map(a => `<div class="muted">${a.points.map(p => `${esc(p.instrument)} ${fmt(p.acq_utc)}`).join(', ')}
+        ${a.scar ? ` · scar: ${esc(a.scar.scar_found)}${a.scar.scar_ha ? ' ' + a.scar.scar_ha + ' ha' : ''}${a.scar.pre_date ? ` (images ${a.scar.pre_date} to ${a.scar.post_date})` : ''}` : ''}</div>`).join('') : ' none'}</div>
+      ${c.chips.length ? `<div class="chips"><b>Before / after images</b><br>${c.chips.map(x => `<a href="${esc(x.url)}" target="_blank"><img src="${esc(x.url)}" alt="${esc(x.label)}" title="${esc(x.label)}"></a>`).join('')}</div>` : ''}
+    </div></div>
+    <div style="margin-top:10px"><b>Your verdict</b>
+      ${Object.entries(VERDICT).map(([k2, v]) => `<label class="v"><input type="radio" name="v${k}" value="${k2}" ${c.my_verdict?.verdict === k2 ? 'checked' : ''}> ${v}</label>`).join('')}
+      <textarea id="r${k}" placeholder="Reason (required): what in the photos, times or images decided it">${esc(c.my_verdict?.reason || '')}</textarea>
+      <button class="btn" onclick="send(${k}, '${esc(c.case)}')">Save verdict</button> <span id="s${k}" class="muted"></span></div></div>`).join('');
+  cs.forEach((c, k) => {
+    const m = L.map('m' + k).addLayer(sat()), g = L.featureGroup().addTo(m);
+    c.nearby_alerts.forEach(a => {
+      if (a.scar?.geometry) L.geoJSON(a.scar.geometry, {style: {color: '#c0392b', weight: 2, fillOpacity: .2}}).addTo(g);
+      a.points.forEach(p => L.circleMarker([p.lat, p.lon], {radius: 5, color: '#c0392b', fillOpacity: .9}).bindTooltip(`${p.instrument} ${fmt(p.acq_utc)}`).addTo(g));
+    });
+    c.reports.forEach(r => {
+      if (r.lat != null) L.circleMarker([r.lat, r.lon], {radius: 7, color: '#1e5bd8', fillOpacity: .8}).bindTooltip('report ' + fmt(r.visited_utc)).addTo(g);
+      r.photos.forEach(p => p.lat != null && L.circleMarker([p.lat, p.lon], {radius: 4, color: '#fff', fillOpacity: 1}).bindTooltip('photo ' + fmt(p.taken_utc)).addTo(g));
+    });
+    if (!g.getLayers().length) L.marker([c.lat, c.lon]).addTo(g);
+    m.fitBounds(g.getBounds().pad(0.6), {maxZoom: 16});
+  });
+}
+async function send(k, fid) {
+  const v = document.querySelector(`input[name=v${k}]:checked`), r = document.getElementById('r' + k).value.trim(), s = document.getElementById('s' + k);
+  if (!v || !r) { s.textContent = 'Pick a verdict and write a reason.'; return; }
+  try {
+    const out = await api(`/api/review/fires/${encodeURIComponent(fid)}/verdict`, {method: 'POST', headers: {'content-type': 'application/json'},
+      body: JSON.stringify({verdict: v.value, reason: r})});
+    s.textContent = out.class_final ? 'Saved. This case is now decided.' : 'Saved.';
+  } catch (e) { s.textContent = e.message; }
+}
+load().catch(e => e.message === 'login' || alert(e.message));
+</script></body></html>

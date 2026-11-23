@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-multipart
+shapely>=2
+pillow
+pandas
+pyarrow
+pyshp
+pyproj
+requests
+tifffile
+imagecodecs
+xlrd

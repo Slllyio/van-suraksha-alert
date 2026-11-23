@@ -1,0 +1,82 @@
+{
+ "combined_top3": {
+  "strict_all": 0.1493,
+  "strict_new": 0.0898,
+  "strict_spread": 0.1829,
+  "cell_recall": 0.1169,
+  "area_recall": 0.1641,
+  "picks_per_day": 204.0
+ },
+ "combined_top5": {
+  "strict_all": 0.2307,
+  "strict_new": 0.1401,
+  "strict_spread": 0.2818,
+  "cell_recall": 0.1836,
+  "area_recall": 0.2451,
+  "picks_per_day": 340.0
+ },
+ "combined_top8": {
+  "strict_all": 0.3395,
+  "strict_new": 0.2246,
+  "strict_spread": 0.4043,
+  "cell_recall": 0.2764,
+  "area_recall": 0.3491,
+  "picks_per_day": 544.0
+ },
+ "combined_top10": {
+  "strict_all": 0.3985,
+  "strict_new": 0.2749,
+  "strict_spread": 0.4683,
+  "cell_recall": 0.3341,
+  "area_recall": 0.4124,
+  "picks_per_day": 680.0
+ },
+ "quota_ign1_spread4": {
+  "strict_all": 0.2307,
+  "strict_new": 0.1422,
+  "strict_spread": 0.2806,
+  "cell_recall": 0.1828,
+  "area_recall": 0.2477,
+  "picks_per_day": 339.7
+ },
+ "quota_ign2_spread3": {
+  "strict_all": 0.2326,
+  "strict_new": 0.1572,
+  "strict_spread": 0.2752,
+  "cell_recall": 0.185,
+  "area_recall": 0.2518,
+  "picks_per_day": 339.9
+ },
+ "quota_ign3_spread2": {
+  "strict_all": 0.2334,
+  "strict_new": 0.1722,
+  "strict_spread": 0.268,
+  "cell_recall": 0.183,
+  "area_recall": 0.2541,
+  "picks_per_day": 340.0
+ },
+ "quota_ign4_spread1": {
+  "strict_all": 0.2323,
+  "strict_new": 0.1936,
+  "strict_spread": 0.2541,
+  "cell_recall": 0.1803,
+  "area_recall": 0.2528,
+  "picks_per_day": 340.0
+ },
+ "dynamic_combined": {
+  "strict_all": 0.2473,
+  "strict_new": 0.1348,
+  "strict_spread": 0.3108,
+  "cell_recall": 0.2005,
+  "area_recall": 0.2688,
+  "picks_per_day": 340.1
+ },
+ "dynamic_ignition_feats": {
+  "strict_all": 0.2361,
+  "strict_new": 0.2107,
+  "strict_spread": 0.2505,
+  "cell_recall": 0.1864,
+  "area_recall": 0.2677,
+  "picks_per_day": 340.0
+ }
+}

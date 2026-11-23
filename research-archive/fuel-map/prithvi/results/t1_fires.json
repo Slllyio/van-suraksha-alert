@@ -1,0 +1,182 @@
+{
+ "fires": 2388,
+ "big": 386,
+ "models": {
+  "no fuel layer": {
+   "r2_log_area": 0.009,
+   "auc_big": 0.528,
+   "brier_big": 0.1364
+  },
+  "canopy": {
+   "r2_log_area": 0.009,
+   "auc_big": 0.525,
+   "brier_big": 0.1365
+  },
+  "canopy + fuel map v3": {
+   "r2_log_area": 0.033,
+   "auc_big": 0.578,
+   "brier_big": 0.1353
+  },
+  "canopy + raw HLS (same pixels)": {
+   "r2_log_area": 0.002,
+   "auc_big": 0.578,
+   "brier_big": 0.1357
+  },
+  "canopy + Prithvi": {
+   "r2_log_area": 0.044,
+   "auc_big": 0.618,
+   "brier_big": 0.1345
+  },
+  "canopy + v3 + Prithvi": {
+   "r2_log_area": 0.072,
+   "auc_big": 0.632,
+   "brier_big": 0.1331
+  },
+  "Prithvi only (+ base)": {
+   "r2_log_area": 0.04,
+   "auc_big": 0.615,
+   "brier_big": 0.1347
+  },
+  "no fuel layer + dot count": {
+   "r2_log_area": 0.14,
+   "auc_big": 0.643,
+   "brier_big": 0.1259
+  },
+  "canopy + dot count": {
+   "r2_log_area": 0.14,
+   "auc_big": 0.641,
+   "brier_big": 0.1261
+  },
+  "canopy + fuel map v3 + dot count": {
+   "r2_log_area": 0.158,
+   "auc_big": 0.665,
+   "brier_big": 0.1248
+  },
+  "canopy + raw HLS (same pixels) + dot count": {
+   "r2_log_area": 0.128,
+   "auc_big": 0.665,
+   "brier_big": 0.1255
+  },
+  "canopy + Prithvi + dot count": {
+   "r2_log_area": 0.165,
+   "auc_big": 0.68,
+   "brier_big": 0.1248
+  },
+  "canopy + v3 + Prithvi + dot count": {
+   "r2_log_area": 0.179,
+   "auc_big": 0.689,
+   "brier_big": 0.1238
+  },
+  "Prithvi only (+ base) + dot count": {
+   "r2_log_area": 0.163,
+   "auc_big": 0.68,
+   "brier_big": 0.1249
+  }
+ },
+ "gains": {
+  "canopy + Prithvi vs canopy": {
+   "r2_gain": [
+    0.035,
+    [
+     0.012,
+     0.057
+    ]
+   ],
+   "auc_gain": [
+    0.093,
+    [
+     0.059,
+     0.129
+    ]
+   ]
+  },
+  "canopy + fuel map v3 vs canopy": {
+   "r2_gain": [
+    0.024,
+    [
+     0.009,
+     0.038
+    ]
+   ],
+   "auc_gain": [
+    0.053,
+    [
+     0.032,
+     0.073
+    ]
+   ]
+  },
+  "canopy + raw HLS (same pixels) vs canopy": {
+   "r2_gain": [
+    -0.007,
+    [
+     -0.034,
+     0.021
+    ]
+   ],
+   "auc_gain": [
+    0.053,
+    [
+     0.019,
+     0.09
+    ]
+   ]
+  },
+  "canopy + Prithvi vs canopy + raw HLS (same pixels)": {
+   "r2_gain": [
+    0.043,
+    [
+     0.017,
+     0.067
+    ]
+   ],
+   "auc_gain": [
+    0.04,
+    [
+     0.01,
+     0.067
+    ]
+   ]
+  },
+  "canopy + Prithvi + dot count vs canopy + dot count": {
+   "r2_gain": [
+    0.024,
+    [
+     0.006,
+     0.042
+    ]
+   ],
+   "auc_gain": [
+    0.039,
+    [
+     0.017,
+     0.064
+    ]
+   ]
+  },
+  "canopy + v3 + Prithvi + dot count vs canopy + fuel map v3 + dot count": {
+   "r2_gain": [
+    0.022,
+    [
+     -0.0,
+     0.04
+    ]
+   ],
+   "auc_gain": [
+    0.024,
+    [
+     0.002,
+     0.045
+    ]
+   ]
+  }
+ },
+ "top_pc_vs_residual_spearman": {
+  "pm2": -0.142,
+  "pl7": -0.092,
+  "pd14": -0.091,
+  "pd10": 0.074,
+  "pd13": -0.074,
+  "pm6": -0.072
+ }
+}

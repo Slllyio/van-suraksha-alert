@@ -1,0 +1,312 @@
+{
+ "direction": {
+  "n_steps": 2973,
+  "n_fires": 962,
+  "results": {
+   "random": {
+    "top1": 0.125,
+    "within_1": 0.375
+   },
+   "keep going the same way": {
+    "top1": 0.215,
+    "within_1": 0.527
+   },
+   "away from the first detection": {
+    "top1": 0.166,
+    "within_1": 0.442
+   },
+   "uphill": {
+    "top1": 0.121,
+    "within_1": 0.389
+   },
+   "downwind": {
+    "top1": 0.135,
+    "within_1": 0.403
+   },
+   "history only, logistic": {
+    "top1": 0.258,
+    "within_1": 0.569
+   },
+   "ground only (terrain/fuel/people/wind), trees": {
+    "top1": 0.19,
+    "within_1": 0.486
+   },
+   "everything, logistic": {
+    "top1": 0.238,
+    "within_1": 0.563
+   },
+   "everything, trees": {
+    "top1": 0.286,
+    "within_1": 0.604
+   },
+   "everything, neural net (2x32)": {
+    "top1": 0.181,
+    "within_1": 0.477
+   },
+   "ground only, neural net": {
+    "top1": 0.159,
+    "within_1": 0.413
+   }
+  },
+  "subsets": {
+   "big fires (old set)": {
+    "steps": 984,
+    "everything, trees": 0.276,
+    "everything, neural net (2x32)": 0.193,
+    "keep going the same way": 0.26
+   },
+   "small fires (not big)": {
+    "steps": 1989,
+    "everything, trees": 0.29,
+    "everything, neural net (2x32)": 0.175,
+    "keep going the same way": 0.198
+   },
+   "steps seen by VIIRS": {
+    "steps": 2441,
+    "everything, trees": 0.285,
+    "everything, neural net (2x32)": 0.18,
+    "keep going the same way": 0.214
+   },
+   "steps seen by MODIS": {
+    "steps": 245,
+    "everything, trees": 0.335,
+    "everything, neural net (2x32)": 0.2,
+    "keep going the same way": 0.241
+   },
+   "steps seen by Sentinel-2/Landsat": {
+    "steps": 287,
+    "everything, trees": 0.247,
+    "everything, neural net (2x32)": 0.174,
+    "keep going the same way": 0.22
+   },
+   "gap under 3 h": {
+    "steps": 1277,
+    "everything, trees": 0.367,
+    "everything, neural net (2x32)": 0.185,
+    "keep going the same way": 0.236
+   },
+   "gap 3-18 h": {
+    "steps": 1145,
+    "everything, trees": 0.231,
+    "everything, neural net (2x32)": 0.187,
+    "keep going the same way": 0.203
+   },
+   "gap 18 h or more": {
+    "steps": 551,
+    "everything, trees": 0.209,
+    "everything, neural net (2x32)": 0.16,
+    "keep going the same way": 0.183
+   },
+   "seasons 2025-26": {
+    "steps": 372,
+    "everything, trees": 0.288,
+    "everything, neural net (2x32)": 0.199,
+    "keep going the same way": 0.234
+   }
+  },
+  "calibration": {
+   "everything, trees": [
+    {
+     "bin": "(0.0, 0.15]",
+     "n": "38",
+     "predicted": "0.144",
+     "right": "0.105"
+    },
+    {
+     "bin": "(0.15, 0.2]",
+     "n": "604",
+     "predicted": "0.178",
+     "right": "0.167"
+    },
+    {
+     "bin": "(0.2, 0.25]",
+     "n": "872",
+     "predicted": "0.226",
+     "right": "0.232"
+    },
+    {
+     "bin": "(0.25, 0.3]",
+     "n": "789",
+     "predicted": "0.273",
+     "right": "0.286"
+    },
+    {
+     "bin": "(0.3, 0.4]",
+     "n": "453",
+     "predicted": "0.334",
+     "right": "0.397"
+    },
+    {
+     "bin": "(0.4, 1.0]",
+     "n": "217",
+     "predicted": "0.466",
+     "right": "0.627"
+    }
+   ],
+   "everything, neural net (2x32)": [
+    {
+     "bin": "(0.0, 0.15]",
+     "n": "16",
+     "predicted": "0.146",
+     "right": "0.062"
+    },
+    {
+     "bin": "(0.15, 0.2]",
+     "n": "1038",
+     "predicted": "0.181",
+     "right": "0.137"
+    },
+    {
+     "bin": "(0.2, 0.25]",
+     "n": "1132",
+     "predicted": "0.223",
+     "right": "0.163"
+    },
+    {
+     "bin": "(0.25, 0.3]",
+     "n": "532",
+     "predicted": "0.271",
+     "right": "0.244"
+    },
+    {
+     "bin": "(0.3, 0.4]",
+     "n": "237",
+     "predicted": "0.329",
+     "right": "0.295"
+    },
+    {
+     "bin": "(0.4, 1.0]",
+     "n": "18",
+     "predicted": "0.44",
+     "right": "0.556"
+    }
+   ]
+  },
+  "learning_curve": {
+   "10% of fires": {
+    "trees": 0.242,
+    "neural net": 0.131
+   },
+   "25% of fires": {
+    "trees": 0.267,
+    "neural net": 0.13
+   },
+   "50% of fires": {
+    "trees": 0.28,
+    "neural net": 0.14
+   },
+   "100% of fires": {
+    "trees": 0.286,
+    "neural net": 0.181
+   }
+  },
+  "logistic_coefficients_standardised": {
+   "cos_prev0": 0.53,
+   "litter_v3_rel": -0.239,
+   "burned_this_season_before_rel": 0.181,
+   "canopy_rel": 0.173,
+   "cos_first0": -0.115,
+   "wind_x_cos": 0.098,
+   "wc_tree_rel": 0.092,
+   "elev_diff_rel": 0.09,
+   "burn_prior_rel": 0.08,
+   "wc_open_rel": -0.065,
+   "has_prev": -0.054,
+   "teak_rel": 0.052,
+   "wc_nonfuel_rel": -0.049,
+   "grass_v3_rel": -0.046,
+   "d_building_rel": 0.041,
+   "night_x_prev": -0.041,
+   "own_fire_already_rel": -0.036,
+   "cos_wind0": -0.03,
+   "d_road_rel": -0.023,
+   "cos_upslope": 0.019,
+   "slope_rel": 0.017,
+   "night": 0.011,
+   "gap_h": -0.0
+  },
+  "neural_net_settings_sweep_top1": {
+   "2x32, alpha 0.01, early stopping (main run)": 0.181,
+   "16, alpha 0.1, 1000 it": 0.262,
+   "32x32, alpha 1, 1000 it": 0.264,
+   "64x64, alpha 0.01, 1000 it": 0.191,
+   "8, alpha 1, 2000 it": 0.25,
+   "trees, same columns": 0.286
+  },
+  "short_vs_long_gap_check": {
+   "trees all columns": {
+    "gap<3h": 0.367,
+    "gap>=3h": 0.224
+   },
+   "trees without own_fire_already": {
+    "gap<3h": 0.365,
+    "gap>=3h": 0.226
+   },
+   "history + own_fire_already only": {
+    "gap<3h": 0.377,
+    "gap>=3h": 0.19
+   },
+   "rule: sector with least own fire already": 0.128,
+   "note": "short-gap steps score high from the fire history columns alone; section 10 showed short gaps are mostly position noise, so the gap>=3h number is the honest spread figure"
+  }
+ },
+ "speed": {
+  "n_fires": 523,
+  "n_big": 135,
+  "median_speed_m_per_h": 26.0,
+  "median_speed_big": 25.4,
+  "median_speed_small": 26.2,
+  "results": {
+   "baseline: same speed for every fire": {
+    "error": 0.676
+   },
+   "terrain, trees": {
+    "error": 0.669,
+    "better_pct": 0.9,
+    "spearman": 0.128
+   },
+   "fuel/canopy/history, trees": {
+    "error": 0.68,
+    "better_pct": -0.6,
+    "spearman": 0.089
+   },
+   "weather/date, trees": {
+    "error": 0.663,
+    "better_pct": 1.9,
+    "spearman": 0.155
+   },
+   "people, trees": {
+    "error": 0.674,
+    "better_pct": 0.3,
+    "spearman": 0.123
+   },
+   "fire so far, trees": {
+    "error": 0.65,
+    "better_pct": 3.8,
+    "spearman": 0.108
+   },
+   "all columns, trees": {
+    "error": 0.655,
+    "better_pct": 3.1,
+    "spearman": 0.197
+   },
+   "all columns, neural net (2x32)": {
+    "error": 0.867,
+    "better_pct": -28.4,
+    "spearman": 0.056
+   }
+  },
+  "single_column_spearman_top": {
+   "grass_v3": 0.162,
+   "d_building": 0.145,
+   "elev": 0.135,
+   "n_passes": -0.121,
+   "canopy": -0.108,
+   "litter_v3": -0.105,
+   "wc_tree": -0.096,
+   "n_sensors": -0.076,
+   "slope": 0.064,
+   "teak": 0.062
+  }
+ }
+}

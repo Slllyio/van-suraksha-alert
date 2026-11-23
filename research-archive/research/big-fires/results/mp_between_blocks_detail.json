@@ -1,0 +1,148 @@
+{
+ "passes": 793,
+ "fires": 603,
+ "note": "mean share per pass [estimate, 95% CI by fire bootstrap]; random-in-block reference: outer half 0.75",
+ "by_kind": {
+  "2 blocks": {
+   "passes": 223,
+   "share_outer_half": [
+    0.827,
+    0.796,
+    0.855
+   ],
+   "share_inside_block": [
+    0.559,
+    0.504,
+    0.611
+   ],
+   "hot_to_nearest_centre_m": 260
+  },
+  "3+ blocks": {
+   "passes": 256,
+   "share_outer_half": [
+    0.781,
+    0.753,
+    0.807
+   ],
+   "share_inside_block": [
+    0.626,
+    0.586,
+    0.667
+   ],
+   "hot_to_nearest_centre_m": 210
+  },
+  "single block": {
+   "passes": 314,
+   "share_outer_half": [
+    0.851,
+    0.823,
+    0.876
+   ],
+   "share_inside_block": [
+    0.468,
+    0.425,
+    0.512
+   ],
+   "hot_to_nearest_centre_m": 303
+  }
+ },
+ "two_blocks_between_centres": {
+  "adjacent_<500m": {
+   "passes": 139,
+   "share_between": [
+    0.499,
+    0.439,
+    0.563
+   ]
+  },
+  "far_>=500m": {
+   "passes": 84,
+   "share_between": [
+    0.65,
+    0.571,
+    0.726
+   ]
+  },
+  "ratapani_30m_reference": {
+   "adjacent": 0.37,
+   "far": 0.88
+  }
+ },
+ "by_satellite": {
+  "N": {
+   "passes": 374,
+   "share_outer_half": [
+    0.812,
+    0.788,
+    0.833
+   ]
+  },
+  "N20": {
+   "passes": 419,
+   "share_outer_half": [
+    0.83,
+    0.805,
+    0.853
+   ]
+  }
+ },
+ "by_scan": {
+  "near nadir (<0.45 km)": {
+   "passes": 377,
+   "share_outer_half": [
+    0.837,
+    0.817,
+    0.862
+   ],
+   "share_inside_block": [
+    0.497,
+    0.458,
+    0.536
+   ]
+  },
+  "mid (0.45-0.6)": {
+   "passes": 313,
+   "share_outer_half": [
+    0.826,
+    0.8,
+    0.85
+   ],
+   "share_inside_block": [
+    0.545,
+    0.503,
+    0.587
+   ]
+  },
+  "edge (>0.6)": {
+   "passes": 103,
+   "share_outer_half": [
+    0.751,
+    0.693,
+    0.805
+   ],
+   "share_inside_block": [
+    0.717,
+    0.657,
+    0.777
+   ]
+  }
+ },
+ "by_time": {
+  "day": {
+   "passes": 785,
+   "share_outer_half": [
+    0.821,
+    0.806,
+    0.837
+   ]
+  },
+  "night": {
+   "passes": 8,
+   "share_outer_half": [
+    0.867,
+    0.724,
+    0.993
+   ]
+  }
+ }
+}

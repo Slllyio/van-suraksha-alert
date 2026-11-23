@@ -1,0 +1,74 @@
+{
+ "Aqua MODIS 1-4.5 h after": {
+  "passes": 24,
+  "fires": 21,
+  "mean_dt_h": 3.18,
+  "outward_m": 250.2,
+  "ci_m": "-30.5 to 525.9",
+  "speed_m_h": 78.7,
+  "speed_ci": "-9.6 to 165.5",
+  "perpendicular_m": 48.5,
+  "mean_vector_m": [
+   -123,
+   -271
+  ],
+  "mean_u": [
+   -0.01,
+   -0.08
+  ]
+ },
+ "Terra MODIS within 30 min (null)": {
+  "passes": 14,
+  "fires": 13,
+  "mean_dt_h": 0.01,
+  "outward_m": 274.2,
+  "ci_m": "-22.8 to 564.2",
+  "speed_m_h": null,
+  "speed_ci": null,
+  "perpendicular_m": -76.6,
+  "mean_vector_m": [
+   50,
+   55
+  ],
+  "mean_u": [
+   0.18,
+   0.02
+  ]
+ },
+ "VIIRS day pass 1-4.5 h after": {
+  "passes": 295,
+  "fires": 153,
+  "mean_dt_h": 2.74,
+  "outward_m": 13.6,
+  "ci_m": "-76.2 to 101.2",
+  "speed_m_h": 5.0,
+  "speed_ci": "-27.9 to 37.0",
+  "perpendicular_m": 5.2,
+  "mean_vector_m": [
+   151,
+   -85
+  ],
+  "mean_u": [
+   -0.03,
+   0.0
+  ]
+ },
+ "VIIRS night pass 6-12.5 h before": {
+  "passes": 321,
+  "fires": 170,
+  "mean_dt_h": -8.79,
+  "outward_m": -248.5,
+  "ci_m": "-349.6 to -148.4",
+  "speed_m_h": 28.3,
+  "speed_ci": "39.8 to 16.9",
+  "perpendicular_m": 136.8,
+  "mean_vector_m": [
+   8,
+   -75
+  ],
+  "mean_u": [
+   -0.1,
+   0.03
+  ]
+ }
+}

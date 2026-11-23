@@ -1,0 +1,66 @@
+{
+ "divisions": 87,
+ "events": 24043,
+ "beat_episodes": 20590,
+ "new_events": 4486,
+ "random": {
+  "new_strict": 95.6,
+  "new_loose": 95.9,
+  "not_new_strict": 96.1,
+  "cell": 82.1,
+  "events_strict": 96.0,
+  "events_loose": 96.2,
+  "beats_strict": 99.0,
+  "beats_loose": 99.0,
+  "covered_pct_mean_div": 79.7,
+  "beats_per_range_day": 8.04
+ },
+ "history": {
+  "new_strict": 48.6,
+  "new_loose": 48.9,
+  "not_new_strict": 58.7,
+  "cell": 60.2,
+  "events_strict": 56.8,
+  "events_loose": 57.2,
+  "beats_strict": 78.6,
+  "beats_loose": 78.6,
+  "covered_pct_mean_div": 37.0,
+  "beats_per_range_day": 5.36
+ },
+ "cal_hist": {
+  "new_strict": 48.5,
+  "new_loose": 48.9,
+  "not_new_strict": 58.6,
+  "cell": 60.2,
+  "events_strict": 56.7,
+  "events_loose": 57.2,
+  "beats_strict": 78.6,
+  "beats_loose": 78.6,
+  "covered_pct_mean_div": 37.0,
+  "beats_per_range_day": 5.36
+ },
+ "recent": {
+  "new_strict": 32.7,
+  "new_loose": 36.3,
+  "not_new_strict": 64.6,
+  "cell": 58.6,
+  "events_strict": 58.6,
+  "events_loose": 61.6,
+  "beats_strict": 77.9,
+  "beats_loose": 80.4,
+  "covered_pct_mean_div": 33.9,
+  "beats_per_range_day": 5.02
+ },
+ "recent_early": {
+  "new_strict": 32.9,
+  "new_loose": 36.4,
+  "not_new_strict": 64.6,
+  "cell": 58.6,
+  "events_strict": 58.7,
+  "events_loose": 61.7,
+  "beats_strict": 78.0,
+  "beats_loose": 80.4,
+  "covered_pct_mean_div": 34.0,
+  "beats_per_range_day": 5.03
+ }
+}

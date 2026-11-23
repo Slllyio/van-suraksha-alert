@@ -1,0 +1,36 @@
+{
+ "chosen_by_season": {
+  "2017": "blend_walk_p4_clock",
+  "2018": "nn",
+  "2019": "nn",
+  "2020": "nn",
+  "2021": "blend_walk_p4_clock",
+  "2022": "nn",
+  "2023": "blend_walk_p4_clock",
+  "2024": "blend_walk_p4_clock"
+ },
+ "n_photos": 340,
+ "n_fires": 283,
+ "n_both_sides": 171,
+ "n_big": 77,
+ "chosen_minus_base_all": [
+  0.0,
+  0.026,
+  0.05
+ ],
+ "chosen_minus_base_both_sides": [
+  0.021,
+  0.058,
+  0.092
+ ],
+ "chosen_minus_nn_all": [
+  -0.006,
+  -0.002,
+  0.0
+ ],
+ "chosen_minus_nn_both_sides": [
+  -0.011,
+  -0.005,
+  0.001
+ ]
+}

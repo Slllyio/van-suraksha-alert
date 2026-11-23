@@ -1,0 +1,44 @@
+{
+ "all features": {
+  "auc": 0.9135,
+  "captured_at_persistence_count": 0.5943,
+  "persistence": 0.4769,
+  "n_feats": 46
+ },
+ "no weather": {
+  "auc": 0.9143,
+  "captured_at_persistence_count": 0.5959,
+  "persistence": 0.4769,
+  "n_feats": 41
+ },
+ "no momentum/axis": {
+  "auc": 0.9139,
+  "captured_at_persistence_count": 0.5942,
+  "persistence": 0.4769,
+  "n_feats": 41
+ },
+ "no landscape": {
+  "auc": 0.9139,
+  "captured_at_persistence_count": 0.5914,
+  "persistence": 0.4769,
+  "n_feats": 28
+ },
+ "no dryness": {
+  "auc": 0.9108,
+  "captured_at_persistence_count": 0.5826,
+  "persistence": 0.4769,
+  "n_feats": 43
+ },
+ "no FRP/time": {
+  "auc": 0.9124,
+  "captured_at_persistence_count": 0.591,
+  "persistence": 0.4769,
+  "n_feats": 37
+ },
+ "distances and lead only": {
+  "auc": 0.9013,
+  "captured_at_persistence_count": 0.5508,
+  "persistence": 0.4769,
+  "n_feats": 6
+ }
+}

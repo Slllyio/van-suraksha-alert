@@ -1,0 +1,90 @@
+{
+ "divisions": 87,
+ "events": 54033,
+ "beat_episodes": 46079,
+ "new_events": 8379,
+ "history": {
+  "new_strict": 30.5,
+  "new_loose": 31.0,
+  "not_new_strict": 40.0,
+  "cell": 42.5,
+  "events_strict": 38.5,
+  "events_loose": 39.3,
+  "beats_strict": 62.4,
+  "beats_loose": 62.5,
+  "covered_pct_mean_div": 22.2,
+  "beats_per_range_day": 3.84
+ },
+ "scar_same": {
+  "new_strict": 27.7,
+  "new_loose": 28.1,
+  "not_new_strict": 35.5,
+  "cell": 37.7,
+  "events_strict": 34.3,
+  "events_loose": 35.1,
+  "beats_strict": 55.5,
+  "beats_loose": 55.6,
+  "covered_pct_mean_div": 22.0,
+  "beats_per_range_day": 3.65
+ },
+ "scar_all": {
+  "new_strict": 26.2,
+  "new_loose": 26.5,
+  "not_new_strict": 34.8,
+  "cell": 37.3,
+  "events_strict": 33.5,
+  "events_loose": 34.2,
+  "beats_strict": 54.0,
+  "beats_loose": 54.1,
+  "covered_pct_mean_div": 21.5,
+  "beats_per_range_day": 3.53
+ },
+ "hist_scar": {
+  "new_strict": 26.2,
+  "new_loose": 26.5,
+  "not_new_strict": 35.6,
+  "cell": 39.2,
+  "events_strict": 34.2,
+  "events_loose": 34.9,
+  "beats_strict": 55.4,
+  "beats_loose": 55.4,
+  "covered_pct_mean_div": 20.4,
+  "beats_per_range_day": 3.44
+ },
+ "cal_history": {
+  "new_strict": 27.1,
+  "new_loose": 27.6,
+  "not_new_strict": 49.2,
+  "cell": 48.9,
+  "events_strict": 45.7,
+  "events_loose": 46.6,
+  "beats_strict": 59.4,
+  "beats_loose": 60.2,
+  "covered_pct_mean_div": 17.1,
+  "beats_per_range_day": 2.59
+ },
+ "cal_scar_all": {
+  "new_strict": 25.4,
+  "new_loose": 25.9,
+  "not_new_strict": 44.7,
+  "cell": 44.3,
+  "events_strict": 41.7,
+  "events_loose": 42.5,
+  "beats_strict": 55.2,
+  "beats_loose": 56.1,
+  "covered_pct_mean_div": 17.8,
+  "beats_per_range_day": 2.67
+ },
+ "cal_hist_scar": {
+  "new_strict": 21.6,
+  "new_loose": 22.0,
+  "not_new_strict": 39.4,
+  "cell": 37.3,
+  "events_strict": 36.7,
+  "events_loose": 37.5,
+  "beats_strict": 41.9,
+  "beats_loose": 43.3,
+  "covered_pct_mean_div": 14.0,
+  "beats_per_range_day": 1.71
+ }
+}

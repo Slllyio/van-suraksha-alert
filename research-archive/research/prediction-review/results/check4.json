@@ -1,0 +1,28 @@
+{
+ "loso": {
+  "fixed5_per_beat": 30.0,
+  "same_470_sanctuary_wide_flat": 37.5,
+  "calendar_total_sanctuary_wide": 49.7,
+  "calendar_total_random_cells": 30.0
+ },
+ "test2526": {
+  "fixed5_per_beat": 29.3,
+  "same_470_sanctuary_wide_flat": 36.8,
+  "calendar_total_sanctuary_wide": 52.1,
+  "calendar_total_random_cells": 29.8
+ },
+ "loso_rotation": {
+  "celldays_fixed5": 30.0,
+  "celldays_fixed5_no_repeat_2d": 23.8,
+  "windows_caught_fixed5": 41.1,
+  "windows_caught_no_repeat_2d": 69.2,
+  "windows_caught_random": 61.6
+ },
+ "test2526_rotation": {
+  "celldays_fixed5": 29.3,
+  "celldays_fixed5_no_repeat_2d": 23.0,
+  "windows_caught_fixed5": 39.2,
+  "windows_caught_no_repeat_2d": 66.2,
+  "windows_caught_random": 51.9
+ }
+}

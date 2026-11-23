@@ -1,0 +1,43 @@
+{
+ "ha": {
+  "pre-season only": {
+   "P1": 0.4883,
+   "P2": 0.4103,
+   "P3": 0.4
+  },
+  "with in-season dryness": {
+   "P1": 0.4659,
+   "P2": 0.4014,
+   "P3": 0.4186
+  }
+ },
+ "gain_by_phase": {
+  "P1": -0.0223,
+  "P2": -0.0089,
+  "P3": 0.0186
+ },
+ "gain_by_region": {
+  "Chhatarpur": -0.009,
+  "Dewas": 0.0337,
+  "Dindori": 0.0053,
+  "Khandwa": 0.0391,
+  "Panna_TR": 0.0294,
+  "Satpura_TR": -0.0663,
+  "South_Balaghat": -0.0352,
+  "South_Betul": -0.0259,
+  "South_Chhindwara": 0.0224,
+  "Umaria": -0.0274
+ },
+ "gain_by_region_late": {
+  "Chhatarpur": -0.0028,
+  "Dewas": 0.0834,
+  "Dindori": -0.0205,
+  "Khandwa": 0.0709,
+  "Panna_TR": 0.108,
+  "Satpura_TR": -0.0658,
+  "South_Balaghat": 0.0152,
+  "South_Betul": 0.0,
+  "South_Chhindwara": 0.0566,
+  "Umaria": -0.0537
+ }
+}

@@ -1,0 +1,52 @@
+kind,method,variant,subset,photos,acc_ref,acc,gain,gain_lo,gain_hi,auc_ref,auc,auc_dist_ref,auc_dist
+reconstruction,blend,a_T_real,all photos,340,0.8443,0.8415,-0.0028,-0.0062,-0.0002,0.7227,0.7245,,
+reconstruction,blend,a_T_real,photos where MODIS adds a look,45,0.8646,0.8434,-0.0212,-0.0466,-0.0033,0.7615,0.773,,
+reconstruction,blend,a_T_real,look before AND after,171,0.8272,0.8216,-0.0056,-0.0122,-0.0007,0.8167,0.8211,,
+reconstruction,blend,a_M_real,all photos,340,0.8443,0.8372,-0.0072,-0.0124,-0.0029,0.7227,0.7292,,
+reconstruction,blend,a_M_real,photos where MODIS adds a look,91,0.8255,0.7987,-0.0268,-0.0444,-0.0122,0.7356,0.7551,,
+reconstruction,blend,a_M_real,look before AND after,171,0.8272,0.8129,-0.0143,-0.0248,-0.0065,0.8167,0.8211,,
+reconstruction,blend,a_M_small,all photos,340,0.8443,0.8441,-0.0003,-0.0011,0.0004,0.7227,0.7305,,
+reconstruction,blend,a_M_small,photos where MODIS adds a look,91,0.8255,0.8245,-0.001,-0.0043,0.0018,0.7356,0.7589,,
+reconstruction,blend,a_M_small,look before AND after,171,0.8272,0.8266,-0.0005,-0.0023,0.0008,0.8167,0.8188,,
+reconstruction,blend,a2_M_real,all photos,340,0.8443,0.8368,-0.0075,-0.0156,-0.0004,0.7227,0.7324,,
+reconstruction,blend,a2_M_real,photos where MODIS adds a look,130,0.8509,0.8312,-0.0197,-0.0417,-0.0026,0.7504,0.7733,,
+reconstruction,blend,a2_M_real,look before AND after,171,0.8272,0.8181,-0.0091,-0.018,-0.0001,0.8167,0.8259,,
+reconstruction,blend,a2_M_small,all photos,340,0.8443,0.8421,-0.0022,-0.0089,0.0019,0.7227,0.7325,,
+reconstruction,blend,a2_M_small,photos where MODIS adds a look,130,0.8509,0.845,-0.0059,-0.0228,0.0049,0.7504,0.7735,,
+reconstruction,blend,a2_M_small,look before AND after,171,0.8272,0.8286,0.0014,-0.001,0.0043,0.8167,0.8217,,
+reconstruction,blend,b_T_real,all photos,340,0.8443,0.8384,-0.0059,-0.0138,-0.0007,0.7227,0.7345,,
+reconstruction,blend,b_T_real,photos where MODIS adds a look,84,0.8488,0.8248,-0.024,-0.0555,-0.0034,0.7507,0.7913,,
+reconstruction,blend,b_T_real,look before AND after,171,0.8272,0.8213,-0.0059,-0.013,-0.0002,0.8167,0.8228,,
+reconstruction,blend,b_M_real,all photos,340,0.8443,0.8369,-0.0075,-0.0158,-0.0009,0.7227,0.7375,,
+reconstruction,blend,b_M_real,photos where MODIS adds a look,165,0.8518,0.8364,-0.0154,-0.0328,-0.0013,0.7469,0.7739,,
+reconstruction,blend,b_M_real,look before AND after,171,0.8272,0.8182,-0.009,-0.0191,0.0019,0.8167,0.8248,,
+reconstruction,blend,b_M_small,all photos,340,0.8443,0.8424,-0.0019,-0.009,0.0022,0.7227,0.7412,,
+reconstruction,blend,b_M_small,photos where MODIS adds a look,165,0.8518,0.8478,-0.004,-0.019,0.0047,0.7469,0.7808,,
+reconstruction,blend,b_M_small,look before AND after,171,0.8272,0.8292,0.002,-0.0006,0.0052,0.8167,0.8284,,
+reconstruction,nn,a_M_real,all photos,340,0.844,0.8421,-0.0019,-0.004,-0.0,0.6996,0.7072,,
+reconstruction,nn,a_M_real,photos where MODIS adds a look,91,0.8281,0.8211,-0.0071,-0.014,-0.0004,0.7197,0.7426,,
+reconstruction,nn,a_M_real,look before AND after,171,0.8266,0.8226,-0.004,-0.0082,-0.0004,0.7716,0.7814,,
+reconstruction,nn,a_M_small,all photos,340,0.844,0.8442,0.0002,-0.0002,0.0006,0.6996,0.7067,,
+reconstruction,nn,a_M_small,photos where MODIS adds a look,91,0.8281,0.8287,0.0006,-0.0007,0.0021,0.7197,0.741,,
+reconstruction,nn,a_M_small,look before AND after,171,0.8266,0.8269,0.0003,-0.0004,0.0012,0.7716,0.7782,,
+reconstruction,nn,a2_M_real,all photos,340,0.844,0.8404,-0.0036,-0.0106,0.0011,0.6996,0.7057,,
+reconstruction,nn,a2_M_real,photos where MODIS adds a look,130,0.8542,0.8448,-0.0095,-0.0283,0.0036,0.7331,0.7475,,
+reconstruction,nn,a2_M_real,look before AND after,171,0.8266,0.825,-0.0015,-0.0067,0.0037,0.7716,0.7795,,
+reconstruction,nn,b_M_real,all photos,340,0.844,0.8389,-0.0052,-0.0132,0.0013,0.6996,0.707,,
+reconstruction,nn,b_M_real,photos where MODIS adds a look,165,0.8552,0.8446,-0.0107,-0.0268,0.0033,0.7309,0.7444,,
+reconstruction,nn,b_M_real,look before AND after,171,0.8266,0.8219,-0.0046,-0.0132,0.004,0.7716,0.7802,,
+reconstruction,nn,b_M_small,all photos,340,0.844,0.8422,-0.0019,-0.0083,0.0024,0.6996,0.712,,
+reconstruction,nn,b_M_small,photos where MODIS adds a look,165,0.8552,0.8514,-0.0039,-0.0175,0.005,0.7309,0.7535,,
+reconstruction,nn,b_M_small,look before AND after,171,0.8266,0.8287,0.0021,-0.0008,0.0058,0.7716,0.7829,,
+forecast,base,fc_a_real,all photos,245,0.7816,0.766,-0.0156,-0.0281,-0.0046,0.7672,0.7609,0.775,0.765
+forecast,base,fc_a_real,photos where MODIS adds a look,90,0.7684,0.7259,-0.0425,-0.0724,-0.0118,0.7365,0.7213,0.7875,0.7636
+forecast,base,fc_a_real,look before AND after,171,0.7645,0.7476,-0.0169,-0.0309,-0.0053,0.7915,0.7841,0.7993,0.7871
+forecast,base,fc_a_small,all photos,245,0.7816,0.7799,-0.0017,-0.0051,0.0015,0.7672,0.7683,0.775,0.7751
+forecast,base,fc_a_small,photos where MODIS adds a look,90,0.7684,0.7639,-0.0045,-0.0142,0.0044,0.7365,0.7391,0.7875,0.7877
+forecast,base,fc_a_small,look before AND after,171,0.7645,0.7634,-0.0011,-0.0047,0.0027,0.7915,0.7907,0.7993,0.7997
+forecast,base,fc_b_real,all photos,245,0.7816,0.7629,-0.0187,-0.0327,-0.0057,0.7672,0.7602,0.775,0.7546
+forecast,base,fc_b_real,photos where MODIS adds a look,104,0.7694,0.7254,-0.044,-0.0759,-0.0137,0.7398,0.7254,0.7841,0.7424
+forecast,base,fc_b_real,look before AND after,171,0.7645,0.7432,-0.0213,-0.0381,-0.006,0.7915,0.7832,0.7993,0.7738
+forecast,base,fc_b_small,all photos,245,0.7816,0.7801,-0.0015,-0.0053,0.0023,0.7672,0.7687,0.775,0.7739
+forecast,base,fc_b_small,photos where MODIS adds a look,104,0.7694,0.7658,-0.0036,-0.0122,0.0047,0.7398,0.7429,0.7841,0.782
+forecast,base,fc_b_small,look before AND after,171,0.7645,0.7636,-0.0009,-0.0048,0.0036,0.7915,0.7912,0.7993,0.7982

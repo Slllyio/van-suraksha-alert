@@ -1,0 +1,99 @@
+{
+ "base": {
+  "loso": {
+   "real94_recall@5": 0.2977,
+   "real94_recall@10": 0.4896,
+   "real94_recall@5_2017": 0.2984,
+   "real94_recall@5_2018": 0.3164,
+   "real94_recall@5_2019": 0.318,
+   "real94_recall@5_2020": 0.2484,
+   "real94_recall@5_2021": 0.2973,
+   "real94_recall@5_2022": 0.2829,
+   "real94_recall@5_2023": 0.2718,
+   "real94_recall@5_2024": 0.3186
+  },
+  "test": {
+   "real94_recall@5": 0.287,
+   "real94_recall@10": 0.4856,
+   "real94_recall@5_2025": 0.2809,
+   "real94_recall@5_2026": 0.2936
+  },
+  "top_gain": {
+   "s2d_nbr_chg30": 219434.0,
+   "doy": 216046.0,
+   "prior": 167149.0,
+   "rh3": 127929.0,
+   "s2d_nbr_last": 118978.0,
+   "aoi_season": 117125.0,
+   "s2d_ndvi_chg30": 110021.0,
+   "p30": 106679.0,
+   "RH2M": 105014.0,
+   "nb2_season": 102091.0,
+   "s2d_ndvi_mean30": 80854.0,
+   "aoi_new7": 70082.0,
+   "s2d_nbr_mean30": 62866.0,
+   "d_built": 58272.0,
+   "dist_track": 56760.0
+  }
+ },
+ "bag025": {
+  "loso": {
+   "real94_recall@5": 0.3016,
+   "real94_recall@10": 0.4949,
+   "real94_recall@5_2017": 0.2958,
+   "real94_recall@5_2018": 0.3207,
+   "real94_recall@5_2019": 0.3191,
+   "real94_recall@5_2020": 0.2637,
+   "real94_recall@5_2021": 0.3149,
+   "real94_recall@5_2022": 0.2929,
+   "real94_recall@5_2023": 0.267,
+   "real94_recall@5_2024": 0.3182
+  },
+  "test": {
+   "real94_recall@5": 0.2883,
+   "real94_recall@10": 0.4917,
+   "real94_recall@5_2025": 0.2837,
+   "real94_recall@5_2026": 0.2931
+  }
+ },
+ "bag025_within": {
+  "loso": {
+   "real94_recall@5": 0.3038,
+   "real94_recall@10": 0.4979,
+   "real94_recall@5_2017": 0.3011,
+   "real94_recall@5_2018": 0.326,
+   "real94_recall@5_2019": 0.3165,
+   "real94_recall@5_2020": 0.2611,
+   "real94_recall@5_2021": 0.3128,
+   "real94_recall@5_2022": 0.2972,
+   "real94_recall@5_2023": 0.2689,
+   "real94_recall@5_2024": 0.3186
+  },
+  "test": {
+   "real94_recall@5": 0.2973,
+   "real94_recall@10": 0.4941,
+   "real94_recall@5_2025": 0.2956,
+   "real94_recall@5_2026": 0.2992
+  }
+ },
+ "bag10": {
+  "loso": {
+   "real94_recall@5": 0.3028,
+   "real94_recall@10": 0.4957,
+   "real94_recall@5_2017": 0.2981,
+   "real94_recall@5_2018": 0.3251,
+   "real94_recall@5_2019": 0.3201,
+   "real94_recall@5_2020": 0.2608,
+   "real94_recall@5_2021": 0.3098,
+   "real94_recall@5_2022": 0.2931,
+   "real94_recall@5_2023": 0.2721,
+   "real94_recall@5_2024": 0.3169
+  },
+  "test": {
+   "real94_recall@5": 0.2908,
+   "real94_recall@10": 0.489,
+   "real94_recall@5_2025": 0.2841,
+   "real94_recall@5_2026": 0.2981
+  }
+ }
+}

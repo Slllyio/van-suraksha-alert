@@ -1,0 +1,191 @@
+{
+ "n_looks": {
+  "o_viirs_D": 766,
+  "o_viirs_N": 488,
+  "o_terra_D": 50,
+  "o_aqua_D": 67
+ },
+ "n_fires": 318,
+ "n_scenes": 370,
+ "model_clock": {
+  "o_viirs_D": {
+   "coef": -306.8,
+   "lo": -393.0,
+   "hi": -223.9
+  },
+  "o_viirs_N": {
+   "coef": -228.2,
+   "lo": -321.1,
+   "hi": -139.1
+  },
+  "o_terra_D": {
+   "coef": 0.9,
+   "lo": -308.0,
+   "hi": 400.8
+  },
+  "o_aqua_D": {
+   "coef": -147.6,
+   "lo": -482.1,
+   "hi": 226.2
+  },
+  "pixc": {
+   "coef": -0.3,
+   "lo": -0.7,
+   "hi": 0.1
+  },
+  "dC": {
+   "coef": 15.6,
+   "lo": 9.2,
+   "hi": 21.9
+  }
+ },
+ "model_clock_viirs_only": {
+  "o_viirs_D": {
+   "coef": -306.7,
+   "lo": -387.7,
+   "hi": -214.9
+  },
+  "o_viirs_N": {
+   "coef": -228.0,
+   "lo": -320.7,
+   "hi": -143.3
+  },
+  "pixc": {
+   "coef": -0.3,
+   "lo": -0.8,
+   "hi": 0.3
+  },
+  "dC": {
+   "coef": 15.6,
+   "lo": 9.2,
+   "hi": 21.4
+  }
+ },
+ "model_day_night_viirs_only": {
+  "o_viirs_D": {
+   "coef": -313.2,
+   "lo": -535.7,
+   "hi": -79.5
+  },
+  "o_viirs_N": {
+   "coef": -173.6,
+   "lo": -281.5,
+   "hi": -58.5
+  },
+  "pixc": {
+   "coef": -0.3,
+   "lo": -0.8,
+   "hi": 0.4
+  },
+  "dday": {
+   "coef": 29.9,
+   "lo": -46.0,
+   "hi": 105.4
+  },
+  "dnight": {
+   "coef": 1.2,
+   "lo": -78.6,
+   "hi": 78.8
+  }
+ },
+ "held_out_speed": {
+  "test_odd": {
+   "dC": {
+    "coef": 16.4,
+    "lo": 8.7,
+    "hi": 24.2
+   }
+  },
+  "test_even": {
+   "dC": {
+    "coef": 14.6,
+    "lo": 5.5,
+    "hi": 24.1
+   }
+  }
+ },
+ "old_test_power": {
+  "looks": 415,
+  "fires": 218,
+  "se_m": 31.2,
+  "se_m_h": 11.4,
+  "power_to_tell_5_from_30_m_h": 0.59,
+  "note": "the old test compares a coarse CENTRE with the 30 m FRONT, so the edge offset o adds to p; it cannot give a speed without o"
+ },
+ "bracket": {
+  "scenes": 117,
+  "fires": 104,
+  "p_before": {
+   "mean": -236.2,
+   "lo": -357.6,
+   "hi": -120.2
+  },
+  "p_after": {
+   "mean": -70.7,
+   "lo": -210.7,
+   "hi": 59.4
+  },
+  "mean_viirs_shift_m": {
+   "mean": 165.5,
+   "lo": -34.6,
+   "hi": 334.5
+  },
+  "mean_gap_h": 11.58,
+  "viirs_speed_m_h": {
+   "mean": 14.8,
+   "lo": -0.1,
+   "hi": 29.2
+  },
+  "clock_fraction_elapsed_at_H": 0.55,
+  "median_position_fraction_of_H": 0.61
+ },
+ "front_advance_30m": {
+  "pairs": 62,
+  "fires": 58,
+  "median_gap_h": 48.0,
+  "nearest_hot_pixel_advance": {
+   "m_h": 24.0,
+   "lo": 20.0,
+   "hi": 28.7,
+   "n": 62
+  },
+  "centre_outward": {
+   "m_h": -5.8,
+   "lo": -15.1,
+   "hi": 5.0,
+   "n": 38
+  },
+  "by_gap": {
+   "12-36 h": {
+    "m_h": 37.9,
+    "lo": 25.4,
+    "hi": 57.9,
+    "n": 62
+   },
+   "36-60 h": {
+    "m_h": 38.7,
+    "lo": 26.8,
+    "hi": 51.8,
+    "n": 62
+   },
+   "60-100 h": {
+    "m_h": 16.5,
+    "lo": 9.6,
+    "hi": 23.2,
+    "n": 62
+   },
+   "100-150 h": {
+    "m_h": 14.9,
+    "lo": 9.4,
+    "hi": 20.1,
+    "n": 62
+   }
+  }
+ },
+ "same_day_s2_landsat": {
+  "n": 39,
+  "minutes_apart_median": 4.0,
+  "centre_diff_median_m": 85,
+  "landsat_px_to_nearest_s2_px_median_m": 28
+ }
+}

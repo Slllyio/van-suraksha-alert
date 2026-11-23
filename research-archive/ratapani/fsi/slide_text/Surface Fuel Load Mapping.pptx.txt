@@ -1,0 +1,635 @@
+
+=== Slide 1 ===
+An assessment of surface fuel load using remote sensing and field-based enumerations
+Sunil Chandra, PhD
+Sunilchandra.iitr@gmail.com
+
+=== Slide 2 ===
+2
+What constitutes the surface fuel load and its impact…?
+Surface fuel load studies measure the dead and live biomass on the forest floor—such as litter, duff, grass, shrubs, and downed wood. 
+
+Dry biomass that includes leaves, fallen twigs, dead wood and other surface material serves as the fuel for fire trigger and spread
+
+Dry and wet biomass contribute differently and have varying role in fire trigger and spread
+
+=== Slide 3 ===
+3
+Necessity of estimation of Surface Fuel Load…?
+As pe the latest study carried out by FSI, an estimated 93% forest fire(low intensity fires) originate from the surface floor
+Dry biomass that includes leaves, fallen twigs, dead wood and other surface material serves as the fuel for fire trigger, intensity and spread
+Forest species vulnerable to fires pose greater risk causing multiple fire outbreaks
+
+Integrated fire Management(IFM) globally involves five elements(5 R’s):
+      Review and Analysis,
+      Risk reduction,
+      Readiness,
+      Response, 
+      Recovery.
+
+=== Slide 4 ===
+Forest  Fire Scenario in India
+Most fires are man-made (intentional and unintentional)
+NTFP collection, pasture burning, shifting cultivation, encroachment, Tendu Leaves, Mahua collection etc.
+In Uttarakhand- primarily caused by people to attain fresh grass for fodder under pine dominated vegetation
+Most fires are ground fires affecting the ground vegetation and lower storey
+Lack of modern fire fighting methods; Mostly put out by state forest departments with the help of locals
+Many areas are annually affected in Western Himalayas, North Eastern States, Central highlands 
+Pine Forests, deciduous forest and some other types are mostly affected 
+In India, fires have short and long lasting impact on forests and cause incalculable loss to forest and biodiversity
+     Exception: 
+Some studies globally have emphasized the evolutionary role of fires where many plant species have adopted to fire regimes, and fire became a critical factor in their survival and reproduction
+NOTES: Space technology can’t work alone, we need good ICT to take it to users
+
+=== Slide 5 ===
+According to  the  India State of Forest Report 2021, the estimated fire-prone area under extremely, very high, high and moderately fire prone is 2.81%, 7.85% and 11.61% and 13.19% respectively
+
+Total forest fire-prone area within the forest cover is 35.46% (ISFR 2021)
+
+The extent of forest area annually experiencing surface fire which affects ground flora and organic matter is estimated to be 3.69% of the recorded forest area. (ISFR 2013)
+Forest Fires in India - Some Facts
+
+=== Slide 6 ===
+Forest cover situation in the country
+Satellite Image
+Forest Cover Map based on the interpretation of Satellite Image
+*As per India State of Forest Report (ISFR 2023), 21.76% of total Geographical area is covered by forest
+
+=== Slide 7 ===
+[image]
+[image]
+[image]
+[image]
+Surface fires in different forest stratum
+
+=== Slide 8 ===
+[image]
+Map Showing SNPP-VIIRS Sensor detections
+
+=== Slide 9 ===
+Corelation between burnt scar, vulnerable forest types and fuel load
+9
+10/14/2026
+Add a footer
+
+=== Slide 10 ===
+10
+[image]
+Burnt Scar Map
+S.No. | State/UT | Severely Burnt | Moderately Burnt | Low Burnt | Total Burnt (in sq km)
+1 | Andhra Pradesh | 0.00 | 267.63 | 5,019.13 | 5,286.76
+2 | Arunachal Pradesh | 0.02 | 13.15 | 112.86 | 126.03
+3 | Assam | 0.03 | 20.47 | 398.70 | 419.20
+4 | Bihar | 0.00 | 19.62 | 663.12 | 682.74
+5 | Chhattisgarh | 0.01 | 438.68 | 3,373.59 | 3,812.28
+6 | Delhi | 0.00 | 0.00 | 0.00 | 0.00
+7 | Goa | 0.00 | 0.00 | 0.45 | 0.45
+8 | Gujarat | 0.00 | 0.25 | 408.36 | 408.61
+9 | Haryana | 0.23 | 4.32 | 40.08 | 44.63
+10 | Himachal Pradesh | 0.76 | 152.26 | 630.09 | 783.11
+11 | Jharkhand | 0.35 | 38.95 | 1,047.16 | 1,086.46
+12 | Karnataka | 0.00 | 363.61 | 1,724.74 | 2,088.35
+13 | Kerala | 0.01 | 69.10 | 139.85 | 208.96
+14 | Madhya Pradesh | 1.13 | 38.14 | 3,132.86 | 3,172.13
+15 | Maharashtra | 6.36 | 10.24 | 4,078.44 | 4,095.04
+16 | Manipur | 0.24 | 73.08 | 211.88 | 285.20
+17 | Meghalaya | 0.12 | 65.27 | 398.56 | 463.95
+18 | Mizoram | 3.98 | 42.77 | 197.01 | 243.76
+19 | Nagaland | 0.48 | 35.83 | 125.46 | 161.77
+20 | Odisha | 0.01 | 108.49 | 2,355.24 | 2,463.74
+21 | Punjab | 0.01 | 6.36 | 34.18 | 40.55
+22 | Rajasthan | 0.01 | 0.53 | 423.93 | 424.47
+23 | Sikkim | 0.00 | 0.04 | 2.04 | 2.08
+24 | Tamil Nadu | 0.00 | 183.48 | 1,139.26 | 1,322.74
+25 | Telangana | 0.00 | 47.39 | 3,935.89 | 3,983.28
+26 | Tripura | 0.35 | 45.04 | 145.08 | 190.47
+27 | Uttar Pradesh | 0.15 | 0.74 | 256.99 | 257.88
+28 | Uttarakhand | 1.02 | 177.97 | 1,629.91 | 1,808.90
+29 | West Bengal | 0.09 | 23.22 | 236.62 | 259.93
+30 | A & N Islands | 0.00 | 0.00 | 0.00 | 0.00
+31 | Chandigarh | 0.00 | 0.00 | 0.00 | 0.00
+32 | DNH & DD | 0.00 | 0.00 | 0.00 | 0.00
+33 | Jammu & Kashmir | 0.19 | 22.45 | 416.22 | 438.86
+34 | Ladakh | 0.00 | 0.00 | 0.00 | 0.00
+35 | Lakshadweep | 0.00 | 0.00 | 0.00 | 0.00
+36 | Puducherry | 0.00 | 0.00 | 0.00 | 0.00
+  | Total | 15.55 | 2,269.08 | 32,277.70 | 34,562.33
+[image]
+
+=== Slide 11 ===
+[image]
+[image]
+Moist Peninsular Low Level Sal Forests
+Moist Peninsular Valley Sal Forests
+Moist Siwalik Sal Forest
+Moist Tarai Sal Forest
+Moist Teak Forest
+Moist Temperate Deciduous Forest
+Moist Temperate Deciduous Forest)
+Montane Bamboo Brakes
+Neoza Pine Forest (P.gerardiana)
+Nilgiri SubTropical hill Forest
+Northern Dry Mixed Deciduous Forest
+Olea cuspidata Scrub Forest
+Orissa Semi Evergreen Forest
+Rann Saline Thorn Forest
+Ravine Thorn Forest
+Reed Brakes (Ochalandra)
+Riparian Fringing Forest
+Secondary Dry Deciduous Forest
+Secondary Moist Bamboo Brakes
+Slightly Moist Teak Forest
+South Indian SubTropical Hill Savannah Woodland
+Southern Dry Mixed Deciduous Forest
+Southern Moist Mixed Deciduous Forest
+Southern Secondary Moist Mixed Deciduous Forest
+Southern Thorn Forest
+Sub-Himalayan Light Alluvial Semi-Evergreen Forest
+Terminalia-Duabanga
+Tirunelveli Semi Evergreen Forest
+Tropical Dry Evergreen Forest
+Upper or Himalayan Chir Pine Forest
+Very Dry Teak Forest
+West Coast Secondary Evergreen Dipterocarp Forest
+West Gangatic Moist Mixed Deciduous Forest
+West Himalayan Dry Juniper Forest (J.macropoda)
+West Himalayan Dry Temperate Deciduous
+West Himalayan High Level Dry Blue Pine Forest (P.wallichiana)
+Western Light Alluvial Plain Sal
+Western SubTropical Hill Forest
+Acacia senegal Forest
+Aegle Forest
+Anogeissus pendula Forest
+Assam Alluvial plains Semi-Evergreen Forest
+Assam SubTropical Pine Forest
+Assam SubTropical Pine Forest
+Babul Forest
+Ban Oak Forest (Q.incana)
+Bhabar-Dun Sal Forest
+Boswellia Forest
+Buk Oak Forest
+Butea Forest
+Cypress Forest
+Desert Thorn Forest
+Dry Bamboo Brake
+Dry broadleaved and Coniferous Forest (Q.ilex-P.gerardiana)
+Dry Deodar Forest
+Dry Peninsular Sal Forest
+Dry Plains Sal Forest
+Dry Red Sanders Bearing Forest
+Dry Savannah Forest
+Dry Siwalik Sal Forest
+Dry Teak Forest
+Dry Tropical Riverain Forest
+East Himalayan Mixed Coniferous Forest
+East Himalayan Moist Mixed Deciduous Forest
+East Himalayan Sal
+Eastern Himalayan Dry Temperate Coniferous Forest
+Eastern Sub-Montane Semi-Evergreen Forest
+Karnatak Umbrella Thorn Forest
+Khair Sissoo Forest
+Khasi Hill Sal
+Laterite Thorn Forest
+Lateritic Semi Evergreen Forest
+Low Level Blue Pine Forest
+Lower or Siwalik Chir Pine Forest
+Moist Bamboo Brakes
+Moist Peninsular High Level Sal Forests
+Vulnerable forest types
+(Vulnerable forest types in the country)
+
+=== Slide 12 ===
+12
+[image]
+Area (in km2)
+Surface Fuel Load Map
+(43.11%)
+
+=== Slide 13 ===
+13
+10/14/2026
+Add a footer
+Number of SNPP VIIRS detection during 2025-26
+STATE | Nov,2025-Jun,2026 | 
+ | MODIS | VIIRS
+ANDAMAN & NICOBAR Is. | 1 | 32
+ANDHRA PRADESH | 1353 | 14762
+ARUNACHAL PRADESH | 722 | 3322
+ASSAM | 1192 | 5578
+BIHAR | 173 | 1425
+CHANDIGARH | 0 | 1
+CHHATTISGARH | 1184 | 15802
+DADRA & NAGAR HAVELI,DAMAN & DIU | 3 | 25
+DELHI | 4 | 47
+GOA | 3 | 52
+GUJARAT | 391 | 3570
+HARYANA | 11 | 121
+HIMACHAL PRADESH | 293 | 3093
+JAMMU & KASHMIR | 77 | 1620
+JHARKHAND | 103 | 1648
+KARNATAKA | 775 | 4927
+KERALA | 97 | 642
+LADAKH | 3 | 42
+LAKSHADWEEP | 0 | 0
+MADHYA PRADESH | 2015 | 20692
+MAHARASHTRA | 1662 | 22225
+MANIPUR | 775 | 3986
+MEGHALAYA | 583 | 2763
+MIZORAM | 1172 | 3755
+NAGALAND | 359 | 2469
+ODISHA | 1245 | 14238
+PUDUCHERRY | 0 | 7
+PUNJAB | 86 | 157
+RAJASTHAN | 336 | 2798
+SIKKIM | 3 | 11
+TAMIL NADU | 197 | 1885
+TELANGANA | 1199 | 12611
+TRIPURA | 269 | 1358
+UTTAR PRADESH | 775 | 3302
+UTTARAKHAND | 655 | 6472
+WEST BENGAL | 255 | 2396
+TOTAL | 17971 | 157834
+
+=== Slide 14 ===
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+Remote Sensing data showing change in spectral value with dry season
+
+=== Slide 15 ===
+15
+Major challenge in Surface Fuel Load Estimation
+Major species account for different surface fuel load in different topographical conditions
+Identify and Mapping the spatial distribution of forest fuel loads with varying levels of combustible material
+Estimate State/UT wise surface fuel load in gram per square feet
+Assess the influence of slope and forest characteristics (type and cover) on fuel load accumulation
+
+=== Slide 16 ===
+Methodology for Surface Fuel Load Estimation
+16
+10/14/2026
+Add a footer
+
+=== Slide 17 ===
+17
+10/14/2026
+Add a footer
+Broad Objectives:
+Identify and Mapping the spatial distribution of forest fuel loads with varying levels of combustible material.
+Estimate State/UT wise surface fuel load in gram per square feet.
+Assess the influence of slope and forest characteristics (type and cover) on fuel load accumulation.
+
+=== Slide 18 ===
+Some studies and research carried out on surface fuel load in India
+Sub-Tropical Chir Pine (Pinus roxburghii) Forests: Concentrated heavily in the Himalayan foothills (like Uttarakhand and Himachal Pradesh), pine needle accumulation is the primary driver of intense surface fires. Studies show that mature pine stands experience extreme surface fuel build-up, with fuel loads varying radically by stand age—shifting the fire rate of spread (ROS) from linear to non-linear trajectories as the needle packing ratio compresses. 
+
+Tropical Moist Deciduous Forests: Research conducted in central Indian biodiversity hubs, such as the Achanakmar-Amarkantak Biosphere Reserve, evaluates fuel loads across high, medium, and low fire-frequency zones. These field studies quantify the absolute pre-fire and post-fire mass of duff and wood litter using localized 1m × 1m sampling quadrats to trace precisely how much fuel is consumed per burn.
+18
+10/14/2026
+Add a footer
+
+=== Slide 19 ===
+Some studies and research carried out on surface fuel load in India…
+Broad Methodologies used in India for estimation  
+  of fuel load
+Field Sampling: Laying stratified random sample plots across distinct forest types to collect, oven-dry, and weigh total surface biomass.
+Satellite Data Fusion: Integrating spaceborne sensors (such as VIIRS, Sentinel-3 SLSTR, and Sentinel-2) with topography parameters (slope and aspect) to generate baseline geospatial models of fine surface fuels over mountainous terrain.
+19
+10/14/2026
+Add a footer
+
+=== Slide 20 ===
+The primary mathematical models, field equations, and operational workflows deployed in this specific region provide a structured technical breakdown:
+1. Field Measurement & Biomass Conversion Equations
+Indian researchers generally calculate the total oven-dry surface fuel load (SFL) by categories: 1-hour fuels (leaves/needles), 10-hour fuels (twigs < 0.7 cm), and 100-hour fuels (branches 0.7 to 2.5 cm).
+The field collection uses standard 1m × 1m nested quadrats. The general equation used to scale sample weight to fuel load per hectare is:
+\(\text{Fuel\ Load\ (Mg/ha\ or\ tons/ha)}=\frac{W_{\text{dry}}\times 10,000}{A\times 10^{6}}\)
+Where:
+    (W_{\text{dry}}\) = Total oven-dry weight of the collected sample category (grams)
+    A = Plot quadrat area (m², usually 1m²)
+   10,000 = Conversion factor from m² to hectares
+   10⁶ = Conversion factor from grams to Megagrams (metric tons)
+20
+10/14/2026
+Add a footer
+Some studies and research carried out on surface fuel load in India…
+
+=== Slide 21 ===
+Stand-Age Biomass Allocation
+In sub-tropical Chir Pine forests, the accumulation of fine surface fuel varies heavily by stand maturity (Young, Middle-aged, and Mature). Researchers use non-linear regression equations to model how stand variables like DBH (Diameter at Breast Height) and tree height predict the volume of seasonal litterfall.
+2. Operational Fire Behavior & Combustion Dynamics
+When analyzing fire spread, static assumptions about fuel fail because real-world burning is heavily weather-dependent. Recent studies in the Indian Himalayan region utilize a meta-regression framework to compute Burn Efficiency (BE) and post-combustion remnants. 
+A critical mass-balance equation derived from open-air combustion trials predicts the remaining hazardous fuel weight:
+\(\text{Post-Combustion\ Residue\ Mass\ (g)}=\beta _{0}+\beta _{1}(\text{Pre-Combustion\ Fuel\ Load})+\epsilon \)
+Empirical trials indicate that within the dry, pre-monsoon window (May–June), the mean Burn Efficiency (BE) of pine needles hovers around 70.76%. However, the remaining ~29% converts into charcoal and ash residue, which drastically alters soil chemistry and long-term ground fuel packing ratios.
+21
+10/14/2026
+Add a footer
+Some studies and research carried out on surface fuel load in India…
+
+=== Slide 22 ===
+Data Used in the present study
+Surface fuel load data from field
+Ground Truthing 
+National Forest Inventory(NFI FSI)
+Collateral Data
+Forest Cover Map (FSI)-using Sentinel-2A data
+Forest Type Map (FSI)- Remote Sensing and grid based GIS based 
+Slope (SRTM 30mts)
+Near Real Time and Large Forest Fire Monitoring Data
+22
+
+=== Slide 23 ===
+23
+10/14/2026
+Add a footer
+Survey Coverage
+Pan-India field surveys across diverse slope gradients.
+Sites chosen in heterogeneous forest type groups for representative sampling.
+Sample Collection & Processing
+Surface fuel load samples collected at each site.
+Initial weight recorded
+Samples oven-dried for 3 hours at ~50 °C to remove moisture.
+Dry mass calculated from initial vs. final weights.
+Moisture content determined → total dry surface fuel load.
+
+=== Slide 24 ===
+24
+10/14/2026
+Add a footer
+Surface Fuel Load Data
+Field Surveys (Pan-India)
+Diverse slope gradients
+Heterogeneous forest types
+Methodology
+Sample collection → Initial weight
+Oven drying (3 hrs, 50° C)
+Dry mass & moisture content
+Sample Collection & Processing
+
+=== Slide 25 ===
+Detailed Methodology for estimation & mapping of Surface Fuel Load
+25
+10/14/2026
+
+=== Slide 26 ===
+26
+GIS Overlay
+Geo-spatial layers overlaid in a GIS environment
+Layers included:
+17 classes from Forest Type Map (FTM)
+4 classes from Forest Canopy Map (FCM)
+4 classes from slope data
+
+Total of 272 different strata for analysis of surface fuel load.
+Spatial Modeling
+
+=== Slide 27 ===
+Forest Cover Map
+Forest Type Group
+Slope
+Class | Description
+Very Dense Forest | All lands with tree canopy density ≥ 70%
+Moderately Dense Forest | All lands with tree canopy density ≥ 40% and ≤ 70%
+Open Forest | All lands with tree canopy density ≥ 10% and ≤ 40%
+Scrub | Forest lands with tree canopy density ≤ 10%
+Non-forest | Land not included in any of the above classes. 
+Class | Slope in degree
+1 | 0-10
+2 | 11-20
+3 | 21-30
+4 | >30
+[image]
+27
+
+=== Slide 28 ===
+Data Used and Methodology
+28
+Soil Type and Texture
+[image]
+[image]
+[image]
+
+=== Slide 29 ===
+Field data collection from the field for estimation of Surface Fuel Load
+Field surveys has been carried out across pan India to collect surface fuel load data in different slope gradients. Sites have been selected in areas with relatively heterogeneous forest type groups. From each location, a sample of the surface fuel load has been collected and its initial weight recorded.
+[image]
+[image]
+[image]
+Fixed the plot 1 feet X 1 feet
+Sample collection
+Plot after sample collection
+29
+
+=== Slide 30 ===
+30
+10/14/2026
+Lab processing of field sample data of surface fuel load
+[image]
+[image]
+[image]
+[image]
+[image]
+Preparing Fuel load sample
+Weight of Fuel load sample
+Crushing of Fuel load sample for Carbon
+Fuel load sample for Oven dry
+Fuel load sample in Oven dry machine
+
+=== Slide 31 ===
+31
+Estimation and Mapping of Surface Fuel Load
+[image]
+Class | Description
+Very High | > 60 g/ft²
+ High | 40 – 60 g/ft²
+Moderate | 20 – 40 g/ft²
+ Low | 0 – 20 g/ft²
+
+=== Slide 32 ===
+32
+Surface fuel load class | Area 
+(in km2)  | % of Total Digitized RFA/GW Area
+Very High Fuel Load | 15,382.54 | 2.08
+High Fuel Load | 61,159.29 | 8.25
+Moderate Fuel Load | 2,34,033.20 | 31.57
+Low Fuel Load | 2,32,302.43 | 31.34
+Total Fuel Load | 5,42,877.46 | 73.24
+Result: RFA/GW area in different fuel load classes
+The methodology analyzes major factors influencing fuel load accumulation in forest areas.
+Meteorological datasets could enhance precision in estimating surface fuel moisture but were excluded due to scale and interoperability limitations.
+Fuel load accumulation depends on forest type, climate, topography, and local practices.
+Single‑date imagery cannot capture dynamic variations accurately.
+Periodic sample collection is essential for improved precision.
+
+=== Slide 33 ===
+Case studies and field observations
+33
+10/14/2026
+Add a footer
+
+=== Slide 34 ===
+A special study to analyse the burnt scars, understand the reasons for severity, fuel load estimation and validation of risk zone models in the district of Naintal was carried out during the month of May, 2024.
+Objectives of the study:
+To carry out assessment of fire affected forest area in Nainital district using Sentinel-2 satellite data 
+Delineate burnt polygons using pre and post fire satellite images and fire detections observed using SNPP-VIIRS sensor data
+Classifying burnt polygons into different severity classes
+Validation of burnt polygons on the ground
+Preparation of report
+Forest fire burnt area assessment, fuel load estimation and analysis of risk zones in Nainital district, Uttarakhand- Case Study
+
+=== Slide 35 ===
+General observations: 
+Majority of forest fire observed are in the low burnt class
+Majority of fires in Nainital district have been observed in regions dominated by pure Chir-Pine (Pinus roxburghii) species.
+Other associated species with Chir-Pine such as Banj-Oak(Quercus leucotrichophora) has also been affected in moderately affected areas
+Few incidences of forest fires in the district are also observed in Sal dominated forest
+Major fire regions under moderate to severe category has been observed in steep slope classes(>45°)
+In some of the regions, the fire has moved to the other side of the metalled road (~ 20 feet wide) due to burning fuel load being swayed away by the strong winds and presence of dry biomass on steep slopes in the adjoining unburnt area.
+(in km2) | 
+Class | Area
+Severe |   0.41
+Moderate | 42.17
+Low | 362.84
+Total Affected Area | 405.42
+[image]
+Burnt severity map of Nainital district, Uttarakhand
+
+=== Slide 36 ===
+A special study to analyse the burnt scars, understand the reasons for severity, fuel load estimation and validation of risk zone models in the district of Nainital was carried out during the month of May, 2024.
+Objectives of the study:
+To carry out assessment of fire affected forest area in Nainital district using Sentinel-2 satellite data 
+Delineate burnt polygons using pre and post fire satellite images and fire detections observed using SNPP-VIIRS sensor data
+Classifying burnt polygons into different severity classes
+Validation of burnt polygons on the ground
+Preparation of report
+Field data collection in different forest stratum
+
+=== Slide 37 ===
+37
+10/14/2026
+Add a footer
+
+=== Slide 38 ===
+Photo 2- Observation taken for burnt and unburnt area near Garjiya , Ramnagar Forest Division
+Photo 3- Severe fire observed in Machhar beat of Mohan range,  Almora Forest Division
+Photo 4- Measurement of affected tree trunk at Bhowali-II beat, Bhowali range, Nainital Forest Division
+Photo 5- GPS location captured on a  RFA boundary at Sat Tal beat of Bhowali range
+Photo 6- Severe intensity fire originating from Naap khet observed at Sat Tal beat of Bhowali range
+Photo 1- Measurement of fuel depth in the adjacent unburnt area near Samaspur katabarh village of Ramnagar forest division
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+
+=== Slide 39 ===
+Photo 10- Documentation of field data, Pashya beat, South Gola Range
+Photo 11- Collection of field information at Pashya beat of South Gola Range
+Photo 12-Documentation of field data, Okhaldhunga beat ,Barhon range under Nainital forest division
+Photo 7- Information received through locals regarding recent forest fire near Bhumiyadhar village, Nainital forest division
+Photo 9- Burnt scar observed under the fresh fuel load accumulated in Devi Dhura range, Champawat Forest Division, Nainital District
+Photo 8- Moderate to severe fire observed near Bhumiyadhar village, Nainital forest division
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+
+=== Slide 40 ===
+Photo 13- Dousing of active fire by the SFD staff at Pashya beat of South Gola Range
+Photo 14- Collection of Perul by dwellers, Barhon range, as a measure to curtail incidents of forest fire
+Photo 17- Moderate to severe intensity fire observed near Kishanpur range, Tarai East forest division
+Photo 16-Mohan Range, Almora Forest Division
+Photo 15- Collection of Perul by dwellers, Barhon range, as a measure to curtail incidents of forest fire
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+Photo 18- Ramnagar Forest Division
+
+=== Slide 41 ===
+[image]
+Photo 19- Ramnagar Forest Division
+[image]
+Photo 21- Mohan Range, Almora Forest Division
+[image]
+Photo 22- Bhowali Range, Nainital Forest Division
+[image]
+Photo 20- Bhowali Range, Nainital Forest Division
+[image]
+Photo 23- Near Pituniya Village, Nainital Forest Division
+[image]
+Photo 24- Naina range, Nainital Forest Division
+
+=== Slide 42 ===
+[image]
+Active Fire
+[image]
+Photo 29- Pashya Beat, South Gola Range, 
+Nainital Forest Division
+[image]
+[image]
+[image]
+Photo 25- Active Forest Fire, Nainital Forest Division
+Photo 26- Active Forest Fire, Nainital Forest Division
+Photo 27- Active Forest Fire, Nainital Forest Division
+Photo 28- Active Forest Fire, Nainital Forest Division
+
+=== Slide 43 ===
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+Case Study of Sariska Tiger Reserve, March,2022
+43
+
+=== Slide 44 ===
+Pre-Fire Satellite Image(Sariska Tiger Reserve)
+
+=== Slide 45 ===
+Post-Fire Satellite Image
+
+=== Slide 46 ===
+Ground Verification of Fire Affected Areas(Sariska Tiger Reserve)
+[image]
+[image]
+[image]
+Field Photos of Low Burnt Areas
+Field Photos of Moderately Burnt Areas
+
+=== Slide 47 ===
+47
+Further activities…
+Period monitoring of wall‑to‑wall surface fuel load across the country
+Integrate ancillary datasets including national forest inventory data for refined estimation and monitoring.
+Mechanism for prediction of surface fuel load at division level based on forest types, temperature , average rainfall and other weather conditions on regular basis
+
+=== Slide 48 ===
+48
+[image]
+https://fsiforestfire.gov.in/Home/Publication
+
+=== Slide 49 ===
+[image]
+
+=== Slide 50 ===
+Thank You
+Forest fire team
+Forest Survey of India
+Ministry of Environment, Forest and Climate change 
+Kaulagarh road Dehradun -248195
+www.fsi.nic.in
+E-mail  forestfiremonitoring@gmail.com
+[image]
+[image]

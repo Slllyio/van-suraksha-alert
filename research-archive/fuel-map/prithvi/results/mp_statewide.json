@@ -1,0 +1,224 @@
+{
+ "cells": 128592,
+ "most_rate": 0.1353,
+ "by_region_rate": {
+  "Chhatarpur": 0.175,
+  "Dewas": 0.198,
+  "Dindori": 0.047,
+  "Khandwa": 0.2,
+  "Panna_TR": 0.066,
+  "Satpura_TR": 0.041,
+  "South_Balaghat": 0.169,
+  "South_Betul": 0.087,
+  "South_Chhindwara": 0.193,
+  "Umaria": 0.14
+ },
+ "A_region_held_out": {
+  "controls only": {
+   "mean_auc": 0.6927,
+   "by_region": {
+    "Khandwa": 0.674,
+    "Dewas": 0.674,
+    "South_Betul": 0.712,
+    "South_Chhindwara": 0.707,
+    "South_Balaghat": 0.733,
+    "Dindori": 0.615,
+    "Umaria": 0.764,
+    "Chhatarpur": 0.706,
+    "Panna_TR": 0.713,
+    "Satpura_TR": 0.629
+   }
+  },
+  "controls + forest type map": {
+   "mean_auc": 0.7037,
+   "by_region": {
+    "Khandwa": 0.685,
+    "Dewas": 0.682,
+    "South_Betul": 0.718,
+    "South_Chhindwara": 0.706,
+    "South_Balaghat": 0.731,
+    "Dindori": 0.633,
+    "Umaria": 0.782,
+    "Chhatarpur": 0.704,
+    "Panna_TR": 0.726,
+    "Satpura_TR": 0.67
+   }
+  },
+  "controls + raw HLS": {
+   "mean_auc": 0.7198,
+   "by_region": {
+    "Khandwa": 0.682,
+    "Dewas": 0.715,
+    "South_Betul": 0.733,
+    "South_Chhindwara": 0.702,
+    "South_Balaghat": 0.717,
+    "Dindori": 0.657,
+    "Umaria": 0.763,
+    "Chhatarpur": 0.736,
+    "Panna_TR": 0.693,
+    "Satpura_TR": 0.8
+   }
+  },
+  "controls + Prithvi": {
+   "mean_auc": 0.7356,
+   "by_region": {
+    "Khandwa": 0.699,
+    "Dewas": 0.682,
+    "South_Betul": 0.741,
+    "South_Chhindwara": 0.724,
+    "South_Balaghat": 0.721,
+    "Dindori": 0.691,
+    "Umaria": 0.781,
+    "Chhatarpur": 0.753,
+    "Panna_TR": 0.746,
+    "Satpura_TR": 0.818
+   }
+  },
+  "controls + raw HLS + Prithvi": {
+   "mean_auc": 0.7327,
+   "by_region": {
+    "Khandwa": 0.695,
+    "Dewas": 0.707,
+    "South_Betul": 0.736,
+    "South_Chhindwara": 0.721,
+    "South_Balaghat": 0.722,
+    "Dindori": 0.682,
+    "Umaria": 0.785,
+    "Chhatarpur": 0.744,
+    "Panna_TR": 0.707,
+    "Satpura_TR": 0.828
+   }
+  },
+  "gains": {
+   "controls + Prithvi vs controls only": {
+    "mean": 0.0429,
+    "regions_better": 9,
+    "of": 10
+   },
+   "controls + Prithvi vs controls + raw HLS": {
+    "mean": 0.0158,
+    "regions_better": 9,
+    "of": 10
+   },
+   "controls + raw HLS + Prithvi vs controls + raw HLS": {
+    "mean": 0.0129,
+    "regions_better": 9,
+    "of": 10
+   },
+   "controls + forest type map vs controls only": {
+    "mean": 0.011,
+    "regions_better": 7,
+    "of": 10
+   },
+   "controls + raw HLS vs controls only": {
+    "mean": 0.0271,
+    "regions_better": 6,
+    "of": 10
+   }
+  }
+ },
+ "B_block_held_out": {
+  "controls only": {
+   "mean_auc": 0.7055,
+   "by_region": {
+    "Khandwa": 0.668,
+    "Dewas": 0.689,
+    "South_Betul": 0.709,
+    "South_Chhindwara": 0.71,
+    "South_Balaghat": 0.719,
+    "Dindori": 0.637,
+    "Umaria": 0.765,
+    "Chhatarpur": 0.708,
+    "Panna_TR": 0.681,
+    "Satpura_TR": 0.769
+   }
+  },
+  "controls + forest type map": {
+   "mean_auc": 0.7111,
+   "by_region": {
+    "Khandwa": 0.665,
+    "Dewas": 0.684,
+    "South_Betul": 0.719,
+    "South_Chhindwara": 0.699,
+    "South_Balaghat": 0.722,
+    "Dindori": 0.648,
+    "Umaria": 0.775,
+    "Chhatarpur": 0.703,
+    "Panna_TR": 0.696,
+    "Satpura_TR": 0.8
+   }
+  },
+  "controls + raw HLS": {
+   "mean_auc": 0.7293,
+   "by_region": {
+    "Khandwa": 0.676,
+    "Dewas": 0.696,
+    "South_Betul": 0.722,
+    "South_Chhindwara": 0.712,
+    "South_Balaghat": 0.733,
+    "Dindori": 0.677,
+    "Umaria": 0.784,
+    "Chhatarpur": 0.728,
+    "Panna_TR": 0.712,
+    "Satpura_TR": 0.853
+   }
+  },
+  "controls + Prithvi": {
+   "mean_auc": 0.7389,
+   "by_region": {
+    "Khandwa": 0.687,
+    "Dewas": 0.722,
+    "South_Betul": 0.733,
+    "South_Chhindwara": 0.729,
+    "South_Balaghat": 0.719,
+    "Dindori": 0.665,
+    "Umaria": 0.798,
+    "Chhatarpur": 0.749,
+    "Panna_TR": 0.739,
+    "Satpura_TR": 0.848
+   }
+  },
+  "controls + raw HLS + Prithvi": {
+   "mean_auc": 0.7391,
+   "by_region": {
+    "Khandwa": 0.689,
+    "Dewas": 0.711,
+    "South_Betul": 0.726,
+    "South_Chhindwara": 0.721,
+    "South_Balaghat": 0.74,
+    "Dindori": 0.669,
+    "Umaria": 0.801,
+    "Chhatarpur": 0.743,
+    "Panna_TR": 0.735,
+    "Satpura_TR": 0.856
+   }
+  },
+  "gains": {
+   "controls + Prithvi vs controls only": {
+    "mean": 0.0334,
+    "regions_better": 9,
+    "of": 10
+   },
+   "controls + Prithvi vs controls + raw HLS": {
+    "mean": 0.0096,
+    "regions_better": 7,
+    "of": 10
+   },
+   "controls + raw HLS + Prithvi vs controls + raw HLS": {
+    "mean": 0.0098,
+    "regions_better": 9,
+    "of": 10
+   },
+   "controls + forest type map vs controls only": {
+    "mean": 0.0056,
+    "regions_better": 6,
+    "of": 10
+   },
+   "controls + raw HLS vs controls only": {
+    "mean": 0.0238,
+    "regions_better": 10,
+    "of": 10
+   }
+  }
+ }
+}

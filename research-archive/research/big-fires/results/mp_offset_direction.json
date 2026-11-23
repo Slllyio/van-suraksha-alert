@@ -1,0 +1,167 @@
+{
+ "passes": 793,
+ "fires": 603,
+ "note": "[estimate, 95% CI by fire]; offsets in m, east/north",
+ "fixed_bias_all": {
+  "east": [
+   -45.7,
+   -67.3,
+   -25.0
+  ],
+  "north": [
+   19.6,
+   -4.5,
+   43.0
+  ],
+  "offset_length_median": 291
+ },
+ "by_satellite": {
+  "N": {
+   "n": 374,
+   "east": [
+    -31.0,
+    -59.2,
+    -2.2
+   ],
+   "north": [
+    -29.6,
+    -59.5,
+    0.6
+   ]
+  },
+  "N20": {
+   "n": 419,
+   "east": [
+    -58.9,
+    -87.6,
+    -30.2
+   ],
+   "north": [
+    63.6,
+    40.0,
+    91.0
+   ]
+  }
+ },
+ "by_scan": {
+  "nadir": {
+   "n": 377,
+   "east": [
+    -33.2,
+    -64.3,
+    -2.2
+   ],
+   "north": [
+    -15.6,
+    -54.4,
+    17.6
+   ]
+  },
+  "mid": {
+   "n": 313,
+   "east": [
+    -57.2,
+    -89.5,
+    -26.5
+   ],
+   "north": [
+    45.6,
+    15.4,
+    75.3
+   ]
+  },
+  "edge": {
+   "n": 103,
+   "east": [
+    -57.0,
+    -108.9,
+    -3.5
+   ],
+   "north": [
+    69.7,
+    22.7,
+    116.5
+   ]
+  }
+ },
+ "travel_direction": {
+  "passes": 457,
+  "fires": 350,
+  "offset_along_spread_m": [
+   -7.7,
+   -33.9,
+   18.3
+  ],
+  "offset_across_spread_m": [
+   10.9,
+   -17.9,
+   38.9
+  ],
+  "share_ahead": [
+   0.5,
+   0.4,
+   0.5
+  ],
+  "share_within_45deg": 0.241,
+  "random_within_45deg": 0.25,
+  "median_abs_angle_deg": 95.3
+ },
+ "shift_test_median_dist_m": {
+  "no shift": 340,
+  "+60 m along spread": 346,
+  "+120 m along spread": 357,
+  "+200 m along spread": 382
+ },
+ "predict_next_dots": {
+  "passes": 277,
+  "note": "angle between the travel direction and the way to the next dots (3-24 h later); random = 90 median, 25% within 45",
+  "dots_only": {
+   "median_angle": 97.6,
+   "within_45": 0.213
+  },
+  "burnt_ground_to_hot_line_same_image": {
+   "n": 277,
+   "median_angle": 93.5,
+   "within_45": 0.26
+  },
+  "using_70m_hot_pixels": {
+   "median_angle": 102.8,
+   "within_45": 0.213
+  },
+  "next_dots_700m_plus": {
+   "passes": 189,
+   "dots_only_within_45": 0.19,
+   "burnt_ground_within_45": 0.233,
+   "hot_70m_within_45": 0.196
+  }
+ },
+ "by_spread_length": {
+  "150-500 m": {
+   "n": 55,
+   "along": [
+    13.4,
+    -66.8,
+    106.6
+   ],
+   "share_ahead": 0.6
+  },
+  "0.5-1 km": {
+   "n": 180,
+   "along": [
+    -41.6,
+    -81.0,
+    3.4
+   ],
+   "share_ahead": 0.41
+  },
+  ">1 km": {
+   "n": 222,
+   "along": [
+    14.5,
+    -25.5,
+    54.3
+   ],
+   "share_ahead": 0.49
+  }
+ }
+}

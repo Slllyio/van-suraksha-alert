@@ -1,0 +1,175 @@
+class shares of forest mask at 20 m: {'deciduous tree': np.float64(51.2), 'green tree': np.float64(6.7), 'open grass/low': np.float64(27.1), 'sparse/bare': np.float64(15.0)}
+events 5669 seasons [np.int32(2017), np.int32(2018), np.int32(2019), np.int32(2020), np.int32(2021), np.int32(2022), np.int32(2023), np.int32(2024), np.int32(2025), np.int32(2026)]
+
+Pooled 2017-2026, by class and window
+           cls        win  burned  share_of_class_burned_%  hazard_%_of_unburned  share_of_class_burns_in_window_%
+deciduous tree    Nov-Dec   14082                     0.14                  0.14                              0.33
+deciduous tree        Jan   62190                     0.62                  0.62                              1.46
+deciduous tree   1-14 Feb  172439                     1.73                  1.74                              4.04
+deciduous tree 15 Feb-end  319547                     3.20                  3.28                              7.48
+deciduous tree        Mar 2716139                    27.21                 28.86                             63.58
+deciduous tree        Apr  910392                     9.12                 13.60                             21.31
+deciduous tree    May-Jun   77527                     0.78                  1.34                              1.81
+    green tree    Nov-Dec     354                     0.03                  0.03                              0.07
+    green tree        Jan     405                     0.03                  0.03                              0.08
+    green tree   1-14 Feb    2305                     0.18                  0.18                              0.44
+    green tree 15 Feb-end   17410                     1.33                  1.33                              3.29
+    green tree        Mar  333082                    25.43                 25.83                             62.97
+    green tree        Apr  166263                    12.69                 17.39                             31.43
+    green tree    May-Jun    9174                     0.70                  1.16                              1.73
+open grass/low    Nov-Dec   51460                     0.97                  0.97                              3.04
+open grass/low        Jan   82266                     1.55                  1.57                              4.86
+open grass/low   1-14 Feb  123589                     2.33                  2.40                              7.29
+open grass/low 15 Feb-end  144400                     2.73                  2.87                              8.52
+open grass/low        Mar  938174                    17.72                 19.18                             55.37
+open grass/low        Apr  324101                     6.12                  8.20                             19.13
+open grass/low    May-Jun   30402                     0.57                  0.84                              1.79
+   sparse/bare    Nov-Dec   61251                     2.10                  2.10                              9.27
+   sparse/bare        Jan   38771                     1.33                  1.36                              5.87
+   sparse/bare   1-14 Feb   47400                     1.62                  1.68                              7.17
+   sparse/bare 15 Feb-end   44683                     1.53                  1.61                              6.76
+   sparse/bare        Mar  332184                    11.37                 12.17                             50.26
+   sparse/bare        Apr  125451                     4.29                  5.23                             18.98
+   sparse/bare    May-Jun   11174                     0.38                  0.49                              1.69
+
+By season
+ season            cls  burned_pct  med_dos   p25  before15feb_pct_of_burns
+   2017 deciduous tree        47.9    143.0 121.0                       8.0
+   2017     green tree        48.6    150.0 142.0                       1.3
+   2017 open grass/low        30.0    140.0 118.0                      12.5
+   2017    sparse/bare        19.8    143.0 118.0                      14.4
+   2018 deciduous tree        44.7    135.0 117.0                      12.6
+   2018     green tree        44.8    143.0 132.0                       0.9
+   2018 open grass/low        35.8    129.0  93.0                      31.5
+   2018    sparse/bare        25.4    131.0  89.0                      35.8
+   2019 deciduous tree        57.9    142.0 128.0                      12.2
+   2019     green tree        53.4    149.0 139.0                       1.1
+   2019 open grass/low        44.8    140.0 111.0                      24.3
+   2019    sparse/bare        31.7    139.0  95.0                      29.8
+   2020 deciduous tree        26.0    160.0 156.0                       0.0
+   2020     green tree        28.2    160.0 160.0                       0.0
+   2020 open grass/low        19.6    160.0 154.0                       0.7
+   2020    sparse/bare        11.2    161.0 154.0                       1.2
+   2021 deciduous tree        51.9    129.0 121.0                      12.1
+   2021     green tree        50.6    146.0 129.0                       1.1
+   2021 open grass/low        40.5    126.0  98.0                      30.7
+   2021    sparse/bare        33.4    123.0  89.0                      40.0
+   2022 deciduous tree        61.0    141.0 136.0                       0.6
+   2022     green tree        56.1    141.0 136.0                       0.0
+   2022 open grass/low        46.4    141.0 136.0                       3.0
+   2022    sparse/bare        34.3    144.0 136.0                       5.6
+   2023 deciduous tree        20.3    145.0 116.0                       5.2
+   2023     green tree        21.9    155.0 148.0                       0.2
+   2023 open grass/low        17.3    121.0 109.0                      21.3
+   2023    sparse/bare        14.2    119.0 100.0                      32.0
+   2024 deciduous tree        32.0    143.0 136.0                       0.1
+   2024     green tree        31.3    144.0 141.0                       0.1
+   2024 open grass/low        21.0    141.0 134.0                       2.5
+   2024    sparse/bare        12.4    141.0 133.0                      10.0
+   2025 deciduous tree        48.7    141.0 131.0                       0.8
+   2025     green tree        41.2    142.0 141.0                       0.1
+   2025 open grass/low        37.1    138.0 127.0                       6.9
+   2025    sparse/bare        23.9    135.0 120.0                      17.2
+   2026 deciduous tree        37.6    133.0 130.0                       0.8
+   2026     green tree        27.8    137.0 131.0                       0.1
+   2026 open grass/low        27.7    132.0 127.0                       7.1
+   2026    sparse/bare        19.9    131.0 123.0                      18.9
+deciduous tree   burned pixel-seasons 42.81%  first-burn date p10 25 Feb p25 10 Mar median 22 Mar p75 30 Mar
+green tree       burned pixel-seasons 40.39%  first-burn date p10 10 Mar p25 18 Mar median 27 Mar p75 04 Apr
+open grass/low   burned pixel-seasons 32.01%  first-burn date p10 04 Feb p25 02 Mar median 18 Mar p75 29 Mar
+sparse/bare      burned pixel-seasons 22.63%  first-burn date p10 08 Jan p25 23 Feb median 18 Mar p75 29 Mar
+
+Paired cell-seasons 17218 (cells 2968): grass minus deciduous median first-burn day: mean -2.7 d, median 0.0 d, share grass earlier 9.6%, later 4.6%, same 85.8%; cell-bootstrap 95% CI of mean -2.7 to -2.2
+/tmp/claude-0/-home-user/be9b8f54-cc26-52cb-bdbb-9c8008a24baf/scratchpad/r13_grass_code/grass_timing.py:88: Pandas4Warning: Starting with pandas version 4.0 all arguments of sum will be keyword-only.
+  n = a['n'].fillna(0); share = n.div(n.sum(1), axis=0)
+/tmp/claude-0/-home-user/be9b8f54-cc26-52cb-bdbb-9c8008a24baf/scratchpad/r13_grass_code/grass_timing.py:88: Pandas4Warning: Starting with pandas version 4.0 all arguments of sum will be keyword-only.
+  n = a['n'].fillna(0); share = n.div(n.sum(1), axis=0)
+/tmp/claude-0/-home-user/be9b8f54-cc26-52cb-bdbb-9c8008a24baf/scratchpad/r13_grass_code/grass_timing.py:88: Pandas4Warning: Starting with pandas version 4.0 all arguments of sum will be keyword-only.
+  n = a['n'].fillna(0); share = n.div(n.sum(1), axis=0)
+/tmp/claude-0/-home-user/be9b8f54-cc26-52cb-bdbb-9c8008a24baf/scratchpad/r13_grass_code/grass_timing.py:88: Pandas4Warning: Starting with pandas version 4.0 all arguments of sum will be keyword-only.
+  n = a['n'].fillna(0); share = n.div(n.sum(1), axis=0)
+/tmp/claude-0/-home-user/be9b8f54-cc26-52cb-bdbb-9c8008a24baf/scratchpad/r13_grass_code/grass_timing.py:88: Pandas4Warning: Starting with pandas version 4.0 all arguments of sum will be keyword-only.
+  n = a['n'].fillna(0); share = n.div(n.sum(1), axis=0)
+/tmp/claude-0/-home-user/be9b8f54-cc26-52cb-bdbb-9c8008a24baf/scratchpad/r13_grass_code/grass_timing.py:88: Pandas4Warning: Starting with pandas version 4.0 all arguments of sum will be keyword-only.
+  n = a['n'].fillna(0); share = n.div(n.sum(1), axis=0)
+/tmp/claude-0/-home-user/be9b8f54-cc26-52cb-bdbb-9c8008a24baf/scratchpad/r13_grass_code/grass_timing.py:88: Pandas4Warning: Starting with pandas version 4.0 all arguments of sum will be keyword-only.
+  n = a['n'].fillna(0); share = n.div(n.sum(1), axis=0)
+/tmp/claude-0/-home-user/be9b8f54-cc26-52cb-bdbb-9c8008a24baf/scratchpad/r13_grass_code/grass_timing.py:88: Pandas4Warning: Starting with pandas version 4.0 all arguments of sum will be keyword-only.
+  n = a['n'].fillna(0); share = n.div(n.sum(1), axis=0)
+/tmp/claude-0/-home-user/be9b8f54-cc26-52cb-bdbb-9c8008a24baf/scratchpad/r13_grass_code/grass_timing.py:88: Pandas4Warning: Starting with pandas version 4.0 all arguments of sum will be keyword-only.
+  n = a['n'].fillna(0); share = n.div(n.sum(1), axis=0)
+/tmp/claude-0/-home-user/be9b8f54-cc26-52cb-bdbb-9c8008a24baf/scratchpad/r13_grass_code/grass_timing.py:88: Pandas4Warning: Starting with pandas version 4.0 all arguments of sum will be keyword-only.
+  n = a['n'].fillna(0); share = n.div(n.sum(1), axis=0)
+Mixed cells (>=20% each of deciduous and grass), 13250 cell-seasons: mean burned share deciduous 37.8% vs grass 32.5%; burned before 15 Feb: deciduous 2.81% vs grass 4.81%
+
+By distance to nearest building (cell level), pooled seasons
+           cls   dist     px  burned_pct  early_pct med_date
+deciduous tree  <1 km 174213       30.69       0.98   24 Mar
+deciduous tree 1-2 km 367642       40.82       1.80   23 Mar
+deciduous tree 2-3 km 289812       48.12       2.92   20 Mar
+deciduous tree  >3 km 150978       53.33       5.25   17 Mar
+open grass/low  <1 km 148480       20.71       2.07   22 Mar
+open grass/low 1-2 km 177651       34.27       4.51   21 Mar
+open grass/low 2-3 km 118058       39.81       6.58   17 Mar
+open grass/low  >3 km  69568       40.89       9.47   11 Mar
+
+Median index by month, pixels unburned in 2024 and 2025 seasons
+ month            cls  ndvi  ndvi_p25  ndvi_p75   ndmi  ndti  pct_ndvi_lt_0p25
+     9 deciduous tree 0.495     0.451     0.532  0.151   NaN             0.234
+     9     green tree 0.476     0.442     0.509  0.139   NaN             0.297
+     9 open grass/low 0.477     0.442     0.509  0.124   NaN             0.315
+     9    sparse/bare 0.372     0.304     0.425  0.037   NaN             9.494
+    10 deciduous tree 0.458     0.430     0.485  0.132 0.196             0.049
+    10     green tree 0.456     0.432     0.480  0.146 0.192             0.217
+    10 open grass/low 0.406     0.380     0.434  0.071 0.183             0.021
+    10    sparse/bare 0.306     0.259     0.339 -0.023 0.148            21.219
+    11 deciduous tree 0.388     0.360     0.415  0.096   NaN             0.338
+    11     green tree 0.400     0.375     0.424  0.124   NaN             0.802
+    11 open grass/low 0.303     0.272     0.334 -0.001   NaN            11.380
+    11    sparse/bare 0.212     0.181     0.247 -0.080   NaN            76.380
+    12 deciduous tree 0.354     0.319     0.387  0.051 0.164             2.816
+    12     green tree 0.385     0.357     0.413  0.098 0.170             1.165
+    12 open grass/low 0.254     0.223     0.287 -0.050 0.135            46.167
+    12    sparse/bare 0.184     0.159     0.221 -0.108 0.114            83.539
+     1 deciduous tree 0.315     0.279     0.351  0.005   NaN            11.599
+     1     green tree 0.367     0.339     0.398  0.072   NaN             0.912
+     1 open grass/low 0.225     0.196     0.256 -0.096   NaN            70.509
+     1    sparse/bare 0.173     0.151     0.208 -0.139   NaN            85.874
+     2 deciduous tree 0.253     0.219     0.287 -0.067 0.131            47.513
+     2     green tree 0.338     0.311     0.368  0.009 0.148             2.397
+     2 open grass/low 0.183     0.158     0.209 -0.138 0.099            94.002
+     2    sparse/bare 0.150     0.132     0.179 -0.162 0.080            93.981
+     3 deciduous tree 0.175     0.153     0.202 -0.135   NaN            98.340
+     3     green tree 0.275     0.257     0.303 -0.061   NaN            15.636
+     3 open grass/low 0.141     0.128     0.155 -0.169   NaN            99.764
+     3    sparse/bare 0.130     0.119     0.144 -0.177   NaN            98.856
+     4 deciduous tree 0.155     0.135     0.176 -0.142 0.095            99.250
+     4     green tree 0.210     0.188     0.253 -0.102 0.117            73.320
+     4 open grass/low 0.132     0.119     0.147 -0.164 0.075            99.795
+     4    sparse/bare 0.124     0.114     0.137 -0.172 0.064            99.040
+     5 deciduous tree 0.224     0.192     0.264 -0.088 0.113            67.426
+     5     green tree 0.343     0.295     0.396  0.010 0.141             8.747
+     5 open grass/low 0.171     0.148     0.199 -0.134 0.089            95.473
+     5    sparse/bare 0.139     0.119     0.167 -0.155 0.075            96.469
+/tmp/claude-0/-home-user/be9b8f54-cc26-52cb-bdbb-9c8008a24baf/scratchpad/r13_grass_code/grass_timing.py:129: RuntimeWarning: All-NaN slice encountered
+  peak = np.nanmax(np.stack([z[9], z[10]]), 0); mn = np.nanmin(np.stack([z[m] for m in [1, 2, 3, 4, 5]]), 0)
+Relative-greenness "curing" (median, % of seasonal drop done) deciduous tree: 11:27% 12:38% 1:50% 2:70% 3:94% 4:100% 5:78%
+Relative-greenness "curing" (median, % of seasonal drop done) open grass/low: 11:47% 12:62% 1:71% 2:84% 3:98% 4:100% 5:88%
+class 4 <1 km: NDVI by month 9:0.483 10:0.404 11:0.293 12:0.245 1:0.220 2:0.183 3:0.145 4:0.137 5:0.171 px 97282
+class 4 >2 km: NDVI by month 9:0.468 10:0.407 11:0.312 12:0.264 1:0.230 2:0.178 3:0.138 4:0.130 5:0.167 px 84382
+
+Scar found rate for FIRMS alerts by share of open grass within ~200 m (forest pixels)
+              size   mean
+q                        
+(-0.01, 0.1]  4750  0.890
+(0.1, 0.25]   3940  0.884
+(0.25, 0.4]   2780  0.876
+(0.4, 0.6]    2298  0.860
+(0.6, 1.0]    1251  0.850
+              size  found_FebApr
+q                               
+(-0.01, 0.1]  4543         0.896
+(0.1, 0.25]   3675         0.894
+(0.25, 0.4]   2473         0.891
+(0.4, 0.6]    1992         0.882
+(0.6, 1.0]    1084         0.864

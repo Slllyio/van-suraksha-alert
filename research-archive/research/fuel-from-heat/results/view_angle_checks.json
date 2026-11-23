@@ -1,0 +1,88 @@
+{
+ "A_single_leafy": [
+  -0.073,
+  [
+   -0.831,
+   0.686
+  ]
+ ],
+ "A_single_can": [
+  -0.587,
+  [
+   -0.901,
+   -0.272
+  ]
+ ],
+ "A_slope_open": -0.298,
+ "A_slope_leafy_closed": -0.47,
+ "A_slope_bare_closed": -0.572,
+ "A_extra_slope_leafy_vs_open": [
+  -0.171,
+  [
+   -0.425,
+   0.1
+  ]
+ ],
+ "A_extra_slope_bare_vs_open": [
+  -0.273,
+  [
+   -0.47,
+   -0.091
+  ]
+ ],
+ "A_n": {
+  "open": 403,
+  "leafy_closed": 147,
+  "bare_closed": 338
+ },
+ "composition_by_angle": [
+  {
+   "sb": "<30 deg",
+   "closed_bare": "0.1363",
+   "closed_leafy": "0.1098",
+   "open": "0.2059",
+   "other": "0.548"
+  },
+  {
+   "sb": "30-45",
+   "closed_bare": "0.1369",
+   "closed_leafy": "0.0883",
+   "open": "0.1969",
+   "other": "0.5778"
+  },
+  {
+   "sb": "45-56",
+   "closed_bare": "0.14",
+   "closed_leafy": "0.0757",
+   "open": "0.2164",
+   "other": "0.5678"
+  },
+  {
+   "sb": ">56 deg",
+   "closed_bare": "0.1464",
+   "closed_leafy": "0.0512",
+   "open": "0.2427",
+   "other": "0.5596"
+  }
+ ],
+ "leafy_over_bare_by_angle": {
+  "<30 deg": 0.806,
+  "30-45": 0.645,
+  "45-56": 0.541,
+  ">56 deg": 0.35
+ },
+ "logit_leafy_vs_open_per_sec": [
+  -0.852,
+  [
+   -1.021,
+   -0.683
+  ]
+ ],
+ "logit_leafy_vs_bare_per_sec": [
+  -0.762,
+  [
+   -0.944,
+   -0.579
+  ]
+ ]
+}

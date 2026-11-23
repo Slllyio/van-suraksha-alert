@@ -1,0 +1,64 @@
+{
+ "divisions": 87,
+ "events": 50997,
+ "events_weighted_worst": 51786,
+ "events_weighted_mix": 51309,
+ "events_kept_after_drop": 50832,
+ "closed_feb_mar_events_with_slant_best_look": 1503,
+ "random": {
+  "strict": 82.6,
+  "strict_weighted_worst": 82.6,
+  "strict_weighted_mix": 82.6,
+  "strict_drop_oblique_only": 82.6,
+  "strict_on_slant_closed_feb_mar_events": 83.2,
+  "covered_pct_mean_div": 54.0
+ },
+ "history": {
+  "strict": 40.8,
+  "strict_weighted_worst": 40.9,
+  "strict_weighted_mix": 40.8,
+  "strict_drop_oblique_only": 40.8,
+  "strict_on_slant_closed_feb_mar_events": 48.3,
+  "covered_pct_mean_div": 22.9
+ },
+ "cal_hist": {
+  "strict": 50.5,
+  "strict_weighted_worst": 50.6,
+  "strict_weighted_mix": 50.5,
+  "strict_drop_oblique_only": 50.4,
+  "strict_on_slant_closed_feb_mar_events": 57.0,
+  "covered_pct_mean_div": 17.5
+ },
+ "recent": {
+  "strict": 54.7,
+  "strict_weighted_worst": 54.8,
+  "strict_weighted_mix": 54.8,
+  "strict_drop_oblique_only": 54.7,
+  "strict_on_slant_closed_feb_mar_events": 64.7,
+  "covered_pct_mean_div": 16.8
+ },
+ "history_w": {
+  "strict": 40.2,
+  "strict_weighted_worst": 40.3,
+  "strict_weighted_mix": 40.2,
+  "strict_drop_oblique_only": 40.2,
+  "strict_on_slant_closed_feb_mar_events": 47.8,
+  "covered_pct_mean_div": 22.8
+ },
+ "cal_hist_w": {
+  "strict": 50.5,
+  "strict_weighted_worst": 50.7,
+  "strict_weighted_mix": 50.6,
+  "strict_drop_oblique_only": 50.5,
+  "strict_on_slant_closed_feb_mar_events": 58.7,
+  "covered_pct_mean_div": 17.5
+ },
+ "recent_w": {
+  "strict": 54.6,
+  "strict_weighted_worst": 54.7,
+  "strict_weighted_mix": 54.6,
+  "strict_drop_oblique_only": 54.5,
+  "strict_on_slant_closed_feb_mar_events": 64.9,
+  "covered_pct_mean_div": 16.8
+ }
+}

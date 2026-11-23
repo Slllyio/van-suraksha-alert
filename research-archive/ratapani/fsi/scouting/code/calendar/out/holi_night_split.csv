@@ -1,0 +1,9 @@
+subset,day,obs,exp,RR,lo,hi,p_placebo,years_gt1
+"night pass, all MP",eve,663,352.1,1.883,0.961,3.582,0.026,10
+"night pass, all MP",Holi day,525,376.7,1.394,0.975,2.1,0.176,7
+"day pass, all MP",eve,1178,977.1,1.206,0.894,1.528,0.279,8
+"day pass, all MP",Holi day,1264,1011.1,1.25,1.017,1.447,0.191,8
+"night pass, tribal divisions",eve,365,163.6,2.23,0.978,4.717,0.0173,9
+"night pass, tribal divisions",Holi day,266,177.1,1.502,0.923,2.369,0.1407,8
+"night pass, other divisions",eve,298,188.4,1.582,0.909,2.713,0.0623,8
+"night pass, other divisions",Holi day,259,199.6,1.297,0.891,1.886,0.248,5

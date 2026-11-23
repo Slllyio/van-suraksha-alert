@@ -1,0 +1,6 @@
+flag,no scar (too small or unseen),pre-15 Feb block,pre-15 Feb hot multi-day,pre-15 Feb strip,cls,fires,with_cluster,with_flag
+False,167.0,256.0,41.0,14.0,,,,
+True,139.0,138.0,4.0,17.0,,,,
+,,,,,pre-15 Feb block,335.0,0.9970149253731343,0.408955223880597
+,,,,,pre-15 Feb hot multi-day,18.0,1.0,0.2222222222222222
+,,,,,pre-15 Feb strip,34.0,1.0,0.5294117647058824

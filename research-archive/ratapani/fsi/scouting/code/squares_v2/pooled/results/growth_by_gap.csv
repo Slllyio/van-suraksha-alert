@@ -1,0 +1,73 @@
+set,subset,slot,y,gap,n,mean_log_change,se
+fires,all,D,ly_n,~25 min,88949,0.017,0.002
+fires,all,D,ly_n,~50 min,109365,0.04,0.002
+fires,all,D,ly_n,~75 min,22914,0.052,0.005
+fires,all,D,ly_area,~25 min,88949,0.017,0.002
+fires,all,D,ly_area,~50 min,109365,0.04,0.002
+fires,all,D,ly_area,~75 min,22914,0.052,0.005
+fires,all,D,ly_frp,~25 min,88949,0.027,0.003
+fires,all,D,ly_frp,~50 min,109365,0.101,0.003
+fires,all,D,ly_frp,~75 min,22914,0.104,0.007
+fires,all,D,ly_frpmax,~25 min,88949,0.014,0.003
+fires,all,D,ly_frpmax,~50 min,109365,0.068,0.002
+fires,all,D,ly_frpmax,~75 min,22914,0.064,0.005
+fires,all,N,ly_n,~25 min,62126,-0.031,0.002
+fires,all,N,ly_n,~50 min,86245,-0.053,0.002
+fires,all,N,ly_n,~75 min,14728,-0.097,0.005
+fires,all,N,ly_area,~25 min,62126,-0.031,0.002
+fires,all,N,ly_area,~50 min,86245,-0.053,0.002
+fires,all,N,ly_area,~75 min,14728,-0.097,0.005
+fires,all,N,ly_frp,~25 min,62126,-0.058,0.003
+fires,all,N,ly_frp,~50 min,86245,-0.123,0.003
+fires,all,N,ly_frp,~75 min,14728,-0.185,0.008
+fires,all,N,ly_frpmax,~25 min,62126,-0.033,0.003
+fires,all,N,ly_frpmax,~50 min,86245,-0.082,0.002
+fires,all,N,ly_frpmax,~75 min,14728,-0.109,0.006
+fires,forest,D,ly_n,~25 min,44950,0.036,0.003
+fires,forest,D,ly_n,~50 min,58723,0.076,0.003
+fires,forest,D,ly_n,~75 min,10481,0.098,0.007
+fires,forest,D,ly_area,~25 min,44950,0.036,0.003
+fires,forest,D,ly_area,~50 min,58723,0.076,0.003
+fires,forest,D,ly_area,~75 min,10481,0.098,0.007
+fires,forest,D,ly_frp,~25 min,44950,0.064,0.004
+fires,forest,D,ly_frp,~50 min,58723,0.144,0.004
+fires,forest,D,ly_frp,~75 min,10481,0.191,0.01
+fires,forest,D,ly_frpmax,~25 min,44950,0.035,0.003
+fires,forest,D,ly_frpmax,~50 min,58723,0.083,0.003
+fires,forest,D,ly_frpmax,~75 min,10481,0.113,0.008
+fires,forest,N,ly_n,~25 min,22989,-0.02,0.004
+fires,forest,N,ly_n,~50 min,31372,-0.037,0.004
+fires,forest,N,ly_n,~75 min,4507,-0.071,0.01
+fires,forest,N,ly_area,~25 min,22989,-0.02,0.004
+fires,forest,N,ly_area,~50 min,31372,-0.037,0.004
+fires,forest,N,ly_area,~75 min,4507,-0.071,0.01
+fires,forest,N,ly_frp,~25 min,22989,-0.045,0.004
+fires,forest,N,ly_frp,~50 min,31372,-0.096,0.004
+fires,forest,N,ly_frp,~75 min,4507,-0.14,0.013
+fires,forest,N,ly_frpmax,~25 min,22989,-0.029,0.004
+fires,forest,N,ly_frpmax,~50 min,31372,-0.067,0.003
+fires,forest,N,ly_frpmax,~75 min,4507,-0.085,0.009
+static null,all,D,ly_n,~25 min,936,0.002,0.017
+static null,all,D,ly_n,~50 min,1079,0.03,0.017
+static null,all,D,ly_n,~75 min,200,0.052,0.047
+static null,all,D,ly_area,~25 min,936,0.002,0.017
+static null,all,D,ly_area,~50 min,1079,0.03,0.017
+static null,all,D,ly_area,~75 min,200,0.052,0.047
+static null,all,D,ly_frp,~25 min,936,0.005,0.022
+static null,all,D,ly_frp,~50 min,1079,0.125,0.022
+static null,all,D,ly_frp,~75 min,200,0.231,0.06
+static null,all,D,ly_frpmax,~25 min,936,0.005,0.018
+static null,all,D,ly_frpmax,~50 min,1079,0.094,0.018
+static null,all,D,ly_frpmax,~75 min,200,0.191,0.043
+static null,all,N,ly_n,~25 min,12463,0.01,0.004
+static null,all,N,ly_n,~50 min,17325,0.019,0.004
+static null,all,N,ly_n,~75 min,3577,0.055,0.01
+static null,all,N,ly_area,~25 min,12463,0.01,0.004
+static null,all,N,ly_area,~50 min,17325,0.019,0.004
+static null,all,N,ly_area,~75 min,3577,0.055,0.01
+static null,all,N,ly_frp,~25 min,12463,0.001,0.005
+static null,all,N,ly_frp,~50 min,17325,0.005,0.005
+static null,all,N,ly_frp,~75 min,3577,0.046,0.012
+static null,all,N,ly_frpmax,~25 min,12463,-0.006,0.004
+static null,all,N,ly_frpmax,~50 min,17325,-0.012,0.004
+static null,all,N,ly_frpmax,~75 min,3577,0.003,0.008

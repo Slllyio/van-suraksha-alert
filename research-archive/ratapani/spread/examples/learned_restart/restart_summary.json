@@ -1,0 +1,147 @@
+[
+ {
+  "event": 971,
+  "season": 2019,
+  "k": 1,
+  "hit_learn": 1,
+  "hit_pers": 0,
+  "n_target": 2,
+  "area_ha": 70.8
+ },
+ {
+  "event": 971,
+  "season": 2019,
+  "k": 2,
+  "hit_learn": 4,
+  "hit_pers": 1,
+  "n_target": 18,
+  "area_ha": 197.84
+ },
+ {
+  "event": 971,
+  "season": 2019,
+  "k": 3,
+  "sor_learn": 0.666,
+  "sor_dist": 0.554
+ },
+ {
+  "event": 1878,
+  "season": 2022,
+  "k": 1,
+  "hit_learn": 16,
+  "hit_pers": 16,
+  "n_target": 16,
+  "area_ha": 265.72
+ },
+ {
+  "event": 1878,
+  "season": 2022,
+  "k": 2,
+  "hit_learn": 1,
+  "hit_pers": 0,
+  "n_target": 1,
+  "area_ha": 380.32
+ },
+ {
+  "event": 1878,
+  "season": 2022,
+  "k": 3,
+  "hit_learn": 1,
+  "hit_pers": 1,
+  "n_target": 1,
+  "area_ha": 443.12
+ },
+ {
+  "event": 1878,
+  "season": 2022,
+  "k": 4,
+  "sor_learn": 0.432,
+  "sor_dist": 0.288
+ },
+ {
+  "event": 1132,
+  "season": 2020,
+  "k": 1,
+  "hit_learn": 3,
+  "hit_pers": 0,
+  "n_target": 9,
+  "area_ha": 111.16
+ },
+ {
+  "event": 1132,
+  "season": 2020,
+  "k": 2,
+  "hit_learn": 5,
+  "hit_pers": 4,
+  "n_target": 6,
+  "area_ha": 515.8
+ },
+ {
+  "event": 1132,
+  "season": 2020,
+  "k": 3,
+  "hit_learn": 5,
+  "hit_pers": 5,
+  "n_target": 5,
+  "area_ha": 726.76
+ },
+ {
+  "event": 1132,
+  "season": 2020,
+  "k": 4,
+  "hit_learn": 1,
+  "hit_pers": 0,
+  "n_target": 1,
+  "area_ha": 850.28
+ },
+ {
+  "event": 1132,
+  "season": 2020,
+  "k": 5,
+  "sor_learn": 0.428,
+  "sor_dist": 0.47
+ },
+ {
+  "event": 2017,
+  "season": 2023,
+  "k": 1,
+  "hit_learn": 1,
+  "hit_pers": 1,
+  "n_target": 1,
+  "area_ha": 70.96000000000001
+ },
+ {
+  "event": 2017,
+  "season": 2023,
+  "k": 2,
+  "hit_learn": 3,
+  "hit_pers": 3,
+  "n_target": 4,
+  "area_ha": 99.96000000000001
+ },
+ {
+  "event": 2017,
+  "season": 2023,
+  "k": 3,
+  "hit_learn": 2,
+  "hit_pers": 0,
+  "n_target": 2,
+  "area_ha": 259.48
+ },
+ {
+  "event": 2017,
+  "season": 2023,
+  "k": 4,
+  "hit_learn": 1,
+  "hit_pers": 1,
+  "n_target": 1,
+  "area_ha": 367.32
+ },
+ {
+  "event": 2017,
+  "season": 2023,
+  "k": 5,
+  "sor_learn": 0.298,
+  "sor_dist": 0.263
+ }
+]

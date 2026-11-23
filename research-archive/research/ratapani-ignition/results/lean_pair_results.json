@@ -1,0 +1,79 @@
+{
+ "base": {
+  "loso": {
+   "real94_recall@5": 0.2977,
+   "real94_recall@10": 0.4896,
+   "real94_recall@5_2017": 0.2984,
+   "real94_recall@5_2018": 0.3164,
+   "real94_recall@5_2019": 0.318,
+   "real94_recall@5_2020": 0.2484,
+   "real94_recall@5_2021": 0.2973,
+   "real94_recall@5_2022": 0.2829,
+   "real94_recall@5_2023": 0.2718,
+   "real94_recall@5_2024": 0.3186
+  },
+  "test": {
+   "real94_recall@5": 0.287,
+   "real94_recall@10": 0.4856,
+   "real94_recall@5_2025": 0.2809,
+   "real94_recall@5_2026": 0.2936
+  },
+  "top_gain": {
+   "s2d_nbr_chg30": 219434.0,
+   "doy": 216046.0,
+   "prior": 167149.0,
+   "rh3": 127929.0,
+   "s2d_nbr_last": 118978.0,
+   "aoi_season": 117125.0,
+   "s2d_ndvi_chg30": 110021.0,
+   "p30": 106679.0,
+   "RH2M": 105014.0,
+   "nb2_season": 102091.0,
+   "s2d_ndvi_mean30": 80854.0,
+   "aoi_new7": 70082.0,
+   "s2d_nbr_mean30": 62866.0,
+   "d_built": 58272.0,
+   "dist_track": 56760.0
+  }
+ },
+ "pair5_base": {
+  "loso": {
+   "real94_recall@5": 0.2952,
+   "real94_recall@10": 0.4864,
+   "real94_recall@5_2017": 0.2952,
+   "real94_recall@5_2018": 0.3195,
+   "real94_recall@5_2019": 0.315,
+   "real94_recall@5_2020": 0.258,
+   "real94_recall@5_2021": 0.2946,
+   "real94_recall@5_2022": 0.2849,
+   "real94_recall@5_2023": 0.2634,
+   "real94_recall@5_2024": 0.2877
+  },
+  "test": {
+   "real94_recall@5": 0.2904,
+   "real94_recall@10": 0.4854,
+   "real94_recall@5_2025": 0.2903,
+   "real94_recall@5_2026": 0.2904
+  }
+ },
+ "rankavg_pair5": {
+  "loso": {
+   "real94_recall@5": 0.301,
+   "real94_recall@10": 0.4935,
+   "real94_recall@5_2017": 0.303,
+   "real94_recall@5_2018": 0.3208,
+   "real94_recall@5_2019": 0.3228,
+   "real94_recall@5_2020": 0.2603,
+   "real94_recall@5_2021": 0.3057,
+   "real94_recall@5_2022": 0.2848,
+   "real94_recall@5_2023": 0.2672,
+   "real94_recall@5_2024": 0.3056
+  },
+  "test": {
+   "real94_recall@5": 0.2941,
+   "real94_recall@10": 0.4915,
+   "real94_recall@5_2025": 0.2918,
+   "real94_recall@5_2026": 0.2966
+  }
+ }
+}

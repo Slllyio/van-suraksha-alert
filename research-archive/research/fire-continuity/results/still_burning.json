@@ -1,0 +1,162 @@
+{
+ "n_scenes": 1505,
+ "n_fires": 865,
+ "burning_share": 0.28,
+ "seasons": {
+  "2017": 37,
+  "2018": 86,
+  "2019": 166,
+  "2020": 66,
+  "2021": 199,
+  "2022": 217,
+  "2023": 114,
+  "2024": 154,
+  "2025": 268,
+  "2026": 198
+ },
+ "models": {
+  "hours_only": {
+   "auc": 0.742,
+   "lo": 0.713,
+   "hi": 0.771,
+   "brier": 0.1679
+  },
+  "logit": {
+   "auc": 0.753,
+   "lo": 0.724,
+   "hi": 0.783,
+   "brier": 0.1674
+  },
+  "gbm": {
+   "auc": 0.774,
+   "lo": 0.747,
+   "hi": 0.803,
+   "brier": 0.1595
+  }
+ },
+ "brier_constant": 0.2018,
+ "best": "gbm",
+ "calibration": [
+  {
+   "p": "(0.0, 0.2]",
+   "n": 781,
+   "said": 0.107,
+   "real": 0.115
+  },
+  {
+   "p": "(0.2, 0.35]",
+   "n": 245,
+   "said": 0.264,
+   "real": 0.294
+  },
+  {
+   "p": "(0.35, 0.5]",
+   "n": 170,
+   "said": 0.424,
+   "real": 0.371
+  },
+  {
+   "p": "(0.5, 0.65]",
+   "n": 155,
+   "said": 0.57,
+   "real": 0.568
+  },
+  {
+   "p": "(0.65, 0.8]",
+   "n": 144,
+   "said": 0.715,
+   "real": 0.708
+  },
+  {
+   "p": "(0.8, 1.0]",
+   "n": 10,
+   "said": 0.819,
+   "real": 0.7
+  }
+ ],
+ "table_hours_x_heat": {
+  "(6, 12]": {
+   "mean|weak <3 MW": 0.61,
+   "mean|mid 3-8": 0.71,
+   "mean|strong >8": NaN,
+   "size|weak <3 MW": 271.0,
+   "size|mid 3-8": 17.0,
+   "size|strong >8": NaN
+  },
+  "(12, 24]": {
+   "mean|weak <3 MW": 0.32,
+   "mean|mid 3-8": 0.37,
+   "mean|strong >8": 0.26,
+   "size|weak <3 MW": 60.0,
+   "size|mid 3-8": 263.0,
+   "size|strong >8": 133.0
+  },
+  "(24, 48]": {
+   "mean|weak <3 MW": 0.13,
+   "mean|mid 3-8": 0.19,
+   "mean|strong >8": 0.17,
+   "size|weak <3 MW": 174.0,
+   "size|mid 3-8": 139.0,
+   "size|strong >8": 72.0
+  },
+  "(48, 200]": {
+   "mean|weak <3 MW": 0.1,
+   "mean|mid 3-8": 0.1,
+   "mean|strong >8": 0.06,
+   "size|weak <3 MW": 156.0,
+   "size|mid 3-8": 139.0,
+   "size|strong >8": 81.0
+  }
+ },
+ "by_hours_dark": [
+  {
+   "hb": "(6, 12]",
+   "size": 288,
+   "mean": 0.615
+  },
+  {
+   "hb": "(12, 24]",
+   "size": 456,
+   "mean": 0.327
+  },
+  {
+   "hb": "(24, 48]",
+   "size": 385,
+   "mean": 0.158
+  },
+  {
+   "hb": "(48, 200]",
+   "size": 376,
+   "mean": 0.093
+  }
+ ],
+ "by_last_day": [
+  {
+   "last_day": 0,
+   "size": 573,
+   "mean": 0.372
+  },
+  {
+   "last_day": 1,
+   "size": 932,
+   "mean": 0.224
+  }
+ ],
+ "gbm_importance_gain": {
+  "h_dark": 4993.0,
+  "age_h": 1127.0,
+  "cloud": 1030.0,
+  "miss_vza": 681.0,
+  "doy": 600.0,
+  "last_frp": 591.0,
+  "dots_all": 557.0,
+  "frp24": 320.0,
+  "n_miss": 133.0,
+  "last_n": 111.0,
+  "n_miss_clear": 87.0,
+  "n_miss_blind": 21.0,
+  "dots_24h": 15.0,
+  "n_miss_day_clear": 10.0,
+  "last_day": 2.0
+ }
+}

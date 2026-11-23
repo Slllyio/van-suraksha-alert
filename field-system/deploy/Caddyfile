@@ -1,0 +1,9 @@
+# SITE is the public name, e.g. 43-205-1-2.sslip.io (resolves to the server's IP without a domain purchase) or
+# alerts.example.org. Caddy gets and renews the HTTPS certificate by itself. The phones' GPS and camera need HTTPS.
+{$SITE} {
+	encode zstd gzip
+	request_body {
+		max_size 120MB
+	}
+	reverse_proxy app:8000
+}

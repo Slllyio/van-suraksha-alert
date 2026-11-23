@@ -1,0 +1,159 @@
+{
+ "T1": [
+  {
+   "size": "1",
+   "clusters": 21425,
+   "sum_frp_median": 3.38,
+   "peak_frp_median": 3.38,
+   "per_pixel_median": 3.38
+  },
+  {
+   "size": "2",
+   "clusters": 6198,
+   "sum_frp_median": 8.23,
+   "peak_frp_median": 4.51,
+   "per_pixel_median": 4.02
+  },
+  {
+   "size": "3-4",
+   "clusters": 2808,
+   "sum_frp_median": 15.16,
+   "peak_frp_median": 5.84,
+   "per_pixel_median": 4.34
+  },
+  {
+   "size": "5-8",
+   "clusters": 1081,
+   "sum_frp_median": 30.1,
+   "peak_frp_median": 7.8,
+   "per_pixel_median": 4.88
+  },
+  {
+   "size": "9+",
+   "clusters": 265,
+   "sum_frp_median": 107.8,
+   "peak_frp_median": 16.16,
+   "per_pixel_median": 7.68
+  }
+ ],
+ "T1_role_median_frp": {
+  "lone": 3.38,
+  "neighbour": 4.19,
+  "peak": 4.92
+ },
+ "T2": {
+  "table": [
+   {
+    "dir": "east-west (along scan)",
+    "pairs": 3186,
+    "ratio_median": 0.88,
+    "ratio_q25": 0.696,
+    "ratio_q75": 1.0
+   },
+   {
+    "dir": "north-south (along track)",
+    "pairs": 3012,
+    "ratio_median": 0.875,
+    "ratio_q25": 0.661,
+    "ratio_q75": 1.0
+   }
+  ],
+  "rho": 0.929,
+  "rho_shuffled": 0.001,
+  "slope": 0.924,
+  "ratio_median_by_strong_tercile": [
+   0.911,
+   0.903,
+   0.806
+  ]
+ },
+ "T3": [
+  {
+   "role": "lone",
+   "n": 5809,
+   "scar_share_median": 0.559,
+   "scar_share_mean": 0.544,
+   "share_under_10pct": 0.069,
+   "frp_median": 3.69
+  },
+  {
+   "role": "neighbour",
+   "n": 5317,
+   "scar_share_median": 0.711,
+   "scar_share_mean": 0.654,
+   "share_under_10pct": 0.039,
+   "frp_median": 4.3
+  },
+  {
+   "role": "peak",
+   "n": 4845,
+   "scar_share_median": 0.698,
+   "scar_share_mean": 0.648,
+   "share_under_10pct": 0.03,
+   "frp_median": 5.3
+  }
+ ],
+ "T3_neighbour_by_ratio": [
+  {
+   "index": "(0.0226, 0.466]",
+   "n": "1331",
+   "scar_share": "0.663"
+  },
+  {
+   "index": "(0.466, 0.633]",
+   "n": "1328",
+   "scar_share": "0.656"
+  },
+  {
+   "index": "(0.633, 0.819]",
+   "n": "1329",
+   "scar_share": "0.649"
+  },
+  {
+   "index": "(0.819, 1.0]",
+   "n": "1329",
+   "scar_share": "0.648"
+  }
+ ],
+ "T3_rho_frp_vs_scar_share": 0.162,
+ "T4": [
+  {
+   "pix_band": "<0.2 km2 (near nadir)",
+   "detections": "27586",
+   "frp_median": "3.47",
+   "lone_share": "0.463",
+   "mean_cluster": "3.038",
+   "cluster_sum_median": "3.96"
+  },
+  {
+   "pix_band": "0.2-0.35",
+   "detections": "21147",
+   "frp_median": "4.4",
+   "lone_share": "0.352",
+   "mean_cluster": "3.62",
+   "cluster_sum_median": "5.31"
+  },
+  {
+   "pix_band": "0.35-0.55",
+   "detections": "3833",
+   "frp_median": "5.13",
+   "lone_share": "0.273",
+   "mean_cluster": "4.266",
+   "cluster_sum_median": "6.39"
+  },
+  {
+   "pix_band": ">0.55 (swath edge)",
+   "detections": "693",
+   "frp_median": "7.57",
+   "lone_share": "0.211",
+   "mean_cluster": "6.426",
+   "cluster_sum_median": "8.435"
+  }
+ ],
+ "T4_neardup_share": 0.163,
+ "T4_nn_dist_over_pix_quartiles": [
+  0.65,
+  0.95,
+  1.03
+ ]
+}

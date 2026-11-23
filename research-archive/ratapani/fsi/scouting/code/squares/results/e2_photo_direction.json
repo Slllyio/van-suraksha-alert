@@ -1,0 +1,57 @@
+{
+ "photos": 98,
+ "auc_frp_shift_a0.25": {
+  "n": 98,
+  "auc": 0.8238,
+  "kernel_same_photos": 0.8336,
+  "diff_95": [
+   -0.0215,
+   0.002
+  ]
+ },
+ "auc_frp_shift_a0.5": {
+  "n": 98,
+  "auc": 0.7947,
+  "kernel_same_photos": 0.8336,
+  "diff_95": [
+   -0.0655,
+   -0.0135
+  ]
+ },
+ "auc_new_pixels_a0.25": {
+  "n": 74,
+  "auc": 0.8545,
+  "kernel_same_photos": 0.8679,
+  "diff_95": [
+   -0.0248,
+   -0.0038
+  ]
+ },
+ "auc_new_pixels_a0.5": {
+  "n": 74,
+  "auc": 0.8219,
+  "kernel_same_photos": 0.8679,
+  "diff_95": [
+   -0.0744,
+   -0.0213
+  ]
+ },
+ "auc_persistence_a0.25": {
+  "n": 63,
+  "auc": 0.8146,
+  "kernel_same_photos": 0.8241,
+  "diff_95": [
+   -0.0223,
+   0.0086
+  ]
+ },
+ "auc_persistence_a0.5": {
+  "n": 63,
+  "auc": 0.7832,
+  "kernel_same_photos": 0.8241,
+  "diff_95": [
+   -0.0732,
+   -0.0033
+  ]
+ }
+}

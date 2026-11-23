@@ -1,0 +1,219 @@
+{
+ "passes_tried": 3469,
+ "used": 235,
+ "skipped": {
+  "no VIIRS look before scene": 1762,
+  "no scar": 1470,
+  "< 3 hot pixels in window": 2
+ },
+ "random_within_45": 0.25,
+ "truth_scar": {
+  "arrow": {
+   "n": 234,
+   "within_45": 0.645,
+   "ci": [
+    0.577,
+    0.715
+   ],
+   "median_angle": 28.7
+  },
+  "null_edge_within_45": 0.275,
+  "null_edge_next_to_unburnt_scar_within_45": 0.431,
+  "dots": {
+   "n": 142,
+   "within_45": 0.465,
+   "ci": [
+    0.373,
+    0.557
+   ],
+   "median_angle": 47.5
+  },
+  "same_passes": {
+   "n": 142,
+   "arrow": 0.655,
+   "dots": 0.465,
+   "diff_ci": [
+    0.099,
+    0.282
+   ]
+  },
+  "early_<=2_looks": {
+   "n": 160,
+   "within_45": 0.625,
+   "ci": [
+    0.538,
+    0.713
+   ],
+   "median_angle": 31.6
+  },
+  "early_dots": {
+   "n": 68,
+   "within_45": 0.338,
+   "ci": [
+    0.221,
+    0.469
+   ],
+   "median_angle": 63.3
+  },
+  "by_sensor": {
+   "ls": {
+    "n": 35,
+    "within_45": 0.714,
+    "ci": [
+     0.545,
+     0.861
+    ],
+    "median_angle": 22.0
+   },
+   "s2": {
+    "n": 199,
+    "within_45": 0.633,
+    "ci": [
+     0.558,
+     0.704
+    ],
+    "median_angle": 30.7
+   }
+  },
+  "patch_mostly_in_scar_>=0.8": {
+   "n": 94,
+   "within_45": 0.553,
+   "ci": [
+    0.438,
+    0.667
+   ],
+   "median_angle": 34.5
+  }
+ },
+ "truth_24h": {
+  "arrow": {
+   "n": 233,
+   "within_45": 0.657,
+   "ci": [
+    0.587,
+    0.722
+   ],
+   "median_angle": 25.1
+  },
+  "null_edge_within_45": 0.275,
+  "null_edge_next_to_unburnt_scar_within_45": 0.421,
+  "dots": {
+   "n": 141,
+   "within_45": 0.468,
+   "ci": [
+    0.379,
+    0.566
+   ],
+   "median_angle": 49.1
+  },
+  "same_passes": {
+   "n": 141,
+   "arrow": 0.667,
+   "dots": 0.468,
+   "diff_ci": [
+    0.106,
+    0.298
+   ]
+  },
+  "early_<=2_looks": {
+   "n": 159,
+   "within_45": 0.635,
+   "ci": [
+    0.547,
+    0.724
+   ],
+   "median_angle": 25.1
+  },
+  "early_dots": {
+   "n": 67,
+   "within_45": 0.328,
+   "ci": [
+    0.212,
+    0.455
+   ],
+   "median_angle": 64.2
+  },
+  "by_sensor": {
+   "ls": {
+    "n": 35,
+    "within_45": 0.714,
+    "ci": [
+     0.543,
+     0.879
+    ],
+    "median_angle": 22.5
+   },
+   "s2": {
+    "n": 198,
+    "within_45": 0.646,
+    "ci": [
+     0.571,
+     0.721
+    ],
+    "median_angle": 25.7
+   }
+  },
+  "patch_mostly_in_scar_>=0.8": {
+   "n": 94,
+   "within_45": 0.617,
+   "ci": [
+    0.505,
+    0.733
+   ],
+   "median_angle": 32.7
+  }
+ },
+ "map_lean": {
+  "0.25": {
+   "n": 235,
+   "scene_rule_median": 0.4851,
+   "lean_median": 0.4694,
+   "mean_diff_ci": [
+    -0.0199,
+    -0.0058
+   ],
+   "better_worse": [
+    79,
+    100
+   ],
+   "new_outside_patch_caught": [
+    0.094,
+    0.115
+   ]
+  },
+  "0.5": {
+   "n": 235,
+   "scene_rule_median": 0.4851,
+   "lean_median": 0.438,
+   "mean_diff_ci": [
+    -0.068,
+    -0.0344
+   ],
+   "better_worse": [
+    77,
+    131
+   ],
+   "new_outside_patch_caught": [
+    0.094,
+    0.146
+   ]
+  },
+  "1.0": {
+   "n": 235,
+   "scene_rule_median": 0.4851,
+   "lean_median": 0.1364,
+   "mean_diff_ci": [
+    -0.321,
+    -0.2668
+   ],
+   "better_worse": [
+    19,
+    214
+   ],
+   "new_outside_patch_caught": [
+    0.094,
+    0.133
+   ]
+  }
+ }
+}

@@ -1,0 +1,278 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fire Alert Control Room</title>
+<link rel="stylesheet" href="/static/vendor/leaflet.css">
+<link rel="stylesheet" href="/static/app.css">
+<script src="/static/vendor/leaflet.js"></script>
+<script src="/static/common.js"></script></head><body>
+<div id="login" style="display:none"></div>
+<div class="app">
+<header><h1>Fire alerts and field checks</h1><span class="muted" style="color:#d6e9dc" id="feed"></span><span class="sp"></span>
+<a href="/field" style="color:#fff">Field view</a><span id="who"></span><button onclick="logout()">Sign out</button></header>
+<div class="tiles" id="tiles"></div>
+<div class="layout">
+  <div id="list"><div class="filters" id="filters"></div><div id="rows"></div></div>
+  <div id="map"></div>
+</div></div>
+<div id="drawer"></div>
+<script>
+let ME, INC = [], FILTER = 'open', DAYS = 7, markers = {};
+const map = L.map('map', {preferCanvas: true}).setView([23.6, 78.3], 7);
+const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom: 18, attribution: 'Esri imagery'});
+const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18, attribution: '© OpenStreetMap'}).addTo(map);
+const beatLayer = L.geoJSON(null, {style: {color: '#0f5132', weight: 1, fillOpacity: 0.04},
+  onEachFeature: (f, l) => l.bindTooltip(`${f.properties.beat} · ${f.properties.range}`, {sticky: true})}).addTo(map);
+const outside = L.layerGroup().addTo(map), incLayer = L.layerGroup().addTo(map), routeLayer = L.layerGroup().addTo(map);
+// Burn scars from Sentinel-2 / Landsat under each alert. Confirmed = solid, provisional = dashed, faint = amber.
+// No scar visible = dashed white ring (never a false alert), waiting for a clear image = dashed blue ring.
+const scarPane = map.createPane('scars'); scarPane.style.zIndex = 390;
+const scarLayer = L.layerGroup().addTo(map), SCAR_C = {yes: '#c0392b', faint: '#e08e1a'};
+const scarWaiting = s => s && (s.live_status === 'waiting' || s.live_status === 'no_pre');
+function scarShape(i, s) {
+  if (!s) return null;
+  const tip = scarWaiting(s) ? 'Burn scar: waiting for a clear satellite image' : s.scar_found === 'none_visible' ? 'Burn scar: not visible from satellite (not a false alert)'
+    : `${s.scar_found === 'faint' ? 'Possible burn scar (faint)' : 'Burn scar'} at least ${s.scar_ha ?? ''} ha${s.provisional ? ' (provisional)' : ''} · images ${s.pre_date} to ${s.post_date}`;
+  if (s.geometry) return L.geoJSON(s.geometry, {pane: 'scars', style: {color: SCAR_C[s.scar_found] || '#c0392b', weight: 2, dashArray: s.provisional ? '6 5' : null,
+    fillColor: SCAR_C[s.scar_found] || '#c0392b', fillOpacity: s.provisional ? .15 : .35}}).bindTooltip(tip);
+  if (scarWaiting(s) || s.scar_found === 'none_visible') return L.circle([i.lat, i.lon], {pane: 'scars', radius: 250, color: scarWaiting(s) ? '#3d8bfd' : '#666',
+    weight: 3, dashArray: '3 6', fill: false}).bindTooltip(tip);
+  return null;
+}
+const scarLegend = L.control({position: 'bottomleft'});
+scarLegend.onAdd = () => { const d = L.DomUtil.create('div', 'legend');
+  const box = (st) => `<span style="display:inline-block;width:14px;height:10px;vertical-align:middle;${st}"></span>`;
+  d.innerHTML = '<b>Burn scar (Sentinel-2 / Landsat)</b><br>' + box('background:#c0392b59;border:2px solid #c0392b') + ' scar seen, confirmed<br>'
+    + box('background:#c0392b26;border:2px dashed #c0392b') + ' scar seen, provisional<br>' + box('background:#e08e1a59;border:2px solid #e08e1a') + ' possible scar (faint, often not a burn)<br>'
+    + box('border-radius:50%;width:12px;height:12px;border:2px dashed #999') + ' no scar visible (not a false alert)<br>'
+    + box('border-radius:50%;width:12px;height:12px;border:2px dashed #3d8bfd') + ' waiting for a clear image';
+  return d; };
+scarLegend.addTo(map);
+L.control.layers({'Streets': osm, 'Satellite': sat}, {'Beats': beatLayer, 'Points with no field task: outside beats, not forest, low confidence (last 3 days)': outside, 'Alerts': incLayer}).addTo(map);
+const COLORS = {new: '#d7301f', revisit: '#f08c00', visited: '#2b6cb0', verified: '#2f855a'};
+
+async function load() {
+  ME = await api('/api/me'); setClock(ME);
+  document.getElementById('who').textContent = `${ME.name} (${ME.role})`;
+  const mine = await api('/api/beats.geojson');
+  if (mine.features.length) map.fitBounds(L.geoJSON(mine).getBounds());
+  else map.setView([23.6, 78.3], 7);   // admin: all of MP
+  map.on('moveend', loadBeats); loadBeats();
+  await refresh(); setInterval(refresh, 5 * 60 * 1000);
+}
+let beatReq = 0;
+async function loadBeats() {
+  const n = ++beatReq; beatLayer.clearLayers();
+  if (map.getZoom() < 9) return;     // too many beats to draw at state scale
+  const b = map.getBounds();
+  const fc = await api(`/api/beats.geojson?bbox=${b.getWest()},${b.getSouth()},${b.getEast()},${b.getNorth()}`);
+  if (n === beatReq) beatLayer.addData(fc);   // ignore answers for a view we've already left
+}
+async function refresh() {
+  const [inc, st, det] = await Promise.all([api(`/api/incidents?days=${DAYS}`), api(`/api/stats?days=${DAYS}`), api('/api/detections.geojson?days=3')]);
+  INC = inc; tiles(st); drawFilters(); drawRows(); drawMap(det);
+  // one age per source; a source with no good read in 3 h (6 h for FSI and Bhuvan) shows in red
+  const F = st.feeds || {}, old = (u, h) => !u || nowMs() - Date.parse(u) > h * 3600e3;
+  const part = (name, u, h) => `<span style="${old(u, h) ? 'color:#ffb4a8;font-weight:bold' : ''}">${name} ${u ? (old(u, h) ? 'failing, last good ' : 'read ') + ago(u) : 'not read yet'}</span>`;
+  document.getElementById('feed').innerHTML = ME.demo ? 'Replay: alerts loaded from FSI and NASA archives'
+    : [part('NASA FIRMS', F.nasa, 3), F.fsi_on ? part('FSI', F.fsi, 6) : '', F.bhuvan_on ? part('Bhuvan', F.bhuvan, 6) : ''].filter(Boolean).join(' · ');
+}
+function tiles(st) {
+  const t = st.total, pct = (a, b) => b ? Math.round(100 * a / b) + '%' : '–';
+  const T = [[t.alerts, DAYS >= 3650 ? "Alerts in beats, all time" : `Alerts in beats, last ${DAYS} days`], [pct(t.attended, t.alerts), 'Visited by staff'],
+    [t.overdue, 'Overdue, not visited'], [t.median_hours_to_visit ?? '–', 'Median hours to visit'],
+    [pct(t.strong_proof, t.attended), 'Visits with strong photo proof'], [pct(t.false_alarm, t.attended), 'Visits finding no forest fire'],
+    [t.rechecks_pending ?? 0, 'Random re-checks to do in person']];
+  const P = st.pilot || {};   // patrol pilot: model-picked cell checks, fires staff found with no task, crew-days
+  if (P.tasks || P.chance_finds || P.crew_days) T.push([`${P.tasks_visited}/${P.tasks}`, 'Cell checks done'], [P.fires_found, 'Fires found by checks and staff'],
+    [P.chance_finds, 'Fires found with no task'], [P.staff_hours, 'Staff-hours logged']);
+  document.getElementById('tiles').innerHTML = T.map(([v, s]) => `<div class="tile"><b>${v}</b><span>${s}</span></div>`).join('')
+    + `<div class="tile"><span>Period</span><select onchange="DAYS=+this.value;refresh()">${[2,7,30,90,365,3650].map(d => `<option ${d==DAYS?"selected":""} value="${d}">${d==3650?"All":d+" days"}</option>`).join('')}</select></div>`;
+}
+const FILTERS = {open: ['Needs visit', i => ['new','revisit'].includes(i.status)], overdue: ['Overdue', i => i.overdue],
+  recheck: ['Re-check', i => i.recheck && i.status === 'visited'],
+  visited: ['Awaiting check', i => i.status === 'visited'], verified: ['Checked', i => i.status === 'verified'],
+  cells: ['Cell checks', i => KIND(i) === 'predicted'], chance: ['Found by staff', i => KIND(i) === 'chance'], all: ['All', i => true]};
+const ARM = {fixed: 'fixed 5 a beat', calendar: 'calendar arm', forecast: 'forecast arm'};
+function drawFilters() {
+  document.getElementById('filters').innerHTML = Object.entries(FILTERS).map(([k, [n, f]]) =>
+    `<button class="${k===FILTER?'on':''}" onclick="FILTER='${k}';drawFilters();drawRows()">${n} (${INC.filter(f).length})</button>`).join('')
+    + (ME.role !== 'guard' ? ` <a class="muted" href="/api/export/incidents.csv?days=${DAYS}">Download CSV</a> · <a class="muted" href="#" onclick="pilotReport();return false">Pilot season report</a>`
+       + (INC.some(i => i.big_fire) ? ` · <a class="muted" href="#" onclick="bigWatch();return false">Big-fire watch</a>` : '') : '');
+}
+function drawRows() {
+  const rows = INC.filter(FILTERS[FILTER][1]);
+  document.getElementById('rows').innerHTML = rows.map(i => `<div class="row" onclick="openInc(${i.id})">
+    <div>${pill(i)} <b>${esc(i.beat)}</b></div>
+    <div class="muted">${rowWhat(i)}${i.outcome ? ' · ' + OUTCOME[i.outcome] : ''}${i.arrived_utc ? ' · reached ' + fmt(i.arrived_utc) : ''}</div>${alsoBeats(i)}</div>`).join('')
+    || '<p class="muted" style="padding:14px">Nothing here.</p>';
+}
+function rowWhat(i) {
+  if (KIND(i) === 'predicted') return `Cell check ${esc(i.cell_id)} · ${STREAM[i.stream] || ''} · ${ARM[i.arm] || 'no arm'} · ${fmt(i.due_from_utc)} to ${fmt(i.due_utc)} IST${i.near_active_fire ? ' · near active fire' : ''}`;
+  if (KIND(i) === 'chance') return `Fire found by staff with no task · ${fmt(i.first_seen_utc)} IST`;
+  return `First seen ${fmt(i.first_seen_utc)} IST · ${i.n_detections} point${i.n_detections>1?'s':''} · ${esc(i.sensors.replace('FSI_PORTAL','FSI alert').replaceAll('_',' '))}`
+    + (i.control_burn ? ` · <span class="pill" style="background:#8a6d3b">Possible control burn${i.control_burn.provisional ? '?' : ''}</span>` : '')
+    + (i.big_fire?.new_fire && i.big_fire.points >= 8 ? ` · ${bigPill(i.big_fire)}` : '');   // the list shows only the higher scores
+}
+// Chance a new alert becomes a 200 ha+ fire (research points table). Officials only; replay test (Akkshay, 17 Oct 2026).
+// Akkshay, 18 Oct 2026: points and order only, no %; guards are told "may become a big fire" at the guard cut-off.
+const bigColor = b => b.guard_flag ? '#b02a37' : b.points >= 8 ? '#d9822b' : '#6c757d';
+const bigPill = b => `<span class="pill" style="white-space:nowrap;background:${bigColor(b)}">Big-fire points ${b.points}${b.guard_flag ? ' · guards told' : ''}</span>`;
+const bigItems = b => `<table><tr><th>At the first look</th><th>Points</th></tr>${b.items.map(([a, p]) => `<tr><td>${esc(a)}</td><td>${p > 0 ? '+' : ''}${p}</td></tr>`).join('')
+  || '<tr><td>1 dot, nothing else that counts</td><td>0</td></tr>'}<tr><th>Total</th><th>${b.points}</th></tr></table><p class="muted">Dots are counted as in the research: every VIIRS dot of that pass in this fire, also those outside forest or low confidence that make no field task.</p>${b.farmland_checked ? '' : '<p class="muted">Farmland around was not checked (land cover map unreachable).</p>'}`;
+function bigWatch() {
+  const now = Date.now() + CLOCK, d = document.getElementById('drawer');
+  const rows = INC.filter(i => i.big_fire?.new_fire && now - new Date(i.big_fire.first_look_utc) <= 864e5 && now >= new Date(i.big_fire.first_look_utc))
+    .sort((a, b) => (a.big_fire.order_rank ?? 1e9) - (b.big_fire.order_rank ?? 1e9) || b.big_fire.points - a.big_fire.points);   // the brief's order
+  const told = rows.filter(i => i.big_fire.guard_flag).length;
+  d.innerHTML = `<button class="btn alt" onclick="drawer.classList.remove('open')" style="float:right">Close</button>
+    <h2 style="margin:0 0 4px">Big-fire watch · new fires in the last 24 h</h2>
+    <p class="muted">New fires in the same order as the daily brief: big-fire points from their first VIIRS look, together with the square's size score from the night before when it arrived. Higher points: more likely to grow past 200 ha.
+    ${rows.length} new fires; ${told} marked "may become a big fire" for their guards. Top 10 shown first.</p>
+    <table><tr><th>#</th><th>Points</th><th>Fire</th></tr>
+    ${rows.slice(0, 25).map((i, k) => `<tr style="cursor:pointer${k === 10 ? ';border-top:3px solid #333' : ''}" onclick="openInc(${i.id})"><td>${k + 1}</td>
+      <td>${bigPill(i.big_fire)}<br><span class="muted">${fmt(i.big_fire.first_look_utc)}</span></td>
+      <td><b>${esc(i.beat)}</b> · ${esc((i.big_fire.division || '').replaceAll('_', ' '))}<br>
+      <span class="muted" style="font-size:12px">${i.big_fire.items.map(([a, p]) => `${esc(a)} (${p > 0 ? '+' : ''}${p})`).join(' · ') || '1 dot'}</span></td></tr>`).join('')}</table>
+    <p class="muted">How sure (2025-26 replay): the order is clearly better than dot count alone, but the top 10 a day held only 2-3 more big fires per 100. Of fires marked for guards, about 1 in 4-5 passed 200 ha. Half of all big fires show only 1 dot at first look, so many will never rank high.</p>`;
+  d.classList.add('open');
+}
+function drawMap(det) {
+  outside.clearLayers(); incLayer.clearLayers(); scarLayer.clearLayers(); markers = {};
+  INC.forEach(i => { const sh = scarShape(i, i.burn_scar); if (sh) sh.addTo(scarLayer); });
+  det.features.filter(f => !f.properties.incident_id).forEach(f => { const p = f.properties, nf = p.beat_uid && p.forest_share != null;
+    L.circleMarker([f.geometry.coordinates[1], f.geometry.coordinates[0]], {radius: 3, color: nf ? '#b07d2b' : '#888', weight: 1, fillOpacity: .5})
+    .bindTooltip(`${p.source} ${fmt(p.acq_utc)} · ${!p.beat_uid ? 'outside beats' : nf ? `in a beat but not forest (${Math.round(p.forest_share*100)}% tree/shrub)` : 'low confidence'}`).addTo(outside); });
+  INC.forEach(i => {
+    if (KIND(i) === 'predicted' && i.cell_geom)   // the 500 m square, coloured by status
+      return markers[i.id] = L.geoJSON(JSON.parse(i.cell_geom), {style: {color: i.overdue ? '#000' : COLORS[i.status], weight: i.overdue ? 3 : 2,
+        dashArray: i.status === 'new' ? '4 4' : null, fillColor: COLORS[i.status], fillOpacity: .25}})
+        .on('click', () => openInc(i.id)).bindTooltip(`Cell check · ${i.beat} · ${STATUS[i.status]}`).addTo(incLayer);
+    markers[i.id] = L.circleMarker([i.lat, i.lon], {radius: 8, color: KIND(i) === 'chance' ? '#6a1b9a' : i.overdue ? '#000' : '#fff', weight: i.overdue || KIND(i) === 'chance' ? 3 : 2,
+      fillColor: COLORS[i.status], fillOpacity: .95}).on('click', () => openInc(i.id))
+      .bindTooltip(`${KIND(i) === 'chance' ? 'Found by staff · ' : ''}${i.beat} · ${STATUS[i.status]}`).addTo(incLayer); });
+}
+const OPENED_REPORT = {};
+async function openInc(id) {
+  const i = await api('/api/incidents/' + id), d = document.getElementById('drawer');
+  OPENED_REPORT[id] = i.reports.length ? i.reports[i.reports.length - 1].id : null;
+  // Burn scar from satellite images. "Not visible" never means no fire: small or litter fires leave no scar.
+  const scarLine = s => !s ? '' : `<p><b>Burn scar</b> ${s.live_status === 'waiting' || s.live_status === 'no_pre' ? 'waiting for a clear satellite image (usually within 5 days of the fire)' : ({yes: 'seen', faint: 'possible (faint, often not a burn)', none_visible: 'not visible from satellite (small or litter fires often leave none)', unknown: 'not checked yet'})[s.scar_found] || esc(s.scar_found)}${s.provisional ? ' (provisional until a later clear image confirms it)' : ''}${s.scar_ha ? ` · at least ${s.scar_ha} ha` : ''}${s.severity ? ` · ${esc(s.severity)} severity` : ''}${s.pre_date ? ` · images ${s.pre_date} to ${s.post_date}` : ''}</p>`;
+  // fit the view to the alert and its burn scar
+  let bb = L.latLng(i.lat, i.lon).toBounds(1200);
+  if (i.burn_scar && i.burn_scar.geometry) { bb = bb.extend(L.geoJSON(i.burn_scar.geometry).getBounds()); const sh = scarShape(i, i.burn_scar); if (sh) sh.addTo(scarLayer); }
+  if (i.spread_24h) L.geoJSON(i.spread_24h, {pane: 'scars', style: {color: '#d35400', weight: 2, dashArray: '2 6', fillOpacity: 0.08}}).addTo(scarLayer);
+  map.fitBounds(bb, {paddingTopLeft: [40, 40], paddingBottomRight: [Math.min(560, innerWidth / 2), 40], maxZoom: 16});
+  const sup = ME.role !== 'guard';
+  d.innerHTML = `<button class="btn alt" onclick="drawer.classList.remove('open')" style="float:right">Close</button>
+   <h2 style="margin:0 0 4px">${esc(i.beat)}</h2><div>${pill(i)}</div>${alsoBeats(i)}
+   ${i.arrived_utc ? `<p><b>Reached</b> ${fmt(i.arrived_utc)} IST by ${esc(i.arrived_by_name)} (${KIND(i) === 'predicted' ? 'phone was inside the square' : KIND(i) === 'chance' ? 'reported on the spot' : 'phone came within 200 m'})</p>` : (i.status !== 'new' ? '<p class="muted">No phone position within 200 m was recorded.</p>' : '')}
+   ${KIND(i) === 'predicted' ? `<p><b>Cell check</b> ${esc(i.cell_id)} · ${STREAM[i.stream] || ''} · ${ARM[i.arm] || 'no arm'} · issued ${esc(i.issue_date)} · check ${fmt(i.due_from_utc)} to ${fmt(i.due_utc)} IST${i.near_active_fire ? ' · <b>near active fire</b> (VIIRS within 1.5 km in the 3 days before issue)' : ''}<br><span class="muted">${(() => { const v = i.model_version ? JSON.parse(i.model_version) : {model_hash: i.model_hash}; return Object.entries(v).map(([k, x]) => `${esc(k.replace('_', ' '))} ${esc(typeof x === 'object' ? JSON.stringify(x) : String(x).slice(0, 14))}`).join(' · '); })()}${i.score != null ? ' · score ' + esc(i.score) : ''}</span></p>` : ''}
+   ${KIND(i) === 'chance' ? `<p><b>Fire found by staff with no task</b>${i.arm ? ' · ' + ARM[i.arm] : ''}</p>` : ''}
+   <p class="muted">${KIND(i) === 'alert' ? `Alert ${i.id} · first seen ${fmt(i.first_seen_utc)} IST · last seen ${fmt(i.last_seen_utc)} · visit due ${fmt(i.due_utc)}` : KIND(i) === 'predicted' ? `Task ${i.id}` : `Task ${i.id} · reported ${fmt(i.first_seen_utc)} IST`}<br>
+   ${i.lat.toFixed(5)}, ${i.lon.toFixed(5)} · <a target="_blank" href="https://www.google.com/maps/search/?api=1&query=${i.lat},${i.lon}">open in maps</a></p>
+   ${i.fsi_beat ? `<p>FSI: ${esc(i.fsi_beat)} beat${i.fsi_compartments.length ? ', compartment ' + i.fsi_compartments.map(esc).join(', ') : ''}</p>` : ''}
+   ${scarLine(i.burn_scar)}
+   ${i.cause_group && i.cause_group !== 'none' ? `<p><b>Cause check 2027</b> · the guard must give the likely cause · ${i.cause_group === 'tagged' ? 'tagged possible control burn' : `random comparison alert (drawn with chance ${Math.round(i.cause_p * 100)}%)`}</p>` : ''}
+   ${i.big_fire?.new_fire ? `<h3>${bigPill(i.big_fire)}</h3><p class="muted">${esc(i.big_fire.note)} First VIIRS look ${fmt(i.big_fire.first_look_utc)} IST.</p>${bigItems(i.big_fire)}` : ''}
+   ${i.still_burning && i.status !== 'verified' ? `<p><b>${esc(i.still_burning.text)}</b><br><span class="muted">${esc(i.still_burning.note)}</span></p>` : ''}
+   ${i.direction ? `<p><span class="pill" style="background:#2f6f8f;white-space:nowrap"><span style="display:inline-block;transform:rotate(${i.direction.bearing_deg}deg)">&uarr;</span> ${esc(i.direction.text)}</span><br><span class="muted">${esc(i.direction.note)}</span></p>` : ''}
+   ${i.spread_24h ? `<p><b>Likely burnt by ${fmt(i.spread_24h.properties.valid_until_utc)} IST</b> (dotted orange on the map) · about ${Math.round(i.spread_24h.properties.area_ha)} ha<br><span class="muted">${esc(i.spread_24h.properties.note)}</span></p>` : ''}
+   ${i.runway ? `<p><b>${esc(i.runway.text)}</b><br><span class="muted">${esc(i.runway.note)}</span></p>` : ''}
+   ${i.control_burn ? `<p><span class="pill" style="background:#8a6d3b">Possible control burn</span> ${esc(i.control_burn.note)}${i.control_burn.recheck_after_utc ? ' Recheck after ' + fmt(i.control_burn.recheck_after_utc) + ' IST.' : ''}</p>` : ''}
+   ${i.near_recent && i.near_recent.length ? `<p>Likely spread from alert ${i.near_recent.join(', ')} (within 1 km in the past week).</p>` : ''}
+   <p class="muted">Keep forest within 1 km on watch for 7 days: most first burns in unburned forest come from a fire this close.</p>
+   ${!i.detections.length ? '' : `<h3>Satellite points (${i.detections.length})</h3><table><tr><th>Time IST</th><th>Sensor</th><th>Conf.</th><th>FRP MW</th></tr>
+   ${i.detections.map(x => `<tr><td>${fmt(x.acq_utc)}</td><td>${x.source === 'FSI_PORTAL' ? 'FSI alert' : x.source.replace('_',' ')}</td><td>${x.source === 'FSI_PORTAL' ? '–' : x.confidence}</td><td>${x.source === 'FSI_PORTAL' && !x.frp ? '–' : x.frp}</td></tr>`).join('')}</table>`}
+   <h3>Field reports</h3>${i.reports.map(r => `<div class="card" style="margin:8px 0">
+     <b>${OUTCOME[r.outcome]}</b> · ${esc(r.staff_name)} · ${fmt(r.submitted_utc)} IST<br>
+     <span class="muted">Proof: <span class="ev-${r.evidence}">${r.evidence}</span>${r.distance_km==null ? '' : KIND(i) === 'predicted' ? (r.distance_km === 0 ? ' · reported from inside the square' : ` · reported ${r.distance_km.toFixed(2)} km outside the square`) : KIND(i) === 'chance' ? '' : ` · reported ${r.distance_km.toFixed(2)} km from the nearest fire point`}
+     ${r.area_ha!=null ? ` · burnt ${r.area_ha} ha` : ''}${r.land_type ? ' · ' + esc(r.land_type) : ''}${r.fire_type ? ' · ' + esc(r.fire_type) : ''}${r.cause ? ' · cause: ' + esc(r.cause) : ''}${r.crew ? ' · crew ' + r.crew : ''}${r.first_known_by ? ' · first known from: ' + (KNOWN[r.first_known_by] || esc(r.first_known_by)) : ''}${r.fire_out_utc ? ' · fire out ' + fmt(r.fire_out_utc) : ''}${r.burn_age ? ' · ' + BURN_AGE[r.burn_age] : ''}${r.crosses_beat_boundary ? ' · crossed a beat boundary: ' + CROSSED[r.crosses_beat_boundary] : ''}${r.beats_touched ? ' (' + esc(r.beats_touched) + ')' : ''}${r.suppression ? ' · fought by: ' + SUPPRESSION[r.suppression] + (r.suppression_utc ? ' at ' + fmt(r.suppression_utc) : '') : ''}</span>
+     ${r.inspection ? `<div><b>Square ${INSPECTION[r.inspection]}</b></div>` : ''}
+     ${r.linked_alerts ? `<div>${r.linked_alerts.length ? `Near satellite alert ${r.linked_alerts.map(a => `<a href="#" onclick="openInc(${a});return false">${a}</a>`).join(', ')} (within 1.5 km, 3 days before)` : 'No nearby recent VIIRS detection (none within 1.5 km in the 3 days before; it may still have started earlier unseen)'}</div>` : ''}
+     ${r.recheck ? '<div class="banner">Picked at random for an in-person re-check by the range officer.</div>' : ''}
+     ${r.action ? `<div>Action: ${esc(r.action)}</div>` : ''}${r.notes ? `<div>${esc(r.notes)}</div>` : ''}
+     <div>${r.flags.map(f => `<span class="flag">${f.replaceAll('_',' ')}</span>`).join('')}</div>
+     <div class="photos">${r.photos.map(p => `<a target="_blank" href="/api/photos/${p.id}?thumb=false"><img src="/api/photos/${p.id}" title="${p.distance_km!=null ? p.distance_km.toFixed(2)+' km from fire' : 'no location'}${p.taken_utc ? ' · taken ' + fmt(p.taken_utc) : ''}"></a>`).join('')}</div></div>`).join('') || '<p class="muted">No visit yet.</p>'}
+   ${i.reviews.length ? '<h3>Checks</h3>' + i.reviews.map(v => `<div class="muted">${v.decision === 'accept' ? 'Accepted' : 'Sent back'} by ${esc(v.reviewer)} ${fmt(v.utc)}${v.note ? ': ' + esc(v.note) : ''}</div>`).join('') : ''}
+   ${sup && i.reports.length && i.status === 'visited' ? `<h3>Your check</h3><textarea id="rv-note" class="inp" placeholder="Note (optional)"></textarea>
+     <button class="btn" onclick="rev(${i.id},'accept')">Accept visit</button> <button class="btn warn" onclick="rev(${i.id},'revisit')">Send back for another visit</button>` : ''}`;
+  d.classList.add('open');
+  routeLayer.clearLayers();
+  (await api(`/api/incidents/${id}/route`)).forEach(t => t.points.length > 1 &&
+    L.polyline(t.points.map(p => [p[0], p[1]]), {color: '#6a1b9a', weight: 3, dashArray: '4 4'}).bindTooltip('Route to the fire').addTo(routeLayer));
+  document.querySelectorAll('#rows .row').forEach(r => r.classList.toggle('sel', r.getAttribute('onclick') === `openInc(${id})`));
+}
+// Patrol pilot season report (15 Feb to 15 Jun): per arm, what the checks found against staff-hours, and missed alerts.
+async function shakedown() {
+  const y = new Date(nowMs()).getFullYear(), m = new Date(nowMs()).getMonth();
+  const yr = m >= 1 ? y + 1 : y;   // the shakedown runs 25 Jan - 7 Feb before the season
+  const r = await api(`/api/pilot/shakedown?start=${yr}-01-25&end=${yr}-02-07`), d = document.getElementById('drawer');
+  const arms = Object.keys(r.arms), pc = x => x == null ? '–' : (100 * x).toFixed(1) + '%', ok = b => b ? '✓' : '✗';
+  d.innerHTML = `<button class="btn alt" onclick="drawer.classList.remove('open')" style="float:right">Close</button>
+    <h2>Shakedown gate · ${r.start} to ${r.end}: ${r.gate_passed ? 'passed' : 'not passed'}</h2>
+    <table><tr><th></th>${arms.map(a => `<th>${ARM[a] || a}</th>`).join('')}</tr>
+    <tr><td>Beats logging / beats</td>${arms.map(a => `<td>${r.arms[a].beats_logging} / ${r.arms[a].beats}</td>`).join('')}</tr>
+    <tr><td>Shifts logged</td>${arms.map(a => `<td>${r.arms[a].shifts}</td>`).join('')}</tr>
+    <tr><td>Start, end and crew size (need ≥95%)</td>${arms.map(a => `<td>${pc(r.arms[a].complete_share)} ${ok(r.arms[a].pass.complete)}</td>`).join('')}</tr>
+    <tr><td>Time covered by phone positions, gaps under 30 min (need ≥90%)</td>${arms.map(a => `<td>${pc(r.arms[a].position_coverage_share)} ${ok(r.arms[a].pass.coverage)}</td>`).join('')}</tr>
+    <tr><td>Hours not linked to a task (need ≤5%)</td>${arms.map(a => `<td>${pc(r.arms[a].unassigned_share)} ${ok(r.arms[a].pass.unassigned)}</td>`).join('')}</tr></table>
+    <p class="muted">Possible double counting (two people logging overlapping crews in one beat): ${r.possible_double_count.length}.
+    Incomplete shift logs: ${r.shifts_incomplete.length}.</p><p class="muted">${r.notes.map(esc).join('<br>')}</p>`;
+  d.classList.add('open');
+}
+async function pilotReport() {
+  const y = new Date(nowMs()).getFullYear(), r = await api(`/api/pilot/report?start=${y}-02-15&end=${y}-06-15`), d = document.getElementById('drawer');
+  const arms = Object.keys(r.arms), A = r.arms, rr = x => x ? `${x.ratio} (${x.ci95 ? x.ci95.join('–') : '–'})` : null;
+  const tbl = (title, rows) => `<h3>${title}</h3><table><tr><th></th>${arms.map(a => `<th>${ARM[a] || a}</th>`).join('')}</tr>`
+    + rows.map(([n, f]) => `<tr><td>${n}</td>${arms.map(a => `<td>${f(A[a]) ?? '–'}</td>`).join('')}</tr>`).join('') + '</table>';
+  d.innerHTML = `<button class="btn alt" onclick="drawer.classList.remove('open')" style="float:right">Close</button><h2>Patrol pilot · ${r.start} to ${r.end}</h2>
+    ${tbl('Primary result (patrol list)', [['Beats', o => o.beats], ['Patrol-list person-hours', o => o.primary.ignition_person_hours],
+      ['Confirmed fire starts found by patrol-list inspections (range officer accepted)', o => o.primary.confirmed_starts_ignition],
+      ['Per 100 patrol-list person-hours', o => o.primary.per_100_ignition_person_hours],
+      ['Rate ratio vs fixed arm (95% interval)*', o => rr(o.primary.rate_ratio_vs_fixed)],
+      ['Per 100, unassigned hours shared out', o => o.primary.sensitivity.per_100_with_unassigned_split],
+      ['Per 100, all person-hours', o => o.primary.sensitivity.per_100_all_person_hours],
+      ['Per 100, unclassifiable counted as starts', o => o.primary.sensitivity.per_100_unclassifiable_as_starts],
+      ['Per 100, no acceptance required', o => o.primary.sensitivity.per_100_no_acceptance_required]])}
+    <p class="muted">* Beat bootstrap, not the locked analysis (that runs from the per-beat CSV). Forecast vs calendar (reported, not claimed): ${rr(r.secondary.forecast_vs_calendar) ?? '–'}</p>
+    ${tbl('Where first-day fires were found (confirmed starts)', [['(a) Patrol-list inspections', o => o.fires.confirmed_starts.ignition],
+      ['(b) Alert visits', o => o.fires.confirmed_starts.response], ['(c) Found with no task', o => o.fires.confirmed_starts.chance],
+      ['(d) Total', o => o.fires.confirmed_starts.total], ['Continuations', o => o.fires.continuation.total], ['Older burns', o => o.fires.older_burn.total],
+      ['Unclassifiable', o => o.fires.unclassifiable.total], ['Waiting for review', o => o.fires.pending_review.total],
+      ['Found on arrival only (not credited)', o => o.fires.found_not_credited],
+      ['Hours from ignition to discovery, patrol list (median)', o => o.fires.time_to_discovery_h.ignition?.median],
+      ['… alert visits', o => o.fires.time_to_discovery_h.response?.median], ['… no task', o => o.fires.time_to_discovery_h.chance?.median]])}
+    ${tbl('Effort and dose (exploratory, recorded not tested)', [['Forest area (km²)', o => o.effort.forest_km2],
+      ['Person-hours per km² of forest per week', o => o.effort.person_hours_per_km2_per_week], ['Completed inspections', o => o.effort.inspections],
+      ['Median minutes on site', o => o.effort.median_minutes_on_site], ['People met', o => o.effort.people_met],
+      ['Warnings given', o => o.effort.warnings], ['FIR / POR registered', o => o.effort.fir_por]])}
+    ${tbl('Person-hours by stream and part of the day', [['Patrol list: travel', o => o.person_hours.ignition.travel], ['Patrol list: on site', o => o.person_hours.ignition.on_site],
+      ['Patrol list: idle / waiting', o => o.person_hours.ignition.idle], ['Patrol list: no phone positions', o => o.person_hours.ignition.no_positions],
+      ['Alert visits: travel', o => o.person_hours.response.travel], ['Alert visits: on site', o => o.person_hours.response.on_site],
+      ['Alert visits: idle / waiting', o => o.person_hours.response.idle], ['Alert visits: no phone positions', o => o.person_hours.response.no_positions],
+      ['Not linked to a task', o => o.staff_hours.unassigned], ['Share not linked to a task', o => o.unassigned_share == null ? null : (100 * o.unassigned_share).toFixed(1) + '%']])}
+    ${tbl('Patrol-list checks', [['Cell checks issued', o => o.ignition.tasks], ['Inspected (2+ photos inside, 100 m apart)', o => o.ignition.inspected],
+      ['Inspected inside the window', o => o.ignition.inspected_in_window], ['Arrived only, not counted', o => o.ignition.arrived_not_inspected],
+      ['Not reported', o => o.ignition.not_reported], ['No fire, no fresh burn', o => o.ignition.nothing_found], ['Fires found', o => o.ignition.fires_found],
+      ['Fires verified (accepted, strong proof)', o => o.ignition.fires_verified], ['New by burn age too (now or 1-2 days)', o => o.ignition.fires_new]])}
+    ${tbl('Alert visits (same in every arm, scored separately)', [['Satellite alerts', o => o.response.alerts], ['Visited within 2 days', o => o.response.visited_2d],
+      ['Still inside their 2 days', o => o.response.pending], ['Missed (no visit within 2 days)', o => o.response.missed],
+      ['Missed, with a burn scar', o => o.response.missed_with_scar], ['Fires found', o => o.response.fires_found], ['Staff-hours', o => o.staff_hours.response]])}
+    ${tbl('Other', [['Staff-hours not linked to a task', o => o.staff_hours.unassigned], ['Fires found with no task: no nearby recent VIIRS', o => o.chance_no_recent_viirs],
+      ['Fires found with no task: near a recent alert', o => o.chance_near_recent_viirs], ['Fires crossing a beat boundary', o => o.fires_crossing_beats],
+      ['Fires fought (line, beating, water, counter-fire)', o => o.fires_suppressed]])}
+    <p class="muted">Shadow lists stored (not sent): ${r.shadow_lists.length}</p>
+    <p class="muted">${r.notes.map(esc).join('<br>')}</p>
+    <a class="btn alt" href="/api/pilot/missed.csv?start=${r.start}&end=${r.end}">Download missed alerts (${r.missed.length})</a>
+    <a class="btn alt" href="/api/pilot/beats.csv?start=${r.start}&end=${r.end}">Download per-beat table</a>
+    <a class="btn alt" href="/review">Blind fire review</a>
+    <a class="btn alt" href="#" onclick="shakedown();return false">Shakedown gate</a>`;
+  d.classList.add('open');
+}
+async function rev(id, decision) {   // report_id: the report on screen, so a newer one is never accepted unseen
+  try { await api(`/api/incidents/${id}/review`, {method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({decision, note: document.getElementById('rv-note').value, report_id: OPENED_REPORT[id] ?? null})}); }
+  catch (e) { if (e.message !== 'login') alert(e.message); }
+  await refresh(); openInc(id);
+}
+load().catch(e => console.warn(e));
+</script></body></html>

@@ -1,0 +1,102 @@
+{
+ "rows": 16184,
+ "fires": 1317,
+ "table": {
+  "blind (cloud/bow-tie/etc)": {
+   "passes": 1845,
+   "fires": 833,
+   "seen_again_later": 0.396
+  },
+  "clear, no fire": {
+   "passes": 7909,
+   "fires": 1305,
+   "seen_again_later": 0.395
+  },
+  "fire seen": {
+   "passes": 3856,
+   "fires": 1036,
+   "seen_again_later": 0.732
+  },
+  "partial": {
+   "passes": 2574,
+   "fires": 1012,
+   "seen_again_later": 0.434
+  }
+ },
+ "no_dot_total": {
+  "passes": 12328,
+  "seen_again_later": 0.403,
+  "share_blind": 0.15,
+  "share_clear": 0.642
+ },
+ "by_hours": {
+  "<14 h | blind (cloud/bow-tie/etc)": {
+   "passes": 1206,
+   "seen_again": 0.467
+  },
+  "<14 h | clear, no fire": {
+   "passes": 4901,
+   "seen_again": 0.46
+  },
+  "<14 h | partial": {
+   "passes": 1673,
+   "seen_again": 0.507
+  },
+  "14-26 h | blind (cloud/bow-tie/etc)": {
+   "passes": 519,
+   "seen_again": 0.256
+  },
+  "14-26 h | clear, no fire": {
+   "passes": 2441,
+   "seen_again": 0.283
+  },
+  "14-26 h | partial": {
+   "passes": 716,
+   "seen_again": 0.3
+  },
+  "26-36 h | blind (cloud/bow-tie/etc)": {
+   "passes": 120,
+   "seen_again": 0.283
+  },
+  "26-36 h | clear, no fire": {
+   "passes": 567,
+   "seen_again": 0.314
+  },
+  "26-36 h | partial": {
+   "passes": 185,
+   "seen_again": 0.292
+  }
+ },
+ "heldout_stop_model": {
+  "dots only (hours since last dot, view angle, satellite)": {
+   "auc": 0.629,
+   "log_loss": 0.6512
+  },
+  "+ mask (clear and blind shares)": {
+   "auc": 0.63,
+   "log_loss": 0.6506,
+   "calibration": {
+    "(0.0, 0.2]": {
+     "n": 247,
+     "said": 0.18,
+     "real": 0.25
+    },
+    "(0.2, 0.4]": {
+     "n": 5641,
+     "said": 0.32,
+     "real": 0.31
+    },
+    "(0.4, 0.6]": {
+     "n": 6022,
+     "said": 0.48,
+     "real": 0.48
+    },
+    "(0.6, 0.8]": {
+     "n": 418,
+     "said": 0.61,
+     "real": 0.61
+    }
+   }
+  }
+ }
+}

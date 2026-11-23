@@ -74,7 +74,7 @@ cd FIRE
 
 # Create .env file
 cat > .env << 'EOF'
-FIRMS_MAP_KEY=e9440d63e8365cde82400a3e991fdc5e
+FIRMS_MAP_KEY=<your FIRMS map key>
 GEE_PROJECT=van-suraksha-alert
 EOF
 

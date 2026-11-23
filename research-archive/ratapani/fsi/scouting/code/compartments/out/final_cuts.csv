@@ -1,0 +1,733 @@
+key,division,patch,order,km,kind,first_budget_km,insample_patch_ha_yr,insample_forest_ha_yr
+Alirajpur,Alirajpur,26,1,0.445,straight,500,5.894,9.324
+Ashok_Nagar,Ashok_Nagar,6,1,0.72,straight,1000,7.812,19.096
+BTR,BTR,37,1,0.96,straight,1000,10.584,23.352
+BTR,BTR,37,2,0.654,straight,1000,6.672,18.853
+BTR,BTR,37,3,1.8,straight,1000,15.917,28.025
+Barghat_Project,Barghat Project,5,1,1.887,straight,1000,16.334,33.312
+Barghat_Project,Barghat Project,7,1,1.2,straight,1000,13.584,36.5
+Barghat_Project,Barghat Project,7,2,1.32,straight,1000,10.87,24.41
+Barghat_Project,Barghat Project,9,1,1.014,straight,500,14.141,18.623
+Barghat_Project,Barghat Project,9,2,2.884,straight,1000,27.034,43.466
+Barghat_Project,Barghat Project,9,3,0.48,straight,1000,4.308,7.626
+Barghat_Project,Barghat Project,9,4,0.6,straight,1000,4.981,6.819
+Barghat_Project,Barghat Project,12,1,0.84,straight,500,12.866,19.04
+Barghat_Project,Barghat Project,12,2,2.16,straight,500,28.64,34.833
+Barghat_Project,Barghat Project,12,3,3.809,straight,1000,32.532,46.256
+Barghat_Project,Barghat Project,17,1,0.96,straight,500,11.074,16.856
+Barghat_Project,Barghat Project,17,2,2.76,straight,1000,24.132,34.417
+Barghat_Project,Barghat Project,35,1,1.419,straight,1000,12.813,43.454
+Barwah,Barwah,17,1,0.6,straight,500,7.406,10.738
+Barwah,Barwah,18,1,1.815,straight,1000,15.19,24.528
+Barwah,Barwah,18,2,0.774,straight,1000,7.174,11.479
+Barwah,Barwah,33,1,4.92,straight,500,62.09,79.94
+Barwah,Barwah,33,2,1.74,straight,500,23.083,34.358
+Barwah,Barwah,33,3,0.89,straight,1000,9.482,11.445
+Bhopal,Bhopal,17,1,0.745,straight,500,10.584,29.456
+Bhopal,Bhopal,17,2,1.08,straight,500,12.529,21.702
+Bhopal,Bhopal,19,1,0.6,straight,100,17.43,42.056
+Bhopal,Bhopal,19,2,0.72,straight,500,11.025,26.914
+Bhopal,Bhopal,19,3,0.6,straight,1000,6.492,49.355
+Bhopal,Bhopal,19,4,1.453,straight,1000,12.421,32.512
+Burhanpur,Burhanpur,1,1,0.84,straight,500,12.25,19.18
+Burhanpur,Burhanpur,1,2,1.898,straight,500,26.978,64.019
+Burhanpur,Burhanpur,34,1,0.84,straight,250,16.632,19.782
+Burhanpur,Burhanpur,34,2,0.96,straight,1000,10.961,13.023
+Burhanpur,Burhanpur,47,1,2.52,straight,250,49.91,76.09
+Burhanpur,Burhanpur,47,2,1.14,straight,250,25.32,57.767
+Burhanpur,Burhanpur,47,3,3.6,straight,250,57.545,81.297
+Burhanpur,Burhanpur,47,4,0.96,straight,500,13.456,18.813
+Burhanpur,Burhanpur,47,5,2.52,straight,500,30.68,47.427
+Burhanpur,Burhanpur,47,6,1.68,straight,1000,17.114,26.711
+Burhanpur,Burhanpur,47,7,2.28,straight,1000,19.328,25.623
+Burhanpur,Burhanpur,53,1,1.32,straight,100,35.644,97.776
+Burhanpur,Burhanpur,53,2,1.335,straight,250,24.112,65.801
+Burhanpur,Burhanpur,53,3,2.52,straight,500,32.389,48.888
+Burhanpur,Burhanpur,53,4,0.36,straight,500,8.894,13.655
+Burhanpur,Burhanpur,53,5,1.49,straight,500,17.413,22.291
+Burhanpur,Burhanpur,53,6,1.304,straight,1000,12.841,18.016
+Burhanpur,Burhanpur,53,7,2.4,straight,1000,23.602,31.367
+Burhanpur,Burhanpur,53,8,1.658,straight,1000,14.991,20.185
+Burhanpur,Burhanpur,53,9,0.325,straight,1000,2.905,5.132
+Burhanpur,Burhanpur,96,1,1.32,straight,100,35.723,70.76
+Burhanpur,Burhanpur,96,2,2.04,straight,250,34.63,62.779
+Burhanpur,Burhanpur,96,3,1.395,straight,500,17.617,31.418
+Burhanpur,Burhanpur,96,4,0.869,straight,500,12.679,32.783
+Burhanpur,Burhanpur,96,5,1.68,straight,1000,16.161,37.583
+Burhanpur,Burhanpur,96,6,1.08,straight,1000,9.007,22.608
+Chhatarpur,Chhatarpur,7,1,0.865,straight,100,40.2,78.163
+Chhatarpur,Chhatarpur,7,2,1.275,straight,100,27.736,41.277
+Chhatarpur,Chhatarpur,7,3,0.774,straight,250,15.71,24.0
+Chhatarpur,Chhatarpur,7,4,1.2,straight,500,15.193,26.159
+Chhatarpur,Chhatarpur,7,5,1.815,straight,1000,17.564,22.041
+Chhatarpur,Chhatarpur,7,6,1.049,straight,1000,8.641,18.179
+Chhatarpur,Chhatarpur,7,7,0.735,straight,1000,6.185,11.161
+Chhatarpur,Chhatarpur,12,1,0.654,straight,100,17.836,25.214
+Chhatarpur,Chhatarpur,12,2,0.36,straight,250,5.915,13.914
+Chhatarpur,Chhatarpur,12,3,0.59,ridge,500,8.123,10.739
+Chhatarpur,Chhatarpur,12,4,0.685,straight,500,8.591,11.089
+Chhatarpur,Chhatarpur,27,1,1.32,straight,500,17.78,31.864
+Chhatarpur,Chhatarpur,27,2,1.32,straight,1000,11.821,21.006
+Chhatarpur,Chhatarpur,29,1,2.055,straight,1000,16.114,24.234
+Chhatarpur,Chhatarpur,29,2,2.429,straight,1000,21.134,28.54
+Chhatarpur,Chhatarpur,29,3,0.84,straight,1000,8.152,9.603
+Chhatarpur,Chhatarpur,31,1,1.08,straight,100,40.735,50.661
+Chhatarpur,Chhatarpur,31,2,0.72,straight,100,26.516,47.04
+Chhatarpur,Chhatarpur,31,3,0.72,straight,100,26.052,32.513
+Chhatarpur,Chhatarpur,31,4,0.745,straight,100,17.399,30.759
+Chhatarpur,Chhatarpur,31,5,2.52,straight,250,48.28,65.586
+Chhatarpur,Chhatarpur,31,6,1.13,straight,250,17.83,29.291
+Chhatarpur,Chhatarpur,31,7,2.729,straight,500,38.835,73.841
+Chhatarpur,Chhatarpur,31,8,2.407,straight,500,32.06,42.866
+Chhatarpur,Chhatarpur,31,9,0.84,straight,500,10.079,15.772
+Chhatarpur,Chhatarpur,31,10,1.927,straight,1000,21.918,34.541
+Chhatarpur,Chhatarpur,31,11,1.44,straight,1000,14.357,21.76
+Chhatarpur,Chhatarpur,31,12,0.604,straight,1000,6.273,9.591
+Chhatarpur,Chhatarpur,31,13,0.844,straight,1000,8.21,9.28
+Chhatarpur,Chhatarpur,31,14,2.52,straight,1000,21.323,26.023
+Chhatarpur,Chhatarpur,31,15,2.214,straight,1000,18.136,35.929
+Chhatarpur,Chhatarpur,35,1,0.48,straight,500,7.252,19.544
+Chhatarpur,Chhatarpur,35,2,0.66,straight,500,9.45,14.522
+Chhatarpur,Chhatarpur,35,3,0.6,straight,500,7.121,10.726
+Chhatarpur,Chhatarpur,35,4,0.71,straight,1000,7.601,11.363
+Chhatarpur,Chhatarpur,36,1,1.37,straight,100,41.526,47.453
+Chhatarpur,Chhatarpur,36,2,0.96,straight,100,27.566,47.236
+Chhatarpur,Chhatarpur,36,3,0.6,straight,100,16.03,22.008
+Chhatarpur,Chhatarpur,36,4,0.96,straight,250,19.055,21.198
+Chhatarpur,Chhatarpur,36,5,1.959,straight,250,34.311,40.106
+Chhatarpur,Chhatarpur,36,6,0.6,straight,250,10.452,19.102
+Chhatarpur,Chhatarpur,36,7,3.364,straight,250,56.592,127.093
+Chhatarpur,Chhatarpur,36,8,0.72,straight,500,10.614,14.529
+Chhatarpur,Chhatarpur,36,9,1.56,straight,500,21.385,49.985
+Chhatarpur,Chhatarpur,36,10,1.32,straight,500,17.473,19.702
+Chhatarpur,Chhatarpur,36,11,1.68,straight,1000,16.74,24.546
+Chhatarpur,Chhatarpur,36,12,1.26,straight,1000,12.415,13.69
+Chhatarpur,Chhatarpur,36,13,1.695,straight,1000,15.735,35.318
+Chhatarpur,Chhatarpur,36,14,2.287,straight,1000,21.963,40.511
+Chhatarpur,Chhatarpur,36,15,1.2,straight,1000,10.447,11.586
+Chhatarpur,Chhatarpur,41,1,0.84,straight,500,10.346,36.358
+Chhatarpur,Chhatarpur,41,2,0.42,straight,1000,4.592,9.31
+Chhatarpur,Chhatarpur,47,1,1.804,straight,500,27.496,42.686
+Chhatarpur,Chhatarpur,47,2,0.904,straight,1000,7.384,9.01
+Chhatarpur,Chhatarpur,50,1,0.36,straight,250,7.028,16.744
+Chhatarpur,Chhatarpur,50,2,0.689,straight,250,11.762,29.012
+Chhatarpur,Chhatarpur,50,3,0.36,straight,500,5.251,12.408
+Chhatarpur,Chhatarpur,57,1,0.654,straight,500,9.73,17.808
+Chhatarpur,Chhatarpur,57,2,0.71,straight,1000,6.459,8.865
+Chhatarpur,Chhatarpur,57,3,0.78,straight,1000,6.434,11.753
+Damoh,Damoh,11,1,2.04,straight,500,28.879,57.083
+Damoh,Damoh,11,2,2.16,straight,1000,19.214,37.661
+Damoh,Damoh,14,1,0.72,straight,100,17.668,43.848
+Damoh,Damoh,14,2,0.65,straight,250,12.469,22.787
+Damoh,Damoh,14,3,0.565,straight,500,7.047,13.124
+Damoh,Damoh,14,4,2.944,straight,1000,27.687,52.948
+Damoh,Damoh,14,5,0.77,straight,1000,10.042,18.628
+Damoh,Damoh,45,1,2.28,straight,250,37.38,59.061
+Damoh,Damoh,45,2,2.04,straight,1000,18.771,30.839
+Dewas,Dewas,1,1,1.899,straight,500,25.172,37.94
+Dewas,Dewas,1,2,4.099,straight,1000,36.906,87.212
+Dewas,Dewas,2,1,1.8,straight,100,52.759,71.341
+Dewas,Dewas,2,2,0.84,straight,100,27.577,35.477
+Dewas,Dewas,2,3,0.84,straight,100,19.243,26.478
+Dewas,Dewas,2,4,4.8,straight,500,62.636,76.966
+Dewas,Dewas,2,5,2.319,straight,500,26.79,30.626
+Dewas,Dewas,2,6,0.735,straight,1000,8.116,10.651
+Dewas,Dewas,2,7,0.95,straight,1000,10.101,12.225
+Dewas,Dewas,2,8,0.54,straight,1000,6.106,7.503
+Dewas,Dewas,2,9,0.96,straight,1000,9.31,13.125
+Dewas,Dewas,2,10,2.007,valley,1000,18.022,23.685
+Dewas,Dewas,2,11,0.3,straight,1000,2.94,3.696
+Dewas,Dewas,36,1,0.385,straight,1000,3.276,7.616
+Dewas,Dewas,69,1,0.95,straight,1000,8.05,11.662
+Dewas,Dewas,117,1,0.735,straight,1000,8.078,16.212
+Dewas,Dewas,156,1,1.659,straight,1000,17.854,28.034
+Dewas,Dewas,161,1,0.84,straight,100,27.174,45.374
+Dewas,Dewas,161,2,0.84,straight,100,17.763,29.553
+Dewas,Dewas,161,3,1.875,straight,500,23.803,33.439
+Dewas,Dewas,161,4,0.83,straight,1000,7.785,9.165
+Dewas,Dewas,161,5,0.6,straight,1000,6.157,8.49
+Dewas,Dewas,161,6,0.6,straight,1000,6.957,11.702
+Dewas,Dewas,185,1,0.96,straight,1000,8.904,19.88
+Dewas,Dewas,194,1,1.56,straight,250,29.638,55.146
+Dewas,Dewas,194,2,1.01,straight,250,18.956,37.93
+Dewas,Dewas,194,3,0.35,valley,250,8.345,18.434
+Dewas,Dewas,194,4,0.47,straight,1000,5.129,11.686
+Dewas,Dewas,194,5,0.72,straight,1000,7.504,10.063
+Dewas,Dewas,194,6,2.76,straight,1000,28.594,36.554
+Dewas,Dewas,194,7,0.84,straight,1000,6.79,8.498
+Dewas,Dewas,216,1,0.54,straight,1000,5.474,14.728
+Dhar,Dhar,22,1,1.01,straight,500,12.558,26.614
+Dhar,Dhar,22,2,0.855,straight,1000,8.296,17.907
+Dhar,Dhar,22,3,0.799,straight,1000,6.526,16.552
+East_Chhindwara,East_Chhindwara,3,1,1.035,straight,1000,10.15,40.306
+East_Chhindwara,East_Chhindwara,34,1,1.035,straight,500,12.712,25.018
+East_Chhindwara,East_Chhindwara,34,2,1.8,straight,1000,14.815,24.969
+East_Chhindwara,East_Chhindwara,52,1,0.59,straight,1000,4.872,6.314
+East_Chhindwara,East_Chhindwara,52,2,1.2,straight,1000,11.06,25.452
+East_Chhindwara,East_Chhindwara,53,1,1.44,straight,100,32.652,54.039
+East_Chhindwara,East_Chhindwara,53,2,1.92,straight,500,21.643,36.77
+East_Chhindwara,East_Chhindwara,53,3,1.26,straight,500,17.365,20.47
+East_Chhindwara,East_Chhindwara,58,1,0.72,straight,1000,7.648,16.664
+East_Chhindwara,East_Chhindwara,59,1,0.6,straight,1000,6.566,35.098
+East_Chhindwara,East_Chhindwara,59,2,0.72,straight,1000,5.963,24.538
+East_Chhindwara,East_Chhindwara,79,1,2.789,straight,1000,27.118,38.598
+East_Chhindwara,East_Chhindwara,79,2,1.815,straight,1000,15.467,24.727
+Gwalior,Gwalior,1,1,2.64,straight,1000,18.648,24.92
+Gwalior,Gwalior,1,2,0.3,straight,1000,5.558,8.708
+Gwalior,Gwalior,2,1,0.36,straight,100,12.544,18.704
+Gwalior,Gwalior,2,2,0.6,straight,1000,6.073,7.708
+Hoshangabad,Hoshangabad,3,1,0.6,straight,1000,6.37,9.24
+Hoshangabad,Hoshangabad,3,2,0.6,straight,1000,7.061,8.843
+Hoshangabad,Hoshangabad,8,1,0.47,valley,100,13.328,25.886
+Hoshangabad,Hoshangabad,8,2,0.72,straight,250,13.814,25.673
+Hoshangabad,Hoshangabad,8,3,0.879,straight,500,10.348,17.062
+Hoshangabad,Hoshangabad,8,4,1.842,straight,500,26.323,37.563
+Hoshangabad,Hoshangabad,8,5,0.18,straight,500,2.392,5.596
+Hoshangabad,Hoshangabad,16,1,2.322,straight,500,25.101,55.593
+Hoshangabad,Hoshangabad,16,2,0.96,straight,500,14.832,45.164
+Hoshangabad,Hoshangabad,16,3,1.08,straight,500,12.845,29.909
+Hoshangabad,Hoshangabad,16,4,1.08,straight,1000,9.91,29.795
+Hoshangabad,Hoshangabad,30,1,1.08,straight,250,20.802,26.552
+Hoshangabad,Hoshangabad,30,2,0.78,straight,250,13.178,16.766
+Hoshangabad,Hoshangabad,30,3,1.792,straight,500,23.482,49.254
+Hoshangabad,Hoshangabad,30,4,0.735,straight,500,10.296,27.166
+Hoshangabad,Hoshangabad,30,5,0.36,straight,1000,3.611,4.597
+Hoshangabad,Hoshangabad,30,6,2.16,straight,1000,18.197,22.407
+Indore,Indore,10,1,1.08,straight,500,13.244,44.366
+Indore,Indore,11,1,1.32,straight,100,39.886,107.296
+Indore,Indore,11,2,1.32,straight,250,25.341,69.094
+Indore,Indore,11,3,3.199,straight,500,42.962,92.161
+Indore,Indore,11,4,2.88,straight,1000,29.015,60.426
+Indore,Indore,14,1,0.565,straight,500,7.546,23.268
+Indore,Indore,14,2,1.68,straight,1000,16.029,31.599
+Indore,Indore,16,1,2.4,straight,1000,20.126,29.8
+Indore,Indore,22,1,2.012,straight,250,31.246,53.608
+Indore,Indore,22,2,1.707,straight,1000,18.206,32.992
+Indore,Indore,22,3,1.02,straight,1000,8.576,10.691
+Indore,Indore,23,1,0.565,straight,1000,4.988,11.754
+Indore,Indore,29,1,0.6,straight,1000,6.3,12.684
+Indore,Indore,29,2,0.96,straight,1000,8.34,14.275
+Indore,Indore,37,1,1.44,straight,1000,13.294,20.224
+Indore,Indore,45,1,0.48,straight,250,7.602,20.02
+Indore,Indore,45,2,0.6,straight,1000,4.976,13.068
+Jabalpur,Jabalpur,22,1,0.385,straight,100,11.802,18.9
+Jabalpur,Jabalpur,22,2,0.48,straight,500,7.115,11.21
+Jabalpur,Jabalpur,22,3,1.335,straight,500,15.557,28.614
+Jabalpur,Jabalpur,22,4,0.42,straight,1000,4.47,6.955
+Katni,Katni,2,1,0.42,straight,1000,4.62,10.752
+Katni,Katni,6,1,0.65,straight,1000,6.706,36.666
+Katni,Katni,7,1,1.852,straight,1000,14.994,26.208
+Khandwa,Khandwa,1,1,0.84,straight,100,39.018,57.428
+Khandwa,Khandwa,1,2,2.76,straight,100,82.709,107.339
+Khandwa,Khandwa,1,3,0.445,straight,100,19.628,21.303
+Khandwa,Khandwa,1,4,0.84,straight,100,25.08,37.03
+Khandwa,Khandwa,1,5,1.924,straight,100,40.8,58.655
+Khandwa,Khandwa,1,6,0.84,straight,250,16.083,23.511
+Khandwa,Khandwa,1,7,0.625,straight,250,11.761,12.896
+Khandwa,Khandwa,1,8,0.96,straight,500,11.973,17.238
+Khandwa,Khandwa,1,9,1.32,straight,1000,14.922,19.861
+Khandwa,Khandwa,1,10,5.04,straight,1000,49.289,61.859
+Khandwa,Khandwa,1,11,0.78,straight,1000,8.447,11.896
+Khandwa,Khandwa,1,12,1.368,straight,1000,12.543,18.201
+Khandwa,Khandwa,1,13,2.28,straight,1000,19.545,29.534
+Khandwa,Khandwa,1,14,1.2,straight,1000,9.888,13.737
+Khandwa,Khandwa,1,15,1.26,straight,1000,10.182,21.202
+Khandwa,Khandwa,1,16,1.08,straight,1000,8.476,12.826
+Khandwa,Khandwa,1,17,0.855,straight,1000,6.496,13.309
+Khandwa,Khandwa,1,18,1.08,straight,1000,8.067,14.886
+Khandwa,Khandwa,1,19,0.72,straight,1000,8.081,12.626
+Khandwa,Khandwa,60,1,0.48,straight,1000,4.13,31.528
+Khandwa,Khandwa,61,1,1.92,straight,250,35.224,91.714
+Khandwa,Khandwa,61,2,1.44,straight,250,23.05,55.984
+Khandwa,Khandwa,61,3,0.805,straight,500,9.298,32.059
+Khandwa,Khandwa,61,4,0.759,straight,1000,8.246,26.208
+Khandwa,Khandwa,61,5,1.029,straight,1000,12.064,15.366
+Khandwa,Khandwa,61,6,0.6,straight,1000,6.737,21.676
+Khandwa,Khandwa,61,7,1.68,straight,1000,14.164,25.728
+Khandwa,Khandwa,61,8,1.14,straight,1000,9.415,20.884
+Khandwa,Khandwa,70,1,1.07,straight,100,25.522,76.832
+Khandwa,Khandwa,70,2,0.944,straight,250,15.707,48.668
+Khandwa,Khandwa,70,3,1.43,straight,250,23.777,46.984
+Khandwa,Khandwa,70,4,3.859,straight,1000,35.241,74.685
+Khandwa,Khandwa,70,5,0.72,straight,1000,6.507,7.602
+Khandwa,Khandwa,73,1,4.92,straight,250,97.487,163.637
+Khandwa,Khandwa,73,2,1.56,straight,250,31.388,107.8
+Khandwa,Khandwa,73,3,0.42,straight,250,8.382,11.451
+Khandwa,Khandwa,73,4,0.54,straight,500,8.312,16.979
+Khandwa,Khandwa,73,5,1.225,straight,500,17.514,46.442
+Khandwa,Khandwa,73,6,1.56,straight,500,21.86,71.619
+Khandwa,Khandwa,73,7,1.935,straight,500,26.833,32.279
+Khandwa,Khandwa,73,8,2.284,straight,500,26.537,36.393
+Khandwa,Khandwa,73,9,1.8,straight,1000,18.617,43.349
+Khandwa,Khandwa,73,10,1.68,straight,1000,16.895,27.004
+Khandwa,Khandwa,73,11,2.58,straight,1000,25.416,32.653
+Khandwa,Khandwa,73,12,1.664,straight,1000,14.571,19.454
+Khandwa,Khandwa,73,13,4.68,straight,1000,39.64,63.255
+Khandwa,Khandwa,73,14,0.12,straight,1000,1.842,1.433
+Khandwa,Khandwa,78,1,1.08,straight,500,12.852,20.244
+Khandwa,Khandwa,86,1,0.724,straight,100,26.6,42.98
+Khandwa,Khandwa,86,2,1.608,straight,100,39.085,69.086
+Khandwa,Khandwa,86,3,0.59,straight,100,16.184,33.857
+Khandwa,Khandwa,86,4,0.95,straight,250,17.773,31.965
+Khandwa,Khandwa,86,5,0.84,straight,250,13.034,24.906
+Khandwa,Khandwa,86,6,0.65,straight,250,10.049,21.36
+Khandwa,Khandwa,86,7,1.92,straight,500,25.738,37.217
+Khandwa,Khandwa,86,8,0.84,straight,1000,8.738,16.539
+Khandwa,Khandwa,86,9,0.9,straight,1000,8.514,14.044
+Khandwa,Khandwa,86,10,2.28,straight,1000,19.255,23.988
+Khandwa,Khandwa,86,11,1.395,straight,1000,11.572,14.042
+Khandwa,Khandwa,104,1,1.49,straight,250,21.053,44.23
+Khandwa,Khandwa,104,2,0.265,straight,250,9.309,13.114
+Khandwa,Khandwa,104,3,1.684,straight,1000,19.185,30.378
+Khandwa,Khandwa,104,4,0.685,straight,1000,6.199,8.324
+Khandwa,Khandwa,104,5,1.035,straight,1000,8.982,13.149
+Khandwa,Khandwa,104,6,0.96,straight,1000,7.85,11.78
+Khandwa,Khandwa,124,1,1.08,straight,1000,11.158,56.476
+Khandwa,Khandwa,160,1,1.56,straight,1000,16.24,27.44
+Khandwa,Khandwa,163,1,2.104,straight,1000,20.804,23.786
+Khandwa,Khandwa,163,2,1.779,straight,1000,14.428,56.512
+Kundam_Proj_Jabalpur,Kundam_Proj_Jabalpur,6,1,0.6,straight,500,7.588,12.264
+Kundam_Proj_Jabalpur,Kundam_Proj_Jabalpur,6,2,0.48,straight,1000,4.444,13.509
+Kundam_Proj_Katni,Kundam_Proj_Katni,7,1,0.54,straight,250,9.744,14.98
+Kundam_Proj_Katni,Kundam_Proj_Katni,7,2,1.395,straight,500,17.528,44.856
+Kundam_Proj_Katni,Kundam_Proj_Katni,7,3,0.865,straight,1000,7.737,24.851
+Kundam_Proj_Katni,Kundam_Proj_Katni,7,4,0.385,straight,1000,5.247,5.848
+Kundam_Proj_Katni,Kundam_Proj_Katni,7,5,1.32,straight,1000,11.739,16.622
+Kundam_Proj_Katni,Kundam_Proj_Katni,12,1,0.685,straight,500,7.924,15.624
+Kundam_Proj_Katni,Kundam_Proj_Katni,12,2,0.6,straight,1000,5.508,9.029
+Kundam_Proj_Katni,Kundam_Proj_Katni,18,1,0.6,straight,250,10.402,19.516
+Kundam_Proj_Katni,Kundam_Proj_Katni,18,2,0.96,straight,500,14.119,19.102
+Lamta_Proj_N_Balaghat,Lamta_Proj_N_Balaghat,13,1,0.445,straight,1000,3.836,5.026
+Lamta_Proj_S_Balaghat,Lamta_Proj_S_Balaghat,9,1,1.92,straight,500,29.085,75.089
+Lamta_Proj_S_Balaghat,Lamta_Proj_S_Balaghat,9,2,0.6,straight,1000,6.33,11.799
+Mohgaon_Proj_West_Mandla,Mohgaon_Proj_West_Mandla,25,1,0.865,straight,100,19.306,46.69
+Mohgaon_Proj_West_Mandla,Mohgaon_Proj_West_Mandla,25,2,2.16,straight,500,28.552,63.155
+Narsinghpur,Narsinghpur,22,1,1.68,straight,1000,16.184,20.832
+Narsinghpur,Narsinghpur,35,1,2.574,straight,1000,28.6,73.386
+Narsinghpur,Narsinghpur,35,2,0.78,straight,1000,7.28,9.262
+Narsinghpur,Narsinghpur,40,1,0.77,straight,1000,6.846,14.574
+Narsinghpur,Narsinghpur,43,1,0.969,ridge,250,16.688,22.4
+Narsinghpur,Narsinghpur,43,2,0.6,straight,500,6.889,8.922
+Narsinghpur,Narsinghpur,43,3,1.86,straight,1000,18.163,24.519
+Narsinghpur,Narsinghpur,44,1,1.08,straight,100,29.988,67.783
+Narsinghpur,Narsinghpur,44,2,1.8,straight,100,42.018,50.791
+Narsinghpur,Narsinghpur,44,3,6.528,straight,100,152.136,178.879
+Narsinghpur,Narsinghpur,44,4,0.96,straight,100,22.381,47.048
+Narsinghpur,Narsinghpur,44,5,2.717,straight,250,50.699,81.799
+Narsinghpur,Narsinghpur,44,6,2.992,straight,250,61.096,70.291
+Narsinghpur,Narsinghpur,44,7,1.684,valley,500,23.2,27.066
+Narsinghpur,Narsinghpur,44,8,0.445,straight,500,6.777,7.498
+Narsinghpur,Narsinghpur,44,9,2.75,straight,500,36.807,42.835
+Narsinghpur,Narsinghpur,44,10,1.353,straight,500,19.612,29.015
+Narsinghpur,Narsinghpur,44,11,0.65,straight,500,7.942,11.525
+Narsinghpur,Narsinghpur,44,12,0.565,straight,500,6.72,12.18
+Narsinghpur,Narsinghpur,44,13,0.919,straight,500,10.878,12.929
+Narsinghpur,Narsinghpur,44,14,0.145,straight,500,1.713,1.882
+Narsinghpur,Narsinghpur,44,15,2.512,straight,1000,24.757,44.26
+Narsinghpur,Narsinghpur,44,16,0.36,straight,1000,4.138,4.178
+Narsinghpur,Narsinghpur,44,17,4.935,straight,1000,47.685,58.662
+Narsinghpur,Narsinghpur,44,18,0.399,straight,1000,8.005,8.406
+Narsinghpur,Narsinghpur,44,19,0.385,straight,1000,6.099,6.243
+Narsinghpur,Narsinghpur,44,20,0.47,straight,1000,4.564,4.923
+Narsinghpur,Narsinghpur,51,1,1.179,straight,250,24.752,33.124
+Narsinghpur,Narsinghpur,51,2,1.73,straight,500,20.091,24.893
+Narsinghpur,Narsinghpur,52,1,1.56,straight,100,33.278,58.52
+Narsinghpur,Narsinghpur,52,2,2.64,straight,500,38.62,58.641
+Narsinghpur,Narsinghpur,52,3,1.014,straight,500,15.975,25.687
+Narsinghpur,Narsinghpur,52,4,0.78,straight,500,10.235,10.816
+Narsinghpur,Narsinghpur,52,5,4.769,straight,500,52.574,85.41
+Narsinghpur,Narsinghpur,52,6,0.96,straight,500,12.921,18.077
+Narsinghpur,Narsinghpur,52,7,0.48,straight,1000,4.228,5.758
+Narsinghpur,Narsinghpur,52,8,3.594,straight,1000,28.632,47.599
+Narsinghpur,Narsinghpur,52,9,0.72,straight,1000,7.998,9.879
+Narsinghpur,Narsinghpur,52,10,0.66,straight,1000,6.508,11.999
+Narsinghpur,Narsinghpur,59,1,2.04,straight,500,25.908,35.313
+Narsinghpur,Narsinghpur,76,1,1.395,straight,250,26.432,45.024
+Narsinghpur,Narsinghpur,76,2,0.795,straight,250,14.643,24.29
+Narsinghpur,Narsinghpur,76,3,1.813,straight,1000,18.314,27.226
+Narsinghpur,Narsinghpur,76,4,0.3,straight,1000,3.701,5.19
+Narsinghpur,Narsinghpur,79,1,2.969,straight,500,39.007,61.347
+Narsinghpur,Narsinghpur,79,2,0.54,straight,500,7.514,8.605
+Narsinghpur,Narsinghpur,79,3,0.48,straight,1000,4.094,8.329
+Narsinghpur,Narsinghpur,79,4,3.12,straight,1000,25.535,41.187
+Narsinghpur,Narsinghpur,83,1,1.56,straight,500,21.554,28.007
+Narsinghpur,Narsinghpur,83,2,0.625,straight,1000,5.997,22.002
+Narsinghpur,Narsinghpur,83,3,0.3,straight,1000,2.732,3.518
+Narsinghpur,Narsinghpur,85,1,0.83,straight,500,10.444,28.168
+Noradehi,Noradehi,21,1,3.0,straight,250,62.856,70.715
+Noradehi,Noradehi,21,2,2.64,straight,250,55.123,60.39
+Noradehi,Noradehi,21,3,1.095,straight,250,20.286,40.39
+Noradehi,Noradehi,21,4,3.48,straight,250,56.913,65.946
+Noradehi,Noradehi,21,5,0.78,straight,250,12.102,13.334
+Noradehi,Noradehi,21,6,2.549,straight,250,32.611,39.787
+Noradehi,Noradehi,21,7,0.745,straight,250,21.479,25.447
+Noradehi,Noradehi,21,8,1.08,straight,1000,9.31,14.448
+Noradehi,Noradehi,21,9,0.724,straight,1000,5.983,6.702
+Noradehi,Noradehi,21,10,0.48,straight,1000,3.957,4.431
+Noradehi,Noradehi,43,1,1.32,straight,500,17.346,22.652
+Noradehi,Noradehi,43,2,1.2,straight,1000,13.186,18.238
+Noradehi,Noradehi,43,3,2.679,straight,1000,22.29,33.814
+Noradehi,Noradehi,43,4,2.069,straight,1000,18.53,23.598
+Noradehi,Noradehi,43,5,0.84,straight,1000,11.558,49.391
+North_Balaghat,North_Balaghat,3,1,0.36,straight,100,18.55,25.368
+North_Balaghat,North_Balaghat,3,2,0.65,straight,250,12.169,16.671
+North_Balaghat,North_Balaghat,3,3,1.899,straight,250,31.936,42.664
+North_Balaghat,North_Balaghat,3,4,0.84,straight,500,11.185,13.987
+North_Balaghat,North_Balaghat,3,5,2.58,straight,1000,22.955,26.017
+North_Balaghat,North_Balaghat,3,6,1.79,straight,1000,17.051,21.817
+North_Balaghat,North_Balaghat,9,1,2.04,straight,1000,21.14,88.438
+North_Balaghat,North_Balaghat,14,1,1.44,straight,500,20.636,56.224
+North_Balaghat,North_Balaghat,14,2,1.44,straight,1000,13.203,36.555
+North_Balaghat,North_Balaghat,35,1,0.96,straight,500,11.004,79.142
+North_Balaghat,North_Balaghat,35,2,2.04,straight,1000,21.294,30.562
+North_Balaghat,North_Balaghat,35,3,1.62,straight,1000,16.494,19.57
+North_Balaghat,North_Balaghat,35,4,1.299,straight,1000,10.721,56.527
+North_Balaghat,North_Balaghat,35,5,2.76,straight,1000,22.353,45.311
+North_Balaghat,North_Balaghat,35,6,0.809,straight,1000,7.666,9.429
+North_Balaghat,North_Balaghat,53,1,1.32,straight,250,21.112,31.906
+North_Balaghat,North_Balaghat,53,2,0.71,straight,500,8.618,17.342
+North_Balaghat,North_Balaghat,53,3,1.44,straight,1000,12.594,18.814
+North_Balaghat,North_Balaghat,60,1,0.699,straight,100,19.586,76.874
+North_Balaghat,North_Balaghat,60,2,0.72,straight,250,11.866,48.448
+North_Balaghat,North_Balaghat,60,3,3.474,straight,500,41.931,57.765
+North_Balaghat,North_Balaghat,60,4,1.419,straight,500,16.953,33.174
+North_Balaghat,North_Balaghat,60,5,0.72,straight,1000,6.398,11.2
+North_Balaghat,North_Balaghat,60,6,2.661,straight,1000,23.434,39.03
+North_Balaghat,North_Balaghat,80,1,1.56,straight,500,23.52,32.06
+North_Balaghat,North_Balaghat,80,2,1.2,straight,1000,13.479,15.189
+North_Balaghat,North_Balaghat,80,3,1.44,straight,1000,13.963,19.39
+North_Balaghat,North_Balaghat,80,4,0.855,straight,1000,8.364,11.824
+North_Balaghat,North_Balaghat,80,5,1.32,straight,1000,12.058,15.7
+North_Betul,North_Betul,12,1,2.053,straight,1000,23.093,58.141
+North_Betul,North_Betul,12,2,2.16,straight,1000,18.116,45.11
+North_Betul,North_Betul,16,1,0.72,straight,500,10.92,14.826
+North_Betul,North_Betul,16,2,1.8,straight,500,21.93,35.429
+North_Betul,North_Betul,16,3,0.48,straight,1000,5.433,9.256
+North_Betul,North_Betul,16,4,0.96,straight,1000,8.173,13.212
+North_Betul,North_Betul,21,1,2.094,straight,250,35.233,59.089
+North_Betul,North_Betul,21,2,1.92,straight,1000,21.606,34.976
+North_Betul,North_Betul,21,3,1.8,straight,1000,14.757,18.858
+North_Betul,North_Betul,31,1,2.909,straight,1000,29.376,45.021
+North_Betul,North_Betul,31,2,4.141,straight,1000,34.414,50.07
+North_Betul,North_Betul,31,3,0.48,straight,1000,5.58,13.902
+North_Betul,North_Betul,31,4,0.855,straight,1000,7.841,14.08
+North_Panna,North_Panna,1,1,0.84,straight,500,12.026,20.384
+North_Panna,North_Panna,1,2,0.96,straight,1000,9.894,15.53
+North_Panna,North_Panna,8,1,0.96,straight,1000,8.008,18.844
+North_Panna,North_Panna,10,1,0.654,straight,1000,5.908,8.022
+North_Panna,North_Panna,13,1,0.84,straight,100,28.28,56.714
+North_Panna,North_Panna,13,2,1.32,straight,100,29.103,53.836
+North_Panna,North_Panna,13,3,0.96,straight,250,17.687,27.501
+North_Panna,North_Panna,13,4,1.538,straight,250,28.074,57.461
+North_Panna,North_Panna,13,5,0.96,straight,500,13.463,14.916
+North_Panna,North_Panna,13,6,0.96,straight,500,13.214,25.373
+North_Panna,North_Panna,13,7,1.68,straight,500,20.341,33.083
+North_Panna,North_Panna,13,8,1.395,straight,1000,11.525,20.686
+North_Sagar,North_Sagar,9,1,0.84,straight,250,17.388,20.076
+North_Sagar,North_Sagar,9,2,0.78,straight,250,12.179,26.109
+North_Sagar,North_Sagar,9,3,0.84,straight,500,11.364,13.031
+North_Sagar,North_Sagar,9,4,0.53,straight,500,6.861,7.797
+North_Sagar,North_Sagar,9,5,4.8,straight,500,55.131,68.706
+North_Sagar,North_Sagar,9,6,1.92,straight,500,26.537,71.319
+North_Sagar,North_Sagar,9,7,1.14,straight,1000,11.988,14.582
+North_Sagar,North_Sagar,9,8,0.48,straight,1000,4.608,5.215
+North_Sagar,North_Sagar,9,9,0.615,straight,1000,5.505,18.894
+North_Sagar,North_Sagar,14,1,1.179,straight,250,20.57,25.351
+North_Sagar,North_Sagar,14,2,1.039,straight,500,13.312,15.928
+North_Seoni,North_Seoni,25,1,0.6,straight,100,14.392,19.11
+North_Seoni,North_Seoni,25,2,1.19,straight,250,24.519,41.386
+North_Seoni,North_Seoni,25,3,1.2,straight,500,15.711,25.532
+North_Shahdol,North_Shahdol,15,1,0.84,straight,1000,7.21,26.026
+Obedullahganj,Obedullahganj (Ratapani),4,1,2.549,straight,250,42.182,47.04
+Obedullahganj,Obedullahganj (Ratapani),4,2,2.704,straight,1000,26.631,31.452
+Obedullahganj,Obedullahganj (Ratapani),4,3,0.735,straight,1000,7.501,8.401
+Obedullahganj,Obedullahganj (Ratapani),4,4,3.919,straight,1000,38.207,41.249
+Obedullahganj,Obedullahganj (Ratapani),4,5,0.48,straight,1000,4.363,4.8
+Obedullahganj,Obedullahganj (Ratapani),7,1,0.909,straight,500,13.566,35.219
+Obedullahganj,Obedullahganj (Ratapani),13,1,5.28,straight,100,132.514,177.748
+Obedullahganj,Obedullahganj (Ratapani),13,2,3.116,straight,100,71.599,98.885
+Obedullahganj,Obedullahganj (Ratapani),13,3,3.84,straight,100,70.704,78.278
+Obedullahganj,Obedullahganj (Ratapani),13,4,4.544,straight,100,145.57,195.821
+Obedullahganj,Obedullahganj (Ratapani),13,5,2.88,straight,100,74.221,132.542
+Obedullahganj,Obedullahganj (Ratapani),13,6,1.285,straight,100,31.491,48.634
+Obedullahganj,Obedullahganj (Ratapani),13,7,1.92,straight,100,41.336,45.874
+Obedullahganj,Obedullahganj (Ratapani),13,8,1.839,straight,250,33.541,48.994
+Obedullahganj,Obedullahganj (Ratapani),13,9,0.445,straight,250,9.403,14.648
+Obedullahganj,Obedullahganj (Ratapani),13,10,0.265,straight,250,8.304,11.246
+Obedullahganj,Obedullahganj (Ratapani),13,11,1.56,straight,250,27.881,38.728
+Obedullahganj,Obedullahganj (Ratapani),13,12,3.389,straight,250,52.346,68.067
+Obedullahganj,Obedullahganj (Ratapani),13,13,6.598,straight,250,102.056,113.837
+Obedullahganj,Obedullahganj (Ratapani),13,14,3.9,straight,500,60.278,68.364
+Obedullahganj,Obedullahganj (Ratapani),13,15,0.36,straight,500,5.446,21.532
+Obedullahganj,Obedullahganj (Ratapani),13,16,2.334,straight,500,34.191,42.8
+Obedullahganj,Obedullahganj (Ratapani),13,17,0.975,straight,500,13.386,19.325
+Obedullahganj,Obedullahganj (Ratapani),13,18,0.65,straight,500,8.652,11.564
+Obedullahganj,Obedullahganj (Ratapani),13,19,1.56,straight,500,20.747,23.81
+Obedullahganj,Obedullahganj (Ratapani),13,20,2.16,straight,500,27.099,31.036
+Obedullahganj,Obedullahganj (Ratapani),17,1,1.44,straight,1000,15.074,21.308
+Obedullahganj,Obedullahganj (Ratapani),17,2,1.56,straight,1000,12.845,18.705
+Obedullahganj,Obedullahganj (Ratapani),19,1,0.89,straight,500,12.147,51.921
+Obedullahganj,Obedullahganj (Ratapani),19,2,1.215,straight,1000,11.467,41.721
+Obedullahganj,Obedullahganj (Ratapani),19,3,2.16,straight,1000,19.061,32.739
+Obedullahganj,Obedullahganj (Ratapani),19,4,1.02,straight,1000,12.386,21.695
+Obedullahganj,Obedullahganj (Ratapani),19,5,1.92,straight,1000,17.278,26.698
+Obedullahganj,Obedullahganj (Ratapani),19,6,0.894,straight,1000,7.707,25.578
+Obedullahganj,Obedullahganj (Ratapani),29,1,0.565,straight,100,18.886,23.52
+Obedullahganj,Obedullahganj (Ratapani),29,2,0.799,straight,250,12.761,49.458
+Obedullahganj,Obedullahganj (Ratapani),29,3,0.714,straight,500,9.013,34.499
+Obedullahganj,Obedullahganj (Ratapani),29,4,0.71,straight,1000,7.894,9.719
+Obedullahganj,Obedullahganj (Ratapani),45,1,4.32,straight,500,48.44,67.76
+Obedullahganj,Obedullahganj (Ratapani),45,2,1.643,straight,500,21.762,30.512
+Obedullahganj,Obedullahganj (Ratapani),45,3,0.565,straight,500,8.028,13.637
+Obedullahganj,Obedullahganj (Ratapani),45,4,1.453,straight,1000,16.515,20.528
+Obedullahganj,Obedullahganj (Ratapani),45,5,4.02,straight,1000,43.282,49.817
+Obedullahganj,Obedullahganj (Ratapani),45,6,2.012,straight,1000,17.109,20.199
+Obedullahganj,Obedullahganj (Ratapani),49,1,1.2,straight,100,25.816,41.076
+Obedullahganj,Obedullahganj (Ratapani),49,2,3.0,straight,100,74.635,113.255
+Obedullahganj,Obedullahganj (Ratapani),49,3,0.824,straight,250,15.555,22.782
+Obedullahganj,Obedullahganj (Ratapani),49,4,0.48,straight,250,8.688,14.775
+Obedullahganj,Obedullahganj (Ratapani),49,5,1.44,straight,500,22.059,35.543
+Obedullahganj,Obedullahganj (Ratapani),49,6,5.28,straight,500,67.065,95.032
+Obedullahganj,Obedullahganj (Ratapani),49,7,0.72,straight,500,11.078,14.134
+Obedullahganj,Obedullahganj (Ratapani),49,8,3.286,straight,1000,34.759,64.75
+Obedullahganj,Obedullahganj (Ratapani),49,9,0.96,straight,1000,9.414,10.832
+Obedullahganj,Obedullahganj (Ratapani),49,10,4.168,straight,1000,38.165,45.539
+Obedullahganj,Obedullahganj (Ratapani),49,11,0.84,straight,1000,12.512,17.959
+Obedullahganj,Obedullahganj (Ratapani),49,12,1.98,straight,1000,17.645,38.305
+Obedullahganj,Obedullahganj (Ratapani),49,13,1.86,straight,1000,16.548,18.863
+Obedullahganj,Obedullahganj (Ratapani),49,14,1.438,straight,1000,11.949,15.096
+Obedullahganj,Obedullahganj (Ratapani),49,15,3.36,straight,1000,25.521,38.862
+Obedullahganj,Obedullahganj (Ratapani),49,16,1.55,straight,1000,11.485,18.909
+Obedullahganj,Obedullahganj (Ratapani),49,17,2.781,straight,1000,20.07,26.261
+Obedullahganj,Obedullahganj (Ratapani),49,18,1.44,straight,1000,17.663,18.773
+Obedullahganj,Obedullahganj (Ratapani),49,19,0.975,straight,1000,11.708,13.865
+Obedullahganj,Obedullahganj (Ratapani),49,20,0.6,straight,1000,5.227,6.116
+Obedullahganj,Obedullahganj (Ratapani),51,1,1.08,straight,250,20.225,27.855
+Obedullahganj,Obedullahganj (Ratapani),51,2,1.68,straight,500,22.59,45.999
+Obedullahganj,Obedullahganj (Ratapani),51,3,1.55,straight,500,20.927,37.166
+Obedullahganj,Obedullahganj (Ratapani),51,4,0.96,straight,1000,10.359,12.873
+Obedullahganj,Obedullahganj (Ratapani),51,5,2.52,straight,1000,22.792,74.102
+Obedullahganj,Obedullahganj (Ratapani),51,6,0.72,straight,1000,5.953,7.001
+Obedullahganj,Obedullahganj (Ratapani),80,1,2.199,straight,250,41.916,54.936
+Obedullahganj,Obedullahganj (Ratapani),80,2,1.32,straight,500,18.712,22.316
+Obedullahganj,Obedullahganj (Ratapani),80,3,3.296,straight,500,39.388,59.485
+Obedullahganj,Obedullahganj (Ratapani),80,4,4.314,straight,1000,47.04,89.499
+Obedullahganj,Obedullahganj (Ratapani),80,5,1.14,straight,1000,11.843,15.985
+Obedullahganj,Obedullahganj (Ratapani),80,6,0.48,straight,1000,4.344,10.021
+Obedullahganj,Obedullahganj (Ratapani),80,7,4.179,straight,1000,34.404,62.354
+Obedullahganj,Obedullahganj (Ratapani),80,8,0.72,straight,1000,5.649,6.035
+Obedullahganj,Obedullahganj (Ratapani),80,9,1.32,straight,1000,24.482,31.393
+Obedullahganj,Obedullahganj (Ratapani),80,10,1.56,straight,1000,13.011,17.2
+Rampur_Bhatodi_Proj,Rampur_Bhatodi_Proj,6,1,1.08,straight,1000,9.226,12.502
+Rampur_Bhatodi_Proj,Rampur_Bhatodi_Proj,13,1,0.6,straight,500,8.092,30.226
+Rampur_Bhatodi_Proj,Rampur_Bhatodi_Proj,13,2,0.72,straight,1000,7.057,22.2
+Rampur_Bhatodi_Proj,Rampur_Bhatodi_Proj,13,3,0.72,straight,1000,6.074,6.667
+Rewa,Rewa,4,1,0.975,straight,100,25.074,29.176
+Rewa,Rewa,4,2,3.36,straight,250,64.24,113.255
+Rewa,Rewa,4,3,0.36,straight,250,7.774,12.074
+Rewa,Rewa,4,4,2.4,straight,500,26.408,47.016
+Rewa,Rewa,4,5,2.067,straight,500,22.756,39.971
+Rewa,Rewa,4,6,1.5,straight,500,16.195,34.908
+Rewa,Rewa,4,7,1.899,straight,500,27.708,50.84
+Rewa,Rewa,4,8,0.435,straight,500,5.176,14.119
+Rewa,Rewa,4,9,1.755,straight,1000,15.535,21.337
+Rewa,Rewa,4,10,0.6,straight,1000,4.854,7.671
+Rewa,Rewa,12,1,0.84,straight,1000,7.672,18.648
+Satna,Satna,31,1,0.42,straight,500,5.88,13.02
+Satna,Satna,31,2,0.48,straight,1000,3.935,8.639
+Satna,Satna,57,1,1.875,straight,1000,16.52,38.15
+Sehore,Sehore,4,1,0.445,straight,1000,4.62,5.432
+Sehore,Sehore,24,1,1.647,straight,250,25.102,35.784
+Sehore,Sehore,24,2,0.48,straight,250,7.938,8.876
+Sehore,Sehore,24,3,1.695,straight,1000,15.938,22.718
+Sehore,Sehore,24,4,2.04,straight,1000,17.519,22.155
+Sehore,Sehore,24,5,1.44,straight,1000,11.892,14.511
+Sehore,Sehore,24,6,1.08,straight,1000,9.524,11.986
+Sehore,Sehore,26,1,0.484,straight,500,6.79,14.448
+Sehore,Sehore,26,2,0.445,straight,1000,4.231,8.991
+Sehore,Sehore,31,1,0.6,straight,1000,5.068,8.204
+Sehore,Sehore,44,1,0.445,straight,100,12.543,19.414
+Sehore,Sehore,44,2,1.8,straight,100,49.685,59.877
+Sehore,Sehore,44,3,1.2,straight,100,32.651,40.237
+Sehore,Sehore,44,4,0.42,straight,100,9.534,14.574
+Sehore,Sehore,44,5,2.04,straight,250,34.267,46.95
+Sehore,Sehore,44,6,0.9,straight,500,13.261,15.859
+Sehore,Sehore,44,7,0.445,straight,500,5.543,8.233
+Sehore,Sehore,44,8,1.335,straight,500,15.557,18.016
+Sehore,Sehore,44,9,1.68,straight,500,22.733,29.794
+Sehore,Sehore,44,10,0.59,straight,1000,6.612,8.452
+Sehore,Sehore,44,11,3.48,straight,1000,34.146,39.488
+Sehore,Sehore,44,12,0.96,straight,1000,8.324,13.193
+Sehore,Sehore,44,13,2.52,straight,1000,21.482,31.783
+Sehore,Sehore,44,14,2.499,straight,1000,21.002,25.362
+Sehore,Sehore,44,15,1.2,straight,1000,10.295,11.735
+Sehore,Sehore,44,16,0.36,straight,1000,2.985,3.853
+Sehore,Sehore,44,17,2.82,straight,1000,22.222,28.272
+Sehore,Sehore,44,18,1.13,straight,1000,11.203,14.641
+Sehore,Sehore,50,1,0.999,ridge,1000,7.822,14.704
+Sehore,Sehore,50,2,0.869,straight,1000,8.03,14.928
+Sehore,Sehore,54,1,1.56,straight,500,22.4,38.248
+Sehore,Sehore,54,2,0.72,straight,1000,6.59,8.369
+Sehore,Sehore,54,3,1.44,straight,1000,11.846,21.539
+Sehore,Sehore,55,1,0.445,straight,100,10.556,16.422
+Sehore,Sehore,55,2,1.01,straight,250,19.078,33.933
+Sehore,Sehore,55,3,0.855,straight,500,13.048,23.221
+Sehore,Sehore,55,4,0.54,straight,500,7.15,11.188
+Sehore,Sehore,55,5,1.045,straight,500,12.399,19.529
+Sehore,Sehore,55,6,0.72,straight,1000,7.126,7.966
+Sehore,Sehore,55,7,0.824,straight,1000,7.788,10.307
+Sehore,Sehore,63,1,0.675,straight,100,28.84,59.682
+Sehore,Sehore,63,2,1.2,straight,100,29.805,57.497
+Sehore,Sehore,63,3,0.6,straight,250,12.133,25.082
+Sehore,Sehore,63,4,0.36,straight,250,5.88,7.784
+Sehore,Sehore,63,5,0.6,straight,500,9.156,12.362
+Sehore,Sehore,63,6,1.32,straight,500,15.87,29.572
+Sehore,Sehore,63,7,0.385,straight,1000,4.173,6.23
+Sehore,Sehore,65,1,3.0,straight,1000,33.79,54.906
+Sehore,Sehore,65,2,0.859,straight,1000,9.692,17.053
+Sehore,Sehore,80,1,0.6,straight,100,14.742,18.41
+Sehore,Sehore,80,2,0.6,straight,250,9.473,11.812
+Sehore,Sehore,80,3,2.439,straight,1000,24.977,28.361
+Sehore,Sehore,80,4,0.6,straight,1000,8.379,17.122
+Sehore,Sehore,80,5,0.6,straight,1000,5.623,7.018
+Sehore,Sehore,93,1,1.105,straight,250,18.816,22.736
+Sehore,Sehore,93,2,0.565,straight,500,7.421,20.723
+Sehore,Sehore,93,3,1.163,straight,500,14.26,16.728
+Sehore,Sehore,93,4,0.72,straight,1000,6.462,7.571
+Sehore,Sehore,95,1,1.25,straight,250,21.126,30.268
+Sehore,Sehore,95,2,1.059,ridge,500,12.241,18.096
+Sehore,Sehore,95,3,0.625,straight,1000,6.642,10.342
+Sehore,Sehore,95,4,1.32,straight,1000,12.63,18.708
+Sehore_Project,Sehore_Project,15,1,0.6,straight,1000,6.748,10.71
+Sehore_Project,Sehore_Project,15,2,1.664,straight,1000,15.339,22.386
+Sehore_Project,Sehore_Project,21,1,1.08,straight,250,20.639,27.548
+Sehore_Project,Sehore_Project,21,2,3.36,straight,1000,35.655,50.345
+Sehore_Project,Sehore_Project,21,3,0.9,straight,1000,10.583,16.385
+Sehore_Project,Sehore_Project,21,4,0.54,straight,1000,5.271,7.224
+Sehore_Project,Sehore_Project,21,5,1.73,straight,1000,12.128,22.564
+Sehore_Project,Sehore_Project,21,6,0.24,straight,1000,4.232,5.046
+Sehore_Project,Sehore_Project,27,1,0.6,straight,1000,5.628,10.584
+Sehore_Project,Sehore_Project,28,1,0.484,straight,500,6.72,17.542
+Sehore_Project,Sehore_Project,28,2,0.96,straight,1000,7.872,18.745
+Shivpuri,Shivpuri,2,1,0.36,straight,500,4.326,7.77
+Singrauli,Singrauli,11,1,0.48,straight,1000,4.186,5.824
+South_Balaghat,South_Balaghat,19,1,0.84,straight,500,10.131,40.175
+South_Balaghat,South_Balaghat,19,2,0.859,straight,1000,8.19,15.68
+South_Balaghat,South_Balaghat,59,1,1.32,straight,1000,14.407,31.855
+South_Balaghat,South_Balaghat,94,1,1.2,straight,1000,12.516,18.186
+South_Balaghat,South_Balaghat,95,1,0.84,straight,1000,8.652,13.846
+South_Balaghat,South_Balaghat,105,1,0.72,straight,1000,7.266,19.894
+South_Balaghat,South_Balaghat,105,2,0.89,straight,1000,8.414,18.648
+South_Balaghat,South_Balaghat,106,1,0.6,straight,250,9.52,11.438
+South_Balaghat,South_Balaghat,106,2,1.38,straight,250,21.965,35.062
+South_Balaghat,South_Balaghat,106,3,0.925,straight,1000,9.476,11.794
+South_Balaghat,South_Balaghat,106,4,1.08,straight,1000,8.729,15.047
+South_Balaghat,South_Balaghat,109,1,0.925,straight,1000,8.876,29.274
+South_Balaghat,South_Balaghat,115,1,1.73,straight,500,23.912,64.092
+South_Balaghat,South_Balaghat,115,2,1.68,straight,1000,15.415,38.185
+South_Balaghat,South_Balaghat,115,3,1.32,straight,1000,17.258,37.801
+South_Balaghat,South_Balaghat,120,1,0.72,straight,1000,5.838,9.814
+South_Balaghat,South_Balaghat,126,1,1.56,straight,500,18.536,24.612
+South_Balaghat,South_Balaghat,127,1,0.96,straight,250,15.694,40.95
+South_Balaghat,South_Balaghat,127,2,0.72,straight,1000,6.688,9.369
+South_Balaghat,South_Balaghat,127,3,0.65,straight,1000,6.32,8.801
+South_Balaghat,South_Balaghat,127,4,0.72,straight,1000,6.041,19.95
+South_Balaghat,South_Balaghat,129,1,1.08,straight,500,16.002,45.962
+South_Balaghat,South_Balaghat,129,2,1.2,straight,1000,10.654,30.231
+South_Balaghat,South_Balaghat,133,1,0.48,straight,1000,4.242,8.162
+South_Balaghat,South_Balaghat,135,1,0.84,straight,250,13.594,37.87
+South_Balaghat,South_Balaghat,135,2,0.96,straight,1000,10.342,26.833
+South_Balaghat,South_Balaghat,135,3,1.44,straight,1000,11.844,30.627
+South_Balaghat,South_Balaghat,152,1,0.96,straight,1000,8.568,31.094
+South_Balaghat,South_Balaghat,153,1,0.59,straight,1000,4.872,44.87
+South_Balaghat,South_Balaghat,165,1,0.48,straight,1000,4.802,6.58
+South_Balaghat,South_Balaghat,165,2,0.48,straight,1000,4.764,10.658
+South_Balaghat,South_Balaghat,165,3,0.6,straight,1000,6.943,38.635
+South_Betul,South_Betul,6,1,2.969,straight,500,40.376,54.152
+South_Betul,South_Betul,6,2,1.169,straight,500,16.363,23.498
+South_Betul,South_Betul,6,3,1.935,straight,1000,19.189,22.39
+South_Betul,South_Betul,37,1,2.04,straight,1000,16.845,29.726
+South_Betul,South_Betul,50,1,0.48,straight,1000,4.844,11.298
+South_Chhindwara,South_Chhindwara,23,1,1.695,straight,1000,19.203,115.952
+South_Chhindwara,South_Chhindwara,23,2,0.759,straight,1000,7.19,16.699
+South_Chhindwara,South_Chhindwara,27,1,0.96,straight,1000,9.986,22.068
+South_Chhindwara,South_Chhindwara,35,1,0.685,straight,500,10.514,15.68
+South_Chhindwara,South_Chhindwara,35,2,1.19,straight,500,16.12,28.888
+South_Chhindwara,South_Chhindwara,35,3,0.36,straight,500,4.711,7.49
+South_Chhindwara,South_Chhindwara,35,4,0.855,straight,1000,8.826,16.305
+South_Chhindwara,South_Chhindwara,35,5,0.48,straight,1000,4.072,6.431
+South_Chhindwara,South_Chhindwara,74,1,2.4,straight,1000,22.669,25.741
+South_Chhindwara,South_Chhindwara,75,1,0.96,straight,250,17.976,30.268
+South_Chhindwara,South_Chhindwara,78,1,0.48,straight,250,9.954,27.076
+South_Chhindwara,South_Chhindwara,78,2,0.6,straight,500,8.504,22.621
+South_Chhindwara,South_Chhindwara,78,3,0.675,straight,1000,5.861,15.346
+South_Chhindwara,South_Chhindwara,107,1,1.419,straight,500,19.054,21.784
+South_Chhindwara,South_Chhindwara,107,2,0.36,straight,500,4.399,4.874
+South_Chhindwara,South_Chhindwara,107,3,0.89,straight,1000,9.207,10.518
+South_Sagar,South_Sagar,6,1,1.179,straight,250,22.596,29.417
+South_Sagar,South_Sagar,6,2,0.84,straight,250,13.999,15.991
+South_Sagar,South_Sagar,6,3,0.96,straight,250,16.358,21.949
+South_Sagar,South_Sagar,6,4,1.14,straight,1000,11.342,13.91
+South_Sagar,South_Sagar,6,5,1.08,straight,1000,8.89,11.364
+South_Sagar,South_Sagar,29,1,0.72,straight,1000,7.35,16.128
+South_Seoni,South_Seoni,2,1,1.163,straight,1000,9.492,12.572
+South_Seoni,South_Seoni,2,2,2.04,straight,1000,16.554,23.81
+South_Seoni,South_Seoni,2,3,0.48,straight,1000,5.292,11.942
+South_Seoni,South_Seoni,9,1,0.95,straight,100,23.262,51.206
+South_Seoni,South_Seoni,9,2,1.68,straight,250,28.547,48.438
+South_Seoni,South_Seoni,9,3,0.975,straight,500,13.504,30.291
+South_Seoni,South_Seoni,9,4,1.68,straight,1000,16.278,28.313
+South_Seoni,South_Seoni,14,1,1.2,straight,100,21.952,42.924
+South_Seoni,South_Seoni,14,2,0.654,straight,100,23.249,50.715
+South_Seoni,South_Seoni,14,3,0.6,straight,250,10.303,21.416
+South_Seoni,South_Seoni,14,4,1.08,straight,1000,11.704,30.833
+South_Seoni,South_Seoni,17,1,0.54,straight,100,25.858,113.05
+South_Seoni,South_Seoni,17,2,1.659,straight,100,40.296,64.096
+South_Seoni,South_Seoni,17,3,1.08,straight,250,18.47,75.646
+South_Seoni,South_Seoni,17,4,3.06,straight,500,43.685,63.601
+South_Seoni,South_Seoni,17,5,0.879,straight,500,11.68,18.164
+South_Seoni,South_Seoni,17,6,1.14,straight,500,14.839,51.562
+South_Seoni,South_Seoni,17,7,1.98,straight,1000,22.53,69.048
+South_Seoni,South_Seoni,17,8,1.86,straight,1000,18.328,28.451
+South_Seoni,South_Seoni,18,1,2.28,straight,100,58.809,85.619
+South_Seoni,South_Seoni,18,2,1.92,straight,250,36.946,52.43
+South_Seoni,South_Seoni,18,3,2.098,valley,250,41.031,73.497
+South_Seoni,South_Seoni,18,4,2.28,straight,250,39.099,56.553
+South_Seoni,South_Seoni,18,5,1.755,straight,1000,20.048,32.272
+South_Seoni,South_Seoni,18,6,2.76,straight,1000,30.138,40.869
+South_Seoni,South_Seoni,18,7,0.48,straight,1000,5.118,7.508
+South_Seoni,South_Seoni,18,8,2.93,straight,1000,27.78,38.989
+South_Seoni,South_Seoni,18,9,3.497,straight,1000,33.131,42.208
+South_Seoni,South_Seoni,18,10,1.155,straight,1000,10.256,13.316
+South_Seoni,South_Seoni,35,1,0.6,straight,1000,5.684,10.234
+South_Seoni,South_Seoni,35,2,3.065,straight,1000,27.901,41.241
+South_Seoni,South_Seoni,38,1,1.155,straight,1000,9.425,73.751
+South_Seoni,South_Seoni,41,1,1.32,straight,1000,11.452,73.234
+Umaria,Umaria,6,1,1.56,straight,100,62.02,124.6
+Umaria,Umaria,6,2,1.084,straight,100,34.79,76.65
+Umaria,Umaria,6,3,0.96,straight,100,27.226,65.262
+Umaria,Umaria,6,4,0.399,straight,100,11.45,32.099
+Umaria,Umaria,6,5,1.815,straight,100,44.885,74.334
+Umaria,Umaria,6,6,1.304,straight,250,21.785,45.326
+Umaria,Umaria,6,7,3.379,straight,500,41.966,82.322
+Umaria,Umaria,6,8,1.653,straight,1000,14.399,26.459
+Umaria,Umaria,6,9,0.66,straight,1000,5.513,9.754
+Umaria,Umaria,6,10,3.149,straight,1000,23.543,46.641
+Umaria,Umaria,6,11,0.3,straight,1000,2.072,10.112
+Umaria,Umaria,6,12,0.96,straight,1000,5.082,7.259
+Umaria,Umaria,6,13,0.65,straight,1000,9.85,16.35
+Umaria,Umaria,6,14,0.24,straight,1000,3.451,4.891
+Umaria,Umaria,19,1,1.8,straight,100,39.983,127.1
+Umaria,Umaria,19,2,1.359,straight,250,22.751,25.746
+Umaria,Umaria,19,3,2.81,straight,500,39.582,99.717
+Umaria,Umaria,19,4,0.65,straight,500,8.044,8.625
+Umaria,Umaria,19,5,1.2,straight,500,16.65,20.708
+Umaria,Umaria,19,6,3.125,straight,1000,32.724,78.608
+Umaria,Umaria,19,7,0.54,straight,1000,5.786,10.201
+Umaria,Umaria,19,8,1.2,straight,1000,12.728,14.623
+Umaria,Umaria,28,1,1.08,straight,1000,10.416,31.276
+Umaria,Umaria,28,2,1.07,straight,1000,10.887,13.193
+Umaria_Project,Umaria_Project,12,1,0.6,straight,500,8.274,41.146
+Umaria_Project,Umaria_Project,12,2,0.96,straight,1000,9.229,23.717
+West_Chhindwara,West_Chhindwara,15,1,0.54,straight,500,6.426,11.732
+West_Chhindwara,West_Chhindwara,39,1,1.08,straight,1000,8.918,17.318

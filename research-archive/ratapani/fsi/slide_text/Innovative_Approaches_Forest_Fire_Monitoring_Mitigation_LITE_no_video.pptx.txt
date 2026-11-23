@@ -1,0 +1,809 @@
+
+=== Slide 1 ===
+🔥
+FOREST SURVEY OF INDIA  ·  IN-SERVICE TRAINING FOR IFS OFFICERS
+GROUP 2  ·  TOPIC
+INNOVATIVE APPROACHES TO BE ADOPTED FOR
+FOREST FIRE MONITORING AND MITIGATION
+Lessons from Three Fire Continents — Canada · Australia · India
+PRESENTED BY GROUP 2
+Shri Naveed   ·   Shri Naresh Yadav   ·   Dr Sivabala   ·   Shri Jamir Shaikh   ·   Ms Namrata Bijoria
+One-Week Compulsory Training for IFS Officers  ·  Forest Survey of India, Dehradun  ·  14–18 September 2026
+
+=== Slide 2 ===
+SETTING THE FRAME
+Why a Cross-Continental Lens
+Fire behaves differently on every continent — but the technology curve is converging fast.
+🇨🇦
+Canada — boreal crown fire regime
+Record 2023 season (~18.5M ha burned); the Canadian Forest Fire Danger Rating System and FireSmart community program are the global reference points.
+🇦🇺
+Australia — eucalypt-driven extreme fire
+Black Summer 2019–20 (~24M ha burned) reshaped national fire science; AFAC and CSIRO now run one of the world's fastest research-to-operations pipelines.
+🇮🇳
+India — monsoon-bound dry-season fires, and homegrown innovation
+A short, intense Nov–Jun fire window; alongside FSI's satellite alerting, this session draws on case studies from Odisha, Uttarakhand, Sikkim, Tamil Nadu, Nagaland and Maharashtra's Melghat shared during this training programme.
+The physics of fire is universal — the tools to fight it are converging.
+
+=== Slide 3 ===
+TRAINING ROADMAP
+Four Modules, One Fire-Management System
+🛰️
+Module 1 — Detect
+Early warning & monitoring: satellites, cameras, drones, sensors, AI — plus Odisha's OFMS and Nagaland's LoRaWAN network.
+📊
+Module 2 — Predict
+Danger rating & fire-behaviour modelling — including India's own HPC forecasting system.
+🌳
+Module 3 — Prevent
+Fuel management & community-based mitigation — Chir Pirul, Shitlakhet and Melghat's zero-fire villages.
+🚑
+Module 4 — Respond & Learn
+Suppression technology, dashboards and after-action systems — Uttarakhand, Tamil Nadu and Melghat in focus.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+3
+
+=== Slide 4 ===
+THE SCALE OF THE PROBLEM
+The Global Wildfire Crisis, by the Numbers
+~340M ha
+Burned globally, per year
+Average annual global burned area across savanna, grassland and forest biomes (satellite burned-area estimates).
+18.5M ha
+Canada, 2023 season
+A single record season — more than double the previous 10-year average — followed by 8.3M ha burned again in 2025.
+~24M ha
+Australia, Black Summer 2019–20
+Unprecedented fire behaviour across temperate forest and eucalypt woodland, prompting a national fire-science reset.
+Across all three countries, extreme fire-weather days are becoming more frequent and fire seasons are starting earlier and ending later — compounding heat, drought and fuel dryness.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+4
+
+=== Slide 5 ===
+THE INDIAN CONTEXT
+India's Forest Fire Challenge — By the Numbers
+35.46%
+of forest cover is fire-prone
+ISFR 2021: extremely (2.81%), very high (7.85%), high (11.61%) and moderately (13.19%) fire-prone forest together.
+93%
+of fires start on the surface floor
+FSI's national Surface Fuel Load study: low-intensity surface fires fed by leaf litter and dry biomass dominate — not crown fires.
+21.76%
+of India's land is under forest
+ISFR 2023 — the base area against which every fire-proneness and burnt-area figure in this deck is measured.
+Over 95% of forest fires in India are human-induced — shifting cultivation, NTFP collection, retaliatory fires, grazing-ground renewal, and spread from adjoining agricultural residue burning.
+FSI's SNPP-VIIRS sensor logged 157,834 fire detections nationally in the 2025–26 season (Nov–Jun) — Maharashtra, Madhya Pradesh and Chhattisgarh led the count — with ~34,562 sq km of total burnt area recorded: the evidentiary baseline this deck's innovations are measured against.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+5
+NOTES: Source: FSI India State of Forest Report (ISFR) 2021 and 2023; FSI Surface Fuel Load study; FSI SNPP-VIIRS near-real-time detection and burnt-scar statistics for the 2025-26 fire season, as presented at this FSI training programme.
+
+=== Slide 6 ===
+THE GAP THIS COURSE ADDRESSES
+Why the Traditional Toolkit Falls Short
+The Traditional Model
+•  Fixed watchtowers with limited, weather-dependent line of sight
+•  Foot and vehicle patrolling of fire lines
+•  Verbal / wireless reporting up the Beat–Range–Division chain
+•  Reactive suppression once smoke is visually confirmed
+•  Manual, delayed burnt-area assessment after the season
+The Resulting Gaps
+•  Detection lag of hours in remote or hilly terrain
+•  Coverage blind-spots between watchtowers
+•  No predictive capacity — action starts after ignition
+•  Data siloed between HQ, Division and Range
+•  No systematic feedback loop into next season's planning
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+6
+
+=== Slide 7 ===
+COMPARATIVE BASELINE
+Three Fire Regimes, Side by Side
+ | 🇨🇦 Canada | 🇦🇺 Australia | 🇮🇳 India
+Dominant fuel | Boreal conifer forest | Eucalypt forest & grassland | Sal, teak, chir pine, bamboo
+Fire season | May – September | Sep – March (regional) | November – June
+Primary detection | Lookouts + satellite + AI cameras | AI camera towers + satellite | MODIS / VIIRS satellite alerts
+Danger rating system | Canadian FWI System | Australian Fire Danger Rating System | FSI regional fire danger rating
+Signature innovation | WildFireSat satellite mission | Phoenix RapidFire behaviour model | Van Agni Geo-Portal + JFM network
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+7
+
+=== Slide 8 ===
+01
+MODULE
+Detect — Early Warning & Monitoring
+How the fire is found, in minutes rather than hours.
+Satellites
+Ground AI cameras
+Nagaland LoRaWAN
+India case studies
+DETECT
+PREDICT
+PREVENT
+RESPOND
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+8
+
+=== Slide 9 ===
+MODULE 1 · DETECT
+The Satellite Detection Timeline
+DETECT
+PREDICT
+PREVENT
+RESPOND
+2000s
+MODIS
+1 km × 1 km resolution, ~4 passes/day — the original global baseline.
+2012 →
+SNPP-VIIRS
+375 m × 375 m resolution with stronger night-time detection — now FSI's primary sensor.
+Today
+Geostationary (INSAT-3D/3DR, Himawari-9)
+Near-continuous watch at coarser resolution — good for persistence, not pinpoint location.
+2025 →
+FireSat constellation
+6-band infrared; detects fires as small as 5 m × 5 m through smoke; >50 satellites planned by 2030.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+9
+NOTES: Sources: FSI Technical Information Series (FAST 3.0) on MODIS/VIIRS use; Earth Fire Alliance / Muon Space FireSat mission materials (first 3 operational satellites reached orbit July 2026; full 50+ constellation targeted by 2030, 20-minute global revisit).
+
+=== Slide 10 ===
+MODULE 1 · DETECT
+India's Own System: FAST 3.0 & Van Agni
+DETECT
+PREDICT
+PREVENT
+RESPOND
+🛰️
+Dual-sensor alerting
+FSI alerts State Forest Departments at least six times every 24 hours, fusing MODIS (1 km) and SNPP-VIIRS (375 m) hotspot detections received at NRSC's Shadnagar earth station.
+🔥
+Large Fire Monitoring Programme
+An automated algorithm flags a 'large fire' once three or more contiguous VIIRS pixels (~40 ha+) are detected, then tracks the estimated fire boundary continuously until it is extinguished.
+📲
+SMS cascade to the field
+Alerts are disseminated by SMS to registered users down to the Range and Beat level — the single most field-actionable layer of the whole system.
+🗺️
+Van Agni Geo-Portal, adopted at scale
+A common operating picture bringing hotspots and fire layers into one GIS view — Uttarakhand alone counts 17,729 registered subscribers, backed by a 24×7 ICCC helpline (1926).
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+10
+NOTES: Action for officers: verify that beat-level mobile numbers are currently registered in the FSI/Van Agni alert distribution list for your Division — this is the most common real-world failure point in the whole detection chain.
+
+=== Slide 11 ===
+MODULE 1 · DETECT
+Next-Generation Constellations
+DETECT
+PREDICT
+PREVENT
+RESPOND
+🛰️
+FireSat (Earth Fire Alliance / Google.org / Muon Space)
+Six-band multispectral infrared payload — detects fires as small as 5 m × 5 m, and can see through smoke.
+First three operational satellites reached orbit in July 2026, giving twice-daily revisit over fire-prone regions.
+Full constellation of 50+ satellites planned by 2030 — a 20-minute global revisit, catching ignitions before they become megafires.
+🇨🇦
+WildFireSat (Canadian Space Agency)
+A ~USD 72M dedicated mission to track daily wildfire behaviour and intensity across Canada's entire boreal zone.
+Purpose-built for fire (not general Earth observation) — a model for what a future India-specific fire mission could look like.
+Implication for India: a natural data-sharing and tasking partnership to pursue alongside ISRO's own EO assets.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+11
+
+=== Slide 12 ===
+MODULE 1 · DETECT
+Odisha's Forest Management System (OFMS)
+DETECT
+PREDICT
+PREVENT
+RESPOND
+CASE STUDY
+🗺️
+A 26-module digital command layer
+Angul Forest Division's OFMS integrates forest patrolling, GIS asset mapping, a Forest Fire Controller module and a GIS-based MIS portal usable down to Forest Guard (beat) level — no GIS training required.
+🧭
+Grid-based patrol accountability
+A 2 km × 2 km grid (400 ha) overlaid with a 100 m patrol-line buffer flags coverage gaps every 15 days, so gaps in foot patrolling are visible and correctable rather than assumed.
+📉
+Measured results
+Angul Division's fire alerts fell from 738 (2023) to 333 (2026); area affected fell from 157 ha to just over 12 ha over the same period — a direct before/after signal.
+🤖
+Where it's heading
+Odisha is now piloting AI-integrated change detection for encroachment and forest-cover loss, with voice-command query access to the same GIS layers.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+12
+NOTES: Source: 'Application of Modern Technology in Forestry & Wildlife', Sri Nitish Kumar IFS, DFO Angul Forest Division, presented at this FSI training programme, 17 September 2026.
+
+=== Slide 13 ===
+MODULE 1 · DETECT
+Ground-Based AI Camera Networks
+DETECT
+PREDICT
+PREVENT
+RESPOND
+📷
+Australia's AI camera towers
+AI-powered fixed cameras now detect close to 4,000 fires a year before they are ever phoned in — giving crews a critical early-warning margin.
+🔬
+AFAC Bushfire Emerging Technologies Hub
+A Google.org-backed programme funding field-deployable innovations, including 'SkySeekFire' — infrared detection of fires still in the smouldering stage, before visible flame.
+🗼
+The watchtower upgrade path
+India's existing watchtower network is the natural retrofit site: add a fixed AI camera with edge inference, and a manned tower becomes a continuous automated sentinel.
+🎯
+Where to pilot first
+High fire-frequency divisions with dense watchtower coverage but persistent blind spots — Uttarakhand, Odisha and Madhya Pradesh are strong starting candidates.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+13
+
+=== Slide 14 ===
+MODULE 1 · DETECT
+Drone & UAV Thermal Reconnaissance
+DETECT
+PREDICT
+PREVENT
+RESPOND
+🪂
+Long-endurance thermal UAVs
+Indian manufacturers such as ideaForge now supply long-flight-time drones with high-resolution thermal sensors and onboard edge AI that classifies fire severity in real time.
+🏔️
+Reaching what patrols cannot
+Rapid reconnaissance over steep, roadless or insurgency-sensitive terrain, and night-time confirmation of hotspots that satellites can only estimate. Uttarakhand alone now fields 86 drones.
+🗺️
+Post-fire perimeter mapping
+A single drone sortie can map a fire's final perimeter far faster and more accurately than a ground survey — feeding directly into compensatory afforestation planning.
+🔥
+A dual-use asset
+The same platform doubles as an ignition tool for supervised prescribed burning — covered in Module 3.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+14
+
+=== Slide 15 ===
+MODULE 1 · DETECT
+IoT Ground Sensor Networks
+DETECT
+PREDICT
+PREVENT
+RESPOND
+📡
+Distributed low-power sensing
+Solar-powered nodes measuring smoke particulates, temperature, relative humidity and wind — placed directly in high-risk compartments rather than relying on remote imagery alone.
+🌐
+Mesh connectivity where cellular fails
+LoRaWAN-style mesh networks carry sensor data out of terrain with no mobile coverage — a real constraint in much of India's fire-prone hill and tribal forest.
+💧
+Real-time fuel-moisture input
+Continuous humidity and temperature readings feed directly into fire danger rating and behaviour models — the bridge into Module 2.
+⚠️
+A force-multiplier, not a replacement
+Sensors densify coverage between watchtowers and satellite passes; they do not remove the need for a human-verified response chain.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+15
+
+=== Slide 16 ===
+MODULE 1 · DETECT
+Nagaland's LoRaWAN Fire Detection Network
+DETECT
+PREDICT
+PREVENT
+RESPOND
+PROPOSED DESIGN
+📡
+A purpose-built detection unit
+A solar-powered pole (~3 m exposed, LiFePO4 battery backup) carries a 3-element flame sensor head, smoke/particulate intake, temperature sensors and a siren + beacon — firing on 2-out-of-3 sensor agreement to cut false alarms.
+📶
+Dual-path communication, built for remote terrain
+LoRaWAN is the primary channel (long-range, low-power, star-of-stars gateway network); the unit automatically falls back to GSM/SMS if LoRaWAN coverage is unavailable — detection doesn't stop where connectivity does.
+🖥️
+One server stack behind every alert
+A LoRaWAN network server and application server ingest alerts from every unit and gateway, run the alert engine, and expose the same data through a REST API — including a direct feed into FSI's Van Agni portal.
+📱
+Built for the field, not just the control room
+An Android app gives field staff a live map of units and hotspots, real-time push alerts, incident navigation and status tracking — turning a sensor network into an actionable response tool.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+16
+NOTES: Source: Nagaland Forest Department's proposed Forest Fire Early Warning & Response System — system architecture and Forest Fire Detection Unit engineering diagrams shared for this deck. This is a proposed design for implementation, not yet deployed — present it as a model worth evaluating, not as an operational case study.
+
+=== Slide 17 ===
+[image]
+MODULE 1 · DETECT
+The Early-Detection Mechanism: Nagaland's Detection Unit
+PROPOSED DESIGN
+Three independent senses
+An IR/UV flame head (3 elements, 120° apart), a smoke / particulate intake and a fast rate-of-rise temperature sensor, checked against a shielded ambient reference.
+2-of-3 alarm logic
+The unit fires only when two of the three agree — cutting false alarms from sun glint, dust or a single faulty sensor.
+Warns locally, reports remotely
+Siren and beacon alert the nearby community at once, while LoRaWAN (with GSM/SMS fallback) carries the alert to the server and the field app.
+Built for unattended sites
+Solar panel with LiFePO4 battery on a ~3 m pole, 0.65 m concrete embedment.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+17
+NOTES: Diagram reproduced exactly as supplied by the Nagaland Forest Department proposal (Forest Fire Detection Unit — pole-mounted multi-sensor fire detection and early warning system). Proposed design, not yet deployed. The next slide plays the 66-second network simulation.
+
+=== Slide 18 ===
+MODULE 1 · DETECT  ·  NAGALAND PROPOSED DESIGN
+Watch: From Fire to Dispatch in 66 Seconds
+DETECT
+PREDICT
+PREVENT
+RESPOND
+[image]
+Ignition  →  nearest unit trips  →  neighbouring units wake  →  LoRaWAN alert (GSM/SMS fallback)  →  Van Agni satellite cross-check  →  crew dispatch  →  incident closed on the app
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+18
+NOTES: Click the video to play (66 seconds, with sound). A 3D schematic simulation of Nagaland's proposed Forest Fire Early Warning & Response System, stepping through the ten stages from ignition below unit NLG-125 to the incident being closed on the mobile app with the burnt area logged. Vertical elements are exaggerated for legibility — it is a schematic, not a terrain model.
+
+=== Slide 19 ===
+MODULE 1 · DETECT
+AI & Machine Learning for Early Recognition
+DETECT
+PREDICT
+PREVENT
+RESPOND
+🧠
+Detection in minutes, not hours
+A British Columbia pilot (SenseNet, Vernon) uses computer vision on camera feeds to flag ignition within roughly three minutes — a step-change from patrol-based detection.
+📹
+Flame and smoke segmentation
+AI models now segment flame and smoke directly in aerial and fixed-camera footage, letting agencies track fire growth in near-real time rather than waiting for the next satellite pass.
+⚖️
+A documented caution
+British Columbia's own Wildfire Service cautions that limited training data and model reliability remain real constraints — treat AI output as decision support, never as the sole trigger for action.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+19
+NOTES: Balance the optimism with the caution from BC Wildfire Service — this is a good moment to invite officers' own scepticism and ground the discussion in verification protocols, not blind automation.
+
+=== Slide 20 ===
+02
+MODULE
+Predict — Danger Rating & Behaviour Modelling
+Turning weather and fuel data into a forecast of what the fire will do next.
+Danger rating
+India's HPC forecasting
+Behaviour modelling
+Fuel-load mapping
+DETECT
+PREDICT
+PREVENT
+RESPOND
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+20
+
+=== Slide 21 ===
+MODULE 2 · PREDICT
+Fire Weather Danger Rating Systems, Compared
+DETECT
+PREDICT
+PREVENT
+RESPOND
+ | 🇨🇦 Canada | 🇦🇺 Australia | 🇮🇳 India
+System | Canadian Forest Fire
+Weather Index (FWI) | Australian Fire Danger
+Rating System (AFDRS) | FSI regional fire danger
+rating (developing)
+Basis | Six linked indices: fuel
+moisture codes + fire
+behaviour indices | Fuel-type-specific models
+(replaced McArthur indices
+in 2022) | Weather-based indices;
+limited fuel-type
+differentiation today
+Output | A single daily rating per
+weather station / zone | A rating per fuel type
+per forecast district | A rating per FSI
+monitoring zone
+In practice | Feeds Prometheus fire-
+growth simulator directly | Feeds Phoenix RapidFire
+impact predictions | Uttarakhand: weekly FSI
+alerts relayed via WhatsApp
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+21
+
+=== Slide 22 ===
+MODULE 2 · PREDICT
+India's Own HPC Fire-Spread Forecast
+DETECT
+PREDICT
+PREVENT
+RESPOND
+CASE STUDY
+🖥️
+Built on India's supercomputing backbone
+C-DAC's PARAM Rudra (20 petaflop) supercomputer runs a coupled atmosphere–fire model (WRF-SFIRE), producing decision-grade 24–48 hour forest-fire spread forecasts — a capability India has not had at national scale before.
+🏔️
+Proven live in Sikkim, March 2024
+HPC-based spread forecasts were used operationally for the first time in India: Forest Department teams intervened on the forecast's guidance and kept roughly 0.54 sq km and, days later, 3 sq km of forest from burning.
+🤝
+Going national
+An FSI–C-DAC MoU is underway to build a National Wildfire Forecasting and Monitoring System — zoned for the Himalaya, Deccan Peninsula, Western Ghats, Northeast and rest of India — with proximity-based SMS alerts.
+⏱️
+Getting faster
+Simulation time is already down to 17 minutes for a 24-hour forecast on 16 compute nodes, with multi-ignition-point modelling (200+ simultaneous points tested) under active development.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+22
+NOTES: Source: 'Forest Fire Spread Forecasting using High Performance Computing System', Dr. Manish P. Kale, Scientist-F, C-DAC Pune, presented to IFS officers 15 September 2026. This is a live, in-development national capability — check with FSI/C-DAC for the current MoU and rollout status before citing it as operational nationwide.
+
+=== Slide 23 ===
+MODULE 2 · PREDICT
+The Global Behaviour-Modelling Toolkit
+DETECT
+PREDICT
+PREVENT
+RESPOND
+🇨🇦
+Canada — Prometheus / FBP System
+A fire-growth simulator driven directly by the FWI System's outputs, producing spatially explicit spread projections used in real suppression planning.
+🇦🇺
+Australia — Phoenix RapidFire & Spark
+Delivers a first impact prediction within about four minutes of ignition being reported; CSIRO's Spark framework and Alberta's AltaML / University of Toronto ML models point to where AI-corrected forecasting is heading next.
+🔗
+The emerging pattern
+Every leading system — Canadian, Australian, and now India's own WRF-SFIRE effort — converges on the same idea: physics-based fire behaviour sharpened by machine learning and high-performance computing, not one replacing the other.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+23
+
+=== Slide 24 ===
+MODULE 2 · PREDICT
+Mapping What Actually Burns
+DETECT
+PREDICT
+PREVENT
+RESPOND
+CASE STUDY
+🔬
+Why surface fuel, specifically
+Since 93% of India's fires start on the surface floor, FSI's national study measures dry leaf litter, duff, grass and downed wood directly through pan-India field sampling and oven-drying (3 hrs at ~50°C).
+🗺️
+A 272-stratum national model
+Forest Type Map (17 classes) × Forest Canopy Map (4 density classes) × Slope (4 classes) are overlaid in GIS to produce 272 distinct strata, each assigned a fuel-load class from field-calibrated results.
+📊
+The national picture
+Across India's mapped Recorded Forest Area, 2.08% carries Very High fuel load and 8.25% carries High fuel load (>40 g/ft²) — a ready-made targeting layer for fireline and fuel-treatment priority.
+🛰️
+Complementary to airborne LiDAR
+Where airborne or UAV LiDAR captures 3D canopy structure, FSI's ground-truthed model captures the surface litter that actually ignites — the two techniques complement, not compete with, each other.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+24
+NOTES: Source: 'An assessment of surface fuel load using remote sensing and field-based enumerations', Dr. Sunil Chandra, Forest Survey of India, presented at this FSI training programme. Full methodology and state-wise results at fsiforestfire.gov.in/Home/Publication.
+
+=== Slide 25 ===
+03
+MODULE
+Prevent — Fuel & Community-Based Mitigation
+Reducing what can burn, and who is watching for it, before the season starts.
+Fuel breaks
+Chir Pirul programme
+Prescribed burning
+Melghat rewards
+Community & JFM
+DETECT
+PREDICT
+PREVENT
+RESPOND
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+25
+
+=== Slide 26 ===
+MODULE 3 · PREVENT
+Fuel Management & Strategic Fire Breaks
+DETECT
+PREDICT
+PREVENT
+RESPOND
+🏡
+Canada's FireSmart programme
+Defensible-space standards around villages, plantations and infrastructure, plus community-level fuel treatment planning — a model directly transferable to fringe-forest villages in India.
+🗺️
+Predictive fire-break siting
+Placing fire lines where GIS and fire-behaviour modelling show the highest-probability spread paths — not only along administrative compartment boundaries, as is current default practice.
+✂️
+Upgrading an existing practice
+India already clears fire lines every season; the innovation is prioritising and routing them using fuel-hazard and behaviour-model output rather than convention alone.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+26
+
+=== Slide 27 ===
+MODULE 3 · PREVENT
+Turning Fuel Into Fortune: Chir Pirul
+DETECT
+PREDICT
+PREVENT
+RESPOND
+CASE STUDY
+🌲
+The problem
+Chir Pine covers 15.45% (3,890 sq km) of Uttarakhand's forests; its shed needles ('Pirul') blanket the forest floor as a highly combustible fuel carpet — the single biggest driver of the state's rapid-spread surface fires.
+🔄
+The four-step value chain
+Van Panchayats & SHGs collect Pirul from the forest floor → mechanised/manual transport to processing units → pressing into pellets and briquettes → commercial sale to industry.
+💰
+Proven at scale
+5,532 tonnes collected in 2025 alone (7,471 tonnes over 2022–24); ₹5.43 crore paid to collectors in 2025; pine-needle pellets (20.3 MJ/kg) are calorifically competitive with coal — ₹9/kg vs ₹38/kg for coal.
+📈
+Scaling further
+48 of a planned 106 collection centres and 9 of 57 planned pellet/briquette units are operational, with 20 more units targeted over the next two years.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+27
+NOTES: Source: 'Innovation in Forest Fire Management', Sushanta Kumar Pattnaik IFS, CCF Forest Fire & Disaster Management, Uttarakhand Forest Department, presented at this FSI training programme, 17 September 2026.
+
+=== Slide 28 ===
+MODULE 3 · PREVENT
+Prescribed Burning — Including Drone Ignition
+DETECT
+PREDICT
+PREVENT
+RESPOND
+🔥
+Australia's hazard-reduction burning
+Large, seasonally planned prescribed burns reduce standing fuel load ahead of the fire season, run under strict weather and smoke-management windows.
+🪂
+Drone-based aerial ignition
+UAVs fitted with dispensers drop ignition spheres over hard-to-reach terrain, letting crews light precise, well-timed burns from a safe distance instead of on foot.
+🇮🇳
+A path for India — with guardrails
+Controlled early-season burning of litter and fire lines in select sal/teak coupes is worth piloting under strict protocol, backed by research trials and State-level policy clearance — this is not a call to burn without evidence.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+28
+NOTES: Handle this slide carefully with officers — prescribed fire is operationally and politically sensitive in India. Frame it explicitly as a research-and-pilot recommendation, not an operational directive.
+
+=== Slide 29 ===
+MODULE 3 · PREVENT
+The Shitlakhet Model & the 'Golden Hour'
+DETECT
+PREDICT
+PREVENT
+RESPOND
+CASE STUDY
+🏔️
+A century of community fire protection
+Syahi Devi forest near Shitlakhet, Almora, became a reserved forest in 1877; organised community fire protection began there in 1890–91 — one of India's longest-running local fire-stewardship traditions.
+🌳
+From ashes to thriving forest
+A landscape devastated by fire in 2012 was a mixed, regenerating forest by 2023 — a decade of sustained community vigilance, not new technology, made the difference.
+⏱️
+The Golden Hour doctrine
+“The first 60 minutes determine survival.” Once a fire establishes in pine forest it is nearly impossible to stop without heavy machinery — so the model is built around decentralised, village-level rapid mobilisation via WhatsApp alerts, not waiting for departmental crews.
+📋
+A replicable blueprint
+Jardhar Gaon (Tehri Garhwal) has since adopted the same principles — decentralise response to the village, institutionalise a cultural fire-awareness day ('Van/Aun Diwas'), and treat the Golden Hour as the organising principle.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+29
+NOTES: Source: 'Innovation in Forest Fire Management', Sushanta Kumar Pattnaik IFS, CCF Forest Fire & Disaster Management, Uttarakhand Forest Department. The Shitlakhet Model (Syahi Devi sacred grove) and the Jardhar Gaon replication are strong discussion prompts for officers designing their own village-level response protocols.
+
+=== Slide 30 ===
+MODULE 3 · PREVENT  ·  CENTRAL INDIA
+Melghat: Rewarding Villages for Zero Fire
+DETECT
+PREDICT
+PREVENT
+RESPOND
+CASE STUDY
+🐅
+In Central India, fire is a social phenomenon
+In Sipna Wildlife Division, Melghat Tiger Reserve (Satpura dry teak forest, Maharashtra), practically every fire is lit by people — tendu and mahua collection, grazing, retaliation. So the 2020 plan put its weight on prevention through communities, not on suppression hardware.
+💰
+Phased, collective, paid in the village
+Zero-fire rewards were announced before the season and paid by cheque to the village committee — rising from ₹10,000 to ₹50,000 for a buffer village and ₹20,000 to ₹1,00,000 for a core village. Phased, so a village that slips in April still has May to protect.
+📉
+The result, against a signed ground register
+Fire incidents fell from 218 to 35 (−84%) and burnt area from 2,207 ha to 169 ha (−92%) in a single season. In the worst range, Hatru, 48 fires became 3 — and Bhutrum village went from 195 ha burnt to zero.
+⚖️
+The honest finding: it did not persist
+Once the scheme lapsed, fires climbed back to 85 (2021) and 133 (2022), and 2025 was the worst season on record. Community incentives work — but only as a standing programme, not a one-season experiment.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+30
+NOTES: Source: Dr. Sivabala S., IFS — 'Community-Centred Forest Fire Management in a Tiger Reserve: Experience of Sipna Wildlife Division, Melghat Tiger Reserve, January 2019 – July 2020', presented at this FSI training programme, 14–18 September 2026 (with the accompanying written report). Caveats stated by the author: a before-and-after design in one division with no control area, and the 2020 season overlapped the COVID-19 lockdown — though a comparable lockdown in 2021 did not reproduce the result.
+
+=== Slide 31 ===
+MODULE 3 · PREVENT
+Community-Based Fire Management
+DETECT
+PREDICT
+PREVENT
+RESPOND
+🤝
+JFM Committees as first responders
+11,217 Van Panchayats and around 600 village-level forest fire committees are formally engaged in Uttarakhand alone — remaining the fastest first line of response in most Indian forest divisions.
+🗺️
+Crowd-sourced ground-truthing
+The Van Agni Geo-Portal's community layer lets field staff and JFM members confirm or correct satellite alerts in real time, closing the loop between remote detection and ground reality.
+💰
+Livelihood-linked incentives
+Village committees receive a ₹30,000 incentive; 5,623 seasonal Fire Watchers were insured in 2026 alone, each covered for ₹10 lakh — sustaining participation well beyond a single campaign season.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+31
+NOTES: Community numbers: 'Innovation in Forest Fire Management', Uttarakhand Forest Department, presented at this FSI training programme.
+
+=== Slide 32 ===
+04
+MODULE
+Respond & Learn — Suppression Tech & After-Action
+Fighting the fire that starts, and using every season to sharpen the next one.
+Rapid response
+Uttarakhand app
+Tamil Nadu TNFFMIS
+Post-fire assessment
+Melghat ground truth
+DETECT
+PREDICT
+PREVENT
+RESPOND
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+32
+
+=== Slide 33 ===
+MODULE 4 · RESPOND
+Rapid Response Technology
+DETECT
+PREDICT
+PREVENT
+RESPOND
+🚁
+Aerial firefighting
+Helicopter bucket operations and, where terrain and budget justify it, fixed-wing retardant drops — resource-intensive tools best reserved for high-value, high-risk compartments.
+🤖
+Ground robotics for steep terrain
+Tracked, remotely operated fire-fighting units are emerging for slopes and terrain too dangerous for crews — still largely at pilot stage globally, worth tracking rather than adopting yet.
+📱
+One shared operating picture
+Mobile apps that put field crews, Range/Division control rooms and satellite alerts on a single live map close the coordination gap that costs the most time in a fast-moving fire.
+🦺
+Firefighter safety is the foundation
+Recent operational tragedies — including the loss of a forest fire crew at Binsar Wildlife Sanctuary in June 2024 — are a sobering reminder that terrain assessment, escape-route planning and real-time fire-behaviour awareness deserve the same innovation focus as detection and suppression technology.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+33
+NOTES: Handle the Binsar reference with care and respect — it is included as a professional safety lesson, not as a dramatized incident. Frame the discussion around escape-route planning and go/no-go decision protocols for crews near active fire fronts.
+
+=== Slide 34 ===
+MODULE 4 · RESPOND & LEARN
+Uttarakhand's Fire App & Dashboard
+DETECT
+PREDICT
+PREVENT
+RESPOND
+CASE STUDY
+📱
+Built in three phases, for ₹8 lakh
+Starting as a 2020 pilot in Rudraprayag Division, the system now spans a GIS-mapped asset dashboard and an Android app — built and maintained for a total development cost of just ₹8 lakh.
+🚦
+A status system every officer can read at a glance
+Fires are colour-coded on the shared map: red (active/unattended), orange (being attended), green (closed), black (no fire detected) — one real-time picture for every stakeholder.
+📡
+FSI alerts, delivered faster
+The app pushes FSI's satellite fire alerts directly to field staff and volunteers instead of relying solely on SMS, with a locally calibrated Fire Weather Index layered in for community danger-rating alerts.
+📈
+Adopted at scale
+17,729 subscribers statewide and growing — proof that a low-cost, phased, homegrown tool can outperform a much larger IT investment when built around how field staff actually work.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+34
+NOTES: Source: Rudraprayag pilot / Uttarakhand Forest Department mobile app and dashboard presentation, this FSI training programme, 17 September 2026. Contact shared by presenter: vaibhav.singh1212@gmail.com.
+
+=== Slide 35 ===
+MODULE 4 · RESPOND & LEARN  ·  SOUTH INDIA
+Tamil Nadu's Two-Tier Fire Command System
+DETECT
+PREDICT
+PREVENT
+RESPOND
+CASE STUDY
+🏛️
+One platform, two tiers of command
+The state-built TNFFMIS web and mobile platform links a State Forest Fire Control Centre to 37 District control centres, each with its own dashboard, a toll-free line (1800-425-4409) and an automated siren alarm so that no FSI alert waits to be noticed.
+🗺️
+Every fire line on the map
+Field staff trace each fire line in a mobile survey form — width, year built, last maintained, funding scheme. Some 8,500 km (3 m, 6 m and 12 m lines) are being built into a geospatial database that shows crews the nearest fire line to every active fire point.
+🛰️
+Knowing when the satellite will look — and what the wind is doing
+The dashboard lists the next pass of each VIIRS and MODIS satellite, overlays live IMD weather-station wind, temperature and humidity, and ranks every beat into five vulnerability classes, feeding a 2026 fire-prediction model.
+⏱️
+Measured response
+Large forest fires doused within 24 hours rose from 69% (2024) to 95% (2025) and about 80% (2026) — backed by 34 fire-response-cum-mobile-command vehicles and wireless repeater stations planned at 58 sites.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+35
+NOTES: Source: 'Forest Fire Management — Tamil Nadu perspective', Tamil Nadu Forest Department / TNFA Coimbatore, presented by video link at this FSI training programme. Figures transcribed from the presentation: large forest fire incidents 80 (2022), 156 (2023), 218 (2024), 112 (2025), 133 (2026); fire lines 3 m 6,686 km, 6 m 1,587 km, 12 m 226 km; 2,142 fire-line survey entries at the time of presentation.
+
+=== Slide 36 ===
+MODULE 4 · RESPOND & LEARN
+Post-Fire Assessment: Two Real Examples
+DETECT
+PREDICT
+PREVENT
+RESPOND
+🖥️
+The single operating picture
+The Van Agni Geo-Portal and State fire dashboards already aim to be this layer — the priority now is consistent field-level use, not new platforms.
+🛰️
+Nainital, May 2024 — burnt-severity assessment
+A field-validated FSI study classified 405 sq km of fire-affected forest in Nainital district: 362.84 sq km lightly burnt, 42.17 sq km moderately burnt, 0.41 sq km severely burnt — concentrated in pure Chir Pine stands.
+🐅
+Sariska Tiger Reserve, March 2022
+Pre- and post-fire satellite imagery, cross-checked against ground verification of low- and moderately-burnt areas, shows how fast a burnt-severity map can be produced and validated for a Protected Area.
+🔁
+Closing the loop into the Working Plan
+Every season's fire-history and severity layer should feed directly back into the next Working Plan revision's risk zoning — turning each fire season into working data, not just a loss to record.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+36
+NOTES: Source: 'An assessment of surface fuel load using remote sensing and field-based enumerations', FSI — Nainital district case study (May 2024) and Sariska Tiger Reserve case study (March 2022).
+
+=== Slide 37 ===
+MODULE 4 · RESPOND & LEARN  ·  CENTRAL INDIA
+Melghat's Lesson: Perimeters, Not Pixels
+DETECT
+PREDICT
+PREVENT
+RESPOND
+CASE STUDY
+🗼
+The watchtower beat the satellite by two hours
+23 May 2020, compartment 551: a Forest Guard on watchtower duty reported smoke at 13:12 and the fire was controlled by 14:40 (7.8 ha). The NASA-FIRMS e-mail arrived at 15:08 — and no FSI alert was raised at all. The alert is the safety net, not the trigger.
+🍂
+In dry deciduous forest, dNBR reads leaf-fall
+Run over a whole Feb–Jun season, Sentinel-2 dNBR flagged 44% of the division as burnt in both 2019 and 2020 — though the ground records differed by 92%. The index was calibrated for crown fire; Central India's is a litter fire. Imagery must bracket the fire date, not the season.
+📐
+A pixel is not a fire
+A 375 m VIIRS detection arrives as a ~14 ha footprint, while the median Sipna fire was under 3 ha — pixel counts over-state area about four-fold. Divisional damage assessment needs GPS-walked or drone-mapped perimeters.
+📒
+Keep a season register — and feed it back
+A compartment-wise, GPS-measured, ACF-verified register of every fire is what allows honest year-on-year comparison and reward adjudication — and it is exactly the ground truth that national burnt-area products need from divisions.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+37
+NOTES: Source: Dr. Sivabala S., IFS — 'Community-Centred Forest Fire Management in a Tiger Reserve: Experience of Sipna Wildlife Division, Melghat Tiger Reserve, January 2019 – July 2020', presented at this FSI training programme, 14–18 September 2026 (with the accompanying written report). This slide deliberately balances Module 1's optimism about satellites: in accessible, manned terrain the watchtower-plus-wireless chain still beats polar-orbiting satellites on most daytime fires.
+
+=== Slide 38 ===
+BRINGING IT TOGETHER
+A Roadmap for India — Six Practical Steps
+1
+Pilot AI cameras & IoT sensors
+in the 5 highest fire-frequency Divisions, following Odisha's OFMS grid-patrol model and retrofitting existing watchtowers first.
+2
+Fold surface fuel-load mapping
+into ongoing Working Plan revisions as a standard GIS layer, using FSI's field-calibrated methodology, not a one-off exercise.
+3
+Accelerate the FSI–C-DAC forecasting system
+supporting the national rollout of HPC-based 24–48 hour fire-spread forecasting already proven operationally in Sikkim.
+4
+Replicate proven community models
+Shitlakhet's Golden Hour, Chir Pirul economics and Melghat's phased zero-fire village rewards — run as standing programmes, not one-season pilots.
+5
+Pursue data-sharing pathways
+for FireSat, WildFireSat and India's own C-DAC/ISRO forecasting assets.
+6
+Build officer capacity continuously
+through simulation-based training programmes like this one, refreshed every fire season.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+38
+
+=== Slide 39 ===
+This Is Not Hypothetical
+Every technology in this deck is already running somewhere in India, today.
+🗺️
+Odisha
+738 → 333 fire alerts in Angul Division through OFMS grid-based patrol accountability and GIS-based command.
+📱
+Uttarakhand
+A ₹8-lakh mobile app and dashboard, 17,729 Van Agni subscribers, Chir Pirul turned into income, and the Golden Hour doctrine.
+🖥️
+Sikkim
+India's first operational HPC fire-spread forecast, saving forest from fires the model correctly predicted would burn.
+🐅
+Maharashtra
+Melghat's phased zero-fire village rewards: 218 → 35 fires and 92% less area burnt in one season — measured on a GPS ground register.
+🏛️
+Tamil Nadu
+A state platform linking 37 district fire control centres; 95% of large forest fires doused within 24 hours in 2025.
+The task now is to connect and scale what already works — not start from zero.
+FSI IN-SERVICE TRAINING  ·  INNOVATIVE APPROACHES FOR FOREST FIRE MANAGEMENT
+39
+NOTES: Nagaland's LoRaWAN detection network (Module 1) is deliberately left off this slide — it is a proposed design, not yet running.
+
+=== Slide 40 ===
+Key Takeaways
+🛰️
+Detection is shifting from hours to minutes — satellites, AI cameras and drones now work as one layered system.
+📊
+Prediction is shifting from experience-based judgement to model-based forecasting — including India's own HPC system, proven live in Sikkim.
+🤝
+Prevention is shifting from reactive response to community-owned, year-round fuel and knowledge management.
+🌲
+India's advantage is hyper-local knowledge, JFM institutions and a satellite alert system already in place — the task is to layer the next generation of tools onto that foundation, not replace it.
+Thank you  ·  Discussion and case-study exchange invited

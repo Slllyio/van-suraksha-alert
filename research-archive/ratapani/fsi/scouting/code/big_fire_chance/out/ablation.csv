@@ -1,0 +1,53 @@
+target,config,set,auc
+S200,dots only,loso 2017-24,0.614
+S200,dots only,fwd2025-26,0.605
+S200,+ size of first look,loso 2017-24,0.667
+S200,+ size of first look,fwd2025-26,0.640
+S200,+ timing,loso 2017-24,0.735
+S200,+ timing,fwd2025-26,0.676
+S200,+ place,loso 2017-24,0.770
+S200,+ place,fwd2025-26,0.720
+S200,+ context,loso 2017-24,0.793
+S200,+ context,fwd2025-26,0.734
+S200,+ flags,loso 2017-24,0.795
+S200,+ flags,fwd2025-26,0.738
+S200,all minus size of first look,loso 2017-24,0.793
+S200,all minus size of first look,fwd2025-26,0.728
+S200,all minus timing,loso 2017-24,0.780
+S200,all minus timing,fwd2025-26,0.727
+S200,all minus place,loso 2017-24,0.768
+S200,all minus place,fwd2025-26,0.702
+S200,all minus context,loso 2017-24,0.775
+S200,all minus context,fwd2025-26,0.728
+S200,all minus flags,loso 2017-24,0.793
+S200,all minus flags,fwd2025-26,0.734
+S200,all minus division history,loso 2017-24,0.788
+S200,all minus division history,fwd2025-26,0.726
+S200,all minus speed map,loso 2017-24,0.793
+S200,all minus speed map,fwd2025-26,0.740
+V200,dots only,loso 2017-24,0.637
+V200,dots only,fwd2025-26,0.666
+V200,+ size of first look,loso 2017-24,0.691
+V200,+ size of first look,fwd2025-26,0.709
+V200,+ timing,loso 2017-24,0.722
+V200,+ timing,fwd2025-26,0.736
+V200,+ place,loso 2017-24,0.779
+V200,+ place,fwd2025-26,0.800
+V200,+ context,loso 2017-24,0.816
+V200,+ context,fwd2025-26,0.814
+V200,+ flags,loso 2017-24,0.818
+V200,+ flags,fwd2025-26,0.816
+V200,all minus size of first look,loso 2017-24,0.816
+V200,all minus size of first look,fwd2025-26,0.808
+V200,all minus timing,loso 2017-24,0.817
+V200,all minus timing,fwd2025-26,0.808
+V200,all minus place,loso 2017-24,0.777
+V200,all minus place,fwd2025-26,0.761
+V200,all minus context,loso 2017-24,0.784
+V200,all minus context,fwd2025-26,0.806
+V200,all minus flags,loso 2017-24,0.816
+V200,all minus flags,fwd2025-26,0.814
+V200,all minus division history,loso 2017-24,0.809
+V200,all minus division history,fwd2025-26,0.802
+V200,all minus speed map,loso 2017-24,0.818
+V200,all minus speed map,fwd2025-26,0.816

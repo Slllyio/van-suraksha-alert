@@ -1,0 +1,5 @@
+set,pts,live_tag_share,final_tag_share,live_tags_dropped_after_3d
+16 Mar-May (wildfire background),530458.0,0.06897247284422141,0.05765960735816973,0.16402000710634923
+15-28 Feb,18834.0,0.1955505999787618,0.17877243283423597,0.08579961987510187
+15-28 Feb fires that grew (>=3 days or >=10 pts): first-day live-tag share,332.0,0.06626506024096386,,
+16 Mar-May fires that grew: first-day live-tag share,11594.0,0.05459720545109539,,

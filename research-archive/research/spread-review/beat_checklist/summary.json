@@ -1,0 +1,36 @@
+{
+ "dated_truth": {
+  "chance_map": {
+   "checklists": 2459,
+   "share_lists_with_a_burning_spot": 0.259,
+   "share_spots_that_burn": 0.153
+  },
+  "ring_600m": {
+   "checklists": 2459,
+   "share_lists_with_a_burning_spot": 0.242,
+   "share_spots_that_burn": 0.136
+  },
+  "next_to_latest_dot": {
+   "checklists": 2459,
+   "share_lists_with_a_burning_spot": 0.225,
+   "share_spots_that_burn": 0.126
+  }
+ },
+ "raw_dots": {
+  "chance_map": {
+   "checklists": 5528,
+   "share_lists_with_a_burning_spot": 0.065,
+   "share_spots_that_burn": 0.031
+  },
+  "ring_600m": {
+   "checklists": 5528,
+   "share_lists_with_a_burning_spot": 0.058,
+   "share_spots_that_burn": 0.027
+  },
+  "next_to_latest_dot": {
+   "checklists": 5528,
+   "share_lists_with_a_burning_spot": 0.046,
+   "share_spots_that_burn": 0.021
+  }
+ }
+}

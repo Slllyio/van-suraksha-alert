@@ -1,0 +1,19 @@
+tier,driver,fires,heldout_r2_true,ci,mean_reliability
+all MP,"terrain (slope, elevation)",78999,0.005,"[0.003, 0.007]",0.0265
+all MP,"place (lat, lon)",78999,0.004,"[0.003, 0.006]",0.0265
+all MP,"fire extent (pairs, largest look)",78999,0.016,"[0.012, 0.019]",0.0265
+all MP,"timing (night share, month)",78999,0.005,"[0.003, 0.007]",0.0265
+all MP,"class inputs again (forest/farm/grass share, FRP, age)",78999,0.009,"[0.006, 0.011]",0.0265
+all MP,distance from earlier detections,78999,0.005,"[0.003, 0.007]",0.0265
+all MP,all together,78999,0.019,"[0.015, 0.022]",0.0265
+Ratapani,fuel load,786,-0.087,"[-1.417, 1.568]",0.0474
+Ratapani,grass share,786,-0.075,"[-1.009, 0.595]",0.0474
+Ratapani,canopy cover,788,-0.072,"[-1.14, 0.787]",0.0473
+Ratapani,teak probability,786,-0.042,"[-0.857, 0.814]",0.0474
+Ratapani,earlier burns,786,0.016,"[-1.234, 1.138]",0.0474
+Ratapani,slope (20 m),790,-0.046,"[-1.066, 1.081]",0.0473
+Ratapani,"dryness (days since rain, RH)",542,0.023,"[-1.046, 0.982]",0.0475
+Ratapani,"weather (temperature, wind)",542,0.032,"[-1.315, 1.722]",0.0475
+Ratapani,final scar size,790,-0.195,"[-2.488, 1.715]",0.0473
+Ratapani,fuel + grass + terrain,786,0.193,"[-1.93, 1.446]",0.0474
+Ratapani,"all together (to 2024, weather)",540,0.433,"[-2.692, 4.017]",0.0476

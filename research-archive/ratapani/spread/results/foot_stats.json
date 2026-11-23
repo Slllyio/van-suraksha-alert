@@ -1,0 +1,164 @@
+{
+ "all": {
+  "n": 1223,
+  "sor_learn": 0.363,
+  "sor_circle": 0.294,
+  "sor_phys": 0.299,
+  "sor_learn_free": 0.32,
+  "sor_circle_free": 0.266,
+  "sor_phys_free": 0.27,
+  "sor_phys48": 0.213,
+  "auc_learn": 0.943,
+  "auc_circle": 0.924,
+  "auc_phys": 0.877,
+  "learn>circle": 0.746,
+  "learn>phys": 0.707,
+  "area_ratio_med": 1.08,
+  "area_ratio_q": [
+   0.55,
+   2.12
+  ],
+  "area_corr_log": 0.307,
+  "phys48_ratio_med": 7.83,
+  "later_pass_hits": {
+   "n_det": 1135,
+   "learn": 0.308,
+   "circle": 0.169,
+   "phys": 0.184
+  }
+ },
+ "5-20 ha": {
+  "n": 465,
+  "sor_learn": 0.292,
+  "sor_circle": 0.226,
+  "sor_phys": 0.232,
+  "sor_learn_free": 0.302,
+  "sor_circle_free": 0.255,
+  "sor_phys_free": 0.257,
+  "sor_phys48": 0.115,
+  "auc_learn": 0.971,
+  "auc_circle": 0.967,
+  "auc_phys": 0.935,
+  "learn>circle": 0.643,
+  "learn>phys": 0.626,
+  "area_ratio_med": 2.29,
+  "area_ratio_q": [
+   1.44,
+   3.99
+  ],
+  "area_corr_log": 0.035,
+  "phys48_ratio_med": 19.59,
+  "later_pass_hits": {
+   "n_det": 149,
+   "learn": 0.349,
+   "circle": 0.208,
+   "phys": 0.221
+  }
+ },
+ "20-50 ha": {
+  "n": 385,
+  "sor_learn": 0.389,
+  "sor_circle": 0.318,
+  "sor_phys": 0.323,
+  "sor_learn_free": 0.371,
+  "sor_circle_free": 0.309,
+  "sor_phys_free": 0.311,
+  "sor_phys48": 0.222,
+  "auc_learn": 0.955,
+  "auc_circle": 0.945,
+  "auc_phys": 0.899,
+  "learn>circle": 0.748,
+  "learn>phys": 0.738,
+  "area_ratio_med": 0.99,
+  "area_ratio_q": [
+   0.7,
+   1.52
+  ],
+  "area_corr_log": 0.097,
+  "phys48_ratio_med": 7.6,
+  "later_pass_hits": {
+   "n_det": 250,
+   "learn": 0.368,
+   "circle": 0.196,
+   "phys": 0.212
+  }
+ },
+ ">=50 ha": {
+  "n": 373,
+  "sor_learn": 0.425,
+  "sor_circle": 0.353,
+  "sor_phys": 0.359,
+  "sor_learn_free": 0.29,
+  "sor_circle_free": 0.237,
+  "sor_phys_free": 0.244,
+  "sor_phys48": 0.328,
+  "auc_learn": 0.896,
+  "auc_circle": 0.85,
+  "auc_phys": 0.781,
+  "learn>circle": 0.871,
+  "learn>phys": 0.777,
+  "area_ratio_med": 0.39,
+  "area_ratio_q": [
+   0.25,
+   0.61
+  ],
+  "area_corr_log": 0.182,
+  "phys48_ratio_med": 2.78,
+  "later_pass_hits": {
+   "n_det": 736,
+   "learn": 0.28,
+   "circle": 0.152,
+   "phys": 0.167
+  }
+ },
+ "multi_pass": {
+  "n": 306,
+  "sor_learn": 0.299,
+  "sor_circle": 0.239,
+  "sor_phys": 0.244,
+  "sor_learn_free": 0.227,
+  "sor_circle_free": 0.184,
+  "sor_phys_free": 0.188,
+  "sor_phys48": 0.213,
+  "auc_learn": 0.884,
+  "auc_circle": 0.844,
+  "auc_phys": 0.78,
+  "learn>circle": 0.775,
+  "learn>phys": 0.712,
+  "area_ratio_med": 0.78,
+  "area_ratio_q": [
+   0.33,
+   1.67
+  ],
+  "area_corr_log": 0.143,
+  "phys48_ratio_med": 5.69,
+  "later_pass_hits": {
+   "n_det": 1135,
+   "learn": 0.308,
+   "circle": 0.169,
+   "phys": 0.184
+  }
+ },
+ "single_pass": {
+  "n": 917,
+  "sor_learn": 0.384,
+  "sor_circle": 0.312,
+  "sor_phys": 0.317,
+  "sor_learn_free": 0.351,
+  "sor_circle_free": 0.294,
+  "sor_phys_free": 0.297,
+  "sor_phys48": 0.214,
+  "auc_learn": 0.963,
+  "auc_circle": 0.951,
+  "auc_phys": 0.909,
+  "learn>circle": 0.736,
+  "learn>phys": 0.706,
+  "area_ratio_med": 1.15,
+  "area_ratio_q": [
+   0.65,
+   2.25
+  ],
+  "area_corr_log": 0.307,
+  "phys48_ratio_med": 8.34
+ }
+}

@@ -1,0 +1,66 @@
+A. per-year Holi ratios (all MP, burning day)
+ year       holi  eve  day   p1   p2  eve_obs  season_starts
+ 2014 2014-03-17 0.38 1.03 0.61 0.61        4           3692
+ 2015 2015-03-06 1.50 0.88 2.26 0.00        6           2786
+ 2016 2016-03-24 3.24 2.10 0.89 0.49      597          10549
+ 2017 2017-03-13 1.09 1.23 1.76 1.81       90          12147
+ 2018 2018-03-02 1.25 1.95 1.80 0.65       77          12673
+ 2019 2019-03-21 0.74 1.32 0.84 0.81       51           7698
+ 2020 2020-03-10 1.49 0.47 0.55 0.98       10           4204
+ 2021 2021-03-29 1.08 1.15 1.61 1.69      411          13146
+ 2022 2022-03-18 1.15 1.03 0.82 0.58      147          10989
+ 2023 2023-03-08 0.11 0.44 0.54 1.52        8           7028
+ 2024 2024-03-25 1.38 0.80 0.57 1.08      142           6177
+ 2025 2025-03-14 1.18 1.46 1.20 1.36      207          13931
+ 2026 2026-03-04 1.73 1.04 1.38 1.08       91           8396
+years with eve>1: 10 /13; day>1: 9 /13; eve+day mean ratio of logs: 1.026
+eve+day pooled RR 1.336
+  CI [1.014 1.807]
+B. null spread of a 13-year single-day RR: 2.5-97.5% [0.649 1.413] sd log 0.197
+C. night share: season 0.27 Holi eve 0.36 Holi day 0.293
+   median FRP: season 4.23 eve 3.39 day 3.99
+   nonforest-VTM share: season 0.161 eve 0.14
+   night-pass starts on Holi eve: RR 1.883 (663 vs 352.1)
+   day-pass starts on Holi eve: RR 1.206 (1178 vs 977.1)
+D. polling own-seat by election
+   2014-04-10 Satna Rewa Sidhi Shahdol Jabalpur Balagh obs   59 exp   47.7
+   2014-04-17 Morena Bhind Gwalior Guna Sagar Tikamgar obs    7 exp   11.4
+   2014-04-24 Vidisha Dewas Ujjain Mandsaur Ratlam Dha obs   30 exp   13.7
+  2014: RR 1.32
+   2019-04-29 Sidhi Shahdol Jabalpur Mandla Balaghat C obs   31 exp   22.8
+   2019-05-06 Tikamgarh Damoh Khajuraho Satna Rewa Hos obs   25 exp   16.3
+   2019-05-12 Morena Bhind Gwalior Guna Sagar Vidisha  obs    1 exp    9.4
+   2019-05-19 Dewas Ujjain Mandsaur Ratlam Dhar Indore obs    7 exp    4.7
+  2019: RR 1.20
+   2024-04-19 Sidhi Shahdol Jabalpur Mandla Balaghat C obs   59 exp   16.5
+   2024-04-26 Tikamgarh Damoh Khajuraho Satna Rewa Hos obs    2 exp   14.1
+   2024-05-07 Morena Bhind Gwalior Guna Sagar Vidisha  obs   10 exp   17.6
+   2024-05-13 Dewas Ujjain Mandsaur Ratlam Dhar Indore obs    1 exp    3.9
+  2024: RR 1.38
+E. Holi-anchored season effect (vs >21 d before Holi), controlling DOY spline + year FE
+weeks_since_holi_bin    RR    lo    hi
+           [-21,-14) 0.593 0.312 1.615
+            [-14,-7) 0.520 0.165 2.262
+              [-7,0) 0.696 0.192 3.147
+               [0,7) 0.699 0.141 4.000
+              [7,14) 0.655 0.094 4.833
+             [14,21) 0.500 0.051 4.510
+             [21,28) 0.536 0.045 5.165
+             [28,35) 0.456 0.041 4.533
+             [35,42) 0.466 0.035 5.693
+                >=42 0.397 0.027 7.196
+F. median start DOY vs Holi DOY: slope -0.25 r -0.24 p 0.432
+ year  holi_doy  med_doy
+ 2014        76    102.0
+ 2015        65    121.0
+ 2016        84     93.0
+ 2017        72     94.0
+ 2018        61     88.0
+ 2019        80     96.0
+ 2020        70    106.0
+ 2021        88     90.0
+ 2022        77     93.0
+ 2023        67     99.0
+ 2024        85     94.0
+ 2025        73     89.0
+ 2026        63     89.0

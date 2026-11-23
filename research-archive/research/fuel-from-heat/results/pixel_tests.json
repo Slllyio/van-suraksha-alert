@@ -1,0 +1,134 @@
+{
+ "detections": 15971,
+ "i4_saturated_share": 0.038,
+ "dozier_solvable_share": 0.741,
+ "day_share": 0.703,
+ "within_pass_rho": [
+  {
+   "ground": "canopy",
+   "l_frp": -0.059,
+   "ti4": -0.062,
+   "ti5": -0.244,
+   "ti4_5": 0.011,
+   "dz_Tf": 0.177,
+   "l_dzp": -0.191
+  },
+  {
+   "ground": "canopy_box",
+   "l_frp": -0.05,
+   "ti4": -0.054,
+   "ti5": -0.274,
+   "ti4_5": 0.03,
+   "dz_Tf": 0.209,
+   "l_dzp": -0.214
+  },
+  {
+   "ground": "grass",
+   "l_frp": 0.053,
+   "ti4": 0.065,
+   "ti5": 0.227,
+   "ti4_5": -0.003,
+   "dz_Tf": -0.158,
+   "l_dzp": 0.17
+  },
+  {
+   "ground": "litter",
+   "l_frp": -0.052,
+   "ti4": -0.057,
+   "ti5": -0.218,
+   "ti4_5": 0.008,
+   "dz_Tf": 0.159,
+   "l_dzp": -0.173
+  },
+  {
+   "ground": "scar_share",
+   "l_frp": 0.126,
+   "ti4": 0.192,
+   "ti5": 0.154,
+   "ti4_5": 0.167,
+   "dz_Tf": -0.045,
+   "l_dzp": 0.101
+  },
+  {
+   "ground": "slope",
+   "l_frp": -0.022,
+   "ti4": -0.018,
+   "ti5": -0.063,
+   "ti4_5": 0.009,
+   "dz_Tf": 0.058,
+   "l_dzp": -0.038
+  },
+  {
+   "ground": "teak",
+   "l_frp": 0.025,
+   "ti4": 0.017,
+   "ti5": 0.142,
+   "ti4_5": -0.027,
+   "dz_Tf": -0.113,
+   "l_dzp": 0.104
+  }
+ ],
+ "within_pass_ols": {
+  "coef": {
+   "const": -0.0,
+   "scar_share": 0.2404,
+   "canopy": -0.0024,
+   "litter": -0.0044
+  },
+  "p": {
+   "const": 0.3656,
+   "scar_share": 0.0,
+   "canopy": 0.0489,
+   "litter": 0.9232
+  },
+  "n": 10730,
+  "note": "log FRP per unit: scar_share 0-1, canopy %, litter t/ha; errors clustered by pass"
+ },
+ "per_fire_rho": [
+  {
+   "vs": "canopy",
+   "l_frp": -0.038,
+   "ti4": 0.133,
+   "ti5": 0.244,
+   "ti4_5": -0.152,
+   "dz_Tf": 0.202,
+   "l_dzp": -0.195
+  },
+  {
+   "vs": "doy",
+   "l_frp": 0.25,
+   "ti4": 0.326,
+   "ti5": 0.455,
+   "ti4_5": -0.203,
+   "dz_Tf": 0.01,
+   "l_dzp": 0.019
+  },
+  {
+   "vs": "fuel_tha",
+   "l_frp": 0.309,
+   "ti4": 0.191,
+   "ti5": 0.093,
+   "ti4_5": 0.075,
+   "dz_Tf": -0.021,
+   "l_dzp": 0.052
+  },
+  {
+   "vs": "grass",
+   "l_frp": -0.016,
+   "ti4": -0.186,
+   "ti5": -0.317,
+   "ti4_5": 0.191,
+   "dz_Tf": -0.076,
+   "l_dzp": 0.07
+  },
+  {
+   "vs": "litter",
+   "l_frp": -0.045,
+   "ti4": 0.113,
+   "ti5": 0.213,
+   "ti4_5": -0.136,
+   "dz_Tf": 0.172,
+   "l_dzp": -0.168
+  }
+ ]
+}

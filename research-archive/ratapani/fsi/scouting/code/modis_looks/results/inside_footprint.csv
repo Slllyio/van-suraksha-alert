@@ -1,0 +1,9 @@
+where,photos,pixels,burned_share
+inV,214,139846,0.908
+TN_before,3,1854,0.147
+TN_before (incl. inside VIIRS),4,3288,0.479
+TD_now,25,13921,0.402
+TD_now (incl. inside VIIRS),25,15538,0.463
+AQ_before,2,1508,0.262
+AQ_before (incl. inside VIIRS),2,2277,0.405
+out,335,419439,0.289

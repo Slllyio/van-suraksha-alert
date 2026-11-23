@@ -1,0 +1,37 @@
+{
+ "base": 0.084,
+ "peak_ist": 15.03,
+ "width_h": 4.33,
+ "points": [
+  {
+   "satellite": "Aqua",
+   "daynight": "D",
+   "h": 13.767,
+   "n": 1452,
+   "rel": 1.0
+  },
+  {
+   "satellite": "Aqua",
+   "daynight": "N",
+   "h": 2.217,
+   "n": 165,
+   "rel": 0.114
+  },
+  {
+   "satellite": "Terra",
+   "daynight": "D",
+   "h": 11.017,
+   "n": 969,
+   "rel": 0.667
+  },
+  {
+   "satellite": "Terra",
+   "daynight": "N",
+   "h": 22.467,
+   "n": 437,
+   "rel": 0.301
+  }
+ ],
+ "share_of_day_activity_01_30_to_10_30": 0.188,
+ "share_01_30_to_13_30": 0.388
+}

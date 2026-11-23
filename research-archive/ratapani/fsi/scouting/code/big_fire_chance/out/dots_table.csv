@@ -1,0 +1,17 @@
+dots,size,mean,region,truth,share_of_big
+1 dot,26341,0.064,all MP,S200,0.514
+2 dots,6997,0.105,all MP,S200,0.223
+3-4 dots,2573,0.188,all MP,S200,0.148
+5+ dots,834,0.448,all MP,S200,0.114
+1 dot,98347,0.016,all MP,V200,0.426
+2 dots,26157,0.033,all MP,V200,0.233
+3-4 dots,9610,0.070,all MP,V200,0.182
+5+ dots,2647,0.222,all MP,V200,0.159
+1 dot,1532,0.140,Obedullahganj + Raisen (Ratapani),S200,0.522
+2 dots,537,0.177,Obedullahganj + Raisen (Ratapani),S200,0.232
+3-4 dots,192,0.349,Obedullahganj + Raisen (Ratapani),S200,0.163
+5+ dots,62,0.548,Obedullahganj + Raisen (Ratapani),S200,0.083
+1 dot,6985,0.023,Obedullahganj + Raisen (Ratapani),V200,0.458
+2 dots,2043,0.038,Obedullahganj + Raisen (Ratapani),V200,0.226
+3-4 dots,772,0.091,Obedullahganj + Raisen (Ratapani),V200,0.203
+5+ dots,188,0.207,Obedullahganj + Raisen (Ratapani),V200,0.113

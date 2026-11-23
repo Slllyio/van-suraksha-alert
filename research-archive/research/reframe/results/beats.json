@@ -1,0 +1,1400 @@
+{
+ "y2": {
+  "loso_2017_24": {
+   "climatology": {
+    "n": 105468,
+    "base_rate": 0.0834,
+    "auc": 0.8193,
+    "brier": 0.06817,
+    "logloss": 0.2323,
+    "mean_pred": 0.0836,
+    "bss_vs_base_rate": 0.1081,
+    "beatday_recall_top10": 0.2304,
+    "burned_cells_in_top10": 0.2712,
+    "beatday_recall_top20": 0.4191,
+    "burned_cells_in_top20": 0.485,
+    "auc_by_season": {
+     "2017": 0.828,
+     "2018": 0.849,
+     "2019": 0.836,
+     "2020": 0.747,
+     "2021": 0.835,
+     "2022": 0.846,
+     "2023": 0.813,
+     "2024": 0.855
+    }
+   },
+   "fsi_fire_prone_map": {
+    "n": 105468,
+    "base_rate": 0.0834,
+    "auc": 0.8182,
+    "brier": 0.06816,
+    "logloss": 0.2322,
+    "mean_pred": 0.0836,
+    "bss_vs_base_rate": 0.1083,
+    "bss_vs_ref": 0.0001,
+    "beatday_recall_top10": 0.2272,
+    "burned_cells_in_top10": 0.2596,
+    "beatday_recall_top20": 0.4138,
+    "burned_cells_in_top20": 0.4798,
+    "auc_by_season": {
+     "2017": 0.826,
+     "2018": 0.852,
+     "2019": 0.836,
+     "2020": 0.746,
+     "2021": 0.832,
+     "2022": 0.843,
+     "2023": 0.813,
+     "2024": 0.853
+    }
+   },
+   "persistence": {
+    "n": 105468,
+    "base_rate": 0.0834,
+    "auc": 0.8301,
+    "brier": 0.0668,
+    "logloss": 0.2277,
+    "mean_pred": 0.0836,
+    "bss_vs_base_rate": 0.1261,
+    "bss_vs_ref": 0.0201,
+    "beatday_recall_top10": 0.2377,
+    "burned_cells_in_top10": 0.2754,
+    "beatday_recall_top20": 0.4233,
+    "burned_cells_in_top20": 0.4827,
+    "auc_by_season": {
+     "2017": 0.826,
+     "2018": 0.873,
+     "2019": 0.844,
+     "2020": 0.78,
+     "2021": 0.834,
+     "2022": 0.856,
+     "2023": 0.821,
+     "2024": 0.859
+    }
+   },
+   "lean_beat_sum": {
+    "n": 105468,
+    "base_rate": 0.0834,
+    "auc": 0.831,
+    "brier": 0.06723,
+    "logloss": 0.2271,
+    "mean_pred": 0.0834,
+    "bss_vs_base_rate": 0.1204,
+    "bss_vs_ref": 0.0138,
+    "beatday_recall_top10": 0.2281,
+    "burned_cells_in_top10": 0.2874,
+    "beatday_recall_top20": 0.4218,
+    "burned_cells_in_top20": 0.5099,
+    "auc_by_season": {
+     "2017": 0.819,
+     "2018": 0.876,
+     "2019": 0.845,
+     "2020": 0.803,
+     "2021": 0.842,
+     "2022": 0.854,
+     "2023": 0.8,
+     "2024": 0.85
+    }
+   },
+   "full": {
+    "n": 105468,
+    "base_rate": 0.0834,
+    "auc": 0.8383,
+    "brier": 0.0664,
+    "logloss": 0.2248,
+    "mean_pred": 0.0839,
+    "bss_vs_base_rate": 0.1313,
+    "bss_vs_ref": 0.0259,
+    "beatday_recall_top10": 0.2457,
+    "burned_cells_in_top10": 0.3141,
+    "beatday_recall_top20": 0.4439,
+    "burned_cells_in_top20": 0.5319,
+    "auc_by_season": {
+     "2017": 0.83,
+     "2018": 0.873,
+     "2019": 0.851,
+     "2020": 0.831,
+     "2021": 0.84,
+     "2022": 0.85,
+     "2023": 0.824,
+     "2024": 0.851
+    }
+   },
+   "full_no_lean": {
+    "n": 105468,
+    "base_rate": 0.0834,
+    "auc": 0.8407,
+    "brier": 0.06603,
+    "logloss": 0.2237,
+    "mean_pred": 0.0839,
+    "bss_vs_base_rate": 0.1361,
+    "bss_vs_ref": 0.0314,
+    "beatday_recall_top10": 0.2409,
+    "burned_cells_in_top10": 0.3052,
+    "beatday_recall_top20": 0.4352,
+    "burned_cells_in_top20": 0.5146,
+    "auc_by_season": {
+     "2017": 0.826,
+     "2018": 0.875,
+     "2019": 0.846,
+     "2020": 0.833,
+     "2021": 0.837,
+     "2022": 0.858,
+     "2023": 0.837,
+     "2024": 0.861
+    }
+   },
+   "ceiling_top10": 0.5843,
+   "ceiling_burned_cells_top10": 0.7711,
+   "random_top10": 0.1061,
+   "ceiling_top20": 0.8393,
+   "ceiling_burned_cells_top20": 0.9299,
+   "random_top20": 0.2123,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 43136,
+     "predicted": 0.0055,
+     "observed": 0.0057
+    },
+    {
+     "bin": "[0.02, 0.05)",
+     "n": 16572,
+     "predicted": 0.0349,
+     "observed": 0.0362
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 13819,
+     "predicted": 0.0698,
+     "observed": 0.0706
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 14543,
+     "predicted": 0.1434,
+     "observed": 0.1452
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 11443,
+     "predicted": 0.245,
+     "observed": 0.2522
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 5748,
+     "predicted": 0.3586,
+     "observed": 0.3328
+    },
+    {
+     "bin": "[0.5, 0.7)",
+     "n": 207,
+     "predicted": 0.5776,
+     "observed": 0.2995
+    }
+   ]
+  },
+  "test_2025_26": {
+   "climatology": {
+    "n": 26320,
+    "base_rate": 0.0935,
+    "auc": 0.8419,
+    "brier": 0.07221,
+    "logloss": 0.2414,
+    "mean_pred": 0.0836,
+    "bss_vs_base_rate": 0.1478,
+    "beatday_recall_top10": 0.2341,
+    "burned_cells_in_top10": 0.2604,
+    "beatday_recall_top20": 0.4191,
+    "burned_cells_in_top20": 0.495,
+    "auc_by_season": {
+     "2025": 0.846,
+     "2026": 0.838
+    }
+   },
+   "fsi_fire_prone_map": {
+    "n": 26320,
+    "base_rate": 0.0935,
+    "auc": 0.8422,
+    "brier": 0.0722,
+    "logloss": 0.2413,
+    "mean_pred": 0.0837,
+    "bss_vs_base_rate": 0.1479,
+    "bss_vs_ref": 0.0001,
+    "beatday_recall_top10": 0.2252,
+    "burned_cells_in_top10": 0.2554,
+    "beatday_recall_top20": 0.4142,
+    "burned_cells_in_top20": 0.4807,
+    "auc_by_season": {
+     "2025": 0.847,
+     "2026": 0.838
+    }
+   },
+   "persistence": {
+    "n": 26320,
+    "base_rate": 0.0935,
+    "auc": 0.8504,
+    "brier": 0.07081,
+    "logloss": 0.2369,
+    "mean_pred": 0.0832,
+    "bss_vs_base_rate": 0.1643,
+    "bss_vs_ref": 0.0193,
+    "beatday_recall_top10": 0.2268,
+    "burned_cells_in_top10": 0.2665,
+    "beatday_recall_top20": 0.4203,
+    "burned_cells_in_top20": 0.4751,
+    "auc_by_season": {
+     "2025": 0.852,
+     "2026": 0.849
+    }
+   },
+   "lean_beat_sum": {
+    "n": 26320,
+    "base_rate": 0.0935,
+    "auc": 0.8519,
+    "brier": 0.07085,
+    "logloss": 0.236,
+    "mean_pred": 0.0873,
+    "bss_vs_base_rate": 0.1638,
+    "bss_vs_ref": 0.0188,
+    "beatday_recall_top10": 0.2317,
+    "burned_cells_in_top10": 0.2752,
+    "beatday_recall_top20": 0.4138,
+    "burned_cells_in_top20": 0.4988,
+    "auc_by_season": {
+     "2025": 0.86,
+     "2026": 0.846
+    }
+   },
+   "full": {
+    "n": 26320,
+    "base_rate": 0.0935,
+    "auc": 0.8507,
+    "brier": 0.07016,
+    "logloss": 0.2359,
+    "mean_pred": 0.0825,
+    "bss_vs_base_rate": 0.172,
+    "bss_vs_ref": 0.0283,
+    "beatday_recall_top10": 0.2512,
+    "burned_cells_in_top10": 0.3248,
+    "beatday_recall_top20": 0.4435,
+    "burned_cells_in_top20": 0.5397,
+    "auc_by_season": {
+     "2025": 0.863,
+     "2026": 0.838
+    }
+   },
+   "full_no_lean": {
+    "n": 26320,
+    "base_rate": 0.0935,
+    "auc": 0.8498,
+    "brier": 0.06994,
+    "logloss": 0.2359,
+    "mean_pred": 0.0855,
+    "bss_vs_base_rate": 0.1745,
+    "bss_vs_ref": 0.0314,
+    "beatday_recall_top10": 0.2398,
+    "burned_cells_in_top10": 0.2947,
+    "beatday_recall_top20": 0.428,
+    "burned_cells_in_top20": 0.5249,
+    "auc_by_season": {
+     "2025": 0.858,
+     "2026": 0.841
+    }
+   },
+   "ceiling_top10": 0.5732,
+   "ceiling_burned_cells_top10": 0.7404,
+   "random_top10": 0.1004,
+   "ceiling_top20": 0.8065,
+   "ceiling_burned_cells_top20": 0.9078,
+   "random_top20": 0.1996,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 10364,
+     "predicted": 0.0057,
+     "observed": 0.0082
+    },
+    {
+     "bin": "[0.02, 0.05)",
+     "n": 4604,
+     "predicted": 0.0356,
+     "observed": 0.0376
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 3349,
+     "predicted": 0.0691,
+     "observed": 0.0693
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 4083,
+     "predicted": 0.1431,
+     "observed": 0.1621
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 2368,
+     "predicted": 0.2459,
+     "observed": 0.2407
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 1552,
+     "predicted": 0.3537,
+     "observed": 0.4755
+    }
+   ]
+  }
+ },
+ "y7": {
+  "loso_2017_24": {
+   "climatology": {
+    "n": 105468,
+    "base_rate": 0.2028,
+    "auc": 0.8435,
+    "brier": 0.12059,
+    "logloss": 0.3676,
+    "mean_pred": 0.203,
+    "bss_vs_base_rate": 0.2541,
+    "beatday_recall_top10": 0.2001,
+    "burned_cells_in_top10": 0.2563,
+    "beatday_recall_top20": 0.3785,
+    "burned_cells_in_top20": 0.4678,
+    "auc_by_season": {
+     "2017": 0.873,
+     "2018": 0.88,
+     "2019": 0.874,
+     "2020": 0.771,
+     "2021": 0.873,
+     "2022": 0.858,
+     "2023": 0.843,
+     "2024": 0.856
+    }
+   },
+   "fsi_fire_prone_map": {
+    "n": 105468,
+    "base_rate": 0.2028,
+    "auc": 0.8434,
+    "brier": 0.121,
+    "logloss": 0.3683,
+    "mean_pred": 0.2031,
+    "bss_vs_base_rate": 0.2515,
+    "bss_vs_ref": -0.0034,
+    "beatday_recall_top10": 0.2021,
+    "burned_cells_in_top10": 0.2596,
+    "beatday_recall_top20": 0.3764,
+    "burned_cells_in_top20": 0.4721,
+    "auc_by_season": {
+     "2017": 0.871,
+     "2018": 0.882,
+     "2019": 0.874,
+     "2020": 0.771,
+     "2021": 0.87,
+     "2022": 0.857,
+     "2023": 0.845,
+     "2024": 0.854
+    }
+   },
+   "persistence": {
+    "n": 105468,
+    "base_rate": 0.2028,
+    "auc": 0.8505,
+    "brier": 0.11818,
+    "logloss": 0.3623,
+    "mean_pred": 0.2033,
+    "bss_vs_base_rate": 0.269,
+    "bss_vs_ref": 0.02,
+    "beatday_recall_top10": 0.2058,
+    "burned_cells_in_top10": 0.258,
+    "beatday_recall_top20": 0.3862,
+    "burned_cells_in_top20": 0.4661,
+    "auc_by_season": {
+     "2017": 0.869,
+     "2018": 0.906,
+     "2019": 0.882,
+     "2020": 0.795,
+     "2021": 0.865,
+     "2022": 0.863,
+     "2023": 0.85,
+     "2024": 0.853
+    }
+   },
+   "lean_beat_sum": {
+    "n": 105468,
+    "base_rate": 0.2028,
+    "auc": 0.8556,
+    "brier": 0.11674,
+    "logloss": 0.3566,
+    "mean_pred": 0.2028,
+    "bss_vs_base_rate": 0.2779,
+    "bss_vs_ref": 0.0319,
+    "beatday_recall_top10": 0.2114,
+    "burned_cells_in_top10": 0.2913,
+    "beatday_recall_top20": 0.3929,
+    "burned_cells_in_top20": 0.5058,
+    "auc_by_season": {
+     "2017": 0.867,
+     "2018": 0.913,
+     "2019": 0.885,
+     "2020": 0.812,
+     "2021": 0.862,
+     "2022": 0.871,
+     "2023": 0.834,
+     "2024": 0.852
+    }
+   },
+   "full": {
+    "n": 105468,
+    "base_rate": 0.2028,
+    "auc": 0.8536,
+    "brier": 0.11796,
+    "logloss": 0.3619,
+    "mean_pred": 0.2031,
+    "bss_vs_base_rate": 0.2703,
+    "bss_vs_ref": 0.0218,
+    "beatday_recall_top10": 0.2154,
+    "burned_cells_in_top10": 0.303,
+    "beatday_recall_top20": 0.3985,
+    "burned_cells_in_top20": 0.5239,
+    "auc_by_season": {
+     "2017": 0.862,
+     "2018": 0.891,
+     "2019": 0.892,
+     "2020": 0.832,
+     "2021": 0.857,
+     "2022": 0.859,
+     "2023": 0.85,
+     "2024": 0.849
+    }
+   },
+   "full_no_lean": {
+    "n": 105468,
+    "base_rate": 0.2028,
+    "auc": 0.8559,
+    "brier": 0.11678,
+    "logloss": 0.3589,
+    "mean_pred": 0.2033,
+    "bss_vs_base_rate": 0.2776,
+    "bss_vs_ref": 0.0316,
+    "beatday_recall_top10": 0.2091,
+    "burned_cells_in_top10": 0.29,
+    "beatday_recall_top20": 0.3926,
+    "burned_cells_in_top20": 0.5106,
+    "auc_by_season": {
+     "2017": 0.863,
+     "2018": 0.896,
+     "2019": 0.885,
+     "2020": 0.845,
+     "2021": 0.857,
+     "2022": 0.855,
+     "2023": 0.857,
+     "2024": 0.849
+    }
+   },
+   "ceiling_top10": 0.3654,
+   "ceiling_burned_cells_top10": 0.5829,
+   "random_top10": 0.1071,
+   "ceiling_top20": 0.6084,
+   "ceiling_burned_cells_top20": 0.8035,
+   "random_top20": 0.2112,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 25696,
+     "predicted": 0.0032,
+     "observed": 0.0054
+    },
+    {
+     "bin": "[0.02, 0.05)",
+     "n": 11877,
+     "predicted": 0.0302,
+     "observed": 0.0267
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 12931,
+     "predicted": 0.0681,
+     "observed": 0.0689
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 12095,
+     "predicted": 0.1457,
+     "observed": 0.1494
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 11908,
+     "predicted": 0.2381,
+     "observed": 0.2364
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 16428,
+     "predicted": 0.404,
+     "observed": 0.4116
+    },
+    {
+     "bin": "[0.5, 0.7)",
+     "n": 13146,
+     "predicted": 0.595,
+     "observed": 0.5977
+    },
+    {
+     "bin": "[0.7, 1.0)",
+     "n": 1387,
+     "predicted": 0.7513,
+     "observed": 0.5753
+    }
+   ]
+  },
+  "test_2025_26": {
+   "climatology": {
+    "n": 26320,
+    "base_rate": 0.2236,
+    "auc": 0.8693,
+    "brier": 0.11852,
+    "logloss": 0.3655,
+    "mean_pred": 0.2032,
+    "bss_vs_base_rate": 0.3173,
+    "beatday_recall_top10": 0.2082,
+    "burned_cells_in_top10": 0.2503,
+    "beatday_recall_top20": 0.3653,
+    "burned_cells_in_top20": 0.4837,
+    "auc_by_season": {
+     "2025": 0.868,
+     "2026": 0.871
+    }
+   },
+   "fsi_fire_prone_map": {
+    "n": 26320,
+    "base_rate": 0.2236,
+    "auc": 0.8701,
+    "brier": 0.11784,
+    "logloss": 0.364,
+    "mean_pred": 0.2033,
+    "bss_vs_base_rate": 0.3212,
+    "bss_vs_ref": 0.0057,
+    "beatday_recall_top10": 0.2097,
+    "burned_cells_in_top10": 0.2673,
+    "beatday_recall_top20": 0.3735,
+    "burned_cells_in_top20": 0.4893,
+    "auc_by_season": {
+     "2025": 0.87,
+     "2026": 0.87
+    }
+   },
+   "persistence": {
+    "n": 26320,
+    "base_rate": 0.2236,
+    "auc": 0.8729,
+    "brier": 0.11706,
+    "logloss": 0.361,
+    "mean_pred": 0.1981,
+    "bss_vs_base_rate": 0.3257,
+    "bss_vs_ref": 0.0123,
+    "beatday_recall_top10": 0.2059,
+    "burned_cells_in_top10": 0.2694,
+    "beatday_recall_top20": 0.3806,
+    "burned_cells_in_top20": 0.4804,
+    "auc_by_season": {
+     "2025": 0.872,
+     "2026": 0.873
+    }
+   },
+   "lean_beat_sum": {
+    "n": 26320,
+    "base_rate": 0.2236,
+    "auc": 0.8754,
+    "brier": 0.11459,
+    "logloss": 0.3556,
+    "mean_pred": 0.2095,
+    "bss_vs_base_rate": 0.3399,
+    "bss_vs_ref": 0.0332,
+    "beatday_recall_top10": 0.2012,
+    "burned_cells_in_top10": 0.2773,
+    "beatday_recall_top20": 0.3777,
+    "burned_cells_in_top20": 0.4982,
+    "auc_by_season": {
+     "2025": 0.88,
+     "2026": 0.872
+    }
+   },
+   "full": {
+    "n": 26320,
+    "base_rate": 0.2236,
+    "auc": 0.8729,
+    "brier": 0.11615,
+    "logloss": 0.359,
+    "mean_pred": 0.206,
+    "bss_vs_base_rate": 0.3309,
+    "bss_vs_ref": 0.02,
+    "beatday_recall_top10": 0.2129,
+    "burned_cells_in_top10": 0.2957,
+    "beatday_recall_top20": 0.3932,
+    "burned_cells_in_top20": 0.5257,
+    "auc_by_season": {
+     "2025": 0.879,
+     "2026": 0.866
+    }
+   },
+   "full_no_lean": {
+    "n": 26320,
+    "base_rate": 0.2236,
+    "auc": 0.8734,
+    "brier": 0.11496,
+    "logloss": 0.3577,
+    "mean_pred": 0.2068,
+    "bss_vs_base_rate": 0.3378,
+    "bss_vs_ref": 0.03,
+    "beatday_recall_top10": 0.2104,
+    "burned_cells_in_top10": 0.2903,
+    "beatday_recall_top20": 0.3881,
+    "burned_cells_in_top20": 0.5232,
+    "auc_by_season": {
+     "2025": 0.873,
+     "2026": 0.873
+    }
+   },
+   "ceiling_top10": 0.3521,
+   "ceiling_burned_cells_top10": 0.5513,
+   "random_top10": 0.1043,
+   "ceiling_top20": 0.5935,
+   "ceiling_burned_cells_top20": 0.7751,
+   "random_top20": 0.2066,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 5722,
+     "predicted": 0.0031,
+     "observed": 0.0028
+    },
+    {
+     "bin": "[0.02, 0.05)",
+     "n": 3119,
+     "predicted": 0.0314,
+     "observed": 0.0298
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 3200,
+     "predicted": 0.0698,
+     "observed": 0.0812
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 3347,
+     "predicted": 0.1478,
+     "observed": 0.1312
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 3321,
+     "predicted": 0.2429,
+     "observed": 0.2358
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 4322,
+     "predicted": 0.4085,
+     "observed": 0.4523
+    },
+    {
+     "bin": "[0.5, 0.7)",
+     "n": 2609,
+     "predicted": 0.5902,
+     "observed": 0.665
+    },
+    {
+     "bin": "[0.7, 1.0)",
+     "n": 680,
+     "predicted": 0.7016,
+     "observed": 0.8882
+    }
+   ]
+  }
+ },
+ "v2": {
+  "loso_2017_24": {
+   "climatology": {
+    "n": 105468,
+    "base_rate": 0.0495,
+    "auc": 0.8325,
+    "brier": 0.04313,
+    "logloss": 0.1603,
+    "mean_pred": 0.0496,
+    "bss_vs_base_rate": 0.0832,
+    "beatday_recall_top10": 0.2634,
+    "beatday_recall_top20": 0.4506,
+    "auc_by_season": {
+     "2017": 0.863,
+     "2018": 0.836,
+     "2019": 0.838,
+     "2020": 0.751,
+     "2021": 0.838,
+     "2022": 0.862,
+     "2023": 0.808,
+     "2024": 0.891
+    }
+   },
+   "fsi_fire_prone_map": {
+    "n": 105468,
+    "base_rate": 0.0495,
+    "auc": 0.8301,
+    "brier": 0.04317,
+    "logloss": 0.1604,
+    "mean_pred": 0.0497,
+    "bss_vs_base_rate": 0.0823,
+    "bss_vs_ref": -0.001,
+    "beatday_recall_top10": 0.2611,
+    "beatday_recall_top20": 0.4408,
+    "auc_by_season": {
+     "2017": 0.86,
+     "2018": 0.833,
+     "2019": 0.836,
+     "2020": 0.744,
+     "2021": 0.839,
+     "2022": 0.863,
+     "2023": 0.809,
+     "2024": 0.891
+    }
+   },
+   "persistence": {
+    "n": 105468,
+    "base_rate": 0.0495,
+    "auc": 0.8415,
+    "brier": 0.04199,
+    "logloss": 0.1563,
+    "mean_pred": 0.0496,
+    "bss_vs_base_rate": 0.1074,
+    "bss_vs_ref": 0.0264,
+    "beatday_recall_top10": 0.2757,
+    "beatday_recall_top20": 0.477,
+    "auc_by_season": {
+     "2017": 0.862,
+     "2018": 0.849,
+     "2019": 0.846,
+     "2020": 0.776,
+     "2021": 0.851,
+     "2022": 0.864,
+     "2023": 0.817,
+     "2024": 0.891
+    }
+   },
+   "lean_beat_sum": {
+    "n": 105468,
+    "base_rate": 0.0495,
+    "auc": 0.8344,
+    "brier": 0.04287,
+    "logloss": 0.1593,
+    "mean_pred": 0.0495,
+    "bss_vs_base_rate": 0.0887,
+    "bss_vs_ref": 0.006,
+    "beatday_recall_top10": 0.2402,
+    "beatday_recall_top20": 0.4351,
+    "auc_by_season": {
+     "2017": 0.86,
+     "2018": 0.837,
+     "2019": 0.833,
+     "2020": 0.793,
+     "2021": 0.85,
+     "2022": 0.849,
+     "2023": 0.785,
+     "2024": 0.891
+    }
+   },
+   "full": {
+    "n": 105468,
+    "base_rate": 0.0495,
+    "auc": 0.856,
+    "brier": 0.04122,
+    "logloss": 0.1519,
+    "mean_pred": 0.0497,
+    "bss_vs_base_rate": 0.1238,
+    "bss_vs_ref": 0.0442,
+    "beatday_recall_top10": 0.2879,
+    "beatday_recall_top20": 0.491,
+    "auc_by_season": {
+     "2017": 0.872,
+     "2018": 0.845,
+     "2019": 0.854,
+     "2020": 0.846,
+     "2021": 0.864,
+     "2022": 0.87,
+     "2023": 0.817,
+     "2024": 0.898
+    }
+   },
+   "full_no_lean": {
+    "n": 105468,
+    "base_rate": 0.0495,
+    "auc": 0.8608,
+    "brier": 0.04085,
+    "logloss": 0.1502,
+    "mean_pred": 0.0495,
+    "bss_vs_base_rate": 0.1317,
+    "bss_vs_ref": 0.0528,
+    "beatday_recall_top10": 0.2887,
+    "beatday_recall_top20": 0.4889,
+    "auc_by_season": {
+     "2017": 0.871,
+     "2018": 0.849,
+     "2019": 0.85,
+     "2020": 0.845,
+     "2021": 0.861,
+     "2022": 0.875,
+     "2023": 0.823,
+     "2024": 0.9
+    }
+   },
+   "ceiling_top10": 0.7588,
+   "random_top10": 0.1084,
+   "ceiling_top20": 0.9517,
+   "random_top20": 0.213,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 55409,
+     "predicted": 0.0052,
+     "observed": 0.006
+    },
+    {
+     "bin": "[0.02, 0.05)",
+     "n": 20441,
+     "predicted": 0.0331,
+     "observed": 0.0325
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 11906,
+     "predicted": 0.0734,
+     "observed": 0.0745
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 12200,
+     "predicted": 0.1406,
+     "observed": 0.1398
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 3024,
+     "predicted": 0.2371,
+     "observed": 0.2292
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 2314,
+     "predicted": 0.3744,
+     "observed": 0.3613
+    },
+    {
+     "bin": "[0.5, 0.7)",
+     "n": 171,
+     "predicted": 0.5918,
+     "observed": 0.5848
+    },
+    {
+     "bin": "[0.7, 1.0)",
+     "n": 3,
+     "predicted": 0.8651,
+     "observed": 0.6667
+    }
+   ]
+  },
+  "test_2025_26": {
+   "climatology": {
+    "n": 26320,
+    "base_rate": 0.0511,
+    "auc": 0.8449,
+    "brier": 0.04405,
+    "logloss": 0.1607,
+    "mean_pred": 0.0497,
+    "bss_vs_base_rate": 0.0909,
+    "beatday_recall_top10": 0.2247,
+    "beatday_recall_top20": 0.4092,
+    "auc_by_season": {
+     "2025": 0.865,
+     "2026": 0.824
+    }
+   },
+   "fsi_fire_prone_map": {
+    "n": 26320,
+    "base_rate": 0.0511,
+    "auc": 0.8474,
+    "brier": 0.04391,
+    "logloss": 0.1598,
+    "mean_pred": 0.0497,
+    "bss_vs_base_rate": 0.0938,
+    "bss_vs_ref": 0.0031,
+    "beatday_recall_top10": 0.2314,
+    "beatday_recall_top20": 0.4092,
+    "auc_by_season": {
+     "2025": 0.869,
+     "2026": 0.824
+    }
+   },
+   "persistence": {
+    "n": 26320,
+    "base_rate": 0.0511,
+    "auc": 0.8572,
+    "brier": 0.04239,
+    "logloss": 0.1552,
+    "mean_pred": 0.0489,
+    "bss_vs_base_rate": 0.1252,
+    "bss_vs_ref": 0.0376,
+    "beatday_recall_top10": 0.253,
+    "beatday_recall_top20": 0.4368,
+    "auc_by_season": {
+     "2025": 0.873,
+     "2026": 0.84
+    }
+   },
+   "lean_beat_sum": {
+    "n": 26320,
+    "base_rate": 0.0511,
+    "auc": 0.859,
+    "brier": 0.04297,
+    "logloss": 0.1562,
+    "mean_pred": 0.0545,
+    "bss_vs_base_rate": 0.1132,
+    "bss_vs_ref": 0.0244,
+    "beatday_recall_top10": 0.221,
+    "beatday_recall_top20": 0.3973,
+    "auc_by_season": {
+     "2025": 0.874,
+     "2026": 0.842
+    }
+   },
+   "full": {
+    "n": 26320,
+    "base_rate": 0.0511,
+    "auc": 0.8661,
+    "brier": 0.04145,
+    "logloss": 0.1514,
+    "mean_pred": 0.0511,
+    "bss_vs_base_rate": 0.1446,
+    "bss_vs_ref": 0.059,
+    "beatday_recall_top10": 0.2716,
+    "beatday_recall_top20": 0.4501,
+    "auc_by_season": {
+     "2025": 0.88,
+     "2026": 0.85
+    }
+   },
+   "full_no_lean": {
+    "n": 26320,
+    "base_rate": 0.0511,
+    "auc": 0.8651,
+    "brier": 0.04143,
+    "logloss": 0.1516,
+    "mean_pred": 0.0497,
+    "bss_vs_base_rate": 0.145,
+    "bss_vs_ref": 0.0594,
+    "beatday_recall_top10": 0.2619,
+    "beatday_recall_top20": 0.4435,
+    "auc_by_season": {
+     "2025": 0.881,
+     "2026": 0.846
+    }
+   },
+   "ceiling_top10": 0.7202,
+   "random_top10": 0.1042,
+   "ceiling_top20": 0.9249,
+   "random_top20": 0.2076,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 14856,
+     "predicted": 0.0062,
+     "observed": 0.0064
+    },
+    {
+     "bin": "[0.02, 0.05)",
+     "n": 3951,
+     "predicted": 0.036,
+     "observed": 0.0354
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 3004,
+     "predicted": 0.0706,
+     "observed": 0.0746
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 3149,
+     "predicted": 0.1393,
+     "observed": 0.1359
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 558,
+     "predicted": 0.2418,
+     "observed": 0.2527
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 704,
+     "predicted": 0.3789,
+     "observed": 0.3651
+    },
+    {
+     "bin": "[0.5, 0.7)",
+     "n": 97,
+     "predicted": 0.6018,
+     "observed": 0.5979
+    },
+    {
+     "bin": "[0.7, 1.0)",
+     "n": 1,
+     "predicted": 0.9999,
+     "observed": 1.0
+    }
+   ]
+  }
+ },
+ "v7": {
+  "loso_2017_24": {
+   "climatology": {
+    "n": 105468,
+    "base_rate": 0.1292,
+    "auc": 0.8437,
+    "brier": 0.0906,
+    "logloss": 0.293,
+    "mean_pred": 0.1297,
+    "bss_vs_base_rate": 0.1945,
+    "beatday_recall_top10": 0.2345,
+    "beatday_recall_top20": 0.4134,
+    "auc_by_season": {
+     "2017": 0.88,
+     "2018": 0.859,
+     "2019": 0.851,
+     "2020": 0.759,
+     "2021": 0.862,
+     "2022": 0.875,
+     "2023": 0.821,
+     "2024": 0.896
+    }
+   },
+   "fsi_fire_prone_map": {
+    "n": 105468,
+    "base_rate": 0.1292,
+    "auc": 0.8436,
+    "brier": 0.09054,
+    "logloss": 0.2913,
+    "mean_pred": 0.1295,
+    "bss_vs_base_rate": 0.195,
+    "bss_vs_ref": 0.0007,
+    "beatday_recall_top10": 0.2345,
+    "beatday_recall_top20": 0.4108,
+    "auc_by_season": {
+     "2017": 0.88,
+     "2018": 0.856,
+     "2019": 0.852,
+     "2020": 0.755,
+     "2021": 0.865,
+     "2022": 0.877,
+     "2023": 0.822,
+     "2024": 0.894
+    }
+   },
+   "persistence": {
+    "n": 105468,
+    "base_rate": 0.1292,
+    "auc": 0.8451,
+    "brier": 0.08992,
+    "logloss": 0.2897,
+    "mean_pred": 0.1295,
+    "bss_vs_base_rate": 0.2005,
+    "bss_vs_ref": 0.0075,
+    "beatday_recall_top10": 0.2252,
+    "beatday_recall_top20": 0.421,
+    "auc_by_season": {
+     "2017": 0.874,
+     "2018": 0.868,
+     "2019": 0.857,
+     "2020": 0.772,
+     "2021": 0.863,
+     "2022": 0.871,
+     "2023": 0.825,
+     "2024": 0.89
+    }
+   },
+   "lean_beat_sum": {
+    "n": 105468,
+    "base_rate": 0.1292,
+    "auc": 0.8432,
+    "brier": 0.09045,
+    "logloss": 0.2911,
+    "mean_pred": 0.1293,
+    "bss_vs_base_rate": 0.1958,
+    "bss_vs_ref": 0.0017,
+    "beatday_recall_top10": 0.2218,
+    "beatday_recall_top20": 0.4114,
+    "auc_by_season": {
+     "2017": 0.876,
+     "2018": 0.859,
+     "2019": 0.85,
+     "2020": 0.794,
+     "2021": 0.863,
+     "2022": 0.86,
+     "2023": 0.811,
+     "2024": 0.889
+    }
+   },
+   "full": {
+    "n": 105468,
+    "base_rate": 0.1292,
+    "auc": 0.8498,
+    "brier": 0.08804,
+    "logloss": 0.285,
+    "mean_pred": 0.1297,
+    "bss_vs_base_rate": 0.2173,
+    "bss_vs_ref": 0.0283,
+    "beatday_recall_top10": 0.2411,
+    "beatday_recall_top20": 0.4353,
+    "auc_by_season": {
+     "2017": 0.88,
+     "2018": 0.862,
+     "2019": 0.86,
+     "2020": 0.823,
+     "2021": 0.862,
+     "2022": 0.873,
+     "2023": 0.827,
+     "2024": 0.892
+    }
+   },
+   "full_no_lean": {
+    "n": 105468,
+    "base_rate": 0.1292,
+    "auc": 0.8554,
+    "brier": 0.08657,
+    "logloss": 0.2809,
+    "mean_pred": 0.1293,
+    "bss_vs_base_rate": 0.2303,
+    "bss_vs_ref": 0.0445,
+    "beatday_recall_top10": 0.2384,
+    "beatday_recall_top20": 0.4303,
+    "auc_by_season": {
+     "2017": 0.879,
+     "2018": 0.865,
+     "2019": 0.857,
+     "2020": 0.814,
+     "2021": 0.863,
+     "2022": 0.877,
+     "2023": 0.825,
+     "2024": 0.893
+    }
+   },
+   "ceiling_top10": 0.4895,
+   "random_top10": 0.1075,
+   "ceiling_top20": 0.7525,
+   "random_top20": 0.2155,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 38340,
+     "predicted": 0.0074,
+     "observed": 0.0084
+    },
+    {
+     "bin": "[0.02, 0.05)",
+     "n": 9988,
+     "predicted": 0.0342,
+     "observed": 0.046
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 14213,
+     "predicted": 0.0701,
+     "observed": 0.0677
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 16305,
+     "predicted": 0.1428,
+     "observed": 0.1435
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 11665,
+     "predicted": 0.2426,
+     "observed": 0.2484
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 10202,
+     "predicted": 0.393,
+     "observed": 0.3756
+    },
+    {
+     "bin": "[0.5, 0.7)",
+     "n": 4316,
+     "predicted": 0.5906,
+     "observed": 0.5867
+    },
+    {
+     "bin": "[0.7, 1.0)",
+     "n": 439,
+     "predicted": 0.7702,
+     "observed": 0.6355
+    }
+   ]
+  },
+  "test_2025_26": {
+   "climatology": {
+    "n": 26320,
+    "base_rate": 0.1343,
+    "auc": 0.8616,
+    "brier": 0.08988,
+    "logloss": 0.285,
+    "mean_pred": 0.1295,
+    "bss_vs_base_rate": 0.227,
+    "beatday_recall_top10": 0.2068,
+    "beatday_recall_top20": 0.383,
+    "auc_by_season": {
+     "2025": 0.884,
+     "2026": 0.838
+    }
+   },
+   "fsi_fire_prone_map": {
+    "n": 26320,
+    "base_rate": 0.1343,
+    "auc": 0.8639,
+    "brier": 0.08964,
+    "logloss": 0.2836,
+    "mean_pred": 0.1296,
+    "bss_vs_base_rate": 0.229,
+    "bss_vs_ref": 0.0027,
+    "beatday_recall_top10": 0.2059,
+    "beatday_recall_top20": 0.3844,
+    "auc_by_season": {
+     "2025": 0.889,
+     "2026": 0.838
+    }
+   },
+   "persistence": {
+    "n": 26320,
+    "base_rate": 0.1343,
+    "auc": 0.8659,
+    "brier": 0.08868,
+    "logloss": 0.282,
+    "mean_pred": 0.1249,
+    "bss_vs_base_rate": 0.2373,
+    "bss_vs_ref": 0.0134,
+    "beatday_recall_top10": 0.2088,
+    "beatday_recall_top20": 0.3958,
+    "auc_by_season": {
+     "2025": 0.887,
+     "2026": 0.843
+    }
+   },
+   "lean_beat_sum": {
+    "n": 26320,
+    "base_rate": 0.1343,
+    "auc": 0.8663,
+    "brier": 0.08734,
+    "logloss": 0.2809,
+    "mean_pred": 0.1372,
+    "bss_vs_base_rate": 0.2488,
+    "bss_vs_ref": 0.0283,
+    "beatday_recall_top10": 0.2201,
+    "beatday_recall_top20": 0.402,
+    "auc_by_season": {
+     "2025": 0.89,
+     "2026": 0.841
+    }
+   },
+   "full": {
+    "n": 26320,
+    "base_rate": 0.1343,
+    "auc": 0.8627,
+    "brier": 0.08824,
+    "logloss": 0.2834,
+    "mean_pred": 0.1167,
+    "bss_vs_base_rate": 0.2411,
+    "bss_vs_ref": 0.0183,
+    "beatday_recall_top10": 0.2294,
+    "beatday_recall_top20": 0.4068,
+    "auc_by_season": {
+     "2025": 0.885,
+     "2026": 0.839
+    }
+   },
+   "full_no_lean": {
+    "n": 26320,
+    "base_rate": 0.1343,
+    "auc": 0.861,
+    "brier": 0.08873,
+    "logloss": 0.2846,
+    "mean_pred": 0.1152,
+    "bss_vs_base_rate": 0.2369,
+    "bss_vs_ref": 0.0128,
+    "beatday_recall_top10": 0.2249,
+    "beatday_recall_top20": 0.4034,
+    "auc_by_season": {
+     "2025": 0.883,
+     "2026": 0.836
+    }
+   },
+   "ceiling_top10": 0.4747,
+   "random_top10": 0.101,
+   "ceiling_top20": 0.7222,
+   "random_top20": 0.2068,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 10368,
+     "predicted": 0.008,
+     "observed": 0.0075
+    },
+    {
+     "bin": "[0.02, 0.05)",
+     "n": 3647,
+     "predicted": 0.0417,
+     "observed": 0.054
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 2564,
+     "predicted": 0.0802,
+     "observed": 0.0917
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 3713,
+     "predicted": 0.1402,
+     "observed": 0.1681
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 2997,
+     "predicted": 0.2384,
+     "observed": 0.2766
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 2075,
+     "predicted": 0.3931,
+     "observed": 0.4525
+    },
+    {
+     "bin": "[0.5, 0.7)",
+     "n": 740,
+     "predicted": 0.5764,
+     "observed": 0.6351
+    },
+    {
+     "bin": "[0.7, 1.0)",
+     "n": 216,
+     "predicted": 0.7143,
+     "observed": 0.7546
+    }
+   ]
+  }
+ }
+}

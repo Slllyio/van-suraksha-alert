@@ -1,0 +1,51 @@
+{
+ "D": {
+  "5 m/h": 48859,
+  "10 m/h": 12215,
+  "20 m/h": 3054,
+  "50 m/h": 489,
+  "sd_m": 288,
+  "deff": 1.3
+ },
+ "N": {
+  "5 m/h": 31697,
+  "10 m/h": 7925,
+  "20 m/h": 1982,
+  "50 m/h": 317,
+  "sd_m": 229,
+  "deff": 1.34
+ },
+ "note": "pairs needed per bin to detect a mean outward speed of v (or a difference of v between two bins: x2)",
+ "robust_variants": {
+  "D clip 2 km (headline)": "30.7 m/h (27.8 to 33.5), n 92793",
+  "D trim |p| < 1 km": "29.2 m/h (26.7 to 31.8), n 92280",
+  "D 3 sigma then 1.5 sigma cull": "25.7 m/h (23.8 to 27.5), n 75562",
+  "D weights 1/pixel-area^2": "27.0 m/h (23.8 to 30.0)",
+  "D inverse-variance weights": "32.6 m/h (29.6 to 35.7)",
+  "D FRP-weighted centres": "30.9 m/h (27.6 to 34.0)",
+  "D perpendicular component": "-1.0 m/h (-3.8 to 2.0)",
+  "D median projection": "28.0 m/h",
+  "N clip 2 km (headline)": "5.2 m/h (2.5 to 7.8), n 93127",
+  "N trim |p| < 1 km": "5.5 m/h (3.0 to 7.7), n 92927",
+  "N 3 sigma then 1.5 sigma cull": "4.3 m/h (2.8 to 5.6), n 77425",
+  "N weights 1/pixel-area^2": "4.8 m/h (2.4 to 7.1)",
+  "N inverse-variance weights": "5.4 m/h (3.1 to 7.6)",
+  "N FRP-weighted centres": "4.5 m/h (2.0 to 6.9)",
+  "N perpendicular component": "0.5 m/h (-1.9 to 3.0)",
+  "N median projection": "5.1 m/h"
+ },
+ "per_pass_shared_offset (static, ANOVA)": {
+  "cE": {
+   "pass_pairs": 3159,
+   "groups": 29656,
+   "within_sd": 226,
+   "shared_offset_sd": 72.1
+  },
+  "cN": {
+   "pass_pairs": 3159,
+   "groups": 29656,
+   "within_sd": 207,
+   "shared_offset_sd": 52.1
+  }
+ }
+}

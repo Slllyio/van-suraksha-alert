@@ -1,0 +1,100 @@
+{
+ "divisions": 73,
+ "statewide_half_by": "30 Mar",
+ "earliest": [
+  [
+   "Alirajpur",
+   "19 Mar",
+   0.082
+  ],
+  [
+   "Chhindwara_Project",
+   "19 Mar",
+   0.076
+  ],
+  [
+   "Burhanpur",
+   "20 Mar",
+   0.079
+  ],
+  [
+   "Sehore_Project",
+   "20 Mar",
+   0.007
+  ],
+  [
+   "Lamta_Proj_S_Balaghat",
+   "21 Mar",
+   0.016
+  ],
+  [
+   "Barghat Project",
+   "22 Mar",
+   0.059
+  ],
+  [
+   "Sehore",
+   "22 Mar",
+   0.025
+  ],
+  [
+   "Dhar",
+   "23 Mar",
+   0.117
+  ]
+ ],
+ "latest": [
+  [
+   "Panna_TR",
+   "09 Apr",
+   0.454
+  ],
+  [
+   "North_Betul",
+   "12 Apr",
+   0.453
+  ],
+  [
+   "Mohgaon_Proj_Dindori",
+   "12 Apr",
+   0.422
+  ],
+  [
+   "Anuppur",
+   "15 Apr",
+   0.499
+  ],
+  [
+   "SANJAY_DUBRI",
+   "18 Apr",
+   0.521
+  ],
+  [
+   "Kuno_Palpur",
+   "19 Apr",
+   0.597
+  ],
+  [
+   "Shivpuri",
+   "21 Apr",
+   0.569
+  ],
+  [
+   "Gwalior",
+   "23 Apr",
+   0.649
+  ]
+ ],
+ "spread_days_p10_p90": [
+  36.2,
+  53.0
+ ],
+ "year_pair_spearman_mean": 0.5,
+ "even_vs_odd_spearman": 0.61,
+ "year_shift_statewide": {
+  "2022": "30 Mar",
+  "2023": "07 Apr",
+  "2024": "03 Apr",
+  "2025": "29 Mar"
+ }
+}

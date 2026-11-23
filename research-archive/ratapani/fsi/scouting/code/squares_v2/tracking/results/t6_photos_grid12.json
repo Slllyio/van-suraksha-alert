@@ -1,0 +1,470 @@
+{
+ "config": "grid12",
+ "photos": 340,
+ "fires": 280,
+ "all": {
+  "n": 340,
+  "inversion": {
+   "acc": 0.8325,
+   "auc": 0.7562,
+   "burned_share_err": 0.0636
+  },
+  "nearest": {
+   "acc": 0.8335,
+   "auc": 0.7103,
+   "burned_share_err": 0.0393
+  },
+  "idw2": {
+   "acc": 0.7918,
+   "auc": 0.6959,
+   "burned_share_err": 0.0921
+  },
+  "idw4": {
+   "acc": 0.8236,
+   "auc": 0.707,
+   "burned_share_err": 0.0679
+  },
+  "linear": {
+   "acc": 0.8285,
+   "auc": 0.7139,
+   "burned_share_err": 0.0494
+  },
+  "blend": {
+   "acc": 0.8443,
+   "auc": 0.7227,
+   "burned_share_err": 0.0365
+  },
+  "inversion_minus_nearest": {
+   "acc": [
+    -0.0011,
+    -0.0124,
+    0.0094
+   ],
+   "auc": [
+    0.0459,
+    0.0222,
+    0.0689
+   ]
+  },
+  "inversion_minus_idw2": {
+   "acc": [
+    0.0407,
+    0.0255,
+    0.057
+   ],
+   "auc": [
+    0.0603,
+    0.0284,
+    0.093
+   ]
+  },
+  "inversion_minus_idw4": {
+   "acc": [
+    0.0089,
+    -0.0015,
+    0.0197
+   ],
+   "auc": [
+    0.0493,
+    0.0181,
+    0.0813
+   ]
+  },
+  "inversion_minus_linear": {
+   "acc": [
+    0.004,
+    -0.0071,
+    0.0147
+   ],
+   "auc": [
+    0.0423,
+    0.0164,
+    0.0695
+   ]
+  },
+  "inversion_minus_blend": {
+   "acc": [
+    -0.0119,
+    -0.023,
+    -0.0024
+   ],
+   "auc": [
+    0.0335,
+    0.0013,
+    0.0675
+   ]
+  }
+ },
+ "look_before_and_after": {
+  "n": 159,
+  "inversion": {
+   "acc": 0.815,
+   "auc": 0.8332,
+   "burned_share_err": 0.073
+  },
+  "nearest": {
+   "acc": 0.8183,
+   "auc": 0.7794,
+   "burned_share_err": 0.0292
+  },
+  "idw2": {
+   "acc": 0.7291,
+   "auc": 0.7852,
+   "burned_share_err": 0.142
+  },
+  "idw4": {
+   "acc": 0.7971,
+   "auc": 0.7963,
+   "burned_share_err": 0.0903
+  },
+  "linear": {
+   "acc": 0.8075,
+   "auc": 0.7972,
+   "burned_share_err": 0.0508
+  },
+  "blend": {
+   "acc": 0.8237,
+   "auc": 0.8165,
+   "burned_share_err": 0.0327
+  },
+  "inversion_minus_nearest": {
+   "acc": [
+    -0.0033,
+    -0.0218,
+    0.0133
+   ],
+   "auc": [
+    0.0538,
+    0.0285,
+    0.0822
+   ]
+  },
+  "inversion_minus_idw2": {
+   "acc": [
+    0.0859,
+    0.0582,
+    0.1154
+   ],
+   "auc": [
+    0.048,
+    0.0132,
+    0.0841
+   ]
+  },
+  "inversion_minus_idw4": {
+   "acc": [
+    0.0179,
+    0.0001,
+    0.0357
+   ],
+   "auc": [
+    0.0369,
+    0.006,
+    0.0735
+   ]
+  },
+  "inversion_minus_linear": {
+   "acc": [
+    0.0075,
+    -0.0102,
+    0.0263
+   ],
+   "auc": [
+    0.036,
+    0.0059,
+    0.0716
+   ]
+  },
+  "inversion_minus_blend": {
+   "acc": [
+    -0.0087,
+    -0.0254,
+    0.0071
+   ],
+   "auc": [
+    0.0167,
+    -0.0174,
+    0.0566
+   ]
+  }
+ },
+ "big": {
+  "n": 77,
+  "inversion": {
+   "acc": 0.8319,
+   "auc": 0.8249,
+   "burned_share_err": 0.0773
+  },
+  "nearest": {
+   "acc": 0.8319,
+   "auc": 0.778,
+   "burned_share_err": 0.0558
+  },
+  "idw2": {
+   "acc": 0.7687,
+   "auc": 0.7188,
+   "burned_share_err": 0.1079
+  },
+  "idw4": {
+   "acc": 0.8102,
+   "auc": 0.7386,
+   "burned_share_err": 0.0858
+  },
+  "linear": {
+   "acc": 0.8264,
+   "auc": 0.7828,
+   "burned_share_err": 0.0582
+  },
+  "blend": {
+   "acc": 0.8309,
+   "auc": 0.768,
+   "burned_share_err": 0.0641
+  },
+  "inversion_minus_nearest": {
+   "acc": [
+    0.0,
+    -0.013,
+    0.0121
+   ],
+   "auc": [
+    0.0469,
+    0.0133,
+    0.0838
+   ]
+  },
+  "inversion_minus_idw2": {
+   "acc": [
+    0.0633,
+    0.0354,
+    0.0967
+   ],
+   "auc": [
+    0.1061,
+    0.0376,
+    0.1938
+   ]
+  },
+  "inversion_minus_idw4": {
+   "acc": [
+    0.0217,
+    0.0068,
+    0.0393
+   ],
+   "auc": [
+    0.0862,
+    0.021,
+    0.1721
+   ]
+  },
+  "inversion_minus_linear": {
+   "acc": [
+    0.0055,
+    -0.013,
+    0.0303
+   ],
+   "auc": [
+    0.0421,
+    0.0009,
+    0.0929
+   ]
+  },
+  "inversion_minus_blend": {
+   "acc": [
+    0.001,
+    -0.0105,
+    0.0115
+   ],
+   "auc": [
+    0.0568,
+    -0.0102,
+    0.1428
+   ]
+  }
+ },
+ "odd_seasons": {
+  "n": 167,
+  "inversion": {
+   "acc": 0.8183,
+   "auc": 0.7702,
+   "burned_share_err": 0.0508
+  },
+  "nearest": {
+   "acc": 0.8169,
+   "auc": 0.7238,
+   "burned_share_err": 0.0227
+  },
+  "idw2": {
+   "acc": 0.7571,
+   "auc": 0.7455,
+   "burned_share_err": 0.123
+  },
+  "idw4": {
+   "acc": 0.8014,
+   "auc": 0.7585,
+   "burned_share_err": 0.0744
+  },
+  "linear": {
+   "acc": 0.8093,
+   "auc": 0.738,
+   "burned_share_err": 0.0361
+  },
+  "blend": {
+   "acc": 0.8247,
+   "auc": 0.7645,
+   "burned_share_err": 0.0304
+  },
+  "inversion_minus_nearest": {
+   "acc": [
+    0.0015,
+    -0.0183,
+    0.0186
+   ],
+   "auc": [
+    0.0464,
+    0.0175,
+    0.0732
+   ]
+  },
+  "inversion_minus_idw2": {
+   "acc": [
+    0.0612,
+    0.0356,
+    0.0886
+   ],
+   "auc": [
+    0.0247,
+    -0.0173,
+    0.0624
+   ]
+  },
+  "inversion_minus_idw4": {
+   "acc": [
+    0.0169,
+    0.0021,
+    0.0335
+   ],
+   "auc": [
+    0.0117,
+    -0.0269,
+    0.046
+   ]
+  },
+  "inversion_minus_linear": {
+   "acc": [
+    0.009,
+    -0.0083,
+    0.0265
+   ],
+   "auc": [
+    0.0321,
+    0.002,
+    0.0624
+   ]
+  },
+  "inversion_minus_blend": {
+   "acc": [
+    -0.0064,
+    -0.0177,
+    0.0035
+   ],
+   "auc": [
+    0.0056,
+    -0.0362,
+    0.045
+   ]
+  }
+ },
+ "even_seasons": {
+  "n": 173,
+  "inversion": {
+   "acc": 0.8461,
+   "auc": 0.742,
+   "burned_share_err": 0.076
+  },
+  "nearest": {
+   "acc": 0.8496,
+   "auc": 0.6966,
+   "burned_share_err": 0.0553
+  },
+  "idw2": {
+   "acc": 0.8252,
+   "auc": 0.6454,
+   "burned_share_err": 0.0622
+  },
+  "idw4": {
+   "acc": 0.845,
+   "auc": 0.6545,
+   "burned_share_err": 0.0616
+  },
+  "linear": {
+   "acc": 0.847,
+   "auc": 0.6893,
+   "burned_share_err": 0.0622
+  },
+  "blend": {
+   "acc": 0.8633,
+   "auc": 0.68,
+   "burned_share_err": 0.0425
+  },
+  "inversion_minus_nearest": {
+   "acc": [
+    -0.0035,
+    -0.0163,
+    0.0083
+   ],
+   "auc": [
+    0.0455,
+    0.0095,
+    0.0856
+   ]
+  },
+  "inversion_minus_idw2": {
+   "acc": [
+    0.0208,
+    0.0045,
+    0.0374
+   ],
+   "auc": [
+    0.0966,
+    0.0469,
+    0.1576
+   ]
+  },
+  "inversion_minus_idw4": {
+   "acc": [
+    0.0011,
+    -0.0132,
+    0.0145
+   ],
+   "auc": [
+    0.0875,
+    0.04,
+    0.148
+   ]
+  },
+  "inversion_minus_linear": {
+   "acc": [
+    -0.0009,
+    -0.0126,
+    0.0108
+   ],
+   "auc": [
+    0.0527,
+    0.0131,
+    0.0985
+   ]
+  },
+  "inversion_minus_blend": {
+   "acc": [
+    -0.0172,
+    -0.0354,
+    -0.0012
+   ],
+   "auc": [
+    0.062,
+    0.0109,
+    0.1264
+   ]
+  }
+ }
+}

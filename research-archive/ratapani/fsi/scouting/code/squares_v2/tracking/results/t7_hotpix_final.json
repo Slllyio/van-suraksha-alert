@@ -1,0 +1,86 @@
+{
+ "scenes": 798,
+ "fires": 692,
+ "median_gap_to_pass_h": 2.87,
+ "auc_mean": {
+  "inversion": 0.6417,
+  "nearest": 0.6421,
+  "idw4": 0.6631,
+  "linear": 0.6509,
+  "kernel": 0.6486,
+  "pass_centres": 0.653
+ },
+ "auc_inversion_minus_nearest": [
+  -0.0,
+  -0.018,
+  0.018
+ ],
+ "auc_inversion_minus_idw4": [
+  -0.021,
+  -0.041,
+  -0.002
+ ],
+ "auc_inversion_minus_linear": [
+  -0.009,
+  -0.028,
+  0.009
+ ],
+ "auc_inversion_minus_kernel": [
+  -0.007,
+  -0.025,
+  0.013
+ ],
+ "auc_inversion_minus_pass_centres": [
+  -0.011,
+  -0.031,
+  0.009
+ ],
+ "median_dist_to_hot_centre_m": {
+  "pass_centre": 413,
+  "inversion": 409,
+  "subsquare": 399
+ },
+ "inversion_minus_pass_centre_m": [
+  -0.987,
+  -11.329,
+  7.064
+ ],
+ "subsquare_minus_pass_centre_m": [
+  -8.785,
+  -14.403,
+  -3.049
+ ],
+ "median_hotpixel_to_nearest_predicted_m": {
+  "inversion": 252,
+  "pass_centres": 387,
+  "kernel": 369
+ },
+ "dh_inversion_minus_pass_centres": [
+  -106.679,
+  -128.702,
+  -85.481
+ ],
+ "dh_inversion_minus_kernel": [
+  -79.085,
+  -89.433,
+  -55.708
+ ],
+ "gap_le_3h": {
+  "n": 416,
+  "d_pass_centre": 366,
+  "d_inversion": 359,
+  "d_subsquare": 339,
+  "auc_inversion": 0.668,
+  "auc_kernel": 0.7323,
+  "auc_pass_centres": 0.7244
+ },
+ "gap_gt_3h": {
+  "n": 382,
+  "d_pass_centre": 448,
+  "d_inversion": 461,
+  "d_subsquare": 456,
+  "auc_inversion": 0.6131,
+  "auc_kernel": 0.5573,
+  "auc_pass_centres": 0.5753
+ }
+}

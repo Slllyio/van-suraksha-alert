@@ -1,0 +1,118 @@
+{
+ "loso_feb1_jun20": {
+  "random": 16.6,
+  "prior_tb": 24.1,
+  "lean_clf": 29.7,
+  "lean_ensemble": 30.1,
+  "perfect": 63.6,
+  "positives": 111022,
+  "valid_cell_days": 2387409
+ },
+ "loso_feb15_jun15": {
+  "random": 17.6,
+  "prior_tb": 25.4,
+  "lean_clf": 31.2,
+  "lean_ensemble": 31.5,
+  "perfect": 64.8,
+  "positives": 92520,
+  "valid_cell_days": 2006889
+ },
+ "test2526_feb1_jun20": {
+  "random": 15.4,
+  "prior_tb": 22.9,
+  "lean_clf": 28.7,
+  "lean_ensemble": 29.4,
+  "perfect": 64.6,
+  "positives": 24297,
+  "valid_cell_days": 606578
+ },
+ "test2526_feb15_jun15": {
+  "random": 15.5,
+  "prior_tb": 23.2,
+  "lean_clf": 28.6,
+  "lean_ensemble": 29.2,
+  "perfect": 63.8,
+  "positives": 23410,
+  "valid_cell_days": 505556
+ },
+ "window_width_days_of_first_burns": {
+  "count": 20007.0,
+  "mean": 6.5,
+  "std": 3.8,
+  "min": 1.0,
+  "25%": 5.0,
+  "50%": 5.0,
+  "75%": 8.0,
+  "90%": 14.0,
+  "max": 20.0
+ },
+ "share_positive_celldays_in_windows_gt7d": 0.453,
+ "share_positive_celldays_in_windows_gt14d": 0.159,
+ "share_first_burns_lt2ha": 0.307,
+ "share_positive_celldays_burned_lt2ha": 0.3,
+ "cell_window_recall_loso": {
+  "lean_ensemble": 40.9,
+  "random": 61.6,
+  "windows": 14568
+ },
+ "cell_window_recall_short_loso": {
+  "lean_ensemble": 42.3,
+  "random": 36.1,
+  "windows": 897
+ },
+ "cell_window_recall_test2526": {
+  "lean_ensemble": 39.3,
+  "random": 51.9,
+  "windows": 4236
+ },
+ "cell_window_recall_short_test2526": {
+  "lean_ensemble": 33.5,
+  "random": 28.9,
+  "windows": 662
+ },
+ "positives_on_beatdays_with_gt5": 0.664,
+ "positives_on_beatdays_with_gt10": 0.39,
+ "beatdays_with_any_positive_share": 0.239,
+ "near_recent_loso": {
+  "share_of_positives_near_recent_viirs": 0.259,
+  "share_of_valid_celldays_near_recent_viirs": 0.062,
+  "base_rate_near": 0.1932,
+  "base_rate_far": 0.0368,
+  "recall_ens_positives_near": 31.7,
+  "recall_ens_positives_far": 29.5,
+  "recall_rand_positives_near": 17.4,
+  "recall_rand_positives_far": 16.3,
+  "recall_prior_positives_far": 23.6,
+  "recall_nearrecent_then_prior_all": 25.1
+ },
+ "near_recent_test2526": {
+  "share_of_positives_near_recent_viirs": 0.311,
+  "share_of_valid_celldays_near_recent_viirs": 0.068,
+  "base_rate_near": 0.1825,
+  "base_rate_far": 0.0296,
+  "recall_ens_positives_near": 29.4,
+  "recall_ens_positives_far": 29.5,
+  "recall_rand_positives_near": 14.7,
+  "recall_rand_positives_far": 15.7,
+  "recall_prior_positives_far": 23.2,
+  "recall_nearrecent_then_prior_all": 24.3
+ },
+ "dated_positive_celldays": 44860,
+ "positive_days_lead_ge1_true_forecast": 0.495,
+ "positive_days_lead_ge3": 0.268,
+ "positive_days_lead_le0_after_fire": 0.505,
+ "ens_hit_rate_lead_1_2": 32.1,
+ "rand_hit_rate_lead_1_2": 15.9,
+ "ens_hit_rate_lead_3plus": 30.0,
+ "rand_hit_rate_lead_3plus": 15.9,
+ "ens_hit_rate_after_fire": 34.0,
+ "rand_hit_rate_after_fire": 15.8,
+ "within_day_auc_loso": {
+  "prior_tb": 0.674,
+  "lean_ensemble": 0.686
+ },
+ "within_day_auc_test2526": {
+  "prior_tb": 0.626,
+  "lean_ensemble": 0.675
+ }
+}

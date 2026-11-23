@@ -1,0 +1,19 @@
+{
+ "fires": 45248,
+ "pairs": 316429,
+ "seconds": 298,
+ "tau_mean": 0.064,
+ "tau_90": [
+  0.004,
+  0.145
+ ],
+ "sd_of_factor_implied": 0.064,
+ "nu_mean": 7.86,
+ "fires_90pct_interval_excludes_1": 0,
+ "fires_clearly_fast": 0,
+ "fires_clearly_slow": 0,
+ "median_posterior_sd_of_factor": 0.078,
+ "divergences": 0,
+ "r_hat_tau": 1.055,
+ "ess_tau": 60.5
+}

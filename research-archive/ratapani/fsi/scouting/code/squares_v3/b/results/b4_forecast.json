@@ -1,0 +1,233 @@
+{
+ "a_photos": {
+  "photos": 238,
+  "fires": 189,
+  "median_gap_h": 8.7,
+  "median_clock_h": 6.1,
+  "photos_with_pairs_before": 125,
+  "median_B": 0.0002,
+  "max_B": 0.343,
+  "scores": {
+   "persistence": {
+    "acc": 0.6992,
+    "burned_share_err": -0.231
+   },
+   "ring600": {
+    "acc": 0.7703,
+    "burned_share_err": 0.1029
+   },
+   "kernel": {
+    "acc": 0.7228,
+    "burned_share_err": 0.0797
+   },
+   "tail15": {
+    "acc": 0.7541,
+    "burned_share_err": -0.0531
+   },
+   "same": {
+    "acc": 0.755,
+    "burned_share_err": -0.0428
+   },
+   "class": {
+    "acc": 0.7576,
+    "burned_share_err": -0.0178
+   },
+   "fire": {
+    "acc": 0.7588,
+    "burned_share_err": -0.0151
+   },
+   "same+120m": {
+    "acc": 0.7663,
+    "burned_share_err": 0.0663
+   },
+   "class+120m": {
+    "acc": 0.7647,
+    "burned_share_err": 0.0851
+   },
+   "fire+120m": {
+    "acc": 0.7655,
+    "burned_share_err": 0.0883
+   },
+   "blend_all_looks": {
+    "acc": 0.8152,
+    "burned_share_err": 0.0888
+   }
+  },
+  "auc": {
+   "distance": 0.7709,
+   "kernel": 0.7561
+  },
+  "acc_fire_minus_class": [
+   0.0012,
+   -0.001,
+   0.0044
+  ],
+  "acc_class_minus_same": [
+   0.0027,
+   -0.004,
+   0.0097
+  ],
+  "acc_class_minus_persistence": [
+   0.0585,
+   0.0276,
+   0.0908
+  ],
+  "acc_class_minus_ring600": [
+   -0.0126,
+   -0.0369,
+   0.0096
+  ],
+  "acc_class_minus_kernel": [
+   0.0348,
+   0.0041,
+   0.0609
+  ],
+  "acc_fire_minus_class_photos_with_B_gt_0.05": [
+   0.005,
+   -0.0041,
+   0.0174
+  ]
+ },
+ "c_final": {
+  "fires": 423,
+  "median_final_ha": 250.7,
+  "ring 600 m": {
+   "heldout_r2_log": 0.36,
+   "median_abs_factor": 1.65
+  },
+  "dot kernel 400 m": {
+   "heldout_r2_log": 0.34,
+   "median_abs_factor": 1.65
+  },
+  "ring + line x same speed": {
+   "heldout_r2_log": 0.36,
+   "median_abs_factor": 1.64
+  },
+  "ring + line x class speed": {
+   "heldout_r2_log": 0.364,
+   "median_abs_factor": 1.64
+  },
+  "ring + line x per-fire speed": {
+   "heldout_r2_log": 0.363,
+   "median_abs_factor": 1.64
+  },
+  "ring + line only": {
+   "heldout_r2_log": 0.361,
+   "median_abs_factor": 1.64
+  },
+  "ring + per-fire speed only": {
+   "heldout_r2_log": 0.361,
+   "median_abs_factor": 1.65
+  },
+  "e2_per_fire_minus_class": [
+   0.001,
+   -0.0003,
+   0.0026
+  ],
+  "e2_class_minus_ring": [
+   -0.0047,
+   -0.0142,
+   0.0044
+  ],
+  "e2_line_only_minus_ring": [
+   -0.0012,
+   -0.0086,
+   0.0056
+  ],
+  "note": "blend map not applicable: it is drawn inside the final outline, so it cannot forecast the outline size"
+ },
+ "b_nextpass": {
+  "forecasts": 1745,
+  "fires": 843,
+  "mean_reach_m": 591.9,
+  "capture_all": {
+   "fixed": 0.4394,
+   "same": 0.4271,
+   "class": 0.4236,
+   "fire": 0.425,
+   "ring600": 0.3888,
+   "kernel": 0.4274
+  },
+  "capture_new": {
+   "fixed": 0.2678,
+   "same": 0.2518,
+   "class": 0.2475,
+   "fire": 0.2493,
+   "ring600": 0.2319,
+   "kernel": 0.2617
+  },
+  "mean_area_ha": {
+   "class": 474.7,
+   "fire": 479.2,
+   "ring600": 237.4
+  },
+  "fire_minus_class_all": [
+   0.0014,
+   -0.0016,
+   0.0046
+  ],
+  "fire_minus_class_new": [
+   0.0018,
+   -0.0024,
+   0.0058
+  ],
+  "class_minus_same_all": [
+   -0.0035,
+   -0.0119,
+   0.0054
+  ],
+  "class_minus_fixed_all": [
+   -0.0158,
+   -0.0257,
+   -0.006
+  ],
+  "kernel_minus_class_all": [
+   0.0038,
+   -0.0058,
+   0.0141
+  ],
+  "forecasts_with_B_gt_0.05": 316,
+  "counts": {
+   "forecasts": 5225,
+   "fires": 3249,
+   "share_silent": 0.883,
+   "models": {
+    "persistence (count x day/night ratio)": {
+     "deviance_per_forecast": 1.2233,
+     "auc_flags_at_all": 0.7019,
+     "mae": 0.48
+    },
+    "base": {
+     "deviance_per_forecast": 1.1221,
+     "auc_flags_at_all": 0.7519,
+     "mae": 0.448
+    },
+    "+ same speed": {
+     "deviance_per_forecast": 1.1218,
+     "auc_flags_at_all": 0.7525,
+     "mae": 0.449
+    },
+    "+ class speed": {
+     "deviance_per_forecast": 1.1211,
+     "auc_flags_at_all": 0.7508,
+     "mae": 0.448
+    },
+    "+ per-fire speed": {
+     "deviance_per_forecast": 1.1218,
+     "auc_flags_at_all": 0.7505,
+     "mae": 0.447
+    }
+   },
+   "deviance_fire_minus_class": [
+    0.0007,
+    -0.002,
+    0.0051
+   ],
+   "deviance_class_minus_base": [
+    -0.001,
+    -0.0054,
+    0.0035
+   ]
+  }
+ }
+}

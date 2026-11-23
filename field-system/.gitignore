@@ -1,0 +1,5 @@
+var/
+pc_models/cloud_series/
+deploy/.env
+__pycache__/
+*.pyc

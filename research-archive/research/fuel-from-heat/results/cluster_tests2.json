@@ -1,0 +1,60 @@
+{
+ "lone_pairs_same_pass": {
+  "n": 3372,
+  "rho": 0.703
+ },
+ "adjacent_pairs": {
+  "n": 6198,
+  "rho": 0.929
+ },
+ "two_sat": {
+  "pairs": 2521,
+  "fires": 1264,
+  "slope_sumFRP_on_npix": 0.973,
+  "ci": [
+   0.936,
+   1.009
+  ],
+  "slope_with_pix": 0.934,
+  "slope_pix": -0.141,
+  "slope_pix_ci": [
+   -0.19,
+   -0.093
+  ],
+  "npix_on_pixsize": -0.421,
+  "npix_on_pixsize_ci": [
+   -0.467,
+   -0.376
+  ],
+  "same_n_share": 0.362,
+  "median_abs_log_frp_ratio": 0.625,
+  "rho_frp": 0.649,
+  "rho_n": 0.433
+ },
+ "near_dup_by_band": [
+  {
+   "band": "0.2-0.35",
+   "n": 13696,
+   "share_closer_075": 0.384,
+   "median": 0.845
+  },
+  {
+   "band": "0.35-0.55",
+   "n": 2788,
+   "share_closer_075": 0.585,
+   "median": 0.612
+  },
+  {
+   "band": "<0.2 km2 (near nadir)",
+   "n": 14803,
+   "share_closer_075": 0.138,
+   "median": 0.985
+  },
+  {
+   "band": ">0.55 (swath edge)",
+   "n": 547,
+   "share_closer_075": 0.671,
+   "median": 0.583
+  }
+ ]
+}

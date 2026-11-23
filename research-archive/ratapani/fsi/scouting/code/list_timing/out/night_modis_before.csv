@@ -1,0 +1,5 @@
+period,dn,n,modis_before_pct
+fwd,D,7552,0.83
+fwd,N,3199,2.53
+held,D,7429,2.33
+held,N,3154,1.05

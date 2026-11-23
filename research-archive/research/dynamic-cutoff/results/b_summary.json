@@ -1,0 +1,574 @@
+{
+ "cuts": {
+  "Chhatarpur": {
+   "P1": 0.211,
+   "P2": 0.459,
+   "P3": 0.329
+  },
+  "Dewas": {
+   "P1": 0.285,
+   "P2": 0.456,
+   "P3": 0.299
+  },
+  "Dindori": {
+   "P1": 0.186,
+   "P2": 0.234,
+   "P3": 0.206
+  },
+  "Khandwa": {
+   "P1": 0.346,
+   "P2": 0.517,
+   "P3": 0.309
+  },
+  "Panna_TR": {
+   "P1": 0.175,
+   "P2": 0.537,
+   "P3": 0.424
+  },
+  "Satpura_TR": {
+   "P1": 0.244,
+   "P2": 0.409,
+   "P3": 0.245
+  },
+  "South_Balaghat": {
+   "P1": 0.243,
+   "P2": 0.375,
+   "P3": 0.335
+  },
+  "South_Betul": {
+   "P1": 0.453,
+   "P2": 0.384,
+   "P3": 0.265
+  },
+  "South_Chhindwara": {
+   "P1": 0.369,
+   "P2": 0.423,
+   "P3": 0.301
+  },
+  "Umaria": {
+   "P1": 0.287,
+   "P2": 0.421,
+   "P3": 0.28
+  }
+ },
+ "overall": {
+  "any burn": {
+   "ha_caught": 0.4003,
+   "big_caught": 0.4104,
+   "any_caught": 0.3516
+  },
+  "division+phase cut-off": {
+   "ha_caught": 0.4263,
+   "big_caught": 0.4433,
+   "any_caught": 0.3583
+  },
+  "division+phase cut-off, no Prithvi": {
+   "ha_caught": 0.3946,
+   "big_caught": 0.4038,
+   "any_caught": 0.3394
+  },
+  "fixed 30%": {
+   "ha_caught": 0.4243,
+   "big_caught": 0.438,
+   "any_caught": 0.3628
+  },
+  "share (no cut-off)": {
+   "ha_caught": 0.4175,
+   "big_caught": 0.4269,
+   "any_caught": 0.3502
+  },
+  "share (no cut-off), no Prithvi": {
+   "ha_caught": 0.3738,
+   "big_caught": 0.385,
+   "any_caught": 0.3266
+  }
+ },
+ "by_phase": {
+  "P1": {
+   "any burn": {
+    "ha_caught": 0.446,
+    "big_caught": 0.4597,
+    "any_caught": 0.394
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4659,
+    "big_caught": 0.4926,
+    "any_caught": 0.4026
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.4164,
+    "big_caught": 0.4331,
+    "any_caught": 0.3773
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4716,
+    "big_caught": 0.4922,
+    "any_caught": 0.4084
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.4545,
+    "big_caught": 0.4693,
+    "any_caught": 0.3811
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.3619,
+    "big_caught": 0.3821,
+    "any_caught": 0.3375
+   }
+  },
+  "P2": {
+   "any burn": {
+    "ha_caught": 0.3744,
+    "big_caught": 0.3827,
+    "any_caught": 0.3353
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4014,
+    "big_caught": 0.4195,
+    "any_caught": 0.336
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.3657,
+    "big_caught": 0.3768,
+    "any_caught": 0.313
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4019,
+    "big_caught": 0.4163,
+    "any_caught": 0.3444
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.4122,
+    "big_caught": 0.4276,
+    "any_caught": 0.3466
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.388,
+    "big_caught": 0.4019,
+    "any_caught": 0.3319
+   }
+  },
+  "P3": {
+   "any burn": {
+    "ha_caught": 0.3885,
+    "big_caught": 0.3973,
+    "any_caught": 0.3326
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4186,
+    "big_caught": 0.4261,
+    "any_caught": 0.3438
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.4059,
+    "big_caught": 0.4067,
+    "any_caught": 0.3346
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4076,
+    "big_caught": 0.4145,
+    "any_caught": 0.3433
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.3917,
+    "big_caught": 0.3906,
+    "any_caught": 0.3279
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.3691,
+    "big_caught": 0.3702,
+    "any_caught": 0.312
+   }
+  }
+ },
+ "by_region": {
+  "Khandwa": {
+   "any burn": {
+    "ha_caught": 0.3967,
+    "big_caught": 0.4229,
+    "any_caught": 0.341
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4094,
+    "big_caught": 0.4398,
+    "any_caught": 0.3422
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.4307,
+    "big_caught": 0.4474,
+    "any_caught": 0.364
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4035,
+    "big_caught": 0.429,
+    "any_caught": 0.3398
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.3991,
+    "big_caught": 0.4215,
+    "any_caught": 0.3366
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.4,
+    "big_caught": 0.4183,
+    "any_caught": 0.3431
+   }
+  },
+  "Dewas": {
+   "any burn": {
+    "ha_caught": 0.3644,
+    "big_caught": 0.3714,
+    "any_caught": 0.338
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4107,
+    "big_caught": 0.4223,
+    "any_caught": 0.3482
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.355,
+    "big_caught": 0.3637,
+    "any_caught": 0.3252
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4062,
+    "big_caught": 0.4177,
+    "any_caught": 0.3514
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.3937,
+    "big_caught": 0.4056,
+    "any_caught": 0.3461
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.3461,
+    "big_caught": 0.354,
+    "any_caught": 0.315
+   }
+  },
+  "South_Betul": {
+   "any burn": {
+    "ha_caught": 0.3812,
+    "big_caught": 0.3888,
+    "any_caught": 0.3373
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.3712,
+    "big_caught": 0.3663,
+    "any_caught": 0.3186
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.4099,
+    "big_caught": 0.3998,
+    "any_caught": 0.3373
+   },
+   "fixed 30%": {
+    "ha_caught": 0.3875,
+    "big_caught": 0.3859,
+    "any_caught": 0.3357
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.4227,
+    "big_caught": 0.4038,
+    "any_caught": 0.3498
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.4476,
+    "big_caught": 0.448,
+    "any_caught": 0.3741
+   }
+  },
+  "South_Chhindwara": {
+   "any burn": {
+    "ha_caught": 0.3868,
+    "big_caught": 0.4121,
+    "any_caught": 0.3507
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4246,
+    "big_caught": 0.4616,
+    "any_caught": 0.3578
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.4097,
+    "big_caught": 0.4388,
+    "any_caught": 0.3388
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4097,
+    "big_caught": 0.4371,
+    "any_caught": 0.3558
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.3946,
+    "big_caught": 0.422,
+    "any_caught": 0.3246
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.3912,
+    "big_caught": 0.436,
+    "any_caught": 0.3336
+   }
+  },
+  "South_Balaghat": {
+   "any burn": {
+    "ha_caught": 0.4148,
+    "big_caught": 0.4231,
+    "any_caught": 0.3585
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4403,
+    "big_caught": 0.4673,
+    "any_caught": 0.3802
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.4866,
+    "big_caught": 0.4976,
+    "any_caught": 0.4225
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4527,
+    "big_caught": 0.4704,
+    "any_caught": 0.3887
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.3967,
+    "big_caught": 0.3891,
+    "any_caught": 0.3334
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.3516,
+    "big_caught": 0.3628,
+    "any_caught": 0.3059
+   }
+  },
+  "Dindori": {
+   "any burn": {
+    "ha_caught": 0.3751,
+    "big_caught": 0.3754,
+    "any_caught": 0.3461
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4218,
+    "big_caught": 0.4319,
+    "any_caught": 0.3709
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.3338,
+    "big_caught": 0.3358,
+    "any_caught": 0.2917
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4259,
+    "big_caught": 0.4342,
+    "any_caught": 0.3935
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.4313,
+    "big_caught": 0.4393,
+    "any_caught": 0.3905
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.3119,
+    "big_caught": 0.3153,
+    "any_caught": 0.2809
+   }
+  },
+  "Umaria": {
+   "any burn": {
+    "ha_caught": 0.4012,
+    "big_caught": 0.4178,
+    "any_caught": 0.3308
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4283,
+    "big_caught": 0.4484,
+    "any_caught": 0.3491
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.3752,
+    "big_caught": 0.3933,
+    "any_caught": 0.3177
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4294,
+    "big_caught": 0.4434,
+    "any_caught": 0.3514
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.4125,
+    "big_caught": 0.4322,
+    "any_caught": 0.3271
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.3493,
+    "big_caught": 0.3742,
+    "any_caught": 0.2912
+   }
+  },
+  "Chhatarpur": {
+   "any burn": {
+    "ha_caught": 0.3952,
+    "big_caught": 0.4023,
+    "any_caught": 0.3472
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4117,
+    "big_caught": 0.419,
+    "any_caught": 0.3421
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.4258,
+    "big_caught": 0.4373,
+    "any_caught": 0.3641
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4051,
+    "big_caught": 0.4089,
+    "any_caught": 0.3416
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.4093,
+    "big_caught": 0.4204,
+    "any_caught": 0.3515
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.4025,
+    "big_caught": 0.4028,
+    "any_caught": 0.3563
+   }
+  },
+  "Panna_TR": {
+   "any burn": {
+    "ha_caught": 0.4189,
+    "big_caught": 0.4191,
+    "any_caught": 0.3495
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4541,
+    "big_caught": 0.4605,
+    "any_caught": 0.357
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.3871,
+    "big_caught": 0.3828,
+    "any_caught": 0.3265
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4412,
+    "big_caught": 0.4349,
+    "any_caught": 0.3642
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.429,
+    "big_caught": 0.4272,
+    "any_caught": 0.3359
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.4127,
+    "big_caught": 0.4053,
+    "any_caught": 0.3478
+   }
+  },
+  "Satpura_TR": {
+   "any burn": {
+    "ha_caught": 0.4688,
+    "big_caught": 0.4702,
+    "any_caught": 0.4145
+   },
+   "division+phase cut-off": {
+    "ha_caught": 0.4841,
+    "big_caught": 0.5029,
+    "any_caught": 0.408
+   },
+   "division+phase cut-off, no Prithvi": {
+    "ha_caught": 0.3294,
+    "big_caught": 0.3336,
+    "any_caught": 0.2984
+   },
+   "fixed 30%": {
+    "ha_caught": 0.4761,
+    "big_caught": 0.5072,
+    "any_caught": 0.4
+   },
+   "share (no cut-off)": {
+    "ha_caught": 0.4917,
+    "big_caught": 0.5095,
+    "any_caught": 0.4072
+   },
+   "share (no cut-off), no Prithvi": {
+    "ha_caught": 0.3464,
+    "big_caught": 0.3517,
+    "any_caught": 0.3315
+   }
+  }
+ },
+ "dyn_vs_fixed_ha": {
+  "mean": 0.0019,
+  "regions_better": 6,
+  "ci": [
+   -0.0044,
+   0.0077
+  ]
+ },
+ "share_vs_fixed_ha": {
+  "mean": -0.0069,
+  "by_phase": {
+   "P1": -0.0171,
+   "P2": 0.0103,
+   "P3": -0.0159
+  },
+  "by_region": {
+   "Chhatarpur": 0.0042,
+   "Dewas": -0.0125,
+   "Dindori": 0.0054,
+   "Khandwa": -0.0044,
+   "Panna_TR": -0.0122,
+   "Satpura_TR": 0.0156,
+   "South_Balaghat": -0.0559,
+   "South_Betul": 0.0351,
+   "South_Chhindwara": -0.0151,
+   "Umaria": -0.0169
+  }
+ },
+ "prithvi_gain_dyn_ha": {
+  "mean": 0.0317,
+  "by_phase": {
+   "P1": 0.0496,
+   "P2": 0.0357,
+   "P3": 0.0127
+  },
+  "by_region": {
+   "Chhatarpur": -0.0141,
+   "Dewas": 0.0557,
+   "Dindori": 0.0879,
+   "Khandwa": -0.0213,
+   "Panna_TR": 0.067,
+   "Satpura_TR": 0.1547,
+   "South_Balaghat": -0.0463,
+   "South_Betul": -0.0387,
+   "South_Chhindwara": 0.0148,
+   "Umaria": 0.0531
+  }
+ },
+ "prithvi_gain_share_ha": {
+  "mean": 0.0437,
+  "by_phase": {
+   "P1": 0.0926,
+   "P2": 0.0241,
+   "P3": 0.0226
+  },
+  "by_region": {
+   "Chhatarpur": 0.0068,
+   "Dewas": 0.0476,
+   "Dindori": 0.1194,
+   "Khandwa": -0.0008,
+   "Panna_TR": 0.0162,
+   "Satpura_TR": 0.1453,
+   "South_Balaghat": 0.0452,
+   "South_Betul": -0.025,
+   "South_Chhindwara": 0.0034,
+   "Umaria": 0.0633
+  }
+ }
+}

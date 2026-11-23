@@ -1,0 +1,236 @@
+{
+ "25km": {
+  "D": {
+   "cells_total": 843,
+   "cells_enough": 30,
+   "pairs_in_enough": 19484,
+   "all_mp_speed": 29.7,
+   "cell_speed_p10_p50_p90": [
+    6.9,
+    39.4,
+    67.3
+   ],
+   "chi2": 70.9,
+   "dof": 29,
+   "cells_ci_excluding_all_mp_mean": 6,
+   "even_vs_odd_weighted_r": 0.76,
+   "even_odd_cells": 20,
+   "shuffle_p": 0.0
+  },
+  "N": {
+   "cells_total": 780,
+   "cells_enough": 76,
+   "pairs_in_enough": 45464,
+   "all_mp_speed": 10.1,
+   "cell_speed_p10_p50_p90": [
+    -10.4,
+    6.5,
+    33.4
+   ],
+   "chi2": 98.9,
+   "dof": 75,
+   "cells_ci_excluding_all_mp_mean": 5,
+   "even_vs_odd_weighted_r": 0.08,
+   "even_odd_cells": 56,
+   "shuffle_p": 0.292
+  }
+ },
+ "50km": {
+  "D": {
+   "cells_total": 248,
+   "cells_enough": 63,
+   "pairs_in_enough": 63105,
+   "all_mp_speed": 29.7,
+   "cell_speed_p10_p50_p90": [
+    8.9,
+    29.5,
+    55.6
+   ],
+   "chi2": 130.0,
+   "dof": 62,
+   "cells_ci_excluding_all_mp_mean": 11,
+   "even_vs_odd_weighted_r": 0.45,
+   "even_odd_cells": 46,
+   "shuffle_p": 0.006
+  },
+  "N": {
+   "cells_total": 241,
+   "cells_enough": 79,
+   "pairs_in_enough": 77451,
+   "all_mp_speed": 10.1,
+   "cell_speed_p10_p50_p90": [
+    -7.0,
+    9.1,
+    21.9
+   ],
+   "chi2": 77.5,
+   "dof": 78,
+   "cells_ci_excluding_all_mp_mean": 4,
+   "even_vs_odd_weighted_r": 0.16,
+   "even_odd_cells": 65,
+   "shuffle_p": 0.086
+  }
+ },
+ "forest_types": [
+  {
+   "dn": "D",
+   "forest_type": "agriculture",
+   "n": 40482,
+   "speed": 27.2,
+   "lo": 22.9,
+   "hi": 32.2
+  },
+  {
+   "dn": "D",
+   "forest_type": "bamboo",
+   "n": 1074,
+   "speed": 21.9,
+   "lo": 0.3,
+   "hi": 43.4
+  },
+  {
+   "dn": "D",
+   "forest_type": "degraded forest",
+   "n": 4896,
+   "speed": 29.3,
+   "lo": 18.7,
+   "hi": 39.2
+  },
+  {
+   "dn": "D",
+   "forest_type": "dry deciduous",
+   "n": 13443,
+   "speed": 36.0,
+   "lo": 29.0,
+   "hi": 42.9
+  },
+  {
+   "dn": "D",
+   "forest_type": "moist deciduous",
+   "n": 7082,
+   "speed": 28.9,
+   "lo": 19.8,
+   "hi": 39.0
+  },
+  {
+   "dn": "D",
+   "forest_type": "other forest",
+   "n": 1145,
+   "speed": 38.0,
+   "lo": 15.0,
+   "hi": 63.6
+  },
+  {
+   "dn": "D",
+   "forest_type": "other non-forest",
+   "n": 1929,
+   "speed": 7.3,
+   "lo": -10.6,
+   "hi": 24.3
+  },
+  {
+   "dn": "D",
+   "forest_type": "sal",
+   "n": 6719,
+   "speed": 29.0,
+   "lo": 19.4,
+   "hi": 38.0
+  },
+  {
+   "dn": "D",
+   "forest_type": "scrub / grass",
+   "n": 1970,
+   "speed": 26.5,
+   "lo": 5.5,
+   "hi": 46.6
+  },
+  {
+   "dn": "D",
+   "forest_type": "teak",
+   "n": 14053,
+   "speed": 34.8,
+   "lo": 27.6,
+   "hi": 41.8
+  },
+  {
+   "dn": "N",
+   "forest_type": "agriculture",
+   "n": 54203,
+   "speed": 7.5,
+   "lo": 4.7,
+   "hi": 10.4
+  },
+  {
+   "dn": "N",
+   "forest_type": "bamboo",
+   "n": 1619,
+   "speed": 22.5,
+   "lo": 2.4,
+   "hi": 43.8
+  },
+  {
+   "dn": "N",
+   "forest_type": "degraded forest",
+   "n": 3377,
+   "speed": 2.9,
+   "lo": -8.0,
+   "hi": 14.8
+  },
+  {
+   "dn": "N",
+   "forest_type": "dry deciduous",
+   "n": 8970,
+   "speed": 15.0,
+   "lo": 7.7,
+   "hi": 21.8
+  },
+  {
+   "dn": "N",
+   "forest_type": "moist deciduous",
+   "n": 4496,
+   "speed": 17.9,
+   "lo": 8.1,
+   "hi": 27.7
+  },
+  {
+   "dn": "N",
+   "forest_type": "other forest",
+   "n": 624,
+   "speed": 3.8,
+   "lo": -20.7,
+   "hi": 28.4
+  },
+  {
+   "dn": "N",
+   "forest_type": "other non-forest",
+   "n": 1822,
+   "speed": -3.3,
+   "lo": -31.4,
+   "hi": 21.8
+  },
+  {
+   "dn": "N",
+   "forest_type": "sal",
+   "n": 5199,
+   "speed": 22.1,
+   "lo": 11.9,
+   "hi": 32.1
+  },
+  {
+   "dn": "N",
+   "forest_type": "scrub / grass",
+   "n": 2279,
+   "speed": -11.3,
+   "lo": -25.0,
+   "hi": 2.4
+  },
+  {
+   "dn": "N",
+   "forest_type": "teak",
+   "n": 10538,
+   "speed": 17.9,
+   "lo": 11.8,
+   "hi": 25.4
+  }
+ ]
+}

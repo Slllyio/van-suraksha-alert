@@ -1,0 +1,37 @@
+bday forest starts in window: 95200
+                              effect     obs     exp    RR    lo    hi  p_boot  p_placebo  years  p_use  p_holm  robust_1.3x
+             Holi eve (Holika Dahan)  1583.0  1153.2 1.373 0.937 2.042   0.112      0.098     13  0.112     1.0        False
+                            Holi day  1546.0  1203.8 1.284 1.016 1.611   0.037      0.158     13  0.158     1.0        False
+                         Holi +1..+2  3051.0  2662.5 1.146 0.821 1.428   0.460      0.368     13  0.460     1.0        False
+                         Holi +3..+4  3133.0  3053.1 1.026 0.746 1.283   0.819      0.886     13  0.886     1.0        False
+                       Mahashivratri   304.0   401.2 0.758 0.593 1.002   0.054      0.236     12  0.236     1.0        False
+      Gudi Padwa / Chaitra Pratipada  1852.0  1760.8 1.052 0.807 1.257   0.646      0.793     13  0.793     1.0        False
+                          Ram Navami  1708.0  1720.0 0.993 0.735 1.320   0.863      0.912     13  0.912     1.0        False
+                     Akshaya Tritiya   634.0   725.1 0.874 0.710 1.031   0.110      0.495     13  0.495     1.0        False
+              Akshaya Tritiya +1..+7  4016.0  3820.7 1.051 0.789 1.230   0.714      0.624     13  0.714     1.0        False
+    Eid (Fitr 2019-26, Adha 2025-26)   630.0   695.6 0.906 0.373 1.344   0.732      0.681      8  0.732     1.0        False
+     MPBSE class-12 exams end +1..+3  3678.0  3450.8 1.066 0.840 1.296   0.637      0.608      8  0.637     1.0        False
+                IPL final day (null)   166.0   192.6 0.862 0.656 1.074   0.215      0.629     11  0.629     1.0        False
+                 IPL final +1 (null)   198.0   184.2 1.075 0.653 1.663   0.800      0.731     11  0.800     1.0        False
+     Polling day, own Lok Sabha seat   199.0   148.4 1.341 1.009 1.714   0.044      0.089     79  0.089     1.0        False
+Polling day, other seats (same date)   310.0   340.3 0.911 0.798 1.029   0.142        NaN     81  0.142     1.0        False
+                         Weekday Mon 13551.0 13618.6 0.995 0.929 1.054   0.887        NaN     13  0.887     1.0        False
+                         Weekday Tue 13794.0 13589.9 1.015 0.962 1.067   0.628        NaN     13  0.628     1.0        False
+                         Weekday Wed 14252.0 13621.8 1.046 0.997 1.106   0.070        NaN     13  0.070     1.0        False
+                         Weekday Thu 13708.0 13625.9 1.006 0.941 1.085   0.890        NaN     13  0.890     1.0        False
+                         Weekday Fri 13451.0 13602.6 0.989 0.928 1.048   0.752        NaN     13  0.752     1.0        False
+                         Weekday Sat 13003.0 13619.6 0.955 0.907 1.000   0.050        NaN     13  0.050     1.0        False
+                         Weekday Sun 13441.0 13604.4 0.988 0.921 1.054   0.706        NaN     13  0.706     1.0        False
+                        effect  RR_tribal  RR_other  ratio    lo    hi  n_tribal  n_other
+       Holi eve (Holika Dahan)      1.521     1.254  1.213 0.870 1.551       782      801
+                      Holi day      1.500     1.113  1.347 1.066 1.635       798      748
+                   Holi +1..+2      1.244     1.068  1.165 1.045 1.354      1473     1578
+                   Holi +3..+4      0.989     1.056  0.936 0.793 1.100      1357     1776
+                 Mahashivratri      0.712     0.787  0.904 0.601 1.285       111      193
+Gudi Padwa / Chaitra Pratipada      1.024     1.074  0.953 0.804 1.096       791     1061
+                    Ram Navami      0.998     0.989  1.009 0.873 1.123       773      935
+               Akshaya Tritiya      0.817     0.922  0.886 0.768 1.044       270      364
+        Akshaya Tritiya +1..+7      1.040     1.060  0.981 0.896 1.064      1818     2198
+          IPL final day (null)      0.951     0.771  1.233 0.774 1.906        92       74
+                        Sunday      0.989     0.987    NaN   NaN   NaN      5966     7475
+share of starts in tribal (ST>=30%) divisions: 0.444

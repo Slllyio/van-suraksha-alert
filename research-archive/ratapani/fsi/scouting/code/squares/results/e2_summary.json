@@ -1,0 +1,204 @@
+{
+ "null_static": {
+  "pairs": 28412,
+  "sites": 104,
+  "shift_p50": 254,
+  "shift_p95": 1002,
+  "shift_w_p95": 957,
+  "shift_p95_by_min_pixels": {
+   "1": 1083,
+   "2": 804,
+   "3": 612,
+   "4": 489
+  },
+  "shift_p50_by_min_pixels": {
+   "1": 262,
+   "2": 235,
+   "3": 211,
+   "4": 204
+  },
+  "n_by_min_pixels": {
+   "1": 21584,
+   "2": 5325,
+   "3": 1191,
+   "4": 312
+  },
+  "dlogarea_p95": 1.27,
+  "dlogfrp_p95": 1.38,
+  "share_with_new_pixel_by_min_pixels": {
+   "1": 0.55,
+   "2": 0.708,
+   "3": 0.806,
+   "4": 0.849
+  }
+ },
+ "fires_pairs": {
+  "all": 3023,
+  "viirs_viirs": 2420,
+  "with_modis": 603,
+  "with_next_look": 1129,
+  "with_next_growth_direction": 865,
+  "median_gap_min": 49.0,
+  "fire_shift_p50": 286,
+  "fire_shift_p95": 1086,
+  "median_pixels_per_look": 2.0
+ },
+ "share_above_noise": {
+  "shift": 0.085,
+  "shift_w": 0.09,
+  "dlogarea": 0.068,
+  "dlogfrp": 0.15,
+  "new_pixel": 0.676,
+  "new_pixel_null_expected": 0.633,
+  "note": "noise = 95th pct of static sources, so 0.05 is expected with no signal"
+ },
+ "direction_vs_next_growth": {
+  "plain_shift_all": {
+   "n": 865,
+   "same_way_pct": 54.2,
+   "ci95": [
+    51.1,
+    57.3
+   ],
+   "mean_cos": 0.05
+  },
+  "frp_shift_all": {
+   "n": 865,
+   "same_way_pct": 54.6,
+   "ci95": [
+    51.3,
+    57.7
+   ],
+   "mean_cos": 0.063
+  },
+  "plain_shift_above_noise": {
+   "n": 126,
+   "same_way_pct": 50.0,
+   "ci95": [
+    42.1,
+    57.7
+   ],
+   "mean_cos": -0.027
+  },
+  "frp_shift_above_noise": {
+   "n": 138,
+   "same_way_pct": 54.3,
+   "ci95": [
+    44.7,
+    63.6
+   ],
+   "mean_cos": 0.055
+  },
+  "new_pixels_bearing": {
+   "n": 638,
+   "same_way_pct": 55.5,
+   "ci95": [
+    51.7,
+    59.1
+   ],
+   "mean_cos": 0.072
+  },
+  "previous_growth_direction (persistence)": {
+   "n": 492,
+   "same_way_pct": 68.9,
+   "ci95": [
+    63.2,
+    74.6
+   ],
+   "mean_cos": 0.349
+  },
+  "persistence + 0.5 x significant FRP shift": {
+   "n": 492,
+   "same_way_pct": 69.3,
+   "ci95": [
+    64.3,
+    74.5
+   ],
+   "mean_cos": 0.35
+  },
+  "persistence + 1.0 x significant FRP shift": {
+   "n": 492,
+   "same_way_pct": 68.5,
+   "ci95": [
+    63.2,
+    73.8
+   ],
+   "mean_cos": 0.333
+  },
+  "persistence, same pairs": {
+   "n": 492,
+   "same_way_pct": 68.9,
+   "ci95": [
+    63.1,
+    74.1
+   ],
+   "mean_cos": 0.349
+  },
+  "MODIS-VIIRS pairs plain shift": {
+   "n": 309,
+   "same_way_pct": 47.9,
+   "ci95": [
+    43.3,
+    52.2
+   ],
+   "mean_cos": -0.025
+  }
+ },
+ "amount_vs_next_growth": {
+  "n": 1129,
+  "n_new": {
+   "spearman_vs_next_new_ha": 0.123,
+   "partial_given_size": 0.072,
+   "partial_ci95": [
+    0.015,
+    0.137
+   ]
+  },
+  "dlogarea": {
+   "spearman_vs_next_new_ha": 0.001,
+   "partial_given_size": -0.003,
+   "partial_ci95": [
+    -0.056,
+    0.048
+   ]
+  },
+  "dlogfrp": {
+   "spearman_vs_next_new_ha": 0.048,
+   "partial_given_size": 0.055,
+   "partial_ci95": [
+    -0.007,
+    0.107
+   ]
+  },
+  "shift": {
+   "spearman_vs_next_new_ha": 0.107,
+   "partial_given_size": 0.071,
+   "partial_ci95": [
+    0.014,
+    0.119
+   ]
+  },
+  "shift_w": {
+   "spearman_vs_next_new_ha": 0.107,
+   "partial_given_size": 0.073,
+   "partial_ci95": [
+    0.014,
+    0.122
+   ]
+  }
+ },
+ "any_growth_next_look_heldout_season_auc": {
+  "n": 1129,
+  "grew_share": 0.766,
+  "base": 0.563,
+  "plus_small_gap": 0.573
+ },
+ "min_detectable_speed_m_per_h": {
+  "min pixels 1": 1326,
+  "min pixels 2": 985,
+  "min pixels 3": 749,
+  "min pixels 4": 598,
+  "gap_h_used": 0.82,
+  "frp_weighted_all": 1172
+ }
+}

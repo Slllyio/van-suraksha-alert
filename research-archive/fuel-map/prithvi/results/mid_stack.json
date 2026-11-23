@@ -1,0 +1,211 @@
+{
+ "rows": 121867,
+ "after 15 Mar": {
+  "full (Feb Prithvi)": {
+   "mean": 0.6861,
+   "by_region": {
+    "Khandwa": 0.666,
+    "Dewas": 0.638,
+    "South_Betul": 0.672,
+    "South_Chhindwara": 0.632,
+    "South_Balaghat": 0.69,
+    "Dindori": 0.65,
+    "Umaria": 0.739,
+    "Chhatarpur": 0.726,
+    "Panna_TR": 0.699,
+    "Satpura_TR": 0.749
+   }
+  },
+  "+ GPU Feb score": {
+   "mean": 0.7102,
+   "by_region": {
+    "Khandwa": 0.714,
+    "Dewas": 0.683,
+    "South_Betul": 0.702,
+    "South_Chhindwara": 0.669,
+    "South_Balaghat": 0.729,
+    "Dindori": 0.69,
+    "Umaria": 0.783,
+    "Chhatarpur": 0.747,
+    "Panna_TR": 0.661,
+    "Satpura_TR": 0.724
+   }
+  },
+  "+ GPU March score": {
+   "mean": 0.7134,
+   "by_region": {
+    "Khandwa": 0.725,
+    "Dewas": 0.69,
+    "South_Betul": 0.699,
+    "South_Chhindwara": 0.676,
+    "South_Balaghat": 0.707,
+    "Dindori": 0.707,
+    "Umaria": 0.786,
+    "Chhatarpur": 0.757,
+    "Panna_TR": 0.663,
+    "Satpura_TR": 0.724
+   },
+   "gain_vs_GPU_Feb": {
+    "mean": 0.0032,
+    "better": 7,
+    "of": 10,
+    "ci95": [
+     -0.0036,
+     0.0086
+    ]
+   }
+  },
+  "+ mid-March dryness": {
+   "mean": 0.6793,
+   "by_region": {
+    "Khandwa": 0.686,
+    "Dewas": 0.615,
+    "South_Betul": 0.639,
+    "South_Chhindwara": 0.603,
+    "South_Balaghat": 0.697,
+    "Dindori": 0.661,
+    "Umaria": 0.741,
+    "Chhatarpur": 0.719,
+    "Panna_TR": 0.726,
+    "Satpura_TR": 0.706
+   },
+   "gain_vs_GPU_Feb": {
+    "mean": -0.0309,
+    "better": 1,
+    "of": 10,
+    "ci95": [
+     -0.0501,
+     -0.0061
+    ]
+   }
+  },
+  "+ mid-March dryness + GPU March": {
+   "mean": 0.71,
+   "by_region": {
+    "Khandwa": 0.733,
+    "Dewas": 0.666,
+    "South_Betul": 0.688,
+    "South_Chhindwara": 0.667,
+    "South_Balaghat": 0.72,
+    "Dindori": 0.702,
+    "Umaria": 0.787,
+    "Chhatarpur": 0.76,
+    "Panna_TR": 0.678,
+    "Satpura_TR": 0.699
+   },
+   "gain_vs_GPU_Feb": {
+    "mean": -0.0002,
+    "better": 5,
+    "of": 10,
+    "ci95": [
+     -0.0094,
+     0.0086
+    ]
+   }
+  }
+ },
+ "late (after 15 Apr)": {
+  "full (Feb Prithvi)": {
+   "mean": 0.6001,
+   "by_region": {
+    "Khandwa": 0.559,
+    "Dewas": 0.617,
+    "South_Betul": 0.585,
+    "South_Chhindwara": 0.576,
+    "South_Balaghat": 0.606,
+    "Dindori": 0.577,
+    "Umaria": 0.62,
+    "Chhatarpur": 0.645,
+    "Panna_TR": 0.657,
+    "Satpura_TR": 0.559
+   }
+  },
+  "+ GPU Feb score": {
+   "mean": 0.6107,
+   "by_region": {
+    "Khandwa": 0.572,
+    "Dewas": 0.643,
+    "South_Betul": 0.576,
+    "South_Chhindwara": 0.588,
+    "South_Balaghat": 0.632,
+    "Dindori": 0.65,
+    "Umaria": 0.65,
+    "Chhatarpur": 0.645,
+    "Panna_TR": 0.625,
+    "Satpura_TR": 0.526
+   }
+  },
+  "+ GPU March score": {
+   "mean": 0.6106,
+   "by_region": {
+    "Khandwa": 0.602,
+    "Dewas": 0.598,
+    "South_Betul": 0.577,
+    "South_Chhindwara": 0.602,
+    "South_Balaghat": 0.606,
+    "Dindori": 0.633,
+    "Umaria": 0.641,
+    "Chhatarpur": 0.651,
+    "Panna_TR": 0.616,
+    "Satpura_TR": 0.58
+   },
+   "gain_vs_GPU_Feb": {
+    "mean": -0.0001,
+    "better": 5,
+    "of": 10,
+    "ci95": [
+     -0.0165,
+     0.0172
+    ]
+   }
+  },
+  "+ mid-March dryness": {
+   "mean": 0.5952,
+   "by_region": {
+    "Khandwa": 0.554,
+    "Dewas": 0.628,
+    "South_Betul": 0.576,
+    "South_Chhindwara": 0.569,
+    "South_Balaghat": 0.627,
+    "Dindori": 0.593,
+    "Umaria": 0.602,
+    "Chhatarpur": 0.641,
+    "Panna_TR": 0.674,
+    "Satpura_TR": 0.488
+   },
+   "gain_vs_GPU_Feb": {
+    "mean": -0.0155,
+    "better": 1,
+    "of": 10,
+    "ci95": [
+     -0.0319,
+     0.003
+    ]
+   }
+  },
+  "+ mid-March dryness + GPU March": {
+   "mean": 0.6097,
+   "by_region": {
+    "Khandwa": 0.593,
+    "Dewas": 0.622,
+    "South_Betul": 0.586,
+    "South_Chhindwara": 0.598,
+    "South_Balaghat": 0.612,
+    "Dindori": 0.635,
+    "Umaria": 0.622,
+    "Chhatarpur": 0.659,
+    "Panna_TR": 0.637,
+    "Satpura_TR": 0.533
+   },
+   "gain_vs_GPU_Feb": {
+    "mean": -0.001,
+    "better": 6,
+    "of": 10,
+    "ci95": [
+     -0.0115,
+     0.0089
+    ]
+   }
+  }
+ }
+}

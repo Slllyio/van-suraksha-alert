@@ -1,0 +1,22 @@
+{
+ "day passes": {
+  "n": 707,
+  "rho": 0.546,
+  "slope": 0.535,
+  "ci": [
+   0.445,
+   0.625
+  ]
+ },
+ "all passes": {
+  "n": 1429,
+  "rho": 0.458,
+  "slope": 0.453,
+  "ci": [
+   0.393,
+   0.513
+  ]
+ },
+ "night_over_day_frp_median": 0.24,
+ "night_over_day_clock": 0.129
+}

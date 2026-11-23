@@ -1,0 +1,52 @@
+{
+ "after (day, ~3 h) | NOAA-20": {
+  "passes": 2601,
+  "fires": 2372,
+  "gap_h_median": 2.7,
+  "measured_hot_minus_viirs_east": [
+   -126.9,
+   -136.7,
+   -116.6
+  ],
+  "measured_hot_minus_viirs_north": [
+   93.8,
+   84.5,
+   103.9
+  ],
+  "static_bias_east_north": [
+   72.7,
+   -46.0
+  ],
+  "implied_movement_east_north_m": [
+   54,
+   -48
+  ],
+  "implied_speed_m_per_h": 26.6,
+  "implied_direction_deg_from_north": 131
+ },
+ "after (day, ~3 h) | S-NPP": {
+  "passes": 2992,
+  "fires": 2763,
+  "gap_h_median": 2.6,
+  "measured_hot_minus_viirs_east": [
+   -80.5,
+   -90.8,
+   -71.0
+  ],
+  "measured_hot_minus_viirs_north": [
+   17.7,
+   8.7,
+   26.6
+  ],
+  "static_bias_east_north": [
+   12.8,
+   33.3
+  ],
+  "implied_movement_east_north_m": [
+   68,
+   -51
+  ],
+  "implied_speed_m_per_h": 32.1,
+  "implied_direction_deg_from_north": 127
+ }
+}

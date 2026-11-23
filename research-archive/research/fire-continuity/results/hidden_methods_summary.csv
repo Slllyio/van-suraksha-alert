@@ -1,0 +1,11 @@
+,mean_abs_err_h,share_burned_by_then,median_bias_h,mae_big
+base,22.573,0.456,4.233,23.613
+nn,23.473,0.548,-10.408,24.106
+front_line_edge_flat,24.346,0.764,-9.223,27.426
+front_line_edge_clock,24.701,0.772,-10.314,28.143
+front_line_centre_flat,26.427,0.629,-4.602,27.571
+front_line_centre_clock,26.237,0.636,-5.825,27.387
+front_walk_edge_flat,24.601,0.757,-8.611,27.656
+front_walk_edge_clock,25.31,0.762,-9.636,28.445
+front_walk_centre_flat,27.663,0.604,-4.199,29.071
+front_walk_centre_clock,27.498,0.612,-4.323,28.436

@@ -1,0 +1,42 @@
+{
+ "disagreement": {
+  "pu_not_rule": {
+   "ha": 41.160000000000004,
+   "p_area_weighted": 0.9095433095677031
+  },
+  "rule_not_pu": {
+   "ha": 486.59999999999997,
+   "p_area_weighted": 0.8448101539888128
+  },
+  "pu_not_v2": {
+   "ha": 126.52,
+   "p_area_weighted": 0.9598604841495273
+  },
+  "v2_not_pu": {
+   "ha": 423.28000000000003,
+   "p_area_weighted": 0.797206722703763
+  }
+ },
+ "mix_chips": 83,
+ "near_ring_p": 0.12653770586022003,
+ "photo": {
+  "photos": 171,
+  "pixels": 255938,
+  "burned_by_photo": 0.43840305073885083,
+  "dated": 0.9390633669091734,
+  "decided": 0.07274027303487564,
+  "acc_decided": 0.4478165117902992,
+  "auc_perpixel_dated": 0.5312363636254671,
+  "auc_viirs_distance_same_pixels": 0.8665684568631107,
+  "auc_viirs_distance_all": 0.8645289474417746,
+  "auc_combined_all": 0.7915700520150633,
+  "acc_viirs_400m_all": 0.8022724253530151
+ },
+ "n_chips_scored": {
+  "wb_real": 248,
+  "photo": 179,
+  "wb_decoy": 134,
+  "af_nofirms": 90,
+  "af_firms": 90
+ }
+}

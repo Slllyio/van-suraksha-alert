@@ -1,0 +1,24 @@
+{
+ "true_lead_strict_loso": {
+  "fixed5": 0.3894,
+  "beat_shared": 0.5759,
+  "day_varying": 0.7985,
+  "day_varying_seasonality_only": 0.7459,
+  "day_varying_fixed": 0.5757,
+  "fixed5_random": 0.1884
+ },
+ "burns_caught_loso": {
+  "fixed5": 0.4258,
+  "beat_shared": 0.5876,
+  "day_varying": 0.7769,
+  "day_varying_seasonality_only": 0.7079,
+  "day_varying_fixed": 0.5944
+ },
+ "burns_caught_2025_26": {
+  "fixed5": 0.4157,
+  "beat_shared": 0.5453,
+  "day_varying": 0.7663,
+  "day_varying_seasonality_only": 0.711,
+  "day_varying_fixed": 0.6006
+ }
+}

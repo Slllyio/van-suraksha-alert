@@ -1,0 +1,11 @@
+set,predictor,n,fires,heldout_r2,r2_ci,slope_b,intercept_a,spearman
+viirs_day,n,814,457,0.165,0.104 to 0.222,0.715,4.857,0.375
+viirs_day,n_w,814,457,0.16,0.103 to 0.209,0.687,0.652,0.367
+viirs_day,half_per,814,457,0.206,0.141 to 0.263,0.988,-1.939,0.403
+viirs_day,extent,814,457,0.214,0.148 to 0.262,0.824,-0.248,0.411
+viirs_day,frp,814,457,0.147,0.089 to 0.195,0.469,4.142,0.379
+terra_same_time,n,41,40,-0.383,-1.974 to 0.055,0.947,6.085,0.273
+terra_same_time,n_w,41,40,-0.121,-1.728 to 0.103,0.423,3.201,0.158
+terra_same_time,half_per,41,40,-0.098,-1.608 to 0.226,0.745,0.383,0.202
+terra_same_time,extent,41,40,-0.082,-1.659 to 0.149,0.372,3.571,0.14
+terra_same_time,frp,41,40,0.104,-1.876 to 0.330,0.684,4.367,0.404

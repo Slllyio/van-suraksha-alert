@@ -1,0 +1,75 @@
+{
+ "offsets_static": {
+  "D dE": {
+   "NOAA-20": 52.1,
+   "NOAA-21": -57.0,
+   "S-NPP": 0.0
+  },
+  "D dN": {
+   "NOAA-20": -93.3,
+   "NOAA-21": -25.1,
+   "S-NPP": 0.0
+  },
+  "N dE": {
+   "NOAA-20": -19.6,
+   "NOAA-21": 27.4,
+   "S-NPP": 0.0
+  },
+  "N dN": {
+   "NOAA-20": 79.0,
+   "NOAA-21": -43.5,
+   "S-NPP": 0.0
+  }
+ },
+ "offsets_fires_joint": {
+  "D dE": {
+   "NOAA-20": 55.8,
+   "NOAA-21": -55.1,
+   "S-NPP": 0.0
+  },
+  "D dN": {
+   "NOAA-20": -96.3,
+   "NOAA-21": -23.0,
+   "S-NPP": 0.0
+  },
+  "N dE": {
+   "NOAA-20": 13.9,
+   "NOAA-21": 18.8,
+   "S-NPP": 0.0
+  },
+  "N dN": {
+   "NOAA-20": 80.3,
+   "NOAA-21": -38.0,
+   "S-NPP": 0.0
+  }
+ },
+ "fires_mean_drift_vector": {
+  "D dE m/h": 59.5,
+  "D dN m/h": -28.2,
+  "N dE m/h": 37.5,
+  "N dN m/h": -14.6
+ },
+ "counts": {
+  "fire_pairs_small_vv_all": 384327,
+  "with_earlier_detections": 185920,
+  "with_later": 119549,
+  "with_wind": 10245,
+  "static_pairs_with_earlier": 33688,
+  "clusters": 38716,
+  "by_pair": {
+   "NOAA-20>NOAA-21 D": 12175,
+   "NOAA-20>NOAA-21 N": 12467,
+   "NOAA-20>S-NPP D": 19468,
+   "NOAA-20>S-NPP N": 19406,
+   "NOAA-21>NOAA-20 D": 9542,
+   "NOAA-21>NOAA-20 N": 9073,
+   "NOAA-21>S-NPP D": 17060,
+   "NOAA-21>S-NPP N": 17016,
+   "S-NPP>NOAA-20 D": 29394,
+   "S-NPP>NOAA-20 N": 30603,
+   "S-NPP>NOAA-21 D": 5154,
+   "S-NPP>NOAA-21 N": 4562
+  },
+  "median_gap_min": 49.0
+ }
+}

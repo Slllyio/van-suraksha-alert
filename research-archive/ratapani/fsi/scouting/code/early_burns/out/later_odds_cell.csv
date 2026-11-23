@@ -1,0 +1,5 @@
+treat,outcome,cells,p_untreated_seasons_same_cells,raw_diff,adj_diff,ci_lo,ci_hi,rel_change,naive_treated,naive_untreated
+early,later,14505,0.089,0.0006,-0.0426,-0.047,-0.0383,-0.482,0.099,0.126
+early,mid,14505,0.063,-0.0028,-0.0308,-0.0341,-0.0268,-0.487,0.068,0.107
+early_flag,later,7660,0.082,0.0067,-0.032,-0.0385,-0.0268,-0.389,0.091,0.126
+early_flag,mid,7660,0.061,0.0023,-0.0241,-0.0295,-0.0194,-0.397,0.064,0.107
