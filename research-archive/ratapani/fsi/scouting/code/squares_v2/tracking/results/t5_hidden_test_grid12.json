@@ -1,0 +1,40 @@
+{
+ "grid12 | idw2": {
+  "hidden_passes": 240,
+  "fires": 80,
+  "auc_node_mean": 0.6884,
+  "logloss_node": 0.2197,
+  "auc_pass": 0.7618,
+  "brier_pass": 0.5054
+ },
+ "grid12 | idw4": {
+  "hidden_passes": 240,
+  "fires": 80,
+  "auc_node_mean": 0.6976,
+  "logloss_node": 0.1937,
+  "auc_pass": 0.798,
+  "brier_pass": 0.436
+ },
+ "grid12 | inversion": {
+  "hidden_passes": 240,
+  "fires": 80,
+  "auc_node_mean": 0.7005,
+  "logloss_node": 0.1922,
+  "auc_pass": 0.7989,
+  "brier_pass": 0.423
+ },
+ "grid12 | kernel": {
+  "hidden_passes": 160,
+  "fires": 80,
+  "auc_node_mean": 0.8541,
+  "logloss_node": NaN
+ },
+ "grid12 | nearest": {
+  "hidden_passes": 240,
+  "fires": 80,
+  "auc_node_mean": 0.7158,
+  "logloss_node": 0.195,
+  "auc_pass": 0.7987,
+  "brier_pass": 0.4083
+ }
+}

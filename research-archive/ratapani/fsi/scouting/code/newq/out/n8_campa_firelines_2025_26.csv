@@ -1,0 +1,74 @@
+sn,unit_hindi,unit,lakh
+1,उ.बालाघाट,North_Balaghat,18
+2,द.बालाघाट,South_Balaghat,20
+3,उत्तर बैतूल,North_Betul,20
+4,पश्चिम बैतूल,West_Betul,25
+5,दक्षिण बैतूल,South_Betul,25
+6,भोपाल,Bhopal,17
+7,विदिशा,Vidisha,15
+8,रायसेन,Raisen,20
+9,ओबेदुल्लागंज,Obedullahganj,25
+10,राजगढ़,Rajgarh,15
+11,सीहोर,Sehore,20
+12,छतरपुर,Chhatarpur,20
+13,उ.पन्ना,North_Panna,20
+14,द.पन्ना,South_Panna,26
+15,टीकमगढ़,Tikamgarh,18
+16,पूर्व छिन्दवाड़ा,East_Chhindwara,20
+17,पश्चिम छिन्दवाड़ा,West_Chhindwara,22
+18,दक्षिण छिन्दवाड़ा,South_Chhindwara,25
+19,ग्वालियर,Gwalior,18
+20,मुरैना,Morena,20
+21,श्योपुर,Sheopur,25
+22,दतिया,Datia,10
+23,भिण्ड,Bhind,6
+24,नर्मदापुरम,Hoshangabad,20
+25,हरदा,Harda,20
+26,इन्दौर,Indore,15
+27,झाबुआ,Jhabua,20
+28,अलीराजपुर,Alirajpur,20
+29,धार,Dhar,28
+30,जबलपुर,Jabalpur,20
+31,कटनी,Katni,25
+32,डिण्डोरी,Dindori,25
+33,पूर्व मंडला,East_Mandla,25
+34,पश्चिम मंडला,West_Mandla,30
+35,खण्डवा,Khandwa,25
+36,खरगौन,Khargone,20
+37,सेंधवा,Sendhwa,15
+38,बड़वानी,Barwani,20
+39,बड़वाह,Barwah,20
+40,बुरहानपुर,Burhanpur,30
+41,रीवा,Rewa,16
+42,सतना,Satna,30
+43,सीधी,Sidhi,28
+44,सिंगरौली,Singrauli,40
+45,उत्तर सागर,North_Sagar,22
+46,दक्षिण सागर,South_Sagar,25
+47,दमोह,Damoh,25
+48,वीरांगना दुर्गावती टाईगर रिजर्व सागर,Noradehi,25
+49,उत्तर सिवनी,North_Seoni,30
+50,दक्षिण सिवनी,South_Seoni,25
+51,नरसिंहपुर,Narsinghpur,23
+52,शिवपुरी,Shivpuri,28
+53,गुना,Guna,22
+54,अशोकनगर,Ashok_Nagar,15
+55,उत्तर शहडोल,North_Shahdol,25
+56,दक्षिण शहडोल,South_Shahdol,28
+57,उमरिया,Umaria,25
+58,अनूपपुर,Anuppur,27
+59,उज्जैन,Ujjain,9
+60,शाजापुर,Shajapur,9
+61,देवास,Dewas,25
+62,मंदसौर,Mandsaur,25
+63,रतलाम,Ratlam,20
+64,नीमच,Neemuch,20
+65,पन्ना टाईगर रिजर्व पन्ना,Panna_TR,25
+66,कूनो व.प्रा. श्योपुर,Kuno_Palpur,25
+67,बांधवगढ़ टाईगर रिजर्व उमरिया,BTR,25
+68,माधव राष्ट्रीय उद्यान शिवपुरी,Madhav_National_Park,22
+69,सतपुड़ा टाईगर रिजर्व नर्मदापुरम,Satpura_TR,25
+70,कान्हा टाइगर रिजर्व कोर जोन मण्डला,Kanha_Tiger_Reserve,22
+70b,कान्हा टाइगर रिजर्व बफर जोन मण्डला,Kanha_buffer,10
+71,पेंच टाईगर रिजर्व सिवनी,PTR_MP,28
+72,संजय टाईगर रिजर्व सीधी,SANJAY_DUBRI,22

@@ -1,0 +1,18 @@
+{
+ "strict_spot_obs": 21,
+ "strict_spot_exp": 14.949832775919733,
+ "children_obs": 710,
+ "children_exp": 423.8695652173913,
+ "child_ign_to_parent_scar_m_quantiles": [
+  0.0,
+  0.0,
+  634.0,
+  1140.0,
+  1519.0
+ ],
+ "share_child_ign_inside_or_within100m_parent_scar": 0.3352112676056338,
+ "share_child_scar_touches_parent_scar": 0.4225352112676056,
+ "share_child_scar_within100m_parent_scar": 0.47464788732394364,
+ "control_lag3-10d_share_scar_touch": 0.24912770411723656,
+ "control_lag3-10d_share_within100m": 0.3342637822749477
+}

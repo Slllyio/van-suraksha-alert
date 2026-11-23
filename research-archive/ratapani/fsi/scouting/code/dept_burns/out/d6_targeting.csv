@@ -1,0 +1,8 @@
+item,share,n,measure,burnt_patches,mean_pct_rank_burnt,mean_pct_rank_never,p
+pre-15 Feb burn clusters inside a repeat patch,0.1028830313014827,12140.0,,,,,
+later wildfire points (15 Feb-15 Jun) inside a repeat patch,0.16333505901663756,577549.0,,,,,
+control-like clusters inside a repeat patch,0.09647495361781076,4851.0,,,,,
+,,,burnt_share_per_season_2017_25,387.0,0.6191882000838114,0.497521312232059,3.721638796257178e-15
+,,,burnt_share_per_season_2022_25,387.0,0.5839762757527498,0.5014371210585304,8.848697937892413e-08
+,,,benefit_per_100ha,387.0,0.6119532380764812,0.4983258899035637,1.8743411790443905e-13
+,,,forest_ha,387.0,0.7400200228540987,0.4840839802170873,2.3548873850958513e-61

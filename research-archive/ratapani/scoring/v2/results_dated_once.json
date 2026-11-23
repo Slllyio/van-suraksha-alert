@@ -1,0 +1,538 @@
+{
+ "check_vs_fsi_v2": {
+  "fsi_dated": 5826,
+  "mine_dated": 6044,
+  "same_day": 5826
+ },
+ "dated_burns_in_season": {
+  "2017": 738,
+  "2018": 812,
+  "2019": 878,
+  "2020": 347,
+  "2021": 730,
+  "2022": 987,
+  "2023": 337,
+  "2024": 309,
+  "2025": 918,
+  "2026": 855
+ },
+ "near_share": 0.25,
+ "loso_2017_24": {
+  "all": {
+   "burns": 5138,
+   "random": {
+    "warned_1_2d": 21.5,
+    "listed_1_7d": 53.2
+   },
+   "history": {
+    "warned_1_2d": 16.8,
+    "listed_1_7d": 16.8
+   },
+   "model": {
+    "warned_1_2d": 31.8,
+    "listed_1_7d": 39.1
+   },
+   "random_skip1": {
+    "warned_1_2d": 23.3,
+    "listed_1_7d": 56.5
+   },
+   "random_skip2": {
+    "warned_1_2d": 22.8,
+    "listed_1_7d": 59.3
+   },
+   "random_skip3": {
+    "warned_1_2d": 22.7,
+    "listed_1_7d": 62.0
+   },
+   "random_skip4": {
+    "warned_1_2d": 21.3,
+    "listed_1_7d": 64.9
+   },
+   "random_skip5": {
+    "warned_1_2d": 20.0,
+    "listed_1_7d": 66.3
+   },
+   "history_skip1": {
+    "warned_1_2d": 30.8,
+    "listed_1_7d": 30.8
+   },
+   "history_skip2": {
+    "warned_1_2d": 29.7,
+    "listed_1_7d": 43.7
+   },
+   "history_skip3": {
+    "warned_1_2d": 27.2,
+    "listed_1_7d": 54.7
+   },
+   "history_skip4": {
+    "warned_1_2d": 26.3,
+    "listed_1_7d": 64.6
+   },
+   "history_skip5": {
+    "warned_1_2d": 24.9,
+    "listed_1_7d": 71.9
+   },
+   "model_skip1": {
+    "warned_1_2d": 47.6,
+    "listed_1_7d": 55.8
+   },
+   "model_skip2": {
+    "warned_1_2d": 40.9,
+    "listed_1_7d": 66.7
+   },
+   "model_skip3": {
+    "warned_1_2d": 35.2,
+    "listed_1_7d": 74.2
+   },
+   "model_skip4": {
+    "warned_1_2d": 32.0,
+    "listed_1_7d": 79.5
+   },
+   "model_skip5": {
+    "warned_1_2d": 27.6,
+    "listed_1_7d": 83.9
+   }
+  },
+  "far_new_starts": {
+   "burns": 3887,
+   "random": {
+    "warned_1_2d": 21.6,
+    "listed_1_7d": 53.2
+   },
+   "history": {
+    "warned_1_2d": 16.6,
+    "listed_1_7d": 16.6
+   },
+   "model": {
+    "warned_1_2d": 32.2,
+    "listed_1_7d": 39.9
+   },
+   "random_skip1": {
+    "warned_1_2d": 23.6,
+    "listed_1_7d": 56.8
+   },
+   "random_skip2": {
+    "warned_1_2d": 23.2,
+    "listed_1_7d": 59.3
+   },
+   "random_skip3": {
+    "warned_1_2d": 23.1,
+    "listed_1_7d": 62.2
+   },
+   "random_skip4": {
+    "warned_1_2d": 21.8,
+    "listed_1_7d": 64.8
+   },
+   "random_skip5": {
+    "warned_1_2d": 19.9,
+    "listed_1_7d": 66.5
+   },
+   "history_skip1": {
+    "warned_1_2d": 30.1,
+    "listed_1_7d": 30.1
+   },
+   "history_skip2": {
+    "warned_1_2d": 29.6,
+    "listed_1_7d": 43.1
+   },
+   "history_skip3": {
+    "warned_1_2d": 26.6,
+    "listed_1_7d": 54.5
+   },
+   "history_skip4": {
+    "warned_1_2d": 26.3,
+    "listed_1_7d": 64.3
+   },
+   "history_skip5": {
+    "warned_1_2d": 25.2,
+    "listed_1_7d": 71.5
+   },
+   "model_skip1": {
+    "warned_1_2d": 48.6,
+    "listed_1_7d": 56.9
+   },
+   "model_skip2": {
+    "warned_1_2d": 41.9,
+    "listed_1_7d": 67.5
+   },
+   "model_skip3": {
+    "warned_1_2d": 35.7,
+    "listed_1_7d": 74.7
+   },
+   "model_skip4": {
+    "warned_1_2d": 32.4,
+    "listed_1_7d": 79.7
+   },
+   "model_skip5": {
+    "warned_1_2d": 28.3,
+    "listed_1_7d": 84.0
+   }
+  },
+  "near_recent_fire": {
+   "burns": 1251,
+   "random": {
+    "warned_1_2d": 21.2,
+    "listed_1_7d": 53.2
+   },
+   "history": {
+    "warned_1_2d": 17.3,
+    "listed_1_7d": 17.3
+   },
+   "model": {
+    "warned_1_2d": 30.4,
+    "listed_1_7d": 36.7
+   },
+   "random_skip1": {
+    "warned_1_2d": 22.4,
+    "listed_1_7d": 55.5
+   },
+   "random_skip2": {
+    "warned_1_2d": 21.6,
+    "listed_1_7d": 59.3
+   },
+   "random_skip3": {
+    "warned_1_2d": 21.3,
+    "listed_1_7d": 61.6
+   },
+   "random_skip4": {
+    "warned_1_2d": 20.0,
+    "listed_1_7d": 65.1
+   },
+   "random_skip5": {
+    "warned_1_2d": 20.3,
+    "listed_1_7d": 65.5
+   },
+   "history_skip1": {
+    "warned_1_2d": 33.0,
+    "listed_1_7d": 33.0
+   },
+   "history_skip2": {
+    "warned_1_2d": 30.0,
+    "listed_1_7d": 45.6
+   },
+   "history_skip3": {
+    "warned_1_2d": 28.8,
+    "listed_1_7d": 55.3
+   },
+   "history_skip4": {
+    "warned_1_2d": 26.0,
+    "listed_1_7d": 65.5
+   },
+   "history_skip5": {
+    "warned_1_2d": 24.1,
+    "listed_1_7d": 73.3
+   },
+   "model_skip1": {
+    "warned_1_2d": 44.3,
+    "listed_1_7d": 52.6
+   },
+   "model_skip2": {
+    "warned_1_2d": 37.6,
+    "listed_1_7d": 64.3
+   },
+   "model_skip3": {
+    "warned_1_2d": 33.4,
+    "listed_1_7d": 72.3
+   },
+   "model_skip4": {
+    "warned_1_2d": 30.8,
+    "listed_1_7d": 79.0
+   },
+   "model_skip5": {
+    "warned_1_2d": 25.2,
+    "listed_1_7d": 83.7
+   }
+  },
+  "per_season_warned_1_2d": {
+   "2017": {
+    "random": 19.8,
+    "history": 17.5,
+    "model": 29.9,
+    "model_skip2": 40.0
+   },
+   "2018": {
+    "random": 27.1,
+    "history": 19.0,
+    "model": 37.3,
+    "model_skip2": 44.1
+   },
+   "2019": {
+    "random": 23.5,
+    "history": 19.2,
+    "model": 35.6,
+    "model_skip2": 43.8
+   },
+   "2020": {
+    "random": 17.0,
+    "history": 15.0,
+    "model": 27.1,
+    "model_skip2": 36.9
+   },
+   "2021": {
+    "random": 22.2,
+    "history": 17.1,
+    "model": 34.5,
+    "model_skip2": 43.0
+   },
+   "2022": {
+    "random": 18.7,
+    "history": 14.3,
+    "model": 26.8,
+    "model_skip2": 36.7
+   },
+   "2023": {
+    "random": 19.3,
+    "history": 13.6,
+    "model": 26.1,
+    "model_skip2": 38.0
+   },
+   "2024": {
+    "random": 20.1,
+    "history": 15.2,
+    "model": 31.4,
+    "model_skip2": 41.7
+   }
+  }
+ },
+ "test_2025_26": {
+  "all": {
+   "burns": 1773,
+   "random": {
+    "warned_1_2d": 20.9,
+    "listed_1_7d": 51.0
+   },
+   "history": {
+    "warned_1_2d": 15.7,
+    "listed_1_7d": 15.7
+   },
+   "model": {
+    "warned_1_2d": 30.0,
+    "listed_1_7d": 38.4
+   },
+   "random_skip1": {
+    "warned_1_2d": 22.8,
+    "listed_1_7d": 54.0
+   },
+   "random_skip2": {
+    "warned_1_2d": 21.5,
+    "listed_1_7d": 56.5
+   },
+   "random_skip3": {
+    "warned_1_2d": 20.7,
+    "listed_1_7d": 59.7
+   },
+   "random_skip4": {
+    "warned_1_2d": 20.8,
+    "listed_1_7d": 62.7
+   },
+   "random_skip5": {
+    "warned_1_2d": 18.6,
+    "listed_1_7d": 64.1
+   },
+   "history_skip1": {
+    "warned_1_2d": 29.6,
+    "listed_1_7d": 29.6
+   },
+   "history_skip2": {
+    "warned_1_2d": 27.2,
+    "listed_1_7d": 41.1
+   },
+   "history_skip3": {
+    "warned_1_2d": 26.4,
+    "listed_1_7d": 51.3
+   },
+   "history_skip4": {
+    "warned_1_2d": 23.5,
+    "listed_1_7d": 60.5
+   },
+   "history_skip5": {
+    "warned_1_2d": 22.8,
+    "listed_1_7d": 68.2
+   },
+   "model_skip1": {
+    "warned_1_2d": 45.0,
+    "listed_1_7d": 53.3
+   },
+   "model_skip2": {
+    "warned_1_2d": 40.6,
+    "listed_1_7d": 65.1
+   },
+   "model_skip3": {
+    "warned_1_2d": 32.4,
+    "listed_1_7d": 71.4
+   },
+   "model_skip4": {
+    "warned_1_2d": 31.1,
+    "listed_1_7d": 76.9
+   },
+   "model_skip5": {
+    "warned_1_2d": 28.3,
+    "listed_1_7d": 82.3
+   }
+  },
+  "far_new_starts": {
+   "burns": 1297,
+   "random": {
+    "warned_1_2d": 20.4,
+    "listed_1_7d": 51.0
+   },
+   "history": {
+    "warned_1_2d": 15.3,
+    "listed_1_7d": 15.3
+   },
+   "model": {
+    "warned_1_2d": 30.5,
+    "listed_1_7d": 38.2
+   },
+   "random_skip1": {
+    "warned_1_2d": 22.7,
+    "listed_1_7d": 54.2
+   },
+   "random_skip2": {
+    "warned_1_2d": 21.0,
+    "listed_1_7d": 56.4
+   },
+   "random_skip3": {
+    "warned_1_2d": 20.5,
+    "listed_1_7d": 59.4
+   },
+   "random_skip4": {
+    "warned_1_2d": 21.3,
+    "listed_1_7d": 62.6
+   },
+   "random_skip5": {
+    "warned_1_2d": 18.1,
+    "listed_1_7d": 63.8
+   },
+   "history_skip1": {
+    "warned_1_2d": 28.9,
+    "listed_1_7d": 28.9
+   },
+   "history_skip2": {
+    "warned_1_2d": 26.9,
+    "listed_1_7d": 40.6
+   },
+   "history_skip3": {
+    "warned_1_2d": 26.2,
+    "listed_1_7d": 50.7
+   },
+   "history_skip4": {
+    "warned_1_2d": 23.4,
+    "listed_1_7d": 60.5
+   },
+   "history_skip5": {
+    "warned_1_2d": 22.6,
+    "listed_1_7d": 68.0
+   },
+   "model_skip1": {
+    "warned_1_2d": 45.2,
+    "listed_1_7d": 53.0
+   },
+   "model_skip2": {
+    "warned_1_2d": 40.2,
+    "listed_1_7d": 64.4
+   },
+   "model_skip3": {
+    "warned_1_2d": 32.5,
+    "listed_1_7d": 71.1
+   },
+   "model_skip4": {
+    "warned_1_2d": 30.4,
+    "listed_1_7d": 76.2
+   },
+   "model_skip5": {
+    "warned_1_2d": 27.8,
+    "listed_1_7d": 81.7
+   }
+  },
+  "near_recent_fire": {
+   "burns": 476,
+   "random": {
+    "warned_1_2d": 22.1,
+    "listed_1_7d": 51.1
+   },
+   "history": {
+    "warned_1_2d": 16.8,
+    "listed_1_7d": 16.8
+   },
+   "model": {
+    "warned_1_2d": 28.8,
+    "listed_1_7d": 38.7
+   },
+   "random_skip1": {
+    "warned_1_2d": 23.3,
+    "listed_1_7d": 53.4
+   },
+   "random_skip2": {
+    "warned_1_2d": 22.9,
+    "listed_1_7d": 56.7
+   },
+   "random_skip3": {
+    "warned_1_2d": 21.2,
+    "listed_1_7d": 60.5
+   },
+   "random_skip4": {
+    "warned_1_2d": 19.5,
+    "listed_1_7d": 63.0
+   },
+   "random_skip5": {
+    "warned_1_2d": 19.7,
+    "listed_1_7d": 65.1
+   },
+   "history_skip1": {
+    "warned_1_2d": 31.3,
+    "listed_1_7d": 31.3
+   },
+   "history_skip2": {
+    "warned_1_2d": 28.2,
+    "listed_1_7d": 42.4
+   },
+   "history_skip3": {
+    "warned_1_2d": 26.9,
+    "listed_1_7d": 53.2
+   },
+   "history_skip4": {
+    "warned_1_2d": 23.5,
+    "listed_1_7d": 60.3
+   },
+   "history_skip5": {
+    "warned_1_2d": 23.5,
+    "listed_1_7d": 68.7
+   },
+   "model_skip1": {
+    "warned_1_2d": 44.3,
+    "listed_1_7d": 54.2
+   },
+   "model_skip2": {
+    "warned_1_2d": 41.6,
+    "listed_1_7d": 67.0
+   },
+   "model_skip3": {
+    "warned_1_2d": 32.1,
+    "listed_1_7d": 72.3
+   },
+   "model_skip4": {
+    "warned_1_2d": 33.2,
+    "listed_1_7d": 78.8
+   },
+   "model_skip5": {
+    "warned_1_2d": 29.6,
+    "listed_1_7d": 84.0
+   }
+  },
+  "per_season_warned_1_2d": {
+   "2025": {
+    "random": 19.8,
+    "history": 15.1,
+    "model": 31.5,
+    "model_skip2": 39.7
+   },
+   "2026": {
+    "random": 22.0,
+    "history": 16.3,
+    "model": 28.4,
+    "model_skip2": 41.5
+   }
+  }
+ }
+}

@@ -1,0 +1,188 @@
+{
+ "1a_short_pairs": {
+  "pairs": 2572,
+  "median_gap_min": 50.0,
+  "median_shift_m": 288,
+  "median_along_scan": 165,
+  "median_along_track": 171,
+  "median_scan_m": 450,
+  "median_track_m": 476,
+  "spearman_shift_vs_pixel": 0.152,
+  "share_footprints_overlap": 0.944,
+  "share_required_move_zero": 0.944,
+  "required_move_median_m": 0.0,
+  "required_move_p90_m": 0.0,
+  "required_move_rate_p90_m_per_h": 0.0,
+  "overlap_share_of_smaller_median": 0.538,
+  "shift_by_pixel": {
+   "300-420": 218,
+   "420-520": 290,
+   "520-650": 355,
+   "650-900": 226
+  },
+  "n_by_pixel": {
+   "300-420": 211,
+   "420-520": 2084,
+   "520-650": 271,
+   "650-900": 6
+  }
+ },
+ "1b_photo_forecast": {
+  "photos": 203,
+  "fires": 171,
+  "mean_auc": {
+   "points": 0.7824,
+   "kernel400": 0.8017,
+   "blocks_axis": 0.7712,
+   "blocks_rot": 0.7717,
+   "blocks_half": 0.7823,
+   "foot_kernel200": 0.7997,
+   "foot_kernel400": 0.8005,
+   "constrained_viirs": 0.7769,
+   "constrained_viirs_modis": 0.7717
+  },
+  "mean_auc_new_ground": {
+   "points": 0.7458,
+   "kernel400": 0.7622,
+   "blocks_axis": 0.7431,
+   "blocks_rot": 0.7434,
+   "blocks_half": 0.7448,
+   "foot_kernel200": 0.7609,
+   "foot_kernel400": 0.763,
+   "constrained_viirs": 0.7467,
+   "constrained_viirs_modis": 0.743
+  },
+  "n_new_ground": 188,
+  "diff_vs_points_95": {
+   "kernel400": [
+    0.0075,
+    0.0315
+   ],
+   "blocks_axis": [
+    -0.0209,
+    -0.0013
+   ],
+   "blocks_rot": [
+    -0.0205,
+    -0.0015
+   ],
+   "blocks_half": [
+    -0.0036,
+    0.0034
+   ],
+   "foot_kernel200": [
+    0.0042,
+    0.0302
+   ],
+   "foot_kernel400": [
+    0.0034,
+    0.0326
+   ],
+   "constrained_viirs": [
+    -0.0176,
+    0.0076
+   ],
+   "constrained_viirs_modis": [
+    -0.0279,
+    0.0054
+   ]
+  },
+  "diff_rot_vs_axis_95": [
+   -0.002,
+   0.0033
+  ],
+  "diff_constrained_vs_rot_95": [
+   -0.0038,
+   0.0142
+  ],
+  "diff_foot_kernel200_vs_kernel400_95": [
+   -0.0084,
+   0.0044
+  ],
+  "photos_with_near_time_pass_pair": 153,
+  "constrained_on_photos_with_pairs": {
+   "n": 153,
+   "constrained": 0.7899,
+   "blocks_rot": 0.7831,
+   "diff_95": [
+    -0.0048,
+    0.0203
+   ]
+  },
+  "extent": {
+   "union_rot": {
+    "acc": 0.7385,
+    "iou": 0.4176,
+    "mapped_share": 0.291
+   },
+   "union_axis": {
+    "acc": 0.7389,
+    "iou": 0.42,
+    "mapped_share": 0.291
+   },
+   "union_half": {
+    "acc": 0.6056,
+    "iou": 0.1692,
+    "mapped_share": 0.107
+   },
+   "circle200": {
+    "acc": 0.6861,
+    "iou": 0.3197,
+    "mapped_share": 0.208
+   },
+   "circle_eqarea": {
+    "acc": 0.7314,
+    "iou": 0.4082,
+    "mapped_share": 0.283
+   },
+   "constrained": {
+    "acc": 0.7045,
+    "iou": 0.3528,
+    "mapped_share": 0.236
+   }
+  },
+  "extent_true_share_burned": 0.487,
+  "extent_diff_iou_union_rot_vs_circle200_95": [
+   0.0811,
+   0.1138
+  ],
+  "extent_diff_acc_union_rot_vs_circle200_95": [
+   0.041,
+   0.0631
+  ]
+ },
+ "1c_reconstruction": {
+  "photos": 212,
+  "photos_look_before_and_after": 126,
+  "acc": {
+   "points": 0.782,
+   "blocks_axis": 0.7806,
+   "blocks_rot": 0.7807,
+   "blocks_half": 0.7827
+  },
+  "acc_ties_mean": {
+   "points": 0.782,
+   "blocks_axis": 0.7812,
+   "blocks_rot": 0.7816,
+   "blocks_half": 0.7827
+  },
+  "acc_both_sides": {
+   "points": 0.8055,
+   "blocks_axis": 0.8031,
+   "blocks_rot": 0.8034,
+   "blocks_half": 0.8067
+  },
+  "diff_rot_vs_points_95": [
+   -0.0045,
+   0.002
+  ],
+  "diff_rot_vs_axis_95": [
+   -0.0011,
+   0.0013
+  ],
+  "diff_half_vs_points_95": [
+   -0.0009,
+   0.0024
+  ]
+ }
+}

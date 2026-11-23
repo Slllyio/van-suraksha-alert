@@ -1,0 +1,26 @@
+{
+ "v1_strict": {
+  "positives": 11292,
+  "lean_clf": 38.94,
+  "lean_ensemble": 40.1,
+  "random": 18.84
+ },
+ "v1_lenient": {
+  "positives": 77454,
+  "lean_clf": 31.68,
+  "lean_ensemble": 32.38,
+  "random": 17.84
+ },
+ "v2_strict": {
+  "positives": 11285,
+  "lean_clf": 39.52,
+  "lean_ensemble": 40.74,
+  "random": 19.98
+ },
+ "v2_lenient": {
+  "positives": 77447,
+  "lean_clf": 31.85,
+  "lean_ensemble": 32.55,
+  "random": 17.95
+ }
+}

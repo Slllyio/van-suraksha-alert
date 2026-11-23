@@ -1,0 +1,67 @@
+{
+ "fires": 2000,
+ "forecasts": 6187,
+ "skipped": {},
+ "mean_by_fire": {
+  "rule": 0.4567,
+  "learned": 0.4615,
+  "oracle": 0.5057,
+  "blocks_only": 0.4194
+ },
+ "median_forecast": {
+  "rule": 0.4802,
+  "learned": 0.4964,
+  "oracle": 0.5354
+ },
+ "learned_minus_rule_ci": [
+  0.0024,
+  0.007
+ ],
+ "better_worse": [
+  1037,
+  736
+ ],
+ "median_ha": {
+  "rule": 24.1,
+  "learned": 79.3774216664263,
+  "true": 98.0
+ },
+ "by_year": {
+  "2017": {
+   "rule": 0.409,
+   "learned": 0.435
+  },
+  "2018": {
+   "rule": 0.475,
+   "learned": 0.503
+  },
+  "2019": {
+   "rule": 0.474,
+   "learned": 0.493
+  },
+  "2020": {
+   "rule": 0.459,
+   "learned": 0.476
+  },
+  "2021": {
+   "rule": 0.461,
+   "learned": 0.469
+  },
+  "2022": {
+   "rule": 0.46,
+   "learned": 0.482
+  },
+  "2023": {
+   "rule": 0.45,
+   "learned": 0.458
+  },
+  "2024": {
+   "rule": 0.468,
+   "learned": 0.475
+  },
+  "2025": {
+   "rule": 0.472,
+   "learned": 0.479
+  }
+ }
+}

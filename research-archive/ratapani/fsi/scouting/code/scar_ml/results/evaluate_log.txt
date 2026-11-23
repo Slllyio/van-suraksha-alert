@@ -1,0 +1,95 @@
+  method  real_chips  real_mapped  real_contrast_med  fresh_contrast_med  fresh_darker5  decoys  decoy_with_scar  decoy_ha_mean  decoy_scar_contrast_med  real_vs_decoy_auc
+0   rule         248        0.988              8.596               9.889          0.852     134            0.067          0.619                    5.983              0.918
+1     v2         248        0.992              8.619               9.417          0.824       0              NaN            NaN                      NaN                NaN
+2  b_abs         248        1.000              8.837               9.471          0.796     134            0.216          1.307                    4.435              0.883
+3   b_nc         248        0.992              8.328               9.129          0.769     134            0.142          0.471                    8.023              0.885
+4  ml_pu         248        0.992              8.180               9.323          0.769     134            0.037          0.184                   12.602              0.919
+5  ml_pn         248        1.000              8.197               9.209          0.787     134            0.052          0.212                   14.099              0.919
+6  ml_af         248        0.980              6.628               7.210          0.667     134            0.022          0.234                   14.087              0.837
+7  combo         248        1.000              8.706              10.330          0.833     134            0.104          0.708                   12.335              0.900
+         subset  chips method  mapped_ha  est_burned_ha  precision  recall  area_bias     f1
+0     all fresh     83   rule    2704.92       2628.019      0.972   0.842      0.867  0.902
+1     all fresh     83     v2    2556.24       2468.875      0.966   0.791      0.819  0.870
+2     all fresh     83  b_abs    2650.92       2496.150      0.942   0.800      0.849  0.865
+3     all fresh     83   b_nc    2264.24       2259.113      0.998   0.724      0.726  0.839
+4     all fresh     83  ml_pu    2259.48       2254.970      0.998   0.723      0.724  0.838
+5     all fresh     83  ml_pn    2419.16       2373.959      0.981   0.761      0.775  0.857
+6     all fresh     83  ml_af    2121.68       1901.496      0.896   0.609      0.680  0.725
+7     all fresh     83  combo    2808.56       2706.242      0.964   0.867      0.900  0.913
+8    v2 < 20 ha     30   rule     482.24        467.676      0.970   0.687      0.708  0.804
+9    v2 < 20 ha     30     v2     346.16        333.156      0.962   0.489      0.508  0.649
+10   v2 < 20 ha     30  b_abs     540.20        462.453      0.856   0.679      0.793  0.757
+11   v2 < 20 ha     30   b_nc     361.56        357.521      0.989   0.525      0.531  0.686
+12   v2 < 20 ha     30  ml_pu     355.48        353.844      0.995   0.520      0.522  0.683
+13   v2 < 20 ha     30  ml_pn     396.52        385.331      0.972   0.566      0.582  0.715
+14   v2 < 20 ha     30  ml_af     366.32        289.920      0.791   0.426      0.538  0.554
+15   v2 < 20 ha     30  combo     526.48        504.071      0.957   0.740      0.773  0.835
+16  v2 >= 20 ha     53   rule    2222.68       2160.343      0.972   0.885      0.911  0.927
+17  v2 >= 20 ha     53     v2    2210.08       2135.719      0.966   0.875      0.906  0.919
+18  v2 >= 20 ha     53  b_abs    2110.72       2033.698      0.964   0.834      0.865  0.894
+19  v2 >= 20 ha     53   b_nc    1902.68       1901.591      0.999   0.779      0.780  0.876
+20  v2 >= 20 ha     53  ml_pu    1904.00       1901.125      0.998   0.779      0.780  0.875
+21  v2 >= 20 ha     53  ml_pn    2022.64       1988.628      0.983   0.815      0.829  0.891
+22  v2 >= 20 ha     53  ml_af    1755.36       1611.576      0.918   0.661      0.719  0.768
+23  v2 >= 20 ha     53  combo    2282.08       2202.171      0.965   0.903      0.935  0.933
+{'pu_not_rule': {'ha': 41.160000000000004, 'p_area_weighted': 0.9095433095677031}, 'rule_not_pu': {'ha': 486.59999999999997, 'p_area_weighted': 0.8448101539888128}, 'pu_not_v2': {'ha': 126.52, 'p_area_weighted': 0.9598604841495273}, 'v2_not_pu': {'ha': 423.28000000000003, 'p_area_weighted': 0.797206722703763}}
+          kind method  chips  af_pixels_covered  clusters_touched  chip_ha_median
+0     af_firms  b_abs     90              0.937             0.967          285.84
+1     af_firms   b_nc     90              0.571             0.656           99.96
+2     af_firms  combo     90              0.837             0.889          204.76
+3     af_firms  ml_af     90              0.891             0.922          252.84
+4     af_firms  ml_pn     90              0.709             0.800          143.24
+5     af_firms  ml_pu     90              0.568             0.656           98.80
+6     af_firms   rule     90              0.767             0.789          191.58
+7   af_nofirms  b_abs     90              0.791             0.811          114.20
+8   af_nofirms   b_nc     90              0.675             0.722           52.68
+9   af_nofirms  combo     90              0.796             0.822           79.78
+10  af_nofirms  ml_af     90              0.868             0.900           80.32
+11  af_nofirms  ml_pn     90              0.754             0.800           58.80
+12  af_nofirms  ml_pu     90              0.680             0.733           50.24
+13  af_nofirms   rule     90              0.468             0.489           62.22
+                                                     method  pixels  chips  median_abs_err_days  within_2d  window_median_days  window_holds_viirs_day
+0  per-pixel first persistent drop (midpoint of its window)   98159    336                  1.5      0.666                 5.0                   0.811
+1        per-pixel, upper end (first look showing the drop)   98159    336                  4.0      0.376                 5.0                   0.811
+2          current: image-pair window (pre, post], midpoint   98159    336                  1.0      0.698                 5.0                   0.857
+3      current: alert day of the chip event for every pixel   98159    336                  1.0      0.817                 0.0                   0.479
+{'photos': 171, 'pixels': 255938, 'burned_by_photo': 0.43840305073885083, 'dated': 0.9390633669091734, 'decided': 0.07274027303487564, 'acc_decided': 0.4478165117902992, 'auc_perpixel_dated': 0.5312363636254671, 'auc_viirs_distance_same_pixels': 0.8665684568631107, 'auc_viirs_distance_all': 0.8645289474417746, 'auc_combined_all': 0.7915700520150633, 'acc_viirs_400m_all': 0.8022724253530151}
+                         subset score   pos    neg    auc     lo     hi
+0  fire pixels, no FIRMS nearby  dnbr   752  26800  0.972  0.944  0.987
+1  fire pixels, no FIRMS nearby   rdn   752  26800  0.971  0.955  0.985
+2  fire pixels, no FIRMS nearby  p_pu   752  26800  0.982  0.972  0.990
+3  fire pixels, no FIRMS nearby  p_pn   752  26800  0.989  0.978  0.995
+4  fire pixels, no FIRMS nearby  p_af   752  26800  0.996  0.991  0.999
+5     fire pixels, FIRMS nearby  dnbr  1395  26800  0.992  0.986  0.996
+6     fire pixels, FIRMS nearby   rdn  1395  26800  0.927  0.894  0.968
+7     fire pixels, FIRMS nearby  p_pu  1395  26800  0.956  0.922  0.990
+8     fire pixels, FIRMS nearby  p_pn  1395  26800  0.992  0.985  0.996
+9     fire pixels, FIRMS nearby  p_af  1395  26800  0.999  0.998  1.000
+                                        metric method  value     lo     hi
+0                           decoys with a scar   rule  0.067  0.030  0.112
+1   af_nofirms fire pixels covered (chip mean)   rule  0.468  0.371  0.567
+2     af_firms fire pixels covered (chip mean)   rule  0.767  0.680  0.843
+3                           decoys with a scar  b_abs  0.216  0.149  0.284
+4   af_nofirms fire pixels covered (chip mean)  b_abs  0.791  0.712  0.869
+5     af_firms fire pixels covered (chip mean)  b_abs  0.937  0.891  0.979
+6                           decoys with a scar   b_nc  0.142  0.082  0.201
+7   af_nofirms fire pixels covered (chip mean)   b_nc  0.675  0.581  0.762
+8     af_firms fire pixels covered (chip mean)   b_nc  0.571  0.474  0.662
+9                           decoys with a scar  ml_pu  0.037  0.007  0.075
+10  af_nofirms fire pixels covered (chip mean)  ml_pu  0.680  0.588  0.765
+11    af_firms fire pixels covered (chip mean)  ml_pu  0.568  0.473  0.666
+12                          decoys with a scar  ml_pn  0.052  0.015  0.097
+13  af_nofirms fire pixels covered (chip mean)  ml_pn  0.754  0.667  0.840
+14    af_firms fire pixels covered (chip mean)  ml_pn  0.709  0.624  0.793
+15                          decoys with a scar  ml_af  0.022  0.000  0.052
+16  af_nofirms fire pixels covered (chip mean)  ml_af  0.868  0.800  0.929
+17    af_firms fire pixels covered (chip mean)  ml_af  0.891  0.826  0.946
+18                          decoys with a scar  combo  0.104  0.052  0.157
+19  af_nofirms fire pixels covered (chip mean)  combo  0.796  0.713  0.872
+20    af_firms fire pixels covered (chip mean)  combo  0.837  0.762  0.902
+21            Wayback recall minus rule recall  ml_pn -0.081 -0.128 -0.040
+22            Wayback recall minus rule recall  ml_pu -0.120 -0.165 -0.079
+23            Wayback recall minus rule recall  ml_af -0.233 -0.301 -0.171
+24            Wayback recall minus rule recall  b_abs -0.042 -0.093  0.006
+25            Wayback recall minus rule recall     v2 -0.051 -0.090 -0.017
+26            Wayback recall minus rule recall  combo  0.025  0.011  0.045

@@ -1,0 +1,19 @@
+pair,dir,n,dE,dE_ci,dN,dN_ci
+NOAA-20>NOAA-20,day>night,2192,-98.7,-154 to -38,131.8,102 to 158
+NOAA-20>NOAA-20,night>day,2277,116.3,75 to 156,-131.0,-158 to -99
+NOAA-20>NOAA-21,day>night,1062,-130.8,-154 to -94,21.8,-13 to 44
+NOAA-20>NOAA-21,night>day,999,21.5,-19 to 48,-95.1,-117 to -62
+NOAA-20>S-NPP,day>night,2005,-108.4,-169 to -44,56.9,22 to 85
+NOAA-20>S-NPP,night>day,1934,73.4,34 to 108,-62.3,-90 to -32
+NOAA-21>NOAA-20,day>night,982,-43.5,-64 to -10,99.4,52 to 130
+NOAA-21>NOAA-20,night>day,1019,114.4,72 to 138,-15.4,-39 to 26
+NOAA-21>NOAA-21,day>night,1118,-6.5,-31 to 16,-28.3,-61 to -7
+NOAA-21>NOAA-21,night>day,1131,23.9,6 to 49,25.7,6 to 56
+NOAA-21>S-NPP,day>night,921,-38.5,-70 to -13,35.1,-17 to 67
+NOAA-21>S-NPP,night>day,891,69.2,38 to 86,65.4,38 to 120
+S-NPP>NOAA-20,day>night,1960,-79.1,-140 to -21,57.6,24 to 89
+S-NPP>NOAA-20,night>day,2000,96.0,52 to 127,-56.5,-89 to -21
+S-NPP>NOAA-21,day>night,895,-63.6,-89 to -15,-57.9,-110 to -32
+S-NPP>NOAA-21,night>day,910,38.3,3 to 80,-38.7,-67 to 3
+S-NPP>S-NPP,day>night,2314,-45.2,-90 to -5,-29.6,-60 to -2
+S-NPP>S-NPP,night>day,2377,63.1,32 to 87,21.4,-8 to 53

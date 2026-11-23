@@ -1,0 +1,35 @@
+{
+ "hotpix_bracket_fit": {
+  "looks": 740,
+  "fires": 286,
+  "offset_o_m": -119.4,
+  "offset_ci": [
+   -181.7,
+   -52.4
+  ],
+  "clock_mean_speed_m_h": 21.2,
+  "speed_ci": [
+   10.5,
+   31.6
+  ],
+  "implied_13_30_speed_m_h": 42.0,
+  "implied_13_30_ci": [
+   20.8,
+   62.6
+  ],
+  "implied_01_30_speed_m_h": 7.6,
+  "note": "multipliers 1.98 (13:30) and 0.36 (01:30) are the pooled forest curve; only its SHAPE is assumed"
+ },
+ "ecostress_same_hour": {
+  "passes": 11,
+  "fires": 11,
+  "mean_offset_m": -28.6,
+  "ci": [
+   -132.6,
+   75.9
+  ],
+  "median_offset_m": -75.7,
+  "share_viirs_behind": 0.64,
+  "mean_perp_m": 166.8
+ }
+}

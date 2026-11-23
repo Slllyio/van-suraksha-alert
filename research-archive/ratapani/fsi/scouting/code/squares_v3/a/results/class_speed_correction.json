@@ -1,0 +1,19 @@
+{
+ "day_factor": 0.967,
+ "night_factor": 1.942,
+ "day_m_h": 29.7,
+ "night_m_h": 10.1,
+ "ci": {
+  "day": [
+   26.5,
+   32.6
+  ],
+  "night": [
+   7.7,
+   12.4
+  ]
+ },
+ "v2_day_m_h": 30.7,
+ "v2_night_m_h": 5.2,
+ "note": "Pooled outward centre speed of all MP VIIRS small-gap fire pairs after removing the edge-reach (pixel size), noise-coupling, view-angle and sensor-order terms (coefficients fitted on the other season half). Per-pair term: edge_term_by_pair.parquet (pair_row = pairs.parquet row; subtract edge_m from the clipped p_out). The night factor is large because v2 night was small; absolute night CI is ~8-12 m/h. Centre speed, not front speed."
+}

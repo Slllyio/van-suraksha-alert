@@ -1,0 +1,28 @@
+{
+ "issues": 2246,
+ "fires": 818,
+ "rule": 0.4771,
+ "weighted": 0.4711,
+ "weighted_active": 0.4709,
+ "weighted_minus_rule_ci": [
+  -0.0028,
+  -0.0021
+ ],
+ "weighted_better/worse": [
+  13,
+  169
+ ],
+ "weighted_active_minus_rule_ci": [
+  -0.0031,
+  -0.0023
+ ],
+ "weighted_active_better/worse": [
+  13,
+  181
+ ],
+ "mean_fronts_rule_vs_weighted_all_vs_weighted_active": [
+  1.39,
+  1.25,
+  1.22
+ ]
+}

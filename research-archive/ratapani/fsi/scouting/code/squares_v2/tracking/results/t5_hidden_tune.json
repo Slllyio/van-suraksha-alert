@@ -1,0 +1,420 @@
+{
+ "base | idw2": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6288,
+  "logloss_node": 0.4233,
+  "auc_pass": 0.7231,
+  "brier_pass": 0.4262
+ },
+ "base | idw4": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6327,
+  "logloss_node": 0.4168,
+  "auc_pass": 0.6992,
+  "brier_pass": 0.3902
+ },
+ "base | inversion": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.5978,
+  "logloss_node": 0.4507,
+  "auc_pass": 0.6533,
+  "brier_pass": 0.3856
+ },
+ "base | kernel": {
+  "hidden_passes": 64,
+  "fires": 32,
+  "auc_node_mean": 0.7252,
+  "logloss_node": NaN
+ },
+ "base | nearest": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6199,
+  "logloss_node": 0.4493,
+  "auc_pass": 0.689,
+  "brier_pass": 0.4306
+ },
+ "{\"clock\": false} | idw2": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6288,
+  "logloss_node": 0.4233,
+  "auc_pass": 0.7231,
+  "brier_pass": 0.4262
+ },
+ "{\"clock\": false} | idw4": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6327,
+  "logloss_node": 0.4168,
+  "auc_pass": 0.6992,
+  "brier_pass": 0.3902
+ },
+ "{\"clock\": false} | inversion": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6155,
+  "logloss_node": 0.4208,
+  "auc_pass": 0.6328,
+  "brier_pass": 0.3736
+ },
+ "{\"clock\": false} | kernel": {
+  "hidden_passes": 64,
+  "fires": 32,
+  "auc_node_mean": 0.7252,
+  "logloss_node": NaN
+ },
+ "{\"clock\": false} | nearest": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6199,
+  "logloss_node": 0.4493,
+  "auc_pass": 0.689,
+  "brier_pass": 0.4306
+ },
+ "{\"geo\": 160.0} | idw2": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6472,
+  "logloss_node": 0.3298,
+  "auc_pass": 0.7231,
+  "brier_pass": 0.4262
+ },
+ "{\"geo\": 160.0} | idw4": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6501,
+  "logloss_node": 0.3252,
+  "auc_pass": 0.6992,
+  "brier_pass": 0.3902
+ },
+ "{\"geo\": 160.0} | inversion": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6233,
+  "logloss_node": 0.339,
+  "auc_pass": 0.6826,
+  "brier_pass": 0.3692
+ },
+ "{\"geo\": 160.0} | kernel": {
+  "hidden_passes": 64,
+  "fires": 32,
+  "auc_node_mean": 0.751,
+  "logloss_node": NaN
+ },
+ "{\"geo\": 160.0} | nearest": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6376,
+  "logloss_node": 0.3523,
+  "auc_pass": 0.689,
+  "brier_pass": 0.4306
+ },
+ "{\"lam_d\": 0.02, \"lam_n\": 0.0125} | idw2": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6299,
+  "logloss_node": 0.431,
+  "auc_pass": 0.7317,
+  "brier_pass": 0.482
+ },
+ "{\"lam_d\": 0.02, \"lam_n\": 0.0125} | idw4": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6379,
+  "logloss_node": 0.4175,
+  "auc_pass": 0.7222,
+  "brier_pass": 0.44
+ },
+ "{\"lam_d\": 0.02, \"lam_n\": 0.0125} | inversion": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6186,
+  "logloss_node": 0.4521,
+  "auc_pass": 0.6826,
+  "brier_pass": 0.4557
+ },
+ "{\"lam_d\": 0.02, \"lam_n\": 0.0125} | kernel": {
+  "hidden_passes": 64,
+  "fires": 32,
+  "auc_node_mean": 0.7252,
+  "logloss_node": NaN
+ },
+ "{\"lam_d\": 0.02, \"lam_n\": 0.0125} | nearest": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.626,
+  "logloss_node": 0.4337,
+  "auc_pass": 0.6836,
+  "brier_pass": 0.4494
+ },
+ "{\"lam_d\": 0.3, \"lam_n\": 0.18} | idw2": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6258,
+  "logloss_node": 0.4298,
+  "auc_pass": 0.7275,
+  "brier_pass": 0.3974
+ },
+ "{\"lam_d\": 0.3, \"lam_n\": 0.18} | idw4": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6274,
+  "logloss_node": 0.4326,
+  "auc_pass": 0.7009,
+  "brier_pass": 0.3713
+ },
+ "{\"lam_d\": 0.3, \"lam_n\": 0.18} | inversion": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.5841,
+  "logloss_node": 0.4411,
+  "auc_pass": 0.6609,
+  "brier_pass": 0.3442
+ },
+ "{\"lam_d\": 0.3, \"lam_n\": 0.18} | kernel": {
+  "hidden_passes": 64,
+  "fires": 32,
+  "auc_node_mean": 0.7252,
+  "logloss_node": NaN
+ },
+ "{\"lam_d\": 0.3, \"lam_n\": 0.18} | nearest": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6147,
+  "logloss_node": 0.4752,
+  "auc_pass": 0.6875,
+  "brier_pass": 0.4272
+ },
+ "{\"q_d\": 0.45, \"q_n\": 0.3} | idw2": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6306,
+  "logloss_node": 0.4206,
+  "auc_pass": 0.7241,
+  "brier_pass": 0.4776
+ },
+ "{\"q_d\": 0.45, \"q_n\": 0.3} | idw4": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6333,
+  "logloss_node": 0.4119,
+  "auc_pass": 0.7021,
+  "brier_pass": 0.4455
+ },
+ "{\"q_d\": 0.45, \"q_n\": 0.3} | inversion": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.5961,
+  "logloss_node": 0.4294,
+  "auc_pass": 0.6611,
+  "brier_pass": 0.4328
+ },
+ "{\"q_d\": 0.45, \"q_n\": 0.3} | kernel": {
+  "hidden_passes": 64,
+  "fires": 32,
+  "auc_node_mean": 0.7252,
+  "logloss_node": NaN
+ },
+ "{\"q_d\": 0.45, \"q_n\": 0.3} | nearest": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6211,
+  "logloss_node": 0.4377,
+  "auc_pass": 0.6885,
+  "brier_pass": 0.4722
+ },
+ "{\"q_d\": 0.85, \"q_n\": 0.7} | idw2": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.628,
+  "logloss_node": 0.4411,
+  "auc_pass": 0.7256,
+  "brier_pass": 0.3725
+ },
+ "{\"q_d\": 0.85, \"q_n\": 0.7} | idw4": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6304,
+  "logloss_node": 0.4391,
+  "auc_pass": 0.709,
+  "brier_pass": 0.3395
+ },
+ "{\"q_d\": 0.85, \"q_n\": 0.7} | inversion": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.5941,
+  "logloss_node": 0.4314,
+  "auc_pass": 0.6348,
+  "brier_pass": 0.3456
+ },
+ "{\"q_d\": 0.85, \"q_n\": 0.7} | kernel": {
+  "hidden_passes": 64,
+  "fires": 32,
+  "auc_node_mean": 0.7252,
+  "logloss_node": NaN
+ },
+ "{\"q_d\": 0.85, \"q_n\": 0.7} | nearest": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6189,
+  "logloss_node": 0.4875,
+  "auc_pass": 0.689,
+  "brier_pass": 0.3999
+ },
+ "{\"tau\": 1.5} | idw2": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6288,
+  "logloss_node": 0.4297,
+  "auc_pass": 0.7327,
+  "brier_pass": 0.4527
+ },
+ "{\"tau\": 1.5} | idw4": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6374,
+  "logloss_node": 0.4152,
+  "auc_pass": 0.7192,
+  "brier_pass": 0.4091
+ },
+ "{\"tau\": 1.5} | inversion": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6188,
+  "logloss_node": 0.4536,
+  "auc_pass": 0.6655,
+  "brier_pass": 0.4154
+ },
+ "{\"tau\": 1.5} | kernel": {
+  "hidden_passes": 64,
+  "fires": 32,
+  "auc_node_mean": 0.7252,
+  "logloss_node": NaN
+ },
+ "{\"tau\": 1.5} | nearest": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6248,
+  "logloss_node": 0.4404,
+  "auc_pass": 0.6885,
+  "brier_pass": 0.4375
+ },
+ "{\"tau\": 6.0} | idw2": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6222,
+  "logloss_node": 0.421,
+  "auc_pass": 0.731,
+  "brier_pass": 0.3983
+ },
+ "{\"tau\": 6.0} | idw4": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.624,
+  "logloss_node": 0.4201,
+  "auc_pass": 0.7036,
+  "brier_pass": 0.3782
+ },
+ "{\"tau\": 6.0} | inversion": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6033,
+  "logloss_node": 0.4399,
+  "auc_pass": 0.6499,
+  "brier_pass": 0.3523
+ },
+ "{\"tau\": 6.0} | kernel": {
+  "hidden_passes": 64,
+  "fires": 32,
+  "auc_node_mean": 0.7252,
+  "logloss_node": NaN
+ },
+ "{\"tau\": 6.0} | nearest": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6095,
+  "logloss_node": 0.4542,
+  "auc_pass": 0.6909,
+  "brier_pass": 0.4289
+ },
+ "{\"v0\": 8.0} | idw2": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6288,
+  "logloss_node": 0.4233,
+  "auc_pass": 0.7231,
+  "brier_pass": 0.4262
+ },
+ "{\"v0\": 8.0} | idw4": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6327,
+  "logloss_node": 0.4168,
+  "auc_pass": 0.6992,
+  "brier_pass": 0.3902
+ },
+ "{\"v0\": 8.0} | inversion": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.556,
+  "logloss_node": 0.4715,
+  "auc_pass": 0.5957,
+  "brier_pass": 0.4341
+ },
+ "{\"v0\": 8.0} | kernel": {
+  "hidden_passes": 64,
+  "fires": 32,
+  "auc_node_mean": 0.7252,
+  "logloss_node": NaN
+ },
+ "{\"v0\": 8.0} | nearest": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6199,
+  "logloss_node": 0.4493,
+  "auc_pass": 0.689,
+  "brier_pass": 0.4306
+ },
+ "{\"w_neg\": 0.3} | idw2": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6288,
+  "logloss_node": 0.4233,
+  "auc_pass": 0.7231,
+  "brier_pass": 0.4262
+ },
+ "{\"w_neg\": 0.3} | idw4": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6327,
+  "logloss_node": 0.4168,
+  "auc_pass": 0.6992,
+  "brier_pass": 0.3902
+ },
+ "{\"w_neg\": 0.3} | inversion": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.599,
+  "logloss_node": 0.4488,
+  "auc_pass": 0.6836,
+  "brier_pass": 0.3669
+ },
+ "{\"w_neg\": 0.3} | kernel": {
+  "hidden_passes": 64,
+  "fires": 32,
+  "auc_node_mean": 0.7252,
+  "logloss_node": NaN
+ },
+ "{\"w_neg\": 0.3} | nearest": {
+  "hidden_passes": 96,
+  "fires": 32,
+  "auc_node_mean": 0.6199,
+  "logloss_node": 0.4493,
+  "auc_pass": 0.689,
+  "brier_pass": 0.4306
+ }
+}

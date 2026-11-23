@@ -1,0 +1,26 @@
+{
+ "issues": 2246,
+ "fires": 818,
+ "centre": 0.4771,
+ "out_fire": 0.4437,
+ "out_fire_minus_centre_ci": [
+  -0.0297,
+  -0.026
+ ],
+ "out_fire_better_fires": 35,
+ "out_fire_worse_fires": 672,
+ "out_latest": 0.4524,
+ "out_latest_minus_centre_ci": [
+  -0.0217,
+  -0.0188
+ ],
+ "out_latest_better_fires": 64,
+ "out_latest_worse_fires": 634,
+ "hull_edge": 0.4557,
+ "hull_edge_minus_centre_ci": [
+  -0.0137,
+  -0.0115
+ ],
+ "hull_edge_better_fires": 58,
+ "hull_edge_worse_fires": 513
+}

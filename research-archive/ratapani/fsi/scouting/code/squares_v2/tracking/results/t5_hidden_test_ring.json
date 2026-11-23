@@ -1,0 +1,40 @@
+{
+ "ring | idw2": {
+  "hidden_passes": 240,
+  "fires": 80,
+  "auc_node_mean": 0.6764,
+  "logloss_node": 0.2784,
+  "auc_pass": 0.7618,
+  "brier_pass": 0.5054
+ },
+ "ring | idw4": {
+  "hidden_passes": 240,
+  "fires": 80,
+  "auc_node_mean": 0.6837,
+  "logloss_node": 0.2457,
+  "auc_pass": 0.798,
+  "brier_pass": 0.436
+ },
+ "ring | inversion": {
+  "hidden_passes": 240,
+  "fires": 80,
+  "auc_node_mean": 0.6869,
+  "logloss_node": 0.2437,
+  "auc_pass": 0.7979,
+  "brier_pass": 0.4239
+ },
+ "ring | kernel": {
+  "hidden_passes": 160,
+  "fires": 80,
+  "auc_node_mean": 0.836,
+  "logloss_node": NaN
+ },
+ "ring | nearest": {
+  "hidden_passes": 240,
+  "fires": 80,
+  "auc_node_mean": 0.7008,
+  "logloss_node": 0.2492,
+  "auc_pass": 0.7987,
+  "brier_pass": 0.4083
+ }
+}

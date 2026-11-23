@@ -1,0 +1,47 @@
+{
+ "sites": 40,
+ "passes_per_half_median": 231.5,
+ "half_vs_half_median_m": {
+  "centre": 18.1,
+  "median": 17.8,
+  "drizzle": 15.6
+ },
+ "drizzle_minus_centre_median_m": 0.0,
+ "drizzle_closer_share": 0.45,
+ "by_N": {
+  "1": {
+   "centre": 198.5,
+   "median": 198.5,
+   "drizzle": 199.0
+  },
+  "2": {
+   "centre": 144.8,
+   "median": 144.8,
+   "drizzle": 139.0
+  },
+  "4": {
+   "centre": 103.1,
+   "median": 118.1,
+   "drizzle": 87.3
+  },
+  "8": {
+   "centre": 72.0,
+   "median": 87.5,
+   "drizzle": 59.1
+  },
+  "16": {
+   "centre": 56.0,
+   "median": 73.1,
+   "drizzle": 48.6
+  },
+  "32": {
+   "centre": 37.0,
+   "median": 49.8,
+   "drizzle": 33.7
+  }
+ },
+ "drizzle_minus_centre_ci": [
+  -4.9,
+  0.0
+ ]
+}

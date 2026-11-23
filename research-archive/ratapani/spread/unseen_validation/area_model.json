@@ -1,0 +1,65 @@
+{
+ "issues": 2246,
+ "fires": 818,
+ "overlap_mean_by_fire": {
+  "s_rule": 0.4472,
+  "s_oracle": 0.4985,
+  "s_mean": 0.4599,
+  "s_q50": 0.4597,
+  "s_q60": 0.4577,
+  "s_q70": 0.4521,
+  "s_q80": 0.4419,
+  "s_q90": 0.4201,
+  "s_rule_scaled": 0.4523
+ },
+ "overlap_median_issue": {
+  "s_rule": 0.4771,
+  "s_oracle": 0.5323,
+  "s_mean": 0.4942,
+  "s_q50": 0.4938,
+  "s_q60": 0.4934,
+  "s_q70": 0.4905,
+  "s_q80": 0.4795,
+  "s_q90": 0.461,
+  "s_rule_scaled": 0.4841
+ },
+ "best": "s_mean",
+ "s_mean_minus_rule_ci": [
+  0.01,
+  0.0154
+ ],
+ "s_mean_better/worse": [
+  456,
+  238
+ ],
+ "s_rule_scaled_minus_rule_ci": [
+  0.0014,
+  0.0087
+ ],
+ "s_rule_scaled_better/worse": [
+  462,
+  297
+ ],
+ "s_oracle_minus_rule_ci": [
+  0.0473,
+  0.0553
+ ],
+ "s_oracle_better/worse": [
+  662,
+  40
+ ],
+ "area_rank_corr": {
+  "rule": 0.447,
+  "mean": 0.553,
+  "q50": 0.554,
+  "q70": 0.517
+ },
+ "median_ha": {
+  "rule": 24.1,
+  "mean": 60.8,
+  "q50": 61.5,
+  "q70": 97.8,
+  "q90": 178.1,
+  "true": 75.8
+ }
+}

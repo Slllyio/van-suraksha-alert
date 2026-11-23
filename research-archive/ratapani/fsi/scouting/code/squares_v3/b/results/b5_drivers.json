@@ -1,0 +1,262 @@
+{
+ "tier1_all_MP": {
+  "terrain (slope, elevation)": {
+   "fires": 78999,
+   "heldout_r2_true": 0.005,
+   "ci": [
+    0.003,
+    0.007
+   ],
+   "coef_per_sd": {
+    "slope": 0.069,
+    "elev": -0.03
+   },
+   "mean_reliability": 0.0265
+  },
+  "place (lat, lon)": {
+   "fires": 78999,
+   "heldout_r2_true": 0.004,
+   "ci": [
+    0.003,
+    0.006
+   ],
+   "coef_per_sd": {
+    "lat": 0.0,
+    "lon": -0.027
+   },
+   "mean_reliability": 0.0265
+  },
+  "fire extent (pairs, largest look)": {
+   "fires": 78999,
+   "heldout_r2_true": 0.016,
+   "ci": [
+    0.012,
+    0.019
+   ],
+   "coef_per_sd": {
+    "n_pairs": 0.166,
+    "max_pix": 0.052
+   },
+   "mean_reliability": 0.0265
+  },
+  "timing (night share, month)": {
+   "fires": 78999,
+   "heldout_r2_true": 0.005,
+   "ci": [
+    0.003,
+    0.007
+   ],
+   "coef_per_sd": {
+    "night_share": 0.063,
+    "month": -0.007
+   },
+   "mean_reliability": 0.0265
+  },
+  "class inputs again (forest/farm/grass share, FRP, age)": {
+   "fires": 78999,
+   "heldout_r2_true": 0.009,
+   "ci": [
+    0.006,
+    0.011
+   ],
+   "coef_per_sd": {
+    "forest": 0.109,
+    "farm": 0.028,
+    "grass": 0.007,
+    "frp": 0.104,
+    "age": -0.067
+   },
+   "mean_reliability": 0.0265
+  },
+  "distance from earlier detections": {
+   "fires": 78999,
+   "heldout_r2_true": 0.005,
+   "ci": [
+    0.003,
+    0.007
+   ],
+   "coef_per_sd": {
+    "u_len": -0.048
+   },
+   "mean_reliability": 0.0265
+  },
+  "all together": {
+   "fires": 78999,
+   "heldout_r2_true": 0.019,
+   "ci": [
+    0.015,
+    0.022
+   ],
+   "coef_per_sd": {
+    "slope": 0.044,
+    "elev": -0.01,
+    "lat": -0.005,
+    "lon": -0.027,
+    "n_pairs": 0.172,
+    "max_pix": 0.013,
+    "night_share": 0.044,
+    "month": -0.0,
+    "forest": 0.094,
+    "farm": 0.03,
+    "grass": 0.004,
+    "frp": 0.073,
+    "age": -0.079,
+    "u_len": -0.036
+   },
+   "mean_reliability": 0.0265
+  }
+ },
+ "tier2_ratapani": {
+  "fuel load": {
+   "fires": 786,
+   "heldout_r2_true": -0.087,
+   "ci": [
+    -1.417,
+    1.568
+   ],
+   "coef_per_sd": {
+    "fuel": -0.079
+   },
+   "mean_reliability": 0.0474
+  },
+  "grass share": {
+   "fires": 786,
+   "heldout_r2_true": -0.075,
+   "ci": [
+    -1.009,
+    0.595
+   ],
+   "coef_per_sd": {
+    "grass": 0.061
+   },
+   "mean_reliability": 0.0474
+  },
+  "canopy cover": {
+   "fires": 788,
+   "heldout_r2_true": -0.072,
+   "ci": [
+    -1.14,
+    0.787
+   ],
+   "coef_per_sd": {
+    "canopy": -0.034
+   },
+   "mean_reliability": 0.0473
+  },
+  "teak probability": {
+   "fires": 786,
+   "heldout_r2_true": -0.042,
+   "ci": [
+    -0.857,
+    0.814
+   ],
+   "coef_per_sd": {
+    "teak": -0.029
+   },
+   "mean_reliability": 0.0474
+  },
+  "earlier burns": {
+   "fires": 786,
+   "heldout_r2_true": 0.016,
+   "ci": [
+    -1.234,
+    1.138
+   ],
+   "coef_per_sd": {
+    "burn_freq": 0.108
+   },
+   "mean_reliability": 0.0474
+  },
+  "slope (20 m)": {
+   "fires": 790,
+   "heldout_r2_true": -0.046,
+   "ci": [
+    -1.066,
+    1.081
+   ],
+   "coef_per_sd": {
+    "slope20": 0.001
+   },
+   "mean_reliability": 0.0473
+  },
+  "dryness (days since rain, RH)": {
+   "fires": 542,
+   "heldout_r2_true": 0.023,
+   "ci": [
+    -1.046,
+    0.982
+   ],
+   "coef_per_sd": {
+    "days_since_rain": 0.008,
+    "rh": 0.137
+   },
+   "mean_reliability": 0.0475
+  },
+  "weather (temperature, wind)": {
+   "fires": 542,
+   "heldout_r2_true": 0.032,
+   "ci": [
+    -1.315,
+    1.722
+   ],
+   "coef_per_sd": {
+    "temp": 0.077,
+    "wind": -0.075
+   },
+   "mean_reliability": 0.0475
+  },
+  "final scar size": {
+   "fires": 790,
+   "heldout_r2_true": -0.195,
+   "ci": [
+    -2.488,
+    1.715
+   ],
+   "coef_per_sd": {
+    "area_log": 0.193
+   },
+   "mean_reliability": 0.0473
+  },
+  "fuel + grass + terrain": {
+   "fires": 786,
+   "heldout_r2_true": 0.193,
+   "ci": [
+    -1.93,
+    1.446
+   ],
+   "coef_per_sd": {
+    "fuel": -0.12,
+    "grass": 0.065,
+    "canopy": 0.073,
+    "teak": -0.018,
+    "burn_freq": 0.106,
+    "slope20": 0.038
+   },
+   "mean_reliability": 0.0474
+  },
+  "all together (to 2024, weather)": {
+   "fires": 540,
+   "heldout_r2_true": 0.433,
+   "ci": [
+    -2.692,
+    4.017
+   ],
+   "coef_per_sd": {
+    "fuel": -0.116,
+    "grass": 0.018,
+    "canopy": -0.014,
+    "teak": -0.091,
+    "burn_freq": -0.034,
+    "slope20": -0.016,
+    "days_since_rain": 0.046,
+    "rh": 0.241,
+    "temp": 0.144,
+    "wind": -0.089,
+    "area_log": 0.112
+   },
+   "mean_reliability": 0.0476
+  }
+ },
+ "ratapani_fires_clearly_fast": [],
+ "ratapani_fires_clearly_slow": 0
+}

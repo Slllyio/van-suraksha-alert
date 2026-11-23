@@ -1,0 +1,480 @@
+
+=== Slide 1 ===
+Date: 17 September 2026.
+Presented by: Sushanta Kumar Pattnaik, IFS
+CCF, Forest Fire & Disaster Management/ Nodal Officer.
+Innovative Approaches for Forest Fire Management
+Uttarakhand Forest Department
+
+=== Slide 2 ===
+Forest Fire — Global & National Scenario
+🌍  Global Hotspots: Canada, Russia, Australia, USA — India is comparatively less fire-prone than tropical nations
+📋  ISFR 2023: Extremely fire-prone states 
+Tripura, Telangana, Bihar, Chhattisgarh, Meghalaya
+🏔  Uttarakhand: Most fire-prone region in the Western Himalayas
+Sensitive Districts in Uttarakhand
+Almora
+Pauri
+Tehri
+Uttarkashi
+Nainital
+Pithoragarh
+[image]
+[image]
+
+=== Slide 3 ===
+Uttarakhand State:
+Uttarakhand - a Himalayan state rich in forests and biodiversity.
+The total geographical area of ​​the state is 53,483 sq km. and total forest area is 36,937 sq km.
+A large portion of the state's forests are located in the lower to middle Himalayas, which is a major fire-prone area. 
+Nearly 15.24% of forest area in pine species dominant
+6 National Parks, 7 Wildlife Sanctuaries and 4 Conservation Reserves – 12% of total area
+Char Dham and various tourist destinations located around the pristine forest areas
+Mountaineering, Trekking and other adventurous sports
+[image]
+
+=== Slide 4 ===
+Types & Causes of Forest Fire in Uttarakhand
+> 95%
+Surface Fire
+Most prevalent; burns ground-level vegetation & leaf litter
+< 5%
+Ground Fire
+Burns underground organic matter; slow-moving
+0%
+Crown Fire
+Not recorded in Uttarakhand forests
+Causes of Forest Fire
+Natural
+• Lightning strikes
+• Spontaneous combustion of dry biomass
+• Prolonged drought & heat
+Manmade
+• Agricultural burning / stubble burning
+• Negligent campfires and cigarettes
+• Chir pine needle (Pirul) accumulation
+[image]
+[image]
+[image]
+[image]
+
+=== Slide 5 ===
+Forest Fire Incidents: Uttarakhand (2022–2026)
+Year | Incidents | Area (Ha) | Deaths | Injuries
+2022 | 2,186 | 3,425.05 | 2 | 7
+2023 | 773 | 933.55 | 3 | 3
+2024 | 1,276 | 1,771.67 | 13 | 7
+2025 | 268 | 310.95 | 0 | 2
+2026 | 657 | 592.75 | 2 | 1
+TOTAL | 5,160 | 7,033.97 | 20 | 20
+[image]
+[image]
+[image]
+[image]
+
+=== Slide 6 ===
+Resources & Operative Infrastructure — Human Capital
+Total Firefighting Workforce:  12,389 Personnel
+4,789
+Regular Staff
+5,600
+Seasonal Fire Watchers
+2,000
+Daily Wage Workers
+Field-Level Administrative Units
+Unit | Count
+Forest Circles | 11
+Forest Divisions | 43
+Forest Ranges | 283
+Forest Beats | 2,393
+📍 Coverage Network
+
+11 Circles supervise 43 Divisions
+43 Divisions manage 283 Ranges
+283 Ranges cover 2,393 Beats
+
+Every Beat is a first-response unit with crew, tools and direct ICCC connectivity.
+[image]
+[image]
+9
+
+=== Slide 7 ===
+Forest Fire Sensitivity
+[image]
+ | 
+Winter Fire Season 
+(November 01 - February 14) | Summer Fire Season
+(February 15 - June 30)
+High Sensitivity during Winter 2026 due to prolonged dry spells. | or till onset of monsoon
+
+=== Slide 8 ===
+Resources & Operative Infrastructure — Command & Equipment
+7,145 PPE Kits distributed to all Crew Stations in 2026  |  ICCC Helpline operational 24×7
+Forest HQ
+ICCC
+Central command hub
+1,438
+Crew Stations
+First-response field stations
+174
+Watch Towers
+Early fire detection posts
+40
+Master Control Rooms
+District-level command
+3,303
+Wireless + GPS Sets
+Field communication devices
+Fire Tools & Equipment
+Equipment | Quantity
+Fire Tools / Equipment | 42,000
+Drones | 86
+Leaf Blowers | 519
+Fire Line Network
+13,085 Km
+Total maintained fire line length across the state
+[image]
+[image]
+
+=== Slide 9 ===
+Field Operations — Fire Season 2026
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+
+=== Slide 10 ===
+Forest Fire Response — Field Documentation
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+
+=== Slide 11 ===
+Challenges & Issues — Forest Fire Management in Uttarakhand
+[image]
+[image]
+🔥
+Traditional and Cultural Practices
+Pre-monsoon burning of agricultural residues, grasslands, and waste materials continues to be a significant contributor to forest fire incidents in certain areas.
+👥
+Alienation of the Community
+Declining dependence on forests and perceived restrictions on forest access have, in some areas, reduced commitment of community in forest protection and fire prevention efforts.
+🌲
+High Fuel Load in Chir Pine Forests
+Continuous accumulation of highly inflammable pine needles (Pirul) on forest floors substantially increases fire vulnerability, particularly during the dry season.
+⛰️
+Difficult Terrain and Accessibility Constraints
+Steep slopes, remote locations, and limited accessibility in mountainous regions often impede rapid deployment of firefighting resources.
+☁️
+Climate Change Impacts
+Rising temperatures, prolonged dry spells, erratic precipitation patterns, and increasing frequency of extreme weather events are elevating forest fire risks and extending the fire season.
+
+=== Slide 12 ===
+Innovative Approach and Practices — Forest Fire Management
+[image]
+[image]
+Early Warning, Prediction and Assessment
+Use of the Forest Fire Mobile App
+Fuel Load Management
+Collection, Transportation and Utilization of Pine needles
+Target Specific Community Engagement
+Sitlakhet Model, Village level forest fire Committee , incentivization and Awards
+U PREPARE Project
+                Use of modern fire tools and protective gear, fire tender       	      	      vehicles, digital wireless sets
+Climate change studies and Research
+Carbon Finance Programme
+
+=== Slide 13 ===
+IT, Early Warning System, Fire Alert Detection Capacity in Uttarakhand Forest Department
+
+=== Slide 14 ===
+[image]
+Fire Alerts by Forest Survey of India (FSI)
+Pre-fire alerts are sent by FSI Dehradun to the forest headquarter which is then relayed to field staff through official whatsapp group. The pre-fire alert is sent every week based on weather predictions, forest fire danger rating and other factors.
+Weekly weather alert issued by IMD indicating fire danger rating which is then shared with field officers/staff.
+During fire season (15th Feb to 30th June) live fire alerts are issued by FSI based on which fire dousing activity is undertaken.
+Nodal Officer Forest Fire in the forest headquarters undertakes coordination, monitoring and assessment.
+Integrated Control and Command Center (ICCC) in Forest headquarters undertakes forest fire alert status, reporting and follow-up with the Nodal Officer.
+Incident Response System at the district level for inter-departmental coordination.
+Operational 24X7 setup established at the Integrated Command 
+and Control Center (ICCC) in Forest Headquarters
+
+=== Slide 15 ===
+Forest Fire Reporting Mechanism in Uttarakhand Forest Department
+FSI fire alerts relayed to all subscribers 
+The alert is then displayed in the Uttarakhand forest fire mobile app
+Forest Fire crew attend the incident site with fast response
+Feedback is then entered by the concerned staff regarding area and extent of forest fire
+Final reporting is received in FFRMS from concerned forest divisions
+Nodal officer/CCF Forest Fire compiles the report and ensure documentation
+
+=== Slide 16 ===
+Near Real Time Alerts by FSI Report 2025-2026
+Fire Alerts & FSI Van Agni Portal:
+Total Subscribers from Uttarakhand – 17,729
+Integrated Command & Control Center (ICCC):
+Complaints received on Toll Free Helpline Number: 1926
+[image]
+Uttarakhand Forest/Line Dept. Land Cover Statistics:
+
+=== Slide 17 ===
+Uttarakhand Forest Fire Mobile App
+Features of Mobile App:
+Display active fire locations to stakeholders and the public.
+Send warning messages and fire weather index to field staff and public.
+Allow public to report fires via geo-tagged images.
+Track real-time action and response times of field officials.
+Provide feedback to the MCR dashboard on fire status and area burnt.
+Total registrations: 7108
+20 GPS enabled vehicles also integrated
+User authentication and role-based access
+Geo-tagged forest fire incident reporting
+Incident escalation and workflow management
+Multi-language support (English and Hindi)
+
+=== Slide 18 ===
+Web-based GIS Dashboard
+Features of Dashboard:
+Mapping & Monitoring of forest types, crown density, sensitive areas, and fire alerts status.
+Real-Time Alerts via FSI emails, csv files integration for fire location updates and warning messages.
+Resource & Response Management by tracking fire crews, prioritizing assets/resources, and identifying first responders in GIS platform.
+Verifying alerts, collecting field feedback, and maintaining fire database.
+Real-time monitoring of fire incidents on GIS thematic layers
+Incident management, response time and live status tracking
+User and access management
+Integration with weather and satellite systems
+Administrative control panel
+
+=== Slide 19 ===
+Social Media Platform
+Extensive Use of Social Media in Forest Fire Management:
+
+UKFD is actively engaged in Social Media applications such as Facebook page, Instagram page, X/Twitter handle and WhatsApp Groups, being used very effectively.
+For communication, information collection & dissemination, coordination, prompt response and reporting back, mass awareness generation, Emergency Alerts, etc.
+
+=== Slide 20 ===
+Biomass Utilization: Chir Pirul (Pine Needle) Collection and Pellet/Briquette Units
+
+=== Slide 21 ===
+The Ecological Challenges of Chir Pine Forests
+15.24 % of Uttarakhand’s total forest area is covered by Chir Pine.
+Accumulated ‘Pirul’ (pine needles) on the forest floor acts as a highly combustible carpet. Primary fuel load driving forest fire incidents across the state.
+
+=== Slide 22 ===
+Turning a Liability into a Strategic Asset
+The Four-Pillar Mission of the State Policy:
+
+Fire Prevention: Drastic reduction of fuel load in pine-dominated areas to curb fire spread.
+
+Renewable Energy: Utilization of pine needles as a sustainable bio-energy fuel source.
+
+Industrial Development: Establishing industries for pellets, briquettes & handicrafts.
+
+Livelihood Generation: Creating direct employment & income for rural communities.
+[image]
+
+=== Slide 23 ===
+The Chir Pirul Intervention
+Chir Pine covers 15.45% (3,890 sq km) of Uttarakhand's forests — the primary driver of rapid-spread surface fires
+1
+Community Collection
+Van Panchayats & SHGs collect Pirul from forest floors
+→
+2
+Biomass Transport
+Mechanised & manual transport to processing units
+→
+3
+Pellet / Briquette Manufacturing
+Pressed into high-efficiency fuel pellets & briquettes
+→
+4
+Commercial Utilisation
+Sold to industry; income to communities; reduced fire risk
+Dual Impact
+✅  Drastically reduces forest floor fuel load — directly cutting fire risk
+✅  Generates income for local community institutions & SHGs
+✅  Creates sustainable biomass energy value chain
+[image]
+[image]
+[image]
+[image]
+
+=== Slide 24 ===
+Chir Pirul (Pine Needle) Collection
+A total of 7,471.45 tons of pine needles were collected from 2022 to 2024, and 5,532.11 tons were collected in 2025.
+A payment of ₹5.43 crore was made in 2025 for the collection of pine needles.
+Community Engagement: over 30 NGOs, Van Panchayat Committees & self-help groups (SHGs) actively driving collection across pine-dominated forest divisions.
+The target for chir pirul collection in 2026 : 8555 ton.
+[image]
+Chir Pirul Collection Activities in Uttarakhand:
+S. No | Activities | Target (Nos.) | Current status (Nos.) | Proposed for next 02 years (Nos.)  | Proposed for next 05 years (Nos.) 
+1 | Established Chir Pirul Collection Centers | 106 | 48 | 58 | -
+2 | Pellets / Briquettes Units | 57 | 09 | 20 | 28
+Pellet/briquette Processing Units:
+S. No | Name of District | Established Units (Nos.)
+1 | Uttarkashi | 02
+2 | Nainital | 01
+3 | Almora | 03
+4 | Pauri Garhwal | 01
+5 | Tehri Garhwal | 01
+6 | Champawat | 01
+TOTAL |  | 09
+
+=== Slide 25 ===
+Forest Divisions Pioneering Chir Pirul Collection - 2026
+Sl. No | Name of Forest Division | Amount of Pirul Collected (MT)
+1 | Garhwal Forest Division | 2057.30
+2 | Almora Forest Division | 1345.45
+3 | Uttarkashi Forest Division | 550.00
+4 | Nainital Forest Division | 290.00
+5 | Mussoorie Forest Division | 250.00
+[image]
+
+=== Slide 26 ===
+Comparison – Pine Vs Conventional Sources
+Calorific fuel value and commercial costs |  |  |  | 
+Sl. No | Particulars | MJ/Kg | Kilo Calories/Kg | Cost/unit (Ex-Factory price)
+1 | Pine Needle Pellets | 20.30 | 4852 | 9 / Kg
+2 | Pine Needle Briquettes | 19.00 | 4400 | 8 / Kg
+3 | Pine Needle Charcoal | 29.64 | 7084 | 30 / Kg
+4 | Wood Fuel (Dry Blocks) | 21.20 | 5067 | 10 / Kg
+5 | Coal Grade 1 | 29.00 | 6931 | 38 / Kg
+6 | Kikkad Charcoal (Rajas) | 25.00 | 5975 | 40 / Kg
+7 | Diesel | 44.80 | 10707 | 95 / Litre
+8 | LPG Commercial | 54.00 | 12906 | 120 / Kg
+9 | Electricity Commercial | 3.60 | 860 | 8 / Unit
+
+=== Slide 27 ===
+Target Specific Community Engagement and Participation
+
+=== Slide 28 ===
+Community Participation:
+11,217 Van Panchayats are engaged in assisting the Forest Department in mitigating forest fires.
+Around 600 Village-level forest fire management committees were established.
+
+Village level committees (community institutions) have been provided with an incentive @ Rs 30,000.
+
+Aun Diwas is celebrated in the hills for control of stubble burning.
+The Sitlakhet model was adopted in Almora by local women for the protection of forests and control of forest fire. Similar work has also been done in Jadhdhar village in Tehri Garhwal.
+6808 community awareness programs were organized in 41 forest divisions, and the total number of participants were around 1,31,000 (Fire Season 2026).
+
+=== Slide 29 ===
+Fire Watcher and Insurance
+Fire watchers from the local village are engaged at the range level to work in the forest fire crew station during fire season.
+
+Insurance scheme launched for fire watchers. In 2026 total number of fire watchers covered under this scheme was 5623, with coverage @ Rs 10 lacs each. 
+
+For the Insurance Scheme, DFO Nainital is the Nodal for Kumaon Zone and DFO Dehradun is the Nodal for Garhwal Zone.
+Year | No of Fire Watchers
+2024 | 4338
+2025 | 5057
+2026 | 5623
+Zone-wise Fire Watcher in 2026 |  | 
+S.NO | Region | No. of Fire Watchers
+1 | Garhwal | 2440
+2 | Kumaon | 2677
+3 | Wildlife | 506
+Grand Total |  | 5623
+
+=== Slide 30 ===
+The Shitlakhet Model: A Community‑led Fire Mitigation Approach
+The Shitlakhet Model represents a community-led approach to fire mitigation and forest restoration in the Almora District. 
+
+ Historically, this region was known for its apple orchards, though production ceased after 2005.
+
+ The initiative is driven by local pioneers from the community institutions: Syahidevi Vikas Samiti, Mahila mandal, SHGs, Yuva mangal dals & forest guards.
+Location: Syahi Devi Forest/Sacred Grove
+(7 km from Shitlakhet), Almora, Uttarakhand.
+[image]
+
+=== Slide 31 ===
+Historical Context and Fire Protection
+Syahi Devi is the oldest forest in the area, becoming a reserved forest in 1877 under the Forest Act of 1865.
+
+ Fire protection in Syahi Devi officially started between 1890 and 1891.
+
+ Despite these early efforts, the reserves suffered disastrous fires over the years
+
+ Historical working plans for the Central Almora Forest Division date back to the 1920s, emphasizing a long-standing need for organized management.
+[image]
+[image]
+THEN: 2012 (Post fire)
+NOW: 2023 (Mixed forest)
+From a fire-swept landscape to a thriving ecosystem. A decade of vigilance.
+
+=== Slide 32 ===
+[image]
+[image]
+
+=== Slide 33 ===
+The "Golden Hour" Strategy
+“The first 60  Minutes determine survival.”
+
+The Challenge: Once a fire in pine forests establishes, it is nearly impossible to stop without heavy machinery.
+
+The Solution: Rapid village mobilization
+
+Tactics: 
+ Alert System: WhatsApp groups, early warning system and village alerts, involving forest and revenue departments alongside local volunteers.
+ Designated forest guards & gram praharis to monitor the slopes.
+ Tools: Villagers rush to sites with basic tools such as sticks, khurpi, water bottles, and headlamps.
+ Logistics: The community manages food and water for front-line volunteers.
+[image]
+[image]
+[image]
+
+=== Slide 34 ===
+A Replicable Blueprint: Jardhar Gaon, Tehri Garhwal
+The Shitlakhet Model shares replicability with other successful community-led initiatives in Jardhar Gaon, Tehri Garhwal, by adopting important lessons:
+
+Recognize the Golden Hour: Decentralize fire response to the village level.
+
+Make ‘Onn Diwas’ a state-wide cultural norm.
+
+Prioritize Assisted Natural Regeneration (ANR) drive over expensive industrial plantations.
+[image]
+
+=== Slide 35 ===
+Mock Drill on Forest Fire (2026)
+A comprehensive statewide mock drill was executed simultaneously across 41 forest divisions on 18th February 2026 
+Response – Golden Hour, Mobility, Equipments. Wireless, Focus in vulnerable areas especially char dham route
+Inter Agency coordination – Seamless coordination
+Effectiveness of command centres – ICCC at Forest HQ and Master Control Rooms in the Forest Divisions. Coordination with DEOC in the districts
+Medical aid – Injury and fall
+
+=== Slide 36 ===
+Technical Assistance from Externally Aided Project (EAP) for Forest Fire Prevention & Management
+
+=== Slide 37 ===
+Uttarakhand Disaster Preparedness & Resilience Project (U-PREPARE) : World Bank assisted
+Implementation Phase under PIU-Forest-  Tactical Forest Fire Tools/Equipment:
+Personal Protective Gears (PPE kits) for firefighters alloted in 1438 crew stations under USDMA, Govt. of Uttarakhand, for forest fire prevention & management component.
+Transitioning of wireless infrastructure network from Analog to Digital mode is ongoing in five sensitive districts: Alomra, Nainital, Tehri, Pauri and Uttarkashi. 
+Mobility strengthening under process- procurement of Quick response vehicle and fire tender with water tank capacity for sensitive forest divisions.
+Other tools: Power chain saw and Leaf Blowers
+
+=== Slide 38 ===
+Consultancy Services under U-PREPARE project
+‘Community-based Forest Fire Risk Management and Carbon Finance Programme’:
+This assignment seeks to establish an incentive-based community program, including via the provision of community grants for forest fire risk management that will be guided by sustainable forest management principles, reduce fuel load, restore degraded lands, ANR and enhance soil moisture levels. 
+Fires release large amounts of stored carbon, worsening climate change - community-based forest fire management can prevent losses and enhance resilience.
+Through carbon finance programs  reduced fire risks = more carbon sequestration credits.
+Revenues from credits can fund fire prevention, forest restoration and local livelihoods.
+‘Training, Capacity Building and Technical Assistance for UKFD’:
+This assignment seeks to identify gap, prepare a blueprint document and undertake capacity building & training of the frontline forest staff, key stakeholders and communities to tackle forest fire and to empower the UKFD as the designated ‘First Responder’ for forest fire in sensitive forest areas.
+Formulate state level forest fire management strategy document and action plan.
+Strengthen community & institutional capacity.
+Optimize asset management for rapid response.
+
+=== Slide 39 ===
+Chir Pirul Initiatives
+
+=== Slide 40 ===
+THANK YOU!

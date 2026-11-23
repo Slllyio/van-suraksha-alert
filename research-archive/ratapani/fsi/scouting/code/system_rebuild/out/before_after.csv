@@ -1,0 +1,5 @@
+period,model,all_10pct,new_10pct,beats_10pct,ground_10pct,all_matched,new_matched,beats_matched,ground_matched
+held-out 2022-24,before (B0),73.7,31.8,80.9,18.2,73.7,31.8,80.9,18.2
+held-out 2022-24,after (GIS + new-fire head),75.8,42.2,85.3,20.0,73.5,38.7,83.3,18.2
+forward 2025-26,before (B0),70.3,23.3,80.0,18.3,70.3,23.3,80.0,18.3
+forward 2025-26,after (GIS + new-fire head),73.3,40.8,84.7,20.4,69.9,36.9,82.3,18.3

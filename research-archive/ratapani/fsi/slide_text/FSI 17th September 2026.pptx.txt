@@ -1,0 +1,266 @@
+
+=== Slide 1 ===
+Pilot Project: Rudraprayag Forest Division, 2020
+
+=== Slide 2 ===
+Phase 1: Development of Google Maps based application and dashboard with GIS/Mapping of the location of all assets critical to wildfire management including permanent fire lines, crew stations, watch towers, fire service stations, van panchayats, forest nurseries, plantations, water tanker stations etc. on an interactive Google map along with the vegetation type for a Forest Division (Mapping of assets critical for decision making and fire fighting).
+
+=== Slide 3 ===
+Phase 2: Linking the mobile application and dashboard with FSI fire alerts and providing fire alerts to all stakeholders through mobile application (instead of relying solely on FSI sms). (sending real-time fire alerts on app to reduce the response time of all stakeholders in managing fires.)
+
+=== Slide 4 ===
+Phase 3:  Calibration of the Fire Weather Index for local conditions followed by its integration in the mobile application for communicating the fire danger alerts to all stakeholders including communities that are actively involved in fire management. (Communicating Fire Danger Rating to Public and other stakeholders)
+[image]
+
+=== Slide 5 ===
+Functionality of the components of this system
+Dashboard
+Mapping of all forest types, crown density, sensitive areas, assets and infrastructures including crew stations.
+Linking of FSI SMS fire alert system with the dashboard and app for automatic fire location updating on the google map.
+Real time tracking of fire crew vehicles.
+Receiving and verifying new fire alert as received from the public.
+Sending warning messages to app users.
+Monitoring the status of all fires in the division like unattended fires, being contained fires and extinguished fires.
+Taking feedback from field staff through app and updating fire status.
+Identifying the first respondent in case of new fire detection.
+In case of multiple fires, prioritizing the allocation of resources.
+Taking tactical decisions about active fires.
+Maintaining database of fires detected and contained.
+Android based app
+Showing the location of active fires to stakeholders like Govt. Departments , field staff and volunteers, van panchayats etc.
+Communicating warning messages and fire weather index to field staff & public.
+Providing a platform for fire reporting by public through geo tagged images.
+Updating the action taken by field staff on real time basis including the response time in reaching the fire site and extinguishing the fire.
+Being used to provide feedback to the MCR dashboard about the status of fires including area burnt.
+[image]
+
+=== Slide 6 ===
+[image]
+[image]
+[image]
+FSI
+[image]
+[image]
+Fire information from FSI sensor to be instantaneously shared with the app users of UKFD for ensuring immediate response.
+Decrease in response time (measurable).
+Continuous monitoring of each fire point through feedback along with tracking of fire crew vehicles.
+Forest Type, Crew Station location, proximity to road etc. and other relevant information is made available for better resource mobilization.
+
+=== Slide 7 ===
+[image]
+Red: Active Fires (Unattended Fires)
+
+Orange: Fires being held/attended by the staff
+
+Green: Closed Fires
+
+Black: No Forest Fire Detected
+
+=== Slide 8 ===
+Analysis of App Performance during the Fires Season of 2025
+
+=== Slide 9 ===
+
+=== Slide 10 ===
+Near Forest Alert
+[image]
+Forest Fire Alert
+[image]
+
+=== Slide 11 ===
+[image]
+[image]
+
+=== Slide 12 ===
+Training, Media and Extension
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+[image]
+
+=== Slide 13 ===
+Total Expenditure on app & dashboard development: 8.00 lakhs
+[image]
+
+=== Slide 14 ===
+[image]
+
+=== Slide 15 ===
+Helicopter Survey of Nanda Devi NP Fire Jan 2026:Modified Response            (Not all fires need to be extinguished, not all fires can be extinguished)
+
+=== Slide 16 ===
+DXV and V S
+Binsar Wildlife Sanctuary,Almora,Uttarakhand,India
+13th June 2024
+Between 15:00 and 15:30 hrs
+8 persons involved; 6 fatalities; 2 survivors.
+Binsar Accident
+16
+[image]
+[image]
+
+=== Slide 17 ===
+DXV and V S
+[image]
+Binsar Accident
+17
+View of the area of Binsar Wildlife Sanctuary,Almora
+Site of Accident
+Risal Village
+Eastern Side
+Entry Gate of Binsar
+
+=== Slide 18 ===
+DXV and V S
+[image]
+Binsar Accident
+18
+
+=== Slide 19 ===
+DXV and V S
+[image]
+Binsar Accident
+19
+
+=== Slide 20 ===
+DXV and V S
+[image]
+Binsar Accident
+20
+
+=== Slide 21 ===
+DXV and V S
+[image]
+Binsar Accident
+21
+
+=== Slide 22 ===
+DXV and V S
+[image]
+Binsar Accident
+22
+
+=== Slide 23 ===
+DXV and V S
+[image]
+Binsar Accident
+23
+
+=== Slide 24 ===
+DXV and V S
+[image]
+Binsar Accident
+24
+
+=== Slide 25 ===
+DXV and V S
+[image]
+Binsar Accident
+25
+
+=== Slide 26 ===
+DXV and V S
+[image]
+Binsar Accident
+26
+
+=== Slide 27 ===
+DXV and V S
+[image]
+Binsar Accident
+27
+
+=== Slide 28 ===
+DXV and V S
+[image]
+Binsar Accident
+28
+
+=== Slide 29 ===
+DXV and V S
+[image]
+Binsar Accident
+29
+
+=== Slide 30 ===
+DXV and V S
+[image]
+Binsar Accident
+30
+
+=== Slide 31 ===
+DXV and V S
+[image]
+Binsar Accident
+31
+
+=== Slide 32 ===
+DXV and V S
+[image]
+Binsar Accident
+32
+
+=== Slide 33 ===
+DXV and V S
+[image]
+Binsar Accident
+33
+
+=== Slide 34 ===
+DXV and V S
+[image]
+Binsar Accident
+34
+
+=== Slide 35 ===
+DXV and V S
+[image]
+Binsar Accident
+35
+
+=== Slide 36 ===
+DXV and V S
+[image]
+Binsar Accident
+36
+
+=== Slide 37 ===
+DXV and V S
+[image]
+Binsar Accident
+37
+
+=== Slide 38 ===
+DXV and V S
+[image]
+Binsar Accident
+38
+
+=== Slide 39 ===
+DXV and V S
+[image]
+Binsar Accident
+39
+
+=== Slide 40 ===
+[image]
+[image]
+
+=== Slide 41 ===
+
+=== Slide 42 ===
+[image]
+
+=== Slide 43 ===
+[image]
+
+=== Slide 44 ===
+For any new ideas,suggestions,queries or collaboration
+vaibhav.singh1212@gmail.com
+9412839179

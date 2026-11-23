@@ -1,0 +1,20 @@
+{
+ "n_scar": 2855,
+ "n_big": 306,
+ "big_new_share": 0.06209150326797386,
+ "all_new_share": 0.12049036777583187,
+ "missed_big": 18,
+ "missed_big_new": 7,
+ "missed_ha_share": 0.0918523206888906,
+ "missed_ha_new_share": 0.3584740162273416,
+ "big_catch_new": 0.631578947368421,
+ "small_catch_new": 0.4676923076923077,
+ "big_catch_old": 0.9616724738675958,
+ "small_catch_old": 0.8372302158273381,
+ "fdsq_med_big": 3.0,
+ "fdsq_med_small": 2.0,
+ "big_gained_by_pxe": 5,
+ "big_lost_by_pxe": 5,
+ "small_gained_by_pxe": 57,
+ "small_lost_by_pxe": 127
+}

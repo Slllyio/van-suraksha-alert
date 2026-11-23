@@ -1,0 +1,28 @@
+{
+ "random_within_45": 0.25,
+ "A_sequence_of_looks": {
+  "n": 1780,
+  "fires": 634,
+  "within_45": 0.18,
+  "ci": [
+   0.159,
+   0.2
+  ],
+  "median_angle": 107.5
+ },
+ "B_burnt_out_side_to_live_side": {
+  "n": 1098,
+  "fires": 466,
+  "within_45": 0.183,
+  "ci": [
+   0.159,
+   0.21
+  ],
+  "median_angle": 107.2
+ },
+ "same_cases": {
+  "n": 1098,
+  "A": 0.169,
+  "B": 0.183
+ }
+}

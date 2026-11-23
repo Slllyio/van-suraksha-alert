@@ -1,0 +1,160 @@
+{
+ "a_up D p_corr": {
+  "contrast": "upslope minus downslope",
+  "m_h": 21.7,
+  "ci": [
+   10.6,
+   34.5
+  ],
+  "n": 32467
+ },
+ "a_up D p_cent": {
+  "contrast": "upslope minus downslope",
+  "m_h": 24.3,
+  "ci": [
+   11.6,
+   36.6
+  ],
+  "n": 32467
+ },
+ "a_up N p_corr": {
+  "contrast": "upslope minus downslope",
+  "m_h": -13.4,
+  "ci": [
+   -24.2,
+   -2.1
+  ],
+  "n": 30265
+ },
+ "a_up N p_cent": {
+  "contrast": "upslope minus downslope",
+  "m_h": -18.5,
+  "ci": [
+   -30.4,
+   -6.2
+  ],
+  "n": 30265
+ },
+ "a_grain D p_corr": {
+  "contrast": "along grain minus across grain",
+  "m_h": 11.3,
+  "ci": [
+   -2.4,
+   24.9
+  ],
+  "n": 19790
+ },
+ "a_grain D p_cent": {
+  "contrast": "along grain minus across grain",
+  "m_h": 11.2,
+  "ci": [
+   -2.6,
+   23.7
+  ],
+  "n": 19790
+ },
+ "a_grain N p_corr": {
+  "contrast": "along grain minus across grain",
+  "m_h": 11.6,
+  "ci": [
+   -1.2,
+   24.9
+  ],
+  "n": 16362
+ },
+ "a_grain N p_cent": {
+  "contrast": "along grain minus across grain",
+  "m_h": 11.0,
+  "ci": [
+   -2.1,
+   24.6
+  ],
+  "n": 16362
+ },
+ "a_can D p_corr": {
+  "contrast": "into forest minus into open",
+  "m_h": 17.3,
+  "ci": [
+   2.9,
+   29.4
+  ],
+  "n": 22782
+ },
+ "a_can D p_cent": {
+  "contrast": "into forest minus into open",
+  "m_h": 20.6,
+  "ci": [
+   6.3,
+   33.5
+  ],
+  "n": 22782
+ },
+ "a_can N p_corr": {
+  "contrast": "into forest minus into open",
+  "m_h": -6.8,
+  "ci": [
+   -18.5,
+   4.1
+  ],
+  "n": 21122
+ },
+ "a_can N p_cent": {
+  "contrast": "into forest minus into open",
+  "m_h": -6.6,
+  "ci": [
+   -20.0,
+   5.0
+  ],
+  "n": 21122
+ },
+ "a_elong D p_corr": {
+  "contrast": "along fire axis minus across fire axis",
+  "m_h": -7.7,
+  "ci": [
+   -20.2,
+   5.2
+  ],
+  "n": 28614
+ },
+ "a_elong D p_cent": {
+  "contrast": "along fire axis minus across fire axis",
+  "m_h": -8.1,
+  "ci": [
+   -21.0,
+   3.6
+  ],
+  "n": 28614
+ },
+ "a_elong N p_corr": {
+  "contrast": "along fire axis minus across fire axis",
+  "m_h": 3.6,
+  "ci": [
+   -7.1,
+   13.7
+  ],
+  "n": 31892
+ },
+ "a_elong N p_cent": {
+  "contrast": "along fire axis minus across fire axis",
+  "m_h": 2.7,
+  "ci": [
+   -7.6,
+   13.7
+  ],
+  "n": 31892
+ },
+ "grain_axis_hist_relief40": [
+  1149,
+  2337,
+  6269,
+  4145,
+  1843,
+  1519
+ ],
+ "coverage": {
+  "a_up": 62732,
+  "a_grain": 36152,
+  "a_can": 43904,
+  "a_elong": 60506
+ }
+}

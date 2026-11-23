@@ -1,0 +1,159 @@
+{
+ "static_pairs": 35580,
+ "sites": 100,
+ "sensor_offsets_static": {
+  "NOAA-20 minus S-NPP, day, dE": "52 m (28 to 67)",
+  "NOAA-21 minus S-NPP, day, dE": "-57 m (-67 to -36)",
+  "NOAA-20 minus S-NPP, day, dN": "-93 m (-116 to -82)",
+  "NOAA-21 minus S-NPP, day, dN": "-25 m (-46 to -15)",
+  "NOAA-20 minus S-NPP, night, dE": "-20 m (-24 to -14)",
+  "NOAA-21 minus S-NPP, night, dE": "27 m (21 to 33)",
+  "NOAA-20 minus S-NPP, night, dN": "79 m (71 to 85)",
+  "NOAA-21 minus S-NPP, night, dN": "-44 m (-49 to -37)"
+ },
+ "bias_dependence": {
+  "d_scan": {
+   "per 100 m signed scan-pixel growth (view-angle side)": "-6.6 m (-14.3 to 0.7)",
+   "2+ pixels vs 1": "6.7 m (-9.2 to 21.0)",
+   "per year": "1.2 m (-2.8 to 5.1)"
+  },
+  "d_track": {
+   "per 100 m signed scan-pixel growth (view-angle side)": "3.2 m (0.4 to 5.2)",
+   "2+ pixels vs 1": "-0.9 m (-11.4 to 12.2)",
+   "per year": "0.9 m (-1.0 to 2.8)"
+  }
+ },
+ "noaa20_minus_snpp_by_year": {
+  "2018": {
+   "n": 766,
+   "dN": 63.0,
+   "dE": 54.3
+  },
+  "2019": {
+   "n": 2350,
+   "dN": 92.5,
+   "dE": -4.3
+  },
+  "2020": {
+   "n": 1594,
+   "dN": 77.2,
+   "dE": -16.0
+  },
+  "2021": {
+   "n": 2089,
+   "dN": 86.0,
+   "dE": -40.6
+  },
+  "2022": {
+   "n": 1855,
+   "dN": 69.4,
+   "dE": -33.2
+  },
+  "2023": {
+   "n": 2100,
+   "dN": 82.6,
+   "dE": -19.3
+  },
+  "2024": {
+   "n": 2269,
+   "dN": 47.1,
+   "dE": 11.6
+  },
+  "2025": {
+   "n": 2712,
+   "dN": 60.3,
+   "dE": -51.5
+  },
+  "2026": {
+   "n": 2480,
+   "dN": 65.0,
+   "dE": -20.3
+  }
+ },
+ "variance_model (robust core)": {
+  "d_scan": {
+   "k": 0.592,
+   "geoloc_sd_m": 179.6
+  },
+  "d_track": {
+   "k": 0.899,
+   "geoloc_sd_m": 131.5
+  }
+ },
+ "tail_share_beyond_3rsd_d_scan": 0.014,
+ "tail_share_beyond_3rsd_d_track": 0.012,
+ "sensor_offsets_from_fires_both_orders": {
+  "NOAA-20 minus S-NPP, D": {
+   "n": [
+    69460,
+    43670
+   ],
+   "gaps": [
+    26,
+    50
+   ],
+   "dE": 46.0,
+   "dN": -93.5
+  },
+  "NOAA-20 minus S-NPP, N": {
+   "n": [
+    53801,
+    33806
+   ],
+   "gaps": [
+    48,
+    50
+   ],
+   "dE": 6.5,
+   "dN": 86.1
+  },
+  "NOAA-21 minus NOAA-20, D": {
+   "n": [
+    30868,
+    22917
+   ],
+   "gaps": [
+    49,
+    51
+   ],
+   "dE": -115.1,
+   "dN": 73.5
+  },
+  "NOAA-21 minus NOAA-20, N": {
+   "n": [
+    21834,
+    16098
+   ],
+   "gaps": [
+    49,
+    51
+   ],
+   "dE": 3.7,
+   "dN": -112.4
+  },
+  "NOAA-21 minus S-NPP, D": {
+   "n": [
+    11464,
+    42849
+   ],
+   "gaps": [
+    74,
+    27
+   ],
+   "dE": -35.4,
+   "dN": -32.1
+  },
+  "NOAA-21 minus S-NPP, N": {
+   "n": [
+    7278,
+    30282
+   ],
+   "gaps": [
+    73,
+    27
+   ],
+   "dE": 31.0,
+   "dN": -44.6
+  }
+ }
+}

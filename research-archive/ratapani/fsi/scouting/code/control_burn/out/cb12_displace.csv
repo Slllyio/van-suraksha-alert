@@ -1,0 +1,11 @@
+early,term,slope,lo,hi,squares_in_ring
+fires started 15 Feb-15 Mar vs fires started 16 Mar on,own square,-0.20342936602608477,-0.24656165629035812,-0.15223674740388424,1.0
+fires started 15 Feb-15 Mar vs fires started 16 Mar on,"ring 1 (5-10 km), per neighbour",0.04297156308186422,0.032873078839154524,0.05833708037637026,8.0
+fires started 15 Feb-15 Mar vs fires started 16 Mar on,"ring 2 (10-15 km), per neighbour",0.010252219240537937,0.0049884615264455655,0.01901978354289447,16.0
+fires started 15 Feb-15 Mar vs fires started 16 Mar on,net per early ha (own + 8 x ring 1 + 16 x ring 2),0.30437864647743595,0.20870319888687128,0.5554197410224726,
+fires started 15 Feb-15 Mar vs fires started 16 Mar on,displaced to rings per early ha,0.5078080125035207,0.4120259905216268,0.7233979783489924,
+fires started 15 Feb-1 Mar vs started 16 Mar on (gap),own square,-0.2744446486968215,-0.33352830949590023,-0.2042549414318635,1.0
+fires started 15 Feb-1 Mar vs started 16 Mar on (gap),"ring 1 (5-10 km), per neighbour",-0.012566264271870915,-0.039413176967061744,0.020444037899001,8.0
+fires started 15 Feb-1 Mar vs started 16 Mar on (gap),"ring 2 (10-15 km), per neighbour",0.016218415170540054,0.001980457183001754,0.04285691368149179,16.0
+fires started 15 Feb-1 Mar vs started 16 Mar on (gap),net per early ha (own + 8 x ring 1 + 16 x ring 2),-0.11548012014314796,-0.28373276438927514,0.35373346118886007,
+fires started 15 Feb-1 Mar vs started 16 Mar on (gap),displaced to rings per early ha,0.15896452855367355,-0.01141859109896648,0.6492006174037241,

@@ -1,0 +1,62 @@
+[
+ {
+  "event": 830,
+  "season": 2019,
+  "scar_ha": 359.56,
+  "learned_area_ha": 52.160000000000004,
+  "sor_learned": 0.646,
+  "sor_circle": 0.554,
+  "sor_physics": 0.546,
+  "sor_learned_own_area": 0.209
+ },
+ {
+  "event": 1466,
+  "season": 2022,
+  "scar_ha": 340.92,
+  "learned_area_ha": 56.76,
+  "sor_learned": 0.447,
+  "sor_circle": 0.378,
+  "sor_physics": 0.426,
+  "sor_learned_own_area": 0.157
+ },
+ {
+  "event": 1613,
+  "season": 2023,
+  "scar_ha": 310.6,
+  "learned_area_ha": 42.6,
+  "sor_learned": 0.375,
+  "sor_circle": 0.339,
+  "sor_physics": 0.345,
+  "sor_learned_own_area": 0.127
+ },
+ {
+  "event": 797,
+  "season": 2019,
+  "scar_ha": 1064.1200000000001,
+  "learned_area_ha": 125.72,
+  "sor_learned": 0.327,
+  "sor_circle": 0.234,
+  "sor_physics": 0.179,
+  "sor_learned_own_area": 0.126
+ },
+ {
+  "event": 1751,
+  "season": 2024,
+  "scar_ha": 70.72,
+  "learned_area_ha": 121.8,
+  "sor_learned": 0.221,
+  "sor_circle": 0.172,
+  "sor_physics": 0.204,
+  "sor_learned_own_area": 0.256
+ },
+ {
+  "event": 1735,
+  "season": 2024,
+  "scar_ha": 16.76,
+  "learned_area_ha": 36.88,
+  "sor_learned": 0.0,
+  "sor_circle": 0.0,
+  "sor_physics": 0.0,
+  "sor_learned_own_area": 0.0
+ }
+]

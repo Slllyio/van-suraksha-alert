@@ -1,0 +1,383 @@
+{
+ "forecasts": 85,
+ "fires": 71,
+ "all": {
+  "n": 85,
+  "fires": 71,
+  "blocks_only": 0.3913,
+  "viirs": 0.4506,
+  "seed": 0.4274,
+  "fresh": 0.4089,
+  "fresh_n": 0.441,
+  "viirs_area_n": 0.4516,
+  "modis_fp": 0.5189,
+  "viirs_area_fp": 0.5036,
+  "seed_vs_viirs_ci": [
+   -0.0184,
+   0.0064
+  ],
+  "seed_vs_viirs_better/worse_fires": [
+   23,
+   31
+  ],
+  "fresh_vs_viirs_ci": [
+   -0.0271,
+   0.0017
+  ],
+  "fresh_vs_viirs_better/worse_fires": [
+   25,
+   37
+  ],
+  "fresh_n_vs_viirs_ci": [
+   -0.0023,
+   0.0232
+  ],
+  "fresh_n_vs_viirs_better/worse_fires": [
+   36,
+   23
+  ],
+  "modis_fp_vs_viirs_ci": [
+   0.0366,
+   0.0842
+  ],
+  "modis_fp_vs_viirs_better/worse_fires": [
+   51,
+   17
+  ],
+  "fresh_n_vs_viirs_area_n_ci": [
+   -0.0146,
+   0.0094
+  ],
+  "fresh_n_vs_viirs_area_n_better/worse_fires": [
+   27,
+   30
+  ],
+  "modis_fp_vs_viirs_area_fp_ci": [
+   -0.0128,
+   0.0213
+  ],
+  "modis_fp_vs_viirs_area_fp_better/worse_fires": [
+   28,
+   28
+  ],
+  "area_fp_ha": 78.5,
+  "new_within500_modis": 0.189,
+  "new_within500_lastviirs": 0.093
+ },
+ "aqua_day": {
+  "n": 9,
+  "fires": 9,
+  "blocks_only": 0.4348,
+  "viirs": 0.5261,
+  "seed": 0.4998,
+  "fresh": 0.4419,
+  "fresh_n": 0.4998,
+  "viirs_area_n": 0.5261,
+  "modis_fp": 0.5186,
+  "viirs_area_fp": 0.595,
+  "seed_vs_viirs_ci": [
+   -0.0744,
+   -0.0101
+  ],
+  "seed_vs_viirs_better/worse_fires": [
+   1,
+   5
+  ],
+  "fresh_vs_viirs_ci": [
+   -0.1086,
+   -0.0174
+  ],
+  "fresh_vs_viirs_better/worse_fires": [
+   1,
+   6
+  ],
+  "fresh_n_vs_viirs_ci": [
+   -0.0467,
+   0.0066
+  ],
+  "fresh_n_vs_viirs_better/worse_fires": [
+   3,
+   4
+  ],
+  "modis_fp_vs_viirs_ci": [
+   -0.0513,
+   0.0455
+  ],
+  "modis_fp_vs_viirs_better/worse_fires": [
+   5,
+   4
+  ],
+  "fresh_n_vs_viirs_area_n_ci": [
+   -0.0642,
+   -0.0054
+  ],
+  "fresh_n_vs_viirs_area_n_better/worse_fires": [
+   2,
+   5
+  ],
+  "modis_fp_vs_viirs_area_fp_ci": [
+   -0.0988,
+   0.0055
+  ],
+  "modis_fp_vs_viirs_area_fp_better/worse_fires": [
+   2,
+   4
+  ],
+  "area_fp_ha": 72.6,
+  "new_within500_modis": 0.0,
+  "new_within500_lastviirs": 0.019
+ },
+ "aqua_night": {
+  "n": 1,
+  "fires": 1,
+  "blocks_only": 0.5068,
+  "viirs": 0.4292,
+  "seed": 0.4143,
+  "fresh": 0.3651,
+  "fresh_n": 0.4143,
+  "viirs_area_n": 0.4292,
+  "modis_fp": 0.2686,
+  "viirs_area_fp": 0.2686,
+  "seed_vs_viirs_ci": [
+   -0.0149,
+   -0.0149
+  ],
+  "seed_vs_viirs_better/worse_fires": [
+   0,
+   1
+  ],
+  "fresh_vs_viirs_ci": [
+   -0.0641,
+   -0.0641
+  ],
+  "fresh_vs_viirs_better/worse_fires": [
+   0,
+   1
+  ],
+  "fresh_n_vs_viirs_ci": [
+   -0.0149,
+   -0.0149
+  ],
+  "fresh_n_vs_viirs_better/worse_fires": [
+   0,
+   1
+  ],
+  "modis_fp_vs_viirs_ci": [
+   -0.1606,
+   -0.1606
+  ],
+  "modis_fp_vs_viirs_better/worse_fires": [
+   0,
+   1
+  ],
+  "fresh_n_vs_viirs_area_n_ci": [
+   -0.0149,
+   -0.0149
+  ],
+  "fresh_n_vs_viirs_area_n_better/worse_fires": [
+   0,
+   1
+  ],
+  "modis_fp_vs_viirs_area_fp_ci": [
+   0.0,
+   0.0
+  ],
+  "modis_fp_vs_viirs_area_fp_better/worse_fires": [
+   0,
+   0
+  ],
+  "area_fp_ha": 52.4,
+  "new_within500_modis": NaN,
+  "new_within500_lastviirs": NaN
+ },
+ "terra_day": {
+  "n": 62,
+  "fires": 55,
+  "blocks_only": 0.3846,
+  "viirs": 0.4479,
+  "seed": 0.4273,
+  "fresh": 0.4122,
+  "fresh_n": 0.4404,
+  "viirs_area_n": 0.4511,
+  "modis_fp": 0.5204,
+  "viirs_area_fp": 0.5029,
+  "seed_vs_viirs_ci": [
+   -0.0135,
+   0.013
+  ],
+  "seed_vs_viirs_better/worse_fires": [
+   19,
+   22
+  ],
+  "fresh_vs_viirs_ci": [
+   -0.0204,
+   0.0117
+  ],
+  "fresh_vs_viirs_better/worse_fires": [
+   21,
+   27
+  ],
+  "fresh_n_vs_viirs_ci": [
+   0.0019,
+   0.0295
+  ],
+  "fresh_n_vs_viirs_better/worse_fires": [
+   29,
+   16
+  ],
+  "modis_fp_vs_viirs_ci": [
+   0.0424,
+   0.0934
+  ],
+  "modis_fp_vs_viirs_better/worse_fires": [
+   42,
+   10
+  ],
+  "fresh_n_vs_viirs_area_n_ci": [
+   -0.0102,
+   0.0156
+  ],
+  "fresh_n_vs_viirs_area_n_better/worse_fires": [
+   22,
+   21
+  ],
+  "modis_fp_vs_viirs_area_fp_ci": [
+   -0.0045,
+   0.0299
+  ],
+  "modis_fp_vs_viirs_area_fp_better/worse_fires": [
+   24,
+   20
+  ],
+  "area_fp_ha": 78.6,
+  "new_within500_modis": 0.217,
+  "new_within500_lastviirs": 0.108
+ },
+ "terra_night": {
+  "n": 13,
+  "fires": 12,
+  "blocks_only": 0.3246,
+  "viirs": 0.361,
+  "seed": 0.3733,
+  "fresh": 0.3739,
+  "fresh_n": 0.4075,
+  "viirs_area_n": 0.406,
+  "modis_fp": 0.522,
+  "viirs_area_fp": 0.4929,
+  "seed_vs_viirs_ci": [
+   -0.0317,
+   0.0262
+  ],
+  "seed_vs_viirs_better/worse_fires": [
+   5,
+   3
+  ],
+  "fresh_vs_viirs_ci": [
+   -0.0302,
+   0.0286
+  ],
+  "fresh_vs_viirs_better/worse_fires": [
+   6,
+   3
+  ],
+  "fresh_n_vs_viirs_ci": [
+   -0.0159,
+   0.0599
+  ],
+  "fresh_n_vs_viirs_better/worse_fires": [
+   5,
+   3
+  ],
+  "modis_fp_vs_viirs_ci": [
+   0.0387,
+   0.1752
+  ],
+  "modis_fp_vs_viirs_better/worse_fires": [
+   10,
+   2
+  ],
+  "fresh_n_vs_viirs_area_n_ci": [
+   -0.0283,
+   0.0415
+  ],
+  "fresh_n_vs_viirs_area_n_better/worse_fires": [
+   5,
+   3
+  ],
+  "modis_fp_vs_viirs_area_fp_ci": [
+   -0.0335,
+   0.0954
+  ],
+  "modis_fp_vs_viirs_area_fp_better/worse_fires": [
+   6,
+   5
+  ],
+  "area_fp_ha": 78.5,
+  "new_within500_modis": 0.125,
+  "new_within500_lastviirs": 0.063
+ },
+ "modis_far_new_front": {
+  "n": 40,
+  "fires": 34,
+  "blocks_only": 0.3159,
+  "viirs": 0.3654,
+  "seed": 0.3568,
+  "fresh": 0.3505,
+  "fresh_n": 0.4068,
+  "viirs_area_n": 0.4043,
+  "modis_fp": 0.4809,
+  "viirs_area_fp": 0.4468,
+  "seed_vs_viirs_ci": [
+   -0.0297,
+   0.0066
+  ],
+  "seed_vs_viirs_better/worse_fires": [
+   10,
+   17
+  ],
+  "fresh_vs_viirs_ci": [
+   -0.033,
+   0.004
+  ],
+  "fresh_vs_viirs_better/worse_fires": [
+   11,
+   21
+  ],
+  "fresh_n_vs_viirs_ci": [
+   0.0069,
+   0.0486
+  ],
+  "fresh_n_vs_viirs_better/worse_fires": [
+   23,
+   9
+  ],
+  "modis_fp_vs_viirs_ci": [
+   0.0549,
+   0.1267
+  ],
+  "modis_fp_vs_viirs_better/worse_fires": [
+   26,
+   7
+  ],
+  "fresh_n_vs_viirs_area_n_ci": [
+   -0.0207,
+   0.0169
+  ],
+  "fresh_n_vs_viirs_area_n_better/worse_fires": [
+   14,
+   16
+  ],
+  "modis_fp_vs_viirs_area_fp_ci": [
+   -0.0091,
+   0.0577
+  ],
+  "modis_fp_vs_viirs_area_fp_better/worse_fires": [
+   18,
+   14
+  ],
+  "area_fp_ha": 78.8,
+  "new_within500_modis": 0.189,
+  "new_within500_lastviirs": 0.064
+ },
+ "median_hours_since_viirs": 8.8
+}

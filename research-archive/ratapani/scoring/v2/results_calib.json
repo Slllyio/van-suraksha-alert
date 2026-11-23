@@ -1,0 +1,156 @@
+{
+ "rows": 2168056,
+ "positives": 13850,
+ "loso_2017_24": {
+  "base_rate_pct": 0.588,
+  "brier_skill_hist_vs_doy": -0.0078,
+  "brier_skill_iso_vs_doy": 0.0174,
+  "brier_skill_isok_vs_doy": 0.0051,
+  "reliability_isok": {
+   "(-0.001, 0.002]": {
+    "pred_pct": 0.04,
+    "obs_pct": 0.04,
+    "share": 0.594
+   },
+   "(0.002, 0.005]": {
+    "pred_pct": 0.32,
+    "obs_pct": 0.33,
+    "share": 0.129
+   },
+   "(0.005, 0.01]": {
+    "pred_pct": 0.74,
+    "obs_pct": 0.81,
+    "share": 0.104
+   },
+   "(0.01, 0.02]": {
+    "pred_pct": 1.46,
+    "obs_pct": 1.58,
+    "share": 0.085
+   },
+   "(0.02, 0.05]": {
+    "pred_pct": 2.98,
+    "obs_pct": 2.82,
+    "share": 0.07
+   },
+   "(0.05, 0.1]": {
+    "pred_pct": 6.81,
+    "obs_pct": 5.32,
+    "share": 0.013
+   },
+   "(0.1, 1.0]": {
+    "pred_pct": 16.02,
+    "obs_pct": 6.67,
+    "share": 0.006
+   }
+  },
+  "season_total": {
+   "2017": {
+    "observed": 1487,
+    "iso": 1659,
+    "iso_k": 1717
+   },
+   "2018": {
+    "observed": 1633,
+    "iso": 922,
+    "iso_k": 1007
+   },
+   "2019": {
+    "observed": 1756,
+    "iso": 878,
+    "iso_k": 931
+   },
+   "2020": {
+    "observed": 694,
+    "iso": 1642,
+    "iso_k": 914
+   },
+   "2021": {
+    "observed": 1460,
+    "iso": 1223,
+    "iso_k": 3126
+   },
+   "2022": {
+    "observed": 1977,
+    "iso": 828,
+    "iso_k": 855
+   },
+   "2023": {
+    "observed": 679,
+    "iso": 1310,
+    "iso_k": 1116
+   },
+   "2024": {
+    "observed": 618,
+    "iso": 2101,
+    "iso_k": 1787
+   }
+  },
+  "top1pct_daily": {
+   "obs_pct": 3.37,
+   "times_normal": 5.7,
+   "pred_pct": 3.7
+  },
+  "max_pred_pct": 53.7
+ },
+ "test_2025_26": {
+  "base_rate_pct": 0.855,
+  "brier_skill_hist_vs_doy": 0.0108,
+  "brier_skill_iso_vs_doy": 0.0215,
+  "brier_skill_isok_vs_doy": 0.0198,
+  "reliability_isok": {
+   "(-0.001, 0.002]": {
+    "pred_pct": 0.04,
+    "obs_pct": 0.04,
+    "share": 0.545
+   },
+   "(0.002, 0.005]": {
+    "pred_pct": 0.33,
+    "obs_pct": 0.28,
+    "share": 0.132
+   },
+   "(0.005, 0.01]": {
+    "pred_pct": 0.75,
+    "obs_pct": 0.67,
+    "share": 0.087
+   },
+   "(0.01, 0.02]": {
+    "pred_pct": 1.45,
+    "obs_pct": 1.35,
+    "share": 0.091
+   },
+   "(0.02, 0.05]": {
+    "pred_pct": 3.16,
+    "obs_pct": 3.37,
+    "share": 0.108
+   },
+   "(0.05, 0.1]": {
+    "pred_pct": 6.86,
+    "obs_pct": 6.5,
+    "share": 0.033
+   },
+   "(0.1, 1.0]": {
+    "pred_pct": 12.81,
+    "obs_pct": 8.34,
+    "share": 0.004
+   }
+  },
+  "season_total": {
+   "2025": {
+    "observed": 1836,
+    "iso": 1816,
+    "iso_k": 2270
+   },
+   "2026": {
+    "observed": 1710,
+    "iso": 1296,
+    "iso_k": 1396
+   }
+  },
+  "top1pct_daily": {
+   "obs_pct": 4.47,
+   "times_normal": 5.2,
+   "pred_pct": 4.81
+  },
+  "max_pred_pct": 24.5
+ }
+}

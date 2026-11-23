@@ -1,0 +1,9 @@
+{
+ "variant": "first0.08",
+ "photos": 171,
+ "pixels": 255938,
+ "burned_by_photo": 0.43840305073885083,
+ "window_straddles_photo": 0.922539547811036,
+ "auc_perpixel": 0.5312363636254671,
+ "auc_viirs_closest_dot": 0.8665684568631107
+}

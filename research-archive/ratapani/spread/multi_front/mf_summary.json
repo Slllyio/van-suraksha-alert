@@ -1,0 +1,49 @@
+{
+ "growth": {
+  "n_front_rows": 1310,
+  "n_fires": 146,
+  "median_new24_ha": 24.1,
+  "share_stopped": 0.332824427480916,
+  "model_err_log": 0.9287514430414952,
+  "median_err_log": 1.5305384853448485,
+  "model_spearman": 0.5935945623719466,
+  "dots_added_spearman": 0.42893573478334535,
+  "stop_auc": 0.7984721726534125,
+  "within_2x_model": 0.6969465648854962,
+  "within_2x_median": 0.5893129770992367
+ },
+ "importance_last_fold": {
+  "k": 2529.0,
+  "th": 1828.0,
+  "n_dots_last": 1564.0,
+  "fire_dots": 912.0,
+  "grass_share": 910.0,
+  "frp_last": 844.0,
+  "age_h": 841.0,
+  "forest_share": 772.0
+ },
+ "foot_only": 0.4857162430636432,
+ "single_pred": 0.5284109863226955,
+ "multi_pred": 0.5281081630578428,
+ "single_true": 0.5911985734301363,
+ "multi_true": 0.5503502297205694,
+ "multi_minus_single_pred_ci": [
+  -0.000942218423493157,
+  -8.114155429709562e-05,
+  0.0007719581073604987
+ ],
+ "multi_pred_minus_foot_ci": [
+  0.04701240074848383,
+  0.05249152686493011,
+  0.058358130105916194
+ ],
+ "issues": 813,
+ "far1k_share_median": 0.14995194198625425,
+ "far1k_share_pooled": 0.3358633612630477,
+ "kinds": {
+  "old": 659,
+  "continuing": 572,
+  "separate": 257,
+  "independent": 8
+ }
+}

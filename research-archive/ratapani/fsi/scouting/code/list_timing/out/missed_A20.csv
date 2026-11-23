@@ -1,0 +1,5 @@
+period,first_pass,fires,missed,missed_within_1km_of_flag,missed_within_2_5km,missed_but_caught_by_B06f,caught_A_lost_by_B06f
+held,night,3154,556,125,311,96,138
+held,day,7429,2081,436,1045,294,280
+fwd,night,3199,684,170,381,115,150
+fwd,day,7552,2319,516,1209,356,305

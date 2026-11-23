@@ -1,0 +1,138 @@
+{
+ "issues": 2113,
+ "fires": 759,
+ "pixel_auc": {
+  "dist": 0.7896,
+  "ground": 0.8048,
+  "hls": 0.8115,
+  "prithvi": 0.8223,
+  "nearest": 0.7821
+ },
+ "overlap_mean_by_fire": {
+  "rule": 0.4483,
+  "dist": 0.4611,
+  "ground": 0.4632,
+  "hls": 0.4661,
+  "prithvi": 0.4712
+ },
+ "prithvi_minus_hls_ci": [
+  0.0031,
+  0.0068
+ ],
+ "prithvi_vs_hls_better/worse": [
+  346,
+  226
+ ],
+ "prithvi_minus_ground_ci": [
+  0.0059,
+  0.0099
+ ],
+ "prithvi_vs_ground_better/worse": [
+  389,
+  211
+ ],
+ "hls_minus_ground_ci": [
+  0.0013,
+  0.0046
+ ],
+ "hls_vs_ground_better/worse": [
+  319,
+  237
+ ],
+ "ground_minus_rule_ci": [
+  0.0131,
+  0.0168
+ ],
+ "ground_vs_rule_better/worse": [
+  478,
+  135
+ ],
+ "prithvi_minus_rule_ci": [
+  0.0205,
+  0.0255
+ ],
+ "prithvi_vs_rule_better/worse": [
+  521,
+  131
+ ],
+ "dist_minus_rule_ci": [
+  0.0113,
+  0.0143
+ ],
+ "dist_vs_rule_better/worse": [
+  464,
+  116
+ ],
+ "by_season": {
+  "2017": {
+   "rule": 0.417,
+   "dist": 0.431,
+   "ground": 0.43,
+   "hls": 0.433,
+   "prithvi": 0.438
+  },
+  "2018": {
+   "rule": 0.45,
+   "dist": 0.458,
+   "ground": 0.463,
+   "hls": 0.466,
+   "prithvi": 0.47
+  },
+  "2019": {
+   "rule": 0.477,
+   "dist": 0.489,
+   "ground": 0.492,
+   "hls": 0.496,
+   "prithvi": 0.505
+  },
+  "2020": {
+   "rule": 0.462,
+   "dist": 0.471,
+   "ground": 0.47,
+   "hls": 0.475,
+   "prithvi": 0.478
+  },
+  "2021": {
+   "rule": 0.467,
+   "dist": 0.478,
+   "ground": 0.484,
+   "hls": 0.49,
+   "prithvi": 0.492
+  },
+  "2022": {
+   "rule": 0.47,
+   "dist": 0.48,
+   "ground": 0.48,
+   "hls": 0.48,
+   "prithvi": 0.484
+  },
+  "2023": {
+   "rule": 0.472,
+   "dist": 0.489,
+   "ground": 0.488,
+   "hls": 0.495,
+   "prithvi": 0.51
+  },
+  "2024": {
+   "rule": 0.415,
+   "dist": 0.427,
+   "ground": 0.431,
+   "hls": 0.43,
+   "prithvi": 0.434
+  },
+  "2025": {
+   "rule": 0.483,
+   "dist": 0.494,
+   "ground": 0.497,
+   "hls": 0.497,
+   "prithvi": 0.499
+  },
+  "2026": {
+   "rule": 0.447,
+   "dist": 0.462,
+   "ground": 0.463,
+   "hls": 0.466,
+   "prithvi": 0.474
+  }
+ }
+}

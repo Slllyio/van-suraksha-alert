@@ -1,0 +1,19 @@
+{
+ "fires": 845,
+ "speed_med_all": 20.6,
+ "speed_med_big": 20.6,
+ "day_over_night_ratio_median": 1.0,
+ "n_fires_day_and_night": 470,
+ "speed_day_med": 20.6,
+ "speed_night_med": 20.5,
+ "seeds_active_med": 2.0,
+ "share_fires_multi_start": 0.55,
+ "dupes_removed": 473,
+ "offlattice": 3142,
+ "detections": 15726,
+ "subsquare_with_burning": 7170,
+ "subsquare_abs_offset_scan_med": 0.254,
+ "subsquare_abs_offset_track_med": 0.268,
+ "burning_share_of_footprint_med": 0.077,
+ "arrival_sd_laplace_median_h": 2.23
+}

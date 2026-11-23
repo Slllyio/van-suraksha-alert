@@ -1,0 +1,32 @@
+{
+ "base_prithvi_gain_share": 0.0,
+ "base_top_gain": {
+  "s2d_nbr_chg30": 230225.0,
+  "doy": 227529.0,
+  "prior": 179581.0,
+  "rh3": 147027.0,
+  "nb2_season": 130143.0,
+  "s2d_nbr_last": 120279.0,
+  "aoi_season": 116945.0,
+  "s2d_ndvi_chg30": 113637.0,
+  "p30": 98555.0,
+  "RH2M": 97797.0,
+  "aoi_new7": 70115.0,
+  "elev_m": 69770.0
+ },
+ "prithvi_prithvi_gain_share": 0.163,
+ "prithvi_top_gain": {
+  "s2d_nbr_chg30": 234515.0,
+  "doy": 185634.0,
+  "prior": 178505.0,
+  "rh3": 159164.0,
+  "nb2_season": 119660.0,
+  "s2d_nbr_last": 107542.0,
+  "s2d_ndvi_chg30": 107285.0,
+  "pr2": 106645.0,
+  "aoi_season": 102591.0,
+  "p30": 90521.0,
+  "RH2M": 90143.0,
+  "aoi_new7": 60761.0
+ }
+}

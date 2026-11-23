@@ -1,0 +1,65 @@
+{
+ "fires": 600,
+ "forecasts": 3535,
+ "mean_by_fire": {
+  "learned": 0.5287,
+  "all_265": 0.5135,
+  "all_265_same": 0.5091,
+  "all_500": 0.5095,
+  "all_500_same": 0.4844,
+  "since_prev_265": 0.5229,
+  "since_prev_265_same": 0.5207,
+  "since_prev_500": 0.5223,
+  "since_prev_500_same": 0.5111
+ },
+ "forecasts_with_s3_since_prev": 986,
+ "forecasts_with_new_s3": 636,
+ "in_scar_share": 0.292,
+ "only_forecasts_with_fresh_s3": {
+  "learned": 0.5412,
+  "all_265": 0.5086,
+  "all_265_same": 0.5004,
+  "all_500": 0.4987,
+  "all_500_same": 0.4484,
+  "since_prev_265": 0.521,
+  "since_prev_265_same": 0.5148,
+  "since_prev_500": 0.5171,
+  "since_prev_500_same": 0.484
+ },
+ "only_forecasts_with_new_area_s3": {
+  "n": 636,
+  "learned": 0.5162,
+  "all_265": 0.4778,
+  "all_265_same": 0.468,
+  "all_500": 0.4665,
+  "all_500_same": 0.4067,
+  "since_prev_265": 0.4895,
+  "since_prev_265_same": 0.4825,
+  "since_prev_500": 0.4834,
+  "since_prev_500_same": 0.4433
+ },
+ "all_500_minus_learned_ci": [
+  -0.0223,
+  -0.016
+ ],
+ "all_500_better_worse": [
+  70,
+  305
+ ],
+ "since_prev_500_minus_learned_ci": [
+  -0.0078,
+  -0.005
+ ],
+ "since_prev_500_better_worse": [
+  67,
+  249
+ ],
+ "all_500_same_minus_learned_ci": [
+  -0.0495,
+  -0.0393
+ ],
+ "all_500_same_better_worse": [
+  20,
+  363
+ ]
+}

@@ -1,0 +1,9 @@
+cells 3241
+Jan-14Feb  raw  RR per 1 SD flusher share 1.25 (1.15-1.33) n=566
+Jan-14Feb  ctrl RR per 1 SD flusher share 1.12 (1.04-1.22) n=566
+15Feb-Mar  raw  RR per 1 SD flusher share 1.06 (1.01-1.11) n=2337
+15Feb-Mar  ctrl RR per 1 SD flusher share 1.05 (1.01-1.10) n=2337
+Apr        raw  RR per 1 SD flusher share 0.97 (0.90-1.05) n=880
+Apr        ctrl RR per 1 SD flusher share 1.00 (0.93-1.08) n=880
+May-Jun    raw  RR per 1 SD flusher share 0.97 (0.86-1.09) n=290
+May-Jun    ctrl RR per 1 SD flusher share 0.91 (0.80-1.02) n=290

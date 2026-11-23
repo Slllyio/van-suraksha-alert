@@ -1,0 +1,201 @@
+{
+ "passes_tried": 3469,
+ "used": 235,
+ "skipped": {
+  "no VIIRS look before scene": 1762,
+  "no scar": 1470,
+  "< 3 hot pixels in window": 2
+ },
+ "all": {
+  "n": 235,
+  "events": 206,
+  "blocks_only": 0.3117,
+  "rule": 0.3547,
+  "scene_rule": 0.4851,
+  "same_area": 0.4636,
+  "burnt_in_scar": 0.6987,
+  "burnt_ha": 184.64,
+  "new_ha": 166.44,
+  "newx_scene": 0.094,
+  "newx_same": 0.1177,
+  "newx_rule": 0.0083,
+  "scene_rule_vs_same_area_ci": [
+   0.0239,
+   0.0515
+  ],
+  "scene_rule_vs_same_area_better/worse": [
+   151,
+   68
+  ],
+  "scene_rule_vs_rule_ci": [
+   0.0906,
+   0.1252
+  ],
+  "scene_rule_vs_rule_better/worse": [
+   193,
+   31
+  ],
+  "newx_scene_vs_newx_same_ci": [
+   -0.0993,
+   -0.0243
+  ],
+  "newx_scene_vs_newx_same_better/worse": [
+   103,
+   124
+  ]
+ },
+ "new>=1ha": {
+  "n": 234,
+  "events": 205,
+  "blocks_only": 0.3117,
+  "rule": 0.3547,
+  "scene_rule": 0.4865,
+  "same_area": 0.4645,
+  "burnt_in_scar": 0.7007,
+  "burnt_ha": 189.52,
+  "new_ha": 168.98,
+  "newx_scene": 0.0958,
+  "newx_same": 0.1183,
+  "newx_rule": 0.0084,
+  "scene_rule_vs_same_area_ci": [
+   0.0241,
+   0.0516
+  ],
+  "scene_rule_vs_same_area_better/worse": [
+   151,
+   68
+  ],
+  "scene_rule_vs_rule_ci": [
+   0.0921,
+   0.1262
+  ],
+  "scene_rule_vs_rule_better/worse": [
+   193,
+   30
+  ],
+  "newx_scene_vs_newx_same_ci": [
+   -0.0979,
+   -0.0256
+  ],
+  "newx_scene_vs_newx_same_better/worse": [
+   103,
+   124
+  ]
+ },
+ "early_<=2_looks": {
+  "n": 161,
+  "events": 138,
+  "blocks_only": 0.2537,
+  "rule": 0.3,
+  "scene_rule": 0.4823,
+  "same_area": 0.425,
+  "burnt_in_scar": 0.7364,
+  "burnt_ha": 117.8,
+  "new_ha": 158.56,
+  "newx_scene": 0.102,
+  "newx_same": 0.0869,
+  "newx_rule": 0.0096,
+  "scene_rule_vs_same_area_ci": [
+   0.0322,
+   0.0674
+  ],
+  "scene_rule_vs_same_area_better/worse": [
+   113,
+   39
+  ],
+  "scene_rule_vs_rule_ci": [
+   0.1108,
+   0.1543
+  ],
+  "scene_rule_vs_rule_better/worse": [
+   140,
+   12
+  ],
+  "newx_scene_vs_newx_same_ci": [
+   -0.0543,
+   0.0273
+  ],
+  "newx_scene_vs_newx_same_better/worse": [
+   83,
+   73
+  ]
+ },
+ "by_sensor": {
+  "ls": {
+   "n": 35,
+   "events": 32,
+   "blocks_only": 0.2385,
+   "rule": 0.3259,
+   "scene_rule": 0.4433,
+   "same_area": 0.469,
+   "burnt_in_scar": 0.4063,
+   "burnt_ha": 223.4,
+   "new_ha": 238.52,
+   "newx_scene": 0.0696,
+   "newx_same": 0.1467,
+   "newx_rule": 0.0198,
+   "scene_rule_vs_same_area_ci": [
+    -0.0567,
+    0.0347
+   ],
+   "scene_rule_vs_same_area_better/worse": [
+    16,
+    15
+   ],
+   "scene_rule_vs_rule_ci": [
+    0.0477,
+    0.132
+   ],
+   "scene_rule_vs_rule_better/worse": [
+    28,
+    6
+   ],
+   "newx_scene_vs_newx_same_ci": [
+    -0.2366,
+    -0.025
+   ],
+   "newx_scene_vs_newx_same_better/worse": [
+    12,
+    21
+   ]
+  },
+  "s2": {
+   "n": 200,
+   "events": 174,
+   "blocks_only": 0.314,
+   "rule": 0.3553,
+   "scene_rule": 0.5116,
+   "same_area": 0.4608,
+   "burnt_in_scar": 0.7133,
+   "burnt_ha": 183.6,
+   "new_ha": 144.88,
+   "newx_scene": 0.1102,
+   "newx_same": 0.1126,
+   "newx_rule": 0.0055,
+   "scene_rule_vs_same_area_ci": [
+    0.032,
+    0.0592
+   ],
+   "scene_rule_vs_same_area_better/worse": [
+    135,
+    53
+   ],
+   "scene_rule_vs_rule_ci": [
+    0.0929,
+    0.1288
+   ],
+   "scene_rule_vs_rule_better/worse": [
+    165,
+    25
+   ],
+   "newx_scene_vs_newx_same_ci": [
+    -0.0898,
+    -0.0087
+   ],
+   "newx_scene_vs_newx_same_better/worse": [
+    91,
+    103
+   ]
+  }
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "distance only": 0.228,
+ "physics time only": 0.24,
+ "distance + physics time": 0.239,
+ "importance": {
+  "dist": 0.234,
+  "t_phys": 0.222,
+  "wind_al": 0.079,
+  "ws_mean": 0.073,
+  "n_det": 0.062,
+  "rh_min": 0.061,
+  "dz": 0.054,
+  "doy": 0.05,
+  "m1_min": 0.043,
+  "nb_dist": 0.036,
+  "bfrac": 0.033,
+  "burned_prev": 0.032,
+  "wc": 0.008,
+  "slope": 0.007,
+  "burnable": 0.005
+ },
+ "all (physics + geometry + fuel + weather)": 0.241,
+ "all without wind": 0.252
+}

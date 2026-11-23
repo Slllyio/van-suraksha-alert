@@ -1,0 +1,91 @@
+{
+ "photos": 340,
+ "fires": 283,
+ "all": {
+  "n": 340,
+  "nn": {
+   "acc": 0.844,
+   "auc": 0.7185,
+   "burned_share_error": 0.038
+  },
+  "blend_flat": {
+   "acc": 0.8427,
+   "auc": 0.7259,
+   "burned_share_error": 0.045
+  },
+  "blend_modis": {
+   "acc": 0.8443,
+   "auc": 0.7227,
+   "burned_share_error": 0.037
+  },
+  "blend_pooled": {
+   "acc": 0.8449,
+   "auc": 0.7246,
+   "burned_share_error": 0.037
+  },
+  "blend_pooled - blend_modis (acc)": "+0.0005 (+0.0002 to +0.0010)",
+  "blend_pooled - blend_modis (auc)": "+0.0019 (+0.0003 to +0.0041)",
+  "blend_pooled - blend_flat (acc)": "+0.0026 (+0.0004 to +0.0052)",
+  "blend_pooled - blend_flat (auc)": "-0.0014 (-0.0034 to +0.0000)",
+  "blend_modis - blend_flat (acc)": "+0.0021 (-0.0001 to +0.0045)",
+  "blend_modis - blend_flat (auc)": "-0.0033 (-0.0075 to -0.0004)"
+ },
+ "look before and after": {
+  "n": 171,
+  "nn": {
+   "acc": 0.8266,
+   "auc": 0.7835,
+   "burned_share_error": 0.042
+  },
+  "blend_flat": {
+   "acc": 0.8239,
+   "auc": 0.8193,
+   "burned_share_error": 0.056
+  },
+  "blend_modis": {
+   "acc": 0.8272,
+   "auc": 0.8167,
+   "burned_share_error": 0.039
+  },
+  "blend_pooled": {
+   "acc": 0.8284,
+   "auc": 0.8185,
+   "burned_share_error": 0.04
+  },
+  "blend_pooled - blend_modis (acc)": "+0.0011 (+0.0004 to +0.0020)",
+  "blend_pooled - blend_modis (auc)": "+0.0017 (+0.0004 to +0.0034)",
+  "blend_pooled - blend_flat (acc)": "+0.0056 (+0.0008 to +0.0110)",
+  "blend_pooled - blend_flat (auc)": "-0.0009 (-0.0022 to +0.0001)",
+  "blend_modis - blend_flat (acc)": "+0.0045 (-0.0003 to +0.0097)",
+  "blend_modis - blend_flat (auc)": "-0.0026 (-0.0056 to -0.0004)"
+ },
+ "big fires": {
+  "n": 77,
+  "nn": {
+   "acc": 0.8292,
+   "auc": 0.7852,
+   "burned_share_error": 0.065
+  },
+  "blend_flat": {
+   "acc": 0.8288,
+   "auc": 0.7767,
+   "burned_share_error": 0.076
+  },
+  "blend_modis": {
+   "acc": 0.8309,
+   "auc": 0.768,
+   "burned_share_error": 0.064
+  },
+  "blend_pooled": {
+   "acc": 0.8316,
+   "auc": 0.7729,
+   "burned_share_error": 0.065
+  },
+  "blend_pooled - blend_modis (acc)": "+0.0006 (-0.0004 to +0.0017)",
+  "blend_pooled - blend_modis (auc)": "+0.0049 (-0.0001 to +0.0131)",
+  "blend_pooled - blend_flat (acc)": "+0.0040 (+0.0000 to +0.0080)",
+  "blend_pooled - blend_flat (auc)": "-0.0041 (-0.0114 to +0.0001)",
+  "blend_modis - blend_flat (acc)": "+0.0034 (-0.0013 to +0.0074)",
+  "blend_modis - blend_flat (auc)": "-0.0091 (-0.0245 to +0.0001)"
+ }
+}

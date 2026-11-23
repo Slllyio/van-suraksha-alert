@@ -1,0 +1,306 @@
+{
+ "grid12": {
+  "all": {
+   "hidden_flagged_passes": 160,
+   "mean": {
+    "idw2": [
+     0.6884,
+     0.2197
+    ],
+    "idw4": [
+     0.6976,
+     0.1937
+    ],
+    "inversion": [
+     0.7005,
+     0.1922
+    ],
+    "kernel": [
+     0.8541,
+     null
+    ],
+    "nearest": [
+     0.7158,
+     0.195
+    ]
+   },
+   "auc_node_inversion_minus_nearest": [
+    -0.0153,
+    -0.0287,
+    -0.0048
+   ],
+   "logloss_node_inversion_minus_nearest": [
+    -0.0028,
+    -0.0065,
+    0.0007
+   ],
+   "auc_node_inversion_minus_idw4": [
+    0.0029,
+    -0.0088,
+    0.0148
+   ],
+   "logloss_node_inversion_minus_idw4": [
+    -0.0015,
+    -0.0044,
+    0.0009
+   ],
+   "auc_node_inversion_minus_kernel": [
+    -0.1536,
+    -0.2074,
+    -0.1061
+   ]
+  },
+  "gap<=2h": {
+   "hidden_flagged_passes": 150,
+   "mean": {
+    "idw2": [
+     0.6985,
+     0.2197
+    ],
+    "idw4": [
+     0.7088,
+     0.1917
+    ],
+    "inversion": [
+     0.7074,
+     0.1897
+    ],
+    "kernel": [
+     0.8645,
+     null
+    ],
+    "nearest": [
+     0.7222,
+     0.1917
+    ]
+   },
+   "auc_node_inversion_minus_nearest": [
+    -0.0148,
+    -0.0291,
+    -0.0031
+   ],
+   "logloss_node_inversion_minus_nearest": [
+    -0.0019,
+    -0.0062,
+    0.0017
+   ],
+   "auc_node_inversion_minus_idw4": [
+    -0.0014,
+    -0.0135,
+    0.0099
+   ],
+   "logloss_node_inversion_minus_idw4": [
+    -0.0019,
+    -0.005,
+    0.0006
+   ],
+   "auc_node_inversion_minus_kernel": [
+    -0.1572,
+    -0.2108,
+    -0.1084
+   ]
+  },
+  "gap>2h": {
+   "hidden_flagged_passes": 10,
+   "mean": {
+    "idw2": [
+     0.5361,
+     0.2205
+    ],
+    "idw4": [
+     0.5305,
+     0.2248
+    ],
+    "inversion": [
+     0.5977,
+     0.2289
+    ],
+    "kernel": [
+     0.6982,
+     null
+    ],
+    "nearest": [
+     0.6197,
+     0.2442
+    ]
+   },
+   "auc_node_inversion_minus_nearest": [
+    -0.022,
+    -0.0432,
+    -0.0072
+   ],
+   "logloss_node_inversion_minus_nearest": [
+    -0.0154,
+    -0.0289,
+    -0.003
+   ],
+   "auc_node_inversion_minus_idw4": [
+    0.0672,
+    0.0196,
+    0.1194
+   ],
+   "logloss_node_inversion_minus_idw4": [
+    0.0041,
+    -0.0013,
+    0.0173
+   ],
+   "auc_node_inversion_minus_kernel": [
+    -0.1005,
+    -0.2457,
+    0.1075
+   ]
+  }
+ },
+ "ring": {
+  "all": {
+   "hidden_flagged_passes": 160,
+   "mean": {
+    "idw2": [
+     0.6764,
+     0.2784
+    ],
+    "idw4": [
+     0.6837,
+     0.2457
+    ],
+    "inversion": [
+     0.6869,
+     0.2437
+    ],
+    "kernel": [
+     0.836,
+     null
+    ],
+    "nearest": [
+     0.7008,
+     0.2492
+    ]
+   },
+   "auc_node_inversion_minus_nearest": [
+    -0.0139,
+    -0.0253,
+    -0.0046
+   ],
+   "logloss_node_inversion_minus_nearest": [
+    -0.0056,
+    -0.0109,
+    -0.0008
+   ],
+   "auc_node_inversion_minus_idw4": [
+    0.0032,
+    -0.0088,
+    0.0151
+   ],
+   "logloss_node_inversion_minus_idw4": [
+    -0.002,
+    -0.006,
+    0.0011
+   ],
+   "auc_node_inversion_minus_kernel": [
+    -0.1491,
+    -0.2024,
+    -0.0995
+   ]
+  },
+  "gap<=2h": {
+   "hidden_flagged_passes": 150,
+   "mean": {
+    "idw2": [
+     0.6872,
+     0.2776
+    ],
+    "idw4": [
+     0.6951,
+     0.2423
+    ],
+    "inversion": [
+     0.6955,
+     0.24
+    ],
+    "kernel": [
+     0.8476,
+     null
+    ],
+    "nearest": [
+     0.7086,
+     0.2446
+    ]
+   },
+   "auc_node_inversion_minus_nearest": [
+    -0.0131,
+    -0.0243,
+    -0.0039
+   ],
+   "logloss_node_inversion_minus_nearest": [
+    -0.0047,
+    -0.0102,
+    0.0003
+   ],
+   "auc_node_inversion_minus_idw4": [
+    0.0004,
+    -0.0125,
+    0.0134
+   ],
+   "logloss_node_inversion_minus_idw4": [
+    -0.0024,
+    -0.0065,
+    0.001
+   ],
+   "auc_node_inversion_minus_kernel": [
+    -0.1521,
+    -0.2008,
+    -0.1002
+   ]
+  },
+  "gap>2h": {
+   "hidden_flagged_passes": 10,
+   "mean": {
+    "idw2": [
+     0.5138,
+     0.2909
+    ],
+    "idw4": [
+     0.5128,
+     0.2962
+    ],
+    "inversion": [
+     0.5578,
+     0.2988
+    ],
+    "kernel": [
+     0.6629,
+     null
+    ],
+    "nearest": [
+     0.5844,
+     0.3182
+    ]
+   },
+   "auc_node_inversion_minus_nearest": [
+    -0.0266,
+    -0.0543,
+    -0.004
+   ],
+   "logloss_node_inversion_minus_nearest": [
+    -0.0194,
+    -0.0409,
+    -0.0035
+   ],
+   "auc_node_inversion_minus_idw4": [
+    0.045,
+    0.005,
+    0.1009
+   ],
+   "logloss_node_inversion_minus_idw4": [
+    0.0026,
+    -0.0018,
+    0.0113
+   ],
+   "auc_node_inversion_minus_kernel": [
+    -0.1052,
+    -0.2464,
+    0.1306
+   ]
+  }
+ }
+}

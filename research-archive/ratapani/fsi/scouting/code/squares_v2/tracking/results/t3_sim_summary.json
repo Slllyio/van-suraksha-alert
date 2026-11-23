@@ -1,0 +1,41 @@
+{
+ "mae_start_nearest": 16.273,
+ "acc_start_nearest": 0.781,
+ "mae_blend": 15.041,
+ "acc_blend": 0.746,
+ "mae_inv_firms": 15.825,
+ "acc_inv_firms": 0.795,
+ "mae_inv_mask": 15.818,
+ "acc_inv_mask": 0.795,
+ "fires": 11,
+ "mae_inv_firms_minus_start_nearest": [
+  -0.448,
+  -0.708,
+  -0.256
+ ],
+ "acc_inv_firms_minus_start_nearest": [
+  0.014,
+  0.002,
+  0.026
+ ],
+ "mae_inv_firms_minus_blend": [
+  0.784,
+  0.02,
+  1.626
+ ],
+ "acc_inv_firms_minus_blend": [
+  0.049,
+  0.008,
+  0.1
+ ],
+ "mae_inv_mask_minus_inv_firms": [
+  -0.007,
+  -0.03,
+  0.012
+ ],
+ "acc_inv_mask_minus_inv_firms": [
+  0.0,
+  -0.0,
+  0.001
+ ]
+}

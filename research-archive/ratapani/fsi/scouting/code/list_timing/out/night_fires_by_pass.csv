@@ -1,0 +1,12 @@
+period,fires,n,night_first,night_pct,frp_first_med_night,frp_first_med_day
+held,all,10583,3154.0,29.8,1.33,5.42
+held,brand-new,2157,389.0,18.03,1.25,5.34
+held,other,8426,2765.0,32.82,1.35,5.45
+held,season 2022,4904,,35.26,,
+held,season 2023,2756,,26.92,,
+held,season 2024,2923,,23.37,,
+fwd,all,10751,3199.0,29.76,1.3,5.58
+fwd,brand-new,1537,307.0,19.97,1.11,5.8
+fwd,other,9214,2892.0,31.39,1.32,5.55
+fwd,season 2025,6092,,30.22,,
+fwd,season 2026,4659,,29.15,,

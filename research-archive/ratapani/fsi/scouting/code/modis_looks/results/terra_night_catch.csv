@@ -1,0 +1,6 @@
+set,terra_night_fire_passes,seen_by_viirs_0130_after,seen_by_viirs_1330_before,terra_only_neither,p_0130_given_1330,p_0130_given_1330_and_terraN,p_0130_given_1330_no_terraN,share_1330_fires_with_terraN,n_1330
+Ratapani v2 fires,44,0.795,0.614,0.136,0.19,0.889,0.185,0.007,3759
+Ratapani big fires (146),10,0.8,0.8,0.1,0.484,0.875,0.477,0.016,488
+all-MP forest fires,1976,0.865,0.544,0.071,0.135,0.883,0.131,0.006,178564
+"all-MP big (>=4 looks, >=10 pts)",917,0.966,0.83,0.009,0.609,0.97,0.595,0.038,19783
+"all-MP, Ratapani box",69,0.812,0.435,0.101,0.147,0.8,0.144,0.004,7650

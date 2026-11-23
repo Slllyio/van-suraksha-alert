@@ -1,0 +1,148 @@
+{
+ "passes_tried": 3469,
+ "used": 206,
+ "skipped": {
+  "VIIRS saw it before the scene": 1707,
+  "no scar": 1540,
+  "< 3 hot pixels in window": 14,
+  "no clear before-fire scene": 1,
+  "scar < 2 ha": 1
+ },
+ "all": {
+  "n": 206,
+  "events": 191,
+  "lead_h": 2.19,
+  "scene_only": 0.2152,
+  "scene_only_mean": 0.2358,
+  "viirs_first": 0.4698,
+  "viirs_first_mean": 0.4622,
+  "viirs_same_area": 0.2892,
+  "viirs_same_area_mean": 0.2969,
+  "both": 0.4354,
+  "both_mean": 0.4434,
+  "burnt_in_scar": 0.0214,
+  "burnt_in_scar_mean": 0.1327,
+  "area_scene": 39.16,
+  "area_scene_mean": 61.2825,
+  "area_viirs": 117.76,
+  "area_viirs_mean": 147.0849,
+  "truth_ha": 82.2,
+  "truth_ha_mean": 147.3023,
+  "scene_only_vs_viirs_first_ci": [
+   -0.2534,
+   -0.1999
+  ],
+  "scene_only_vs_viirs_first_better/worse": [
+   21,
+   185
+  ],
+  "scene_only_vs_viirs_same_area_ci": [
+   -0.084,
+   -0.039
+  ],
+  "scene_only_vs_viirs_same_area_better/worse": [
+   71,
+   125
+  ],
+  "both_vs_viirs_first_ci": [
+   -0.0274,
+   -0.0109
+  ],
+  "both_vs_viirs_first_better/worse": [
+   48,
+   110
+  ]
+ },
+ "by_sensor": {
+  "ls": {
+   "n": 28,
+   "events": 27,
+   "lead_h": 2.65,
+   "scene_only": 0.2347,
+   "scene_only_mean": 0.2639,
+   "viirs_first": 0.5067,
+   "viirs_first_mean": 0.4723,
+   "viirs_same_area": 0.2973,
+   "viirs_same_area_mean": 0.3168,
+   "both": 0.4468,
+   "both_mean": 0.46,
+   "burnt_in_scar": 0.0284,
+   "burnt_in_scar_mean": 0.1135,
+   "area_scene": 47.04,
+   "area_scene_mean": 50.82,
+   "area_viirs": 102.14,
+   "area_viirs_mean": 129.1414,
+   "truth_ha": 66.6,
+   "truth_ha_mean": 109.0129,
+   "scene_only_vs_viirs_first_ci": [
+    -0.2655,
+    -0.1487
+   ],
+   "scene_only_vs_viirs_first_better/worse": [
+    3,
+    25
+   ],
+   "scene_only_vs_viirs_same_area_ci": [
+    -0.096,
+    -0.0161
+   ],
+   "scene_only_vs_viirs_same_area_better/worse": [
+    11,
+    17
+   ],
+   "both_vs_viirs_first_ci": [
+    -0.0258,
+    0.0012
+   ],
+   "both_vs_viirs_first_better/worse": [
+    9,
+    13
+   ]
+  },
+  "s2": {
+   "n": 178,
+   "events": 164,
+   "lead_h": 2.18,
+   "scene_only": 0.2019,
+   "scene_only_mean": 0.2314,
+   "viirs_first": 0.4648,
+   "viirs_first_mean": 0.4606,
+   "viirs_same_area": 0.2888,
+   "viirs_same_area_mean": 0.2938,
+   "both": 0.4314,
+   "both_mean": 0.4408,
+   "burnt_in_scar": 0.0202,
+   "burnt_in_scar_mean": 0.1358,
+   "area_scene": 38.6,
+   "area_scene_mean": 62.9283,
+   "area_viirs": 118.84,
+   "area_viirs_mean": 149.9074,
+   "truth_ha": 88.94,
+   "truth_ha_mean": 153.3254,
+   "scene_only_vs_viirs_first_ci": [
+    -0.2586,
+    -0.198
+   ],
+   "scene_only_vs_viirs_first_better/worse": [
+    18,
+    160
+   ],
+   "scene_only_vs_viirs_same_area_ci": [
+    -0.0873,
+    -0.036
+   ],
+   "scene_only_vs_viirs_same_area_better/worse": [
+    60,
+    108
+   ],
+   "both_vs_viirs_first_ci": [
+    -0.0291,
+    -0.011
+   ],
+   "both_vs_viirs_first_better/worse": [
+    39,
+    97
+   ]
+  }
+ }
+}

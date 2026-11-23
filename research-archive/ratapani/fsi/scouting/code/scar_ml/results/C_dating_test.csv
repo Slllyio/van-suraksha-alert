@@ -1,0 +1,10 @@
+subset,method,pixels,dated_share,median_abs_err,within_2d,window_median,window_holds_viirs
+all pixels,per-pixel (first0.08),87193,0.8881928103576485,1.5,0.6654777333042791,5.0,0.814595208330944
+all pixels,"current: pair window (pre, post]",98169,1.0,1.0,0.6941804439283277,5.0,0.8522649716305555
+all pixels,alert day of the chip event,98169,1.0,1.0,0.8131691267100613,0.0,0.4760056637023908
+pixel VIIRS day >= 3 d from the chip alert day,per-pixel (first0.08),16015,0.8731803064173164,8.5,0.14392756790508898,5.0,0.31539182016859196
+pixel VIIRS day >= 3 d from the chip alert day,"current: pair window (pre, post]",18341,1.0,8.0,0.14235865001908293,6.0,0.33040728422659615
+pixel VIIRS day >= 3 d from the chip alert day,alert day of the chip event,18341,1.0,8.0,0.0,0.0,0.0
+pixel VIIRS day within 2 d of alert day,per-pixel (first0.08),71178,0.8916420303652853,1.0,0.7828261541487538,5.0,0.9269156199949422
+pixel VIIRS day within 2 d of alert day,"current: pair window (pre, post]",79828,1.0,1.0,0.8209650749110587,5.0,0.9721651550834294
+pixel VIIRS day within 2 d of alert day,alert day of the chip event,79828,1.0,0.0,1.0,0.0,0.5853710477526682

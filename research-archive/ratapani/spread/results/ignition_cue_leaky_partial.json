@@ -1,0 +1,26 @@
+{
+ "label": "leaky_partial",
+ "n_fits": 174,
+ "n_matched": 158,
+ "n_far": 115,
+ "ign_d_median_m": 349.2281575530088,
+ "lead_h_median": 5.5,
+ "all": {
+  "n": 115,
+  "within45": 0.209,
+  "within90": 0.409,
+  "mean_cos": -0.114
+ },
+ "start >= 200 m from first pass": {
+  "n": 89,
+  "within45": 0.202,
+  "within90": 0.393,
+  "mean_cos": -0.142
+ },
+ "start >= 200 m and spread < 500 m": {
+  "n": 40,
+  "within45": 0.225,
+  "within90": 0.475,
+  "mean_cos": -0.072
+ }
+}

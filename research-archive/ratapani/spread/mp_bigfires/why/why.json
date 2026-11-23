@@ -1,0 +1,335 @@
+{
+ "fires": 600,
+ "spearman_with_score": {
+  "scar_ha": -0.104,
+  "looks": 0.164,
+  "dots_per_look": 0.2,
+  "dots_per_100ha": 0.366,
+  "scar_within_265m": 0.582,
+  "scar_within_600m": 0.581,
+  "burn_hours": 0.145,
+  "compact": 0.287,
+  "frp_median": 0.066,
+  "night_share": 0.014,
+  "month": 0.024,
+  "d_road": -0.034,
+  "d_major": -0.007,
+  "d_village": -0.022,
+  "villages_5k": 0.027,
+  "road_km_5k": 0.055,
+  "settle_5k": -0.052,
+  "farm_5k": 0.028,
+  "forest_5k": -0.064,
+  "d_edge_in": -0.026,
+  "rugged": 0.114,
+  "slope": 0.13,
+  "elev": -0.006,
+  "lc_teak": 0.048,
+  "lc_sal": -0.101,
+  "lc_bamboo": -0.004,
+  "lc_grass": -0.01,
+  "lc_degraded": -0.037
+ },
+ "top_vs_bottom_quarter_median": {
+  "score": [
+   0.656,
+   0.378
+  ],
+  "scar_ha": [
+   549.1,
+   670.12
+  ],
+  "looks": [
+   7.0,
+   5.0
+  ],
+  "dots_per_look": [
+   4.75,
+   3.75
+  ],
+  "dots_per_100ha": [
+   5.696,
+   3.256
+  ],
+  "scar_within_265m": [
+   0.598,
+   0.32
+  ],
+  "scar_within_600m": [
+   0.923,
+   0.591
+  ],
+  "burn_hours": [
+   132.575,
+   96.417
+  ],
+  "compact": [
+   0.024,
+   0.013
+  ],
+  "frp_median": [
+   3.98,
+   3.445
+  ],
+  "night_share": [
+   0.464,
+   0.44
+  ],
+  "month": [
+   3.0,
+   3.0
+  ],
+  "d_road": [
+   1.384,
+   1.387
+  ],
+  "d_major": [
+   2.761,
+   2.93
+  ],
+  "d_village": [
+   2.21,
+   2.246
+  ],
+  "villages_5k": [
+   1.791,
+   1.763
+  ],
+  "road_km_5k": [
+   0.08,
+   0.072
+  ],
+  "settle_5k": [
+   0.001,
+   0.001
+  ],
+  "farm_5k": [
+   0.121,
+   0.134
+  ],
+  "forest_5k": [
+   0.808,
+   0.838
+  ],
+  "d_edge_in": [
+   1.364,
+   1.475
+  ],
+  "rugged": [
+   27.342,
+   21.006
+  ],
+  "slope": [
+   4.997,
+   3.758
+  ],
+  "elev": [
+   469.466,
+   476.285
+  ],
+  "lc_teak": [
+   0.072,
+   0.011
+  ],
+  "lc_sal": [
+   0.0,
+   0.0
+  ],
+  "lc_bamboo": [
+   0.0,
+   0.0
+  ],
+  "lc_grass": [
+   0.0,
+   0.0
+  ],
+  "lc_degraded": [
+   0.0,
+   0.0
+  ]
+ },
+ "heldout_R2": {
+  "fire shape in satellite record": 0.495,
+  "access + ground": -0.098,
+  "both": 0.478,
+  "only dot coverage (scar_within_265m)": 0.388
+ },
+ "access_vs_score_after_coverage": {
+  "d_road": -0.04,
+  "d_major": -0.032,
+  "d_village": 0.014,
+  "villages_5k": -0.005,
+  "road_km_5k": 0.053,
+  "settle_5k": -0.044,
+  "farm_5k": -0.007,
+  "forest_5k": -0.008,
+  "d_edge_in": 0.029,
+  "rugged": 0.022,
+  "slope": 0.031,
+  "elev": -0.007,
+  "lc_teak": 0.063,
+  "lc_sal": -0.059,
+  "lc_bamboo": 0.028,
+  "lc_grass": -0.065,
+  "lc_degraded": 0.027
+ },
+ "coverage_vs_access": {
+  "d_road": -0.023,
+  "d_village": -0.047,
+  "villages_5k": 0.053,
+  "d_edge_in": -0.068,
+  "rugged": 0.143
+ },
+ "by_remoteness": {
+  "near villages": {
+   "score": 0.539,
+   "scar_ha": 540.22,
+   "looks": 6.0,
+   "scar_within_265m": 0.496,
+   "d_village": 1.565,
+   "d_road": 1.05
+  },
+  "middle": {
+   "score": 0.557,
+   "scar_ha": 587.84,
+   "looks": 7.0,
+   "scar_within_265m": 0.531,
+   "d_village": 2.274,
+   "d_road": 1.384
+  },
+  "remote": {
+   "score": 0.532,
+   "scar_ha": 680.04,
+   "looks": 6.0,
+   "scar_within_265m": 0.484,
+   "d_village": 3.572,
+   "d_road": 1.748
+  }
+ },
+ "by_division_top": {
+  "Jabalpur": {
+   "median": 0.409,
+   "size": 8
+  },
+  "Khandwa": {
+   "median": 0.491,
+   "size": 57
+  },
+  "South_Balaghat": {
+   "median": 0.501,
+   "size": 23
+  },
+  "Katni": {
+   "median": 0.504,
+   "size": 10
+  },
+  "East_Chhindwara": {
+   "median": 0.507,
+   "size": 13
+  },
+  "South_Seoni": {
+   "median": 0.508,
+   "size": 13
+  },
+  "North_Balaghat": {
+   "median": 0.519,
+   "size": 20
+  },
+  "Barghat Project": {
+   "median": 0.523,
+   "size": 11
+  },
+  "Satna": {
+   "median": 0.523,
+   "size": 33
+  },
+  "West_Chhindwara": {
+   "median": 0.53,
+   "size": 9
+  },
+  "Umaria": {
+   "median": 0.532,
+   "size": 12
+  },
+  "Harda": {
+   "median": 0.532,
+   "size": 8
+  },
+  "West_Mandla": {
+   "median": 0.534,
+   "size": 8
+  },
+  "Damoh": {
+   "median": 0.536,
+   "size": 15
+  },
+  "Narsinghpur": {
+   "median": 0.536,
+   "size": 10
+  },
+  "East_Mandla": {
+   "median": 0.543,
+   "size": 8
+  },
+  "Chhatarpur": {
+   "median": 0.544,
+   "size": 27
+  },
+  "South_Betul": {
+   "median": 0.546,
+   "size": 13
+  },
+  "Rewa": {
+   "median": 0.548,
+   "size": 16
+  },
+  "West_Betul": {
+   "median": 0.549,
+   "size": 8
+  },
+  "South_Chhindwara": {
+   "median": 0.553,
+   "size": 23
+  },
+  "Barwah": {
+   "median": 0.565,
+   "size": 8
+  },
+  "South_Panna": {
+   "median": 0.566,
+   "size": 9
+  },
+  "Dewas": {
+   "median": 0.571,
+   "size": 36
+  },
+  "Sehore": {
+   "median": 0.575,
+   "size": 11
+  },
+  "Dindori": {
+   "median": 0.58,
+   "size": 18
+  },
+  "North_Panna": {
+   "median": 0.581,
+   "size": 18
+  },
+  "Burhanpur": {
+   "median": 0.582,
+   "size": 26
+  },
+  "Hoshangabad": {
+   "median": 0.586,
+   "size": 11
+  },
+  "North_Betul": {
+   "median": 0.638,
+   "size": 22
+  },
+  "Kuno_Palpur": {
+   "median": 0.643,
+   "size": 9
+  }
+ }
+}

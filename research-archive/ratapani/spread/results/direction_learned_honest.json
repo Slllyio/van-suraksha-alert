@@ -1,0 +1,31 @@
+{
+ "fires": 1213,
+ "runs300": 768,
+ "learn_within45": 51.8,
+ "learn_within90": 78.5,
+ "circle_within45": 30.9,
+ "circle_within90": 56.6,
+ "phys_within45": 32.0,
+ "phys_within90": 59.2,
+ "learn_free_within45": 47.4,
+ "learn_free_within90": 74.6,
+ "learn_within45_by_run": {
+  "300-800": [
+   608,
+   49.0
+  ],
+  "800-1500": [
+   142,
+   61.3
+  ],
+  ">1500": [
+   18,
+   72.2
+  ]
+ },
+ "run_m_median_learn_vs_scar": [
+  167,
+  550
+ ],
+ "run_corr": 0.226
+}

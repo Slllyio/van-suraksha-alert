@@ -1,0 +1,203 @@
+{
+ "noise_kappa_by_segment": {
+  "12h_day>night": 8.13,
+  "12h_night>day": 6.23,
+  "small_day": 1.36,
+  "small_night": 0.9,
+  "terra_day": 3.48,
+  "terra_night": 3.33
+ },
+ "clock": "/mnt/project-files/ratapani/fsi/scouting/code/squares_v2/pooled/results/diurnal_fit.json",
+ "correction": "part A per-pair edge term (factors not applied on top)",
+ "edge_term": "part A edge term (185920 pairs, file of 17 Oct 13:34 UTC)",
+ "pairs": 364053,
+ "class_model": {
+  "agriculture|D": 10.88,
+  "agriculture|N": 10.98,
+  "degraded/bamboo|D": 18.64,
+  "degraded/bamboo|N": 20.29,
+  "dry deciduous|D": 22.53,
+  "dry deciduous|N": 21.31,
+  "moist deciduous|D": 21.55,
+  "moist deciduous|N": 21.74,
+  "other forest|D": 28.45,
+  "other forest|N": 21.3,
+  "other non-forest|D": 10.1,
+  "other non-forest|N": 10.49,
+  "sal|D": 18.44,
+  "sal|N": 18.73,
+  "scrub/grass|D": 15.46,
+  "scrub/grass|N": 16.42,
+  "teak|D": 20.2,
+  "teak|N": 20.42,
+  "month=1": -8.48,
+  "month=2": -1.71,
+  "month=4": 0.95,
+  "month=5": -2.23,
+  "month=6": -4.74,
+  "pixb=2": -1.73,
+  "pixb=5-9": 3.29,
+  "pixb=10+": 9.29,
+  "frpb=f1": -3.15,
+  "frpb=f2": -1.63,
+  "frpb=f4": 1.94,
+  "frpb=f5": 3.95,
+  "ageb=<13h": 2.35,
+  "ageb=25-49h": -4.7,
+  "ageb=>49h": -6.86
+ },
+ "class_model_nuisance_m": {
+  "m_per_doubling|D": -5.3,
+  "m_per_doubling|N": -10.8,
+  "terra_offset|D": 35.6,
+  "terra_offset|N": 15.9
+ },
+ "flat_daily_mean_m_h": 16.31,
+ "class_loso_corr_obs_pred_per_season_segment": 0.946,
+ "class": {
+  "fires": 92872,
+  "design_effect_by_pairs": {
+   "(0.0, 1.0]": 0.85,
+   "(1.0, 2.0]": 1.29,
+   "(2.0, 4.0]": 1.4,
+   "(4.0, 8.0]": 2.2,
+   "(8.0, 16.0]": 3.38,
+   "(16.0, 1000000.0]": 4.07
+  },
+  "tau_DL": 0.884,
+  "tau_DL_ci": [
+   0.825,
+   0.952
+  ],
+  "tau_split_half": 0.513,
+  "tau2_split_half": 0.2634,
+  "tau2_split_half_ci": [
+   0.059,
+   0.4378
+  ],
+  "split_half_fires": 14194,
+  "split_half_null_perp_cov": -0.0762,
+  "median_noise_sd_of_f": 11.9,
+  "noise_sd_of_f_by_pairs": {
+   "(0.0, 1.0]": 25.93,
+   "(1.0, 2.0]": 9.74,
+   "(2.0, 4.0]": 8.32,
+   "(4.0, 8.0]": 3.35,
+   "(8.0, 16.0]": 2.09,
+   "(16.0, 32.0]": 1.4,
+   "(32.0, 1000000.0]": 0.85
+  },
+  "reliability_B_quantiles": {
+   "0.1": 0.0,
+   "0.25": 0.0,
+   "0.5": 0.005,
+   "0.75": 0.053,
+   "0.9": 0.184,
+   "0.99": 0.513
+  },
+  "fires_B_over_half": 1025,
+  "fires_post_ci_excludes_1": 178,
+  "fires_post_ci_excludes_1_fast": 70
+ },
+ "flat": {
+  "fires": 92872,
+  "design_effect_by_pairs": {
+   "(0.0, 1.0]": 0.85,
+   "(1.0, 2.0]": 1.29,
+   "(2.0, 4.0]": 1.47,
+   "(4.0, 8.0]": 2.26,
+   "(8.0, 16.0]": 3.36,
+   "(16.0, 1000000.0]": 3.69
+  },
+  "tau_DL": 0.993,
+  "tau_DL_ci": [
+   0.937,
+   1.046
+  ],
+  "tau_split_half": 0.809,
+  "tau2_split_half": 0.6539,
+  "tau2_split_half_ci": [
+   0.4218,
+   0.8498
+  ],
+  "split_half_fires": 14194,
+  "split_half_null_perp_cov": -0.0676,
+  "median_noise_sd_of_f": 8.17,
+  "noise_sd_of_f_by_pairs": {
+   "(0.0, 1.0]": 15.18,
+   "(1.0, 2.0]": 6.95,
+   "(2.0, 4.0]": 6.29,
+   "(4.0, 8.0]": 2.48,
+   "(8.0, 16.0]": 1.97,
+   "(16.0, 32.0]": 1.44,
+   "(32.0, 1000000.0]": 0.95
+  },
+  "reliability_B_quantiles": {
+   "0.1": 0.001,
+   "0.25": 0.002,
+   "0.5": 0.015,
+   "0.75": 0.125,
+   "0.9": 0.198,
+   "0.99": 0.458
+  },
+  "fires_B_over_half": 668,
+  "fires_post_ci_excludes_1": 156,
+  "fires_post_ci_excludes_1_fast": 87
+ },
+ "split_half_checks": {
+  "odd vs even fire-days": {
+   "outward": {
+    "fires": 14194,
+    "cov": 0.2634,
+    "ci": [
+     0.0675,
+     0.448
+    ]
+   },
+   "perpendicular_null": {
+    "fires": 14194,
+    "cov": -0.0762,
+    "ci": [
+     -0.2781,
+     0.1366
+    ]
+   }
+  },
+  "first fire-day vs day 3+": {
+   "outward": {
+    "fires": 1147,
+    "cov": 0.2516,
+    "ci": [
+     -0.3109,
+     0.9591
+    ]
+   },
+   "perpendicular_null": {
+    "fires": 1147,
+    "cov": -0.0618,
+    "ci": [
+     -0.742,
+     0.7051
+    ]
+   }
+  },
+  "days 0-1 vs day 4+": {
+   "outward": {
+    "fires": 492,
+    "cov": 0.2146,
+    "ci": [
+     -0.1425,
+     0.6506
+    ]
+   },
+   "perpendicular_null": {
+    "fires": 492,
+    "cov": -0.26,
+    "ci": [
+     -0.6423,
+     0.1395
+    ]
+   }
+  }
+ }
+}

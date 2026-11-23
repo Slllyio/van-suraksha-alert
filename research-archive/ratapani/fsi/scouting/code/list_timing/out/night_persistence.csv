@@ -1,0 +1,9 @@
+test,frp,n,seen_in_square,seen_in_3x3
+"day->day, night between",all,1142,30.47,51.75
+"day->day, night between",both FRP < 5 MW,684,32.89,51.9
+"day->day, night between",both FRP 5-15 MW,439,27.11,51.48
+"day->day, night between",both FRP >= 15 MW,19,21.05,52.63
+"night->night, day between",all,2194,23.2,45.26
+"night->night, day between",both FRP < 5 MW,2137,22.32,44.36
+"night->night, day between",both FRP 5-15 MW,57,56.14,78.95
+"night->night, day between",both FRP >= 15 MW,0,,

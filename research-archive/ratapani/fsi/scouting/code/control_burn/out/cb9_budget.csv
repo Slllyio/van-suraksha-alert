@@ -1,0 +1,16 @@
+plan,watcher_weeks,share_2022_25
+"top 1,000 square-weeks (ranked on 2017-21)",1000,0.13
+"top 2,000 square-weeks (ranked on 2017-21)",2000,0.211
+"top 5,000 square-weeks (ranked on 2017-21)",5000,0.372
+"top 10,000 square-weeks (ranked on 2017-21)",10000,0.517
+"top 20,000 square-weeks (ranked on 2017-21)",20000,0.675
+"top 30,000 square-weeks (ranked on 2017-21)",30000,0.76
+"top 50,000 square-weeks (ranked on 2017-21)",50000,0.785
+"every forest square, weeks 5-6 (2 wk from 22 Mar)",34356,0.428
+"every forest square, weeks 4-7 (4 wk from 15 Mar)",68712,0.635
+"every forest square, weeks 3-9 (7 wk from 08 Mar)",120246,0.86
+"every forest square, weeks 0-16 (17 wk from 15 Feb)",292026,0.998
+top 500 squares x peak 4 weeks (15 Mar-11 Apr),2000,0.231
+"top 1,000 squares x peak 4 weeks (15 Mar-11 Apr)",4000,0.352
+"top 2,500 squares x peak 4 weeks (15 Mar-11 Apr)",10000,0.528
+"top 5,000 squares x peak 4 weeks (15 Mar-11 Apr)",20000,0.614
