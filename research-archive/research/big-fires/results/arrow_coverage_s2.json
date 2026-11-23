@@ -1,0 +1,133 @@
+{
+ "note": "fires 2017-25 all MP from VIIRS alerts; scene = low-cloud S2/Landsat 0-3.5 h before a VIIRS day pass; arrow = expected chance the scene shows the hot line",
+ "all": {
+  "fires": 137605,
+  "share_with_clear_scene": 0.18,
+  "expected_share_with_arrow": 0.122,
+  "median_hours_first_alert_to_scene": -2.4
+ },
+ "by_duration": {
+  "seen 1 day (<12 h)": {
+   "fires": 114249,
+   "share_with_clear_scene": 0.144,
+   "expected_share_with_arrow": 0.095,
+   "median_hours_first_alert_to_scene": -2.6
+  },
+  "1-2 days": {
+   "fires": 14319,
+   "share_with_clear_scene": 0.285,
+   "expected_share_with_arrow": 0.198,
+   "median_hours_first_alert_to_scene": 8.5
+  },
+  "2-4 days": {
+   "fires": 7621,
+   "share_with_clear_scene": 0.421,
+   "expected_share_with_arrow": 0.303,
+   "median_hours_first_alert_to_scene": 21.2
+  },
+  "4+ days": {
+   "fires": 1416,
+   "share_with_clear_scene": 0.689,
+   "expected_share_with_arrow": 0.542,
+   "median_hours_first_alert_to_scene": 44.9
+  }
+ },
+ "by_size": {
+  "1-2 dots": {
+   "fires": 98089,
+   "share_with_clear_scene": 0.144,
+   "expected_share_with_arrow": 0.091,
+   "median_hours_first_alert_to_scene": -2.6
+  },
+  "3-9": {
+   "fires": 31944,
+   "share_with_clear_scene": 0.224,
+   "expected_share_with_arrow": 0.163,
+   "median_hours_first_alert_to_scene": -2.1
+  },
+  "10-49": {
+   "fires": 6971,
+   "share_with_clear_scene": 0.438,
+   "expected_share_with_arrow": 0.333,
+   "median_hours_first_alert_to_scene": 21.0
+  },
+  "50+ dots": {
+   "fires": 601,
+   "share_with_clear_scene": 0.77,
+   "expected_share_with_arrow": 0.643,
+   "median_hours_first_alert_to_scene": 33.6
+  }
+ },
+ "by_year": {
+  "2017": {
+   "fires": 15012,
+   "share_with_clear_scene": 0.043,
+   "expected_share_with_arrow": 0.028,
+   "median_hours_first_alert_to_scene": -2.4
+  },
+  "2018": {
+   "fires": 18049,
+   "share_with_clear_scene": 0.19,
+   "expected_share_with_arrow": 0.123,
+   "median_hours_first_alert_to_scene": -2.5
+  },
+  "2019": {
+   "fires": 12886,
+   "share_with_clear_scene": 0.188,
+   "expected_share_with_arrow": 0.122,
+   "median_hours_first_alert_to_scene": -2.4
+  },
+  "2020": {
+   "fires": 7348,
+   "share_with_clear_scene": 0.172,
+   "expected_share_with_arrow": 0.109,
+   "median_hours_first_alert_to_scene": -2.5
+  },
+  "2021": {
+   "fires": 21048,
+   "share_with_clear_scene": 0.185,
+   "expected_share_with_arrow": 0.12,
+   "median_hours_first_alert_to_scene": -2.3
+  },
+  "2022": {
+   "fires": 18429,
+   "share_with_clear_scene": 0.197,
+   "expected_share_with_arrow": 0.152,
+   "median_hours_first_alert_to_scene": -2.3
+  },
+  "2023": {
+   "fires": 12175,
+   "share_with_clear_scene": 0.177,
+   "expected_share_with_arrow": 0.141,
+   "median_hours_first_alert_to_scene": -2.6
+  },
+  "2024": {
+   "fires": 10560,
+   "share_with_clear_scene": 0.191,
+   "expected_share_with_arrow": 0.121,
+   "median_hours_first_alert_to_scene": -2.5
+  },
+  "2025": {
+   "fires": 22098,
+   "share_with_clear_scene": 0.239,
+   "expected_share_with_arrow": 0.157,
+   "median_hours_first_alert_to_scene": -2.5
+  }
+ },
+ "arrows_per_season_expected": {
+  "2017": 415,
+  "2018": 2214,
+  "2019": 1567,
+  "2020": 800,
+  "2021": 2520,
+  "2022": 2810,
+  "2023": 1722,
+  "2024": 1274,
+  "2025": 3477
+ },
+ "when_scene_comes": {
+  "first_day": 0.921,
+  "day_2": 0.053,
+  "later": 0.026
+ }
+}

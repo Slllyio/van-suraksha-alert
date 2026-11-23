@@ -1,0 +1,36 @@
+{
+ "switch by region+phase": 0.4365,
+ "switch by region": 0.4334,
+ "switch by phase": 0.4188,
+ "full": 0.4263,
+ "no Prithvi": 0.3946,
+ "no dryness update": 0.4296,
+ "oracle (best per region x phase x season)": 0.4789,
+ "switch_vs_full_by_season": {
+  "2022": 0.0201,
+  "2023": -0.0069,
+  "2024": 0.025,
+  "2025": 0.0063
+ },
+ "switch_vs_full_by_region": {
+  "Chhatarpur": 0.0127,
+  "Dewas": -0.0042,
+  "Dindori": -0.013,
+  "Khandwa": 0.0145,
+  "Panna_TR": 0.0172,
+  "Satpura_TR": 0.0155,
+  "South_Balaghat": 0.0349,
+  "South_Betul": 0.0135,
+  "South_Chhindwara": -0.0164,
+  "Umaria": 0.0274
+ },
+ "choice_counts": {
+  "no dryness update": 37,
+  "no Prithvi": 36,
+  "full": 36
+ },
+ "switch_vs_full_CI90": [
+  0.0021,
+  0.0184
+ ]
+}

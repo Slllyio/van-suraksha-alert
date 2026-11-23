@@ -1,0 +1,45 @@
+{
+ "persist": 0.506,
+ "last_only": 0.577,
+ "ring_last_300": 0.589,
+ "ring_last_450": 0.64,
+ "ring_last_600": 0.671,
+ "ring_last_750": 0.642,
+ "ring_last_900": 0.567,
+ "ring_last_1050": 0.457,
+ "ring_last_1200": 0.345,
+ "ring_all_300": 0.537,
+ "ring_all_450": 0.635,
+ "ring_all_600": 0.67,
+ "ring_all_750": 0.631,
+ "ring_all_900": 0.532,
+ "ring_all_1050": 0.402,
+ "ring_all_1200": 0.291,
+ "ring_last_LOSO": 0.671,
+ "LOSO_choices": {
+  "2017": "ring_last_600",
+  "2018": "ring_last_600",
+  "2019": "ring_last_600",
+  "2020": "ring_last_600",
+  "2021": "ring_last_600",
+  "2022": "ring_last_600",
+  "2023": "ring_last_600",
+  "2024": "ring_last_600",
+  "2025": "ring_last_600",
+  "2026": "ring_last_600"
+ },
+ "gap_10_14h": {
+  "n": 1463,
+  "persist": 0.543,
+  "ring600": 0.695,
+  "ring900": 0.561
+ },
+ "gap_14_30h": {
+  "n": 438,
+  "persist": 0.336,
+  "ring600": 0.56,
+  "ring900": 0.594
+ },
+ "n_steps": 1901,
+ "area_ha_med": 183.2
+}

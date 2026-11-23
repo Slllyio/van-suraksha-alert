@@ -1,0 +1,194 @@
+{
+ "detections": 14872,
+ "leafy_mean_by_month": {
+  "1": 0.171,
+  "2": 0.162,
+  "3": 0.097,
+  "4": 0.043,
+  "5": 0.0
+ },
+ "fallen_median_by_month": {
+  "1": 0.502,
+  "2": 0.623,
+  "3": 0.811,
+  "4": 0.932,
+  "5": 1.0
+ },
+ "models": {
+  "day|lfrp": {
+   "n": 10668,
+   "passes": 1105,
+   "leafy": -0.6414,
+   "leafy_ci": [
+    -0.9857,
+    -0.2971
+   ],
+   "leafy_p": 0.0003,
+   "canopy": -0.4056,
+   "canopy_ci": [
+    -0.5252,
+    -0.286
+   ]
+  },
+  "day|i4": {
+   "n": 10102,
+   "passes": 1103,
+   "leafy": -6.2942,
+   "leafy_ci": [
+    -9.2104,
+    -3.3779
+   ],
+   "leafy_p": 0.0,
+   "canopy": -3.1284,
+   "canopy_ci": [
+    -4.1346,
+    -2.1223
+   ]
+  },
+  "day|i5": {
+   "n": 10668,
+   "passes": 1105,
+   "leafy": -9.6863,
+   "leafy_ci": [
+    -11.1214,
+    -8.2511
+   ],
+   "leafy_p": 0.0,
+   "canopy": -3.003,
+   "canopy_ci": [
+    -3.571,
+    -2.4351
+   ]
+  },
+  "day|i45": {
+   "n": 10102,
+   "passes": 1103,
+   "leafy": 3.4895,
+   "leafy_ci": [
+    0.8863,
+    6.0927
+   ],
+   "leafy_p": 0.0086,
+   "canopy": -0.3156,
+   "canopy_ci": [
+    -1.1857,
+    0.5545
+   ]
+  },
+  "night|lfrp": {
+   "n": 4197,
+   "passes": 505,
+   "leafy": -0.505,
+   "leafy_ci": [
+    -0.9385,
+    -0.0715
+   ],
+   "leafy_p": 0.0224,
+   "canopy": 0.1284,
+   "canopy_ci": [
+    -0.0466,
+    0.3035
+   ]
+  },
+  "night|i4": {
+   "n": 4193,
+   "passes": 505,
+   "leafy": -9.5142,
+   "leafy_ci": [
+    -15.8012,
+    -3.2271
+   ],
+   "leafy_p": 0.003,
+   "canopy": 1.6555,
+   "canopy_ci": [
+    -0.8943,
+    4.2052
+   ]
+  },
+  "night|i5": {
+   "n": 4197,
+   "passes": 505,
+   "leafy": -0.8356,
+   "leafy_ci": [
+    -2.6841,
+    1.013
+   ],
+   "leafy_p": 0.3757,
+   "canopy": 0.1357,
+   "canopy_ci": [
+    -0.549,
+    0.8205
+   ]
+  },
+  "night|i45": {
+   "n": 4193,
+   "passes": 505,
+   "leafy": -8.7636,
+   "leafy_ci": [
+    -14.4155,
+    -3.1118
+   ],
+   "leafy_p": 0.0024,
+   "canopy": 1.5384,
+   "canopy_ci": [
+    -0.8445,
+    3.9213
+   ]
+  }
+ },
+ "day_frp_factor_full_leafy_crown": [
+  0.527,
+  [
+   0.373,
+   0.743
+  ]
+ ],
+ "day_frp_factor_closed_bare_vs_open": 0.667,
+ "day_frp_factor_closed_leafy_vs_open": 0.351,
+ "night_frp_factor_full_leafy_crown": [
+  0.604,
+  [
+   0.391,
+   0.931
+  ]
+ ],
+ "night_frp_factor_closed_bare_vs_open": 1.137,
+ "night_frp_factor_closed_leafy_vs_open": 0.686,
+ "month_table": [
+  {
+   "t": 1,
+   "closed_vs_open_FRP": 0.921,
+   "n_closed": 21,
+   "n_open": 119,
+   "leaves_fallen_closed": 0.29
+  },
+  {
+   "t": 2,
+   "closed_vs_open_FRP": 0.872,
+   "n_closed": 221,
+   "n_open": 320,
+   "leaves_fallen_closed": 0.49
+  },
+  {
+   "t": 3,
+   "closed_vs_open_FRP": 0.832,
+   "n_closed": 2117,
+   "n_open": 1081,
+   "leaves_fallen_closed": 0.74
+  },
+  {
+   "t": 4,
+   "closed_vs_open_FRP": 0.899,
+   "n_closed": 890,
+   "n_open": 423,
+   "leaves_fallen_closed": 0.89
+  },
+  {
+   "t": 5,
+   "closed_vs_open_FRP": 0.906,
+   "n_closed": 33,
+   "n_open": 44,
+   "leaves_fallen_closed": 1.0
+  }
+ ]
+}

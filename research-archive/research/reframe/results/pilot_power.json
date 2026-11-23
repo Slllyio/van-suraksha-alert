@@ -1,0 +1,90 @@
+{
+ "2025": {
+  "fixed": {
+   "staff_hours": 10596,
+   "burns_found": 612,
+   "burns_in_arm": 1833,
+   "share_found": 0.334,
+   "per_100_staff_hours": 5.776
+  },
+  "calendar": {
+   "staff_hours": 10757,
+   "burns_found": 1272,
+   "burns_in_arm": 1973,
+   "share_found": 0.645,
+   "per_100_staff_hours": 11.825
+  },
+  "forecast": {
+   "staff_hours": 10876,
+   "burns_found": 1586,
+   "burns_in_arm": 2316,
+   "share_found": 0.685,
+   "per_100_staff_hours": 14.583
+  },
+  "calendar_vs_fixed_rate_ratio": {
+   "point": 2.047,
+   "ci95": [
+    1.568,
+    2.777
+   ]
+  },
+  "forecast_vs_fixed_rate_ratio": {
+   "point": 2.525,
+   "ci95": [
+    1.888,
+    3.542
+   ]
+  },
+  "forecast_vs_calendar_rate_ratio": {
+   "point": 1.233,
+   "ci95": [
+    0.971,
+    1.573
+   ]
+  }
+ },
+ "2026": {
+  "fixed": {
+   "staff_hours": 10399,
+   "burns_found": 649,
+   "burns_in_arm": 1834,
+   "share_found": 0.354,
+   "per_100_staff_hours": 6.241
+  },
+  "calendar": {
+   "staff_hours": 10376,
+   "burns_found": 1233,
+   "burns_in_arm": 1788,
+   "share_found": 0.69,
+   "per_100_staff_hours": 11.884
+  },
+  "forecast": {
+   "staff_hours": 10461,
+   "burns_found": 1226,
+   "burns_in_arm": 1956,
+   "share_found": 0.627,
+   "per_100_staff_hours": 11.72
+  },
+  "calendar_vs_fixed_rate_ratio": {
+   "point": 1.904,
+   "ci95": [
+    1.388,
+    2.615
+   ]
+  },
+  "forecast_vs_fixed_rate_ratio": {
+   "point": 1.878,
+   "ci95": [
+    1.387,
+    2.632
+   ]
+  },
+  "forecast_vs_calendar_rate_ratio": {
+   "point": 0.986,
+   "ci95": [
+    0.722,
+    1.344
+   ]
+  }
+ }
+}

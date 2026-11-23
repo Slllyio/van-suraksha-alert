@@ -1,0 +1,878 @@
+{
+ "script": "b19d_arrow_at_arrival.py",
+ "lag_hours": 6.0,
+ "geometry_source": "backup",
+ "b19b_used": 235,
+ "passes_run": 235,
+ "used": 235,
+ "skipped": {},
+ "check_vs_b19b": {
+  "ang_arrow_scar": {
+   "n_new": 234,
+   "n_old": 234,
+   "n_both": 234,
+   "same_within_1deg": 234
+  },
+  "ang_dotsb_scar": {
+   "n_new": 142,
+   "n_old": 142,
+   "n_both": 142,
+   "same_within_1deg": 142
+  },
+  "ang_arrow_h24": {
+   "n_new": 233,
+   "n_old": 233,
+   "n_both": 233,
+   "same_within_1deg": 233
+  },
+  "ang_dotsb_h24": {
+   "n_new": 141,
+   "n_old": 141,
+   "n_both": 141,
+   "same_within_1deg": 141
+  }
+ },
+ "viirs_look_scene_to_arrival": {
+  "passes": 235,
+  "of": 235,
+  "median_hours_scene_to_that_look": 2.17,
+  "early_le2_looks": [
+   161,
+   161
+  ]
+ },
+ "dots_available": {
+  "before_scene": 142,
+  "up_to_arrival": 235,
+  "of": 235
+ },
+ "notes": "within_45 = share of passes whose direction is within 45 deg of (truth centroid - burnt patch centroid); CIs bootstrap over fires (2000). dots_before = earlier looks -> latest look before the scene; dots_arrival = same rule with looks up to scene + LAG h. scar_arrival = scar outside the burnt patch not burning by scene + LAG (timing map); h24_arrival = new burning in the 24 h after scene + LAG.",
+ "truth_scar_arrival": {
+  "arrow": {
+   "n": 143,
+   "fires": 129,
+   "within_45": 0.58,
+   "ci": [
+    0.496,
+    0.664
+   ],
+   "median_angle": 36.2
+  },
+  "dots_before": {
+   "n": 97,
+   "fires": 87,
+   "within_45": 0.536,
+   "ci": [
+    0.429,
+    0.643
+   ],
+   "median_angle": 39.7
+  },
+  "dots_arrival": {
+   "n": 143,
+   "fires": 129,
+   "within_45": 0.559,
+   "ci": [
+    0.467,
+    0.646
+   ],
+   "median_angle": 39.2
+  },
+  "paired_arrow_minus_dots_arrival": {
+   "n": 143,
+   "fires": 129,
+   "first": 0.58,
+   "second": 0.559,
+   "diff": 0.021,
+   "diff_ci_by_fire": [
+    -0.058,
+    0.107
+   ]
+  },
+  "paired_arrow_minus_dots_before": {
+   "n": 97,
+   "fires": 87,
+   "first": 0.608,
+   "second": 0.536,
+   "diff": 0.072,
+   "diff_ci_by_fire": [
+    -0.077,
+    0.213
+   ]
+  },
+  "paired_dots_arrival_minus_dots_before": {
+   "n": 97,
+   "fires": 87,
+   "first": 0.557,
+   "second": 0.536,
+   "diff": 0.021,
+   "diff_ci_by_fire": [
+    -0.125,
+    0.174
+   ]
+  },
+  "early_le2_looks": {
+   "arrow": {
+    "n": 91,
+    "fires": 81,
+    "within_45": 0.527,
+    "ci": [
+     0.415,
+     0.638
+    ],
+    "median_angle": 44.5
+   },
+   "dots_before": {
+    "n": 45,
+    "fires": 39,
+    "within_45": 0.444,
+    "ci": [
+     0.283,
+     0.612
+    ],
+    "median_angle": 60.4
+   },
+   "dots_arrival": {
+    "n": 91,
+    "fires": 81,
+    "within_45": 0.549,
+    "ci": [
+     0.436,
+     0.663
+    ],
+    "median_angle": 41.7
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 91,
+    "fires": 81,
+    "first": 0.527,
+    "second": 0.549,
+    "diff": -0.022,
+    "diff_ci_by_fire": [
+     -0.134,
+     0.093
+    ]
+   }
+  },
+  "later_ge3_looks": {
+   "arrow": {
+    "n": 52,
+    "fires": 48,
+    "within_45": 0.673,
+    "ci": [
+     0.538,
+     0.804
+    ],
+    "median_angle": 27.2
+   },
+   "dots_arrival": {
+    "n": 52,
+    "fires": 48,
+    "within_45": 0.577,
+    "ci": [
+     0.423,
+     0.717
+    ],
+    "median_angle": 35.8
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 52,
+    "fires": 48,
+    "first": 0.673,
+    "second": 0.577,
+    "diff": 0.096,
+    "diff_ci_by_fire": [
+     -0.039,
+     0.231
+    ]
+   }
+  },
+  "with_look_scene_to_arrival": {
+   "arrow": {
+    "n": 143,
+    "fires": 129,
+    "within_45": 0.58,
+    "ci": [
+     0.493,
+     0.667
+    ],
+    "median_angle": 36.2
+   },
+   "dots_arrival": {
+    "n": 143,
+    "fires": 129,
+    "within_45": 0.559,
+    "ci": [
+     0.473,
+     0.648
+    ],
+    "median_angle": 39.2
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 143,
+    "fires": 129,
+    "first": 0.58,
+    "second": 0.559,
+    "diff": 0.021,
+    "diff_ci_by_fire": [
+     -0.07,
+     0.105
+    ]
+   }
+  },
+  "same_passes_all_three": {
+   "n": 97,
+   "arrow": {
+    "n": 97,
+    "fires": 87,
+    "within_45": 0.608,
+    "ci": [
+     0.505,
+     0.714
+    ],
+    "median_angle": 29.7
+   },
+   "dots_before": {
+    "n": 97,
+    "fires": 87,
+    "within_45": 0.536,
+    "ci": [
+     0.433,
+     0.646
+    ],
+    "median_angle": 39.7
+   },
+   "dots_arrival": {
+    "n": 97,
+    "fires": 87,
+    "within_45": 0.557,
+    "ci": [
+     0.444,
+     0.67
+    ],
+    "median_angle": 38.9
+   }
+  }
+ },
+ "truth_h24_arrival": {
+  "arrow": {
+   "n": 143,
+   "fires": 129,
+   "within_45": 0.58,
+   "ci": [
+    0.496,
+    0.667
+   ],
+   "median_angle": 36.2
+  },
+  "dots_before": {
+   "n": 97,
+   "fires": 87,
+   "within_45": 0.536,
+   "ci": [
+    0.433,
+    0.644
+   ],
+   "median_angle": 39.7
+  },
+  "dots_arrival": {
+   "n": 143,
+   "fires": 129,
+   "within_45": 0.559,
+   "ci": [
+    0.468,
+    0.65
+   ],
+   "median_angle": 39.2
+  },
+  "paired_arrow_minus_dots_arrival": {
+   "n": 143,
+   "fires": 129,
+   "first": 0.58,
+   "second": 0.559,
+   "diff": 0.021,
+   "diff_ci_by_fire": [
+    -0.063,
+    0.106
+   ]
+  },
+  "paired_arrow_minus_dots_before": {
+   "n": 97,
+   "fires": 87,
+   "first": 0.608,
+   "second": 0.536,
+   "diff": 0.072,
+   "diff_ci_by_fire": [
+    -0.072,
+    0.212
+   ]
+  },
+  "paired_dots_arrival_minus_dots_before": {
+   "n": 97,
+   "fires": 87,
+   "first": 0.557,
+   "second": 0.536,
+   "diff": 0.021,
+   "diff_ci_by_fire": [
+    -0.134,
+    0.175
+   ]
+  },
+  "early_le2_looks": {
+   "arrow": {
+    "n": 91,
+    "fires": 81,
+    "within_45": 0.527,
+    "ci": [
+     0.415,
+     0.644
+    ],
+    "median_angle": 44.5
+   },
+   "dots_before": {
+    "n": 45,
+    "fires": 39,
+    "within_45": 0.444,
+    "ci": [
+     0.283,
+     0.605
+    ],
+    "median_angle": 60.4
+   },
+   "dots_arrival": {
+    "n": 91,
+    "fires": 81,
+    "within_45": 0.549,
+    "ci": [
+     0.439,
+     0.663
+    ],
+    "median_angle": 41.7
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 91,
+    "fires": 81,
+    "first": 0.527,
+    "second": 0.549,
+    "diff": -0.022,
+    "diff_ci_by_fire": [
+     -0.144,
+     0.091
+    ]
+   }
+  },
+  "later_ge3_looks": {
+   "arrow": {
+    "n": 52,
+    "fires": 48,
+    "within_45": 0.673,
+    "ci": [
+     0.531,
+     0.808
+    ],
+    "median_angle": 27.2
+   },
+   "dots_arrival": {
+    "n": 52,
+    "fires": 48,
+    "within_45": 0.577,
+    "ci": [
+     0.431,
+     0.719
+    ],
+    "median_angle": 35.8
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 52,
+    "fires": 48,
+    "first": 0.673,
+    "second": 0.577,
+    "diff": 0.096,
+    "diff_ci_by_fire": [
+     -0.037,
+     0.235
+    ]
+   }
+  },
+  "with_look_scene_to_arrival": {
+   "arrow": {
+    "n": 143,
+    "fires": 129,
+    "within_45": 0.58,
+    "ci": [
+     0.489,
+     0.664
+    ],
+    "median_angle": 36.2
+   },
+   "dots_arrival": {
+    "n": 143,
+    "fires": 129,
+    "within_45": 0.559,
+    "ci": [
+     0.472,
+     0.65
+    ],
+    "median_angle": 39.2
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 143,
+    "fires": 129,
+    "first": 0.58,
+    "second": 0.559,
+    "diff": 0.021,
+    "diff_ci_by_fire": [
+     -0.063,
+     0.106
+    ]
+   }
+  },
+  "same_passes_all_three": {
+   "n": 97,
+   "arrow": {
+    "n": 97,
+    "fires": 87,
+    "within_45": 0.608,
+    "ci": [
+     0.5,
+     0.717
+    ],
+    "median_angle": 29.7
+   },
+   "dots_before": {
+    "n": 97,
+    "fires": 87,
+    "within_45": 0.536,
+    "ci": [
+     0.426,
+     0.642
+    ],
+    "median_angle": 39.7
+   },
+   "dots_arrival": {
+    "n": 97,
+    "fires": 87,
+    "within_45": 0.557,
+    "ci": [
+     0.448,
+     0.667
+    ],
+    "median_angle": 38.9
+   }
+  }
+ },
+ "truth_scar": {
+  "arrow": {
+   "n": 234,
+   "fires": 205,
+   "within_45": 0.645,
+   "ci": [
+    0.576,
+    0.719
+   ],
+   "median_angle": 28.7
+  },
+  "dots_before": {
+   "n": 142,
+   "fires": 127,
+   "within_45": 0.465,
+   "ci": [
+    0.374,
+    0.56
+   ],
+   "median_angle": 47.5
+  },
+  "dots_arrival": {
+   "n": 234,
+   "fires": 205,
+   "within_45": 0.624,
+   "ci": [
+    0.553,
+    0.695
+   ],
+   "median_angle": 35.7
+  },
+  "paired_arrow_minus_dots_arrival": {
+   "n": 234,
+   "fires": 205,
+   "first": 0.645,
+   "second": 0.624,
+   "diff": 0.021,
+   "diff_ci_by_fire": [
+    -0.051,
+    0.093
+   ]
+  },
+  "paired_arrow_minus_dots_before": {
+   "n": 142,
+   "fires": 127,
+   "first": 0.655,
+   "second": 0.465,
+   "diff": 0.19,
+   "diff_ci_by_fire": [
+    0.082,
+    0.293
+   ]
+  },
+  "paired_dots_arrival_minus_dots_before": {
+   "n": 142,
+   "fires": 127,
+   "first": 0.627,
+   "second": 0.465,
+   "diff": 0.162,
+   "diff_ci_by_fire": [
+    0.044,
+    0.277
+   ]
+  },
+  "early_le2_looks": {
+   "arrow": {
+    "n": 160,
+    "fires": 137,
+    "within_45": 0.625,
+    "ci": [
+     0.537,
+     0.712
+    ],
+    "median_angle": 31.6
+   },
+   "dots_before": {
+    "n": 68,
+    "fires": 59,
+    "within_45": 0.338,
+    "ci": [
+     0.221,
+     0.469
+    ],
+    "median_angle": 63.3
+   },
+   "dots_arrival": {
+    "n": 160,
+    "fires": 137,
+    "within_45": 0.625,
+    "ci": [
+     0.541,
+     0.705
+    ],
+    "median_angle": 37.0
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 160,
+    "fires": 137,
+    "first": 0.625,
+    "second": 0.625,
+    "diff": 0.0,
+    "diff_ci_by_fire": [
+     -0.09,
+     0.091
+    ]
+   }
+  },
+  "later_ge3_looks": {
+   "arrow": {
+    "n": 74,
+    "fires": 68,
+    "within_45": 0.689,
+    "ci": [
+     0.57,
+     0.8
+    ],
+    "median_angle": 21.8
+   },
+   "dots_arrival": {
+    "n": 74,
+    "fires": 68,
+    "within_45": 0.622,
+    "ci": [
+     0.507,
+     0.734
+    ],
+    "median_angle": 30.0
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 74,
+    "fires": 68,
+    "first": 0.689,
+    "second": 0.622,
+    "diff": 0.068,
+    "diff_ci_by_fire": [
+     -0.04,
+     0.181
+    ]
+   }
+  },
+  "with_look_scene_to_arrival": {
+   "arrow": {
+    "n": 234,
+    "fires": 205,
+    "within_45": 0.645,
+    "ci": [
+     0.577,
+     0.714
+    ],
+    "median_angle": 28.7
+   },
+   "dots_arrival": {
+    "n": 234,
+    "fires": 205,
+    "within_45": 0.624,
+    "ci": [
+     0.551,
+     0.692
+    ],
+    "median_angle": 35.7
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 234,
+    "fires": 205,
+    "first": 0.645,
+    "second": 0.624,
+    "diff": 0.021,
+    "diff_ci_by_fire": [
+     -0.05,
+     0.091
+    ]
+   }
+  },
+  "same_passes_all_three": {
+   "n": 142,
+   "arrow": {
+    "n": 142,
+    "fires": 127,
+    "within_45": 0.655,
+    "ci": [
+     0.562,
+     0.741
+    ],
+    "median_angle": 26.3
+   },
+   "dots_before": {
+    "n": 142,
+    "fires": 127,
+    "within_45": 0.465,
+    "ci": [
+     0.376,
+     0.558
+    ],
+    "median_angle": 47.5
+   },
+   "dots_arrival": {
+    "n": 142,
+    "fires": 127,
+    "within_45": 0.627,
+    "ci": [
+     0.54,
+     0.713
+    ],
+    "median_angle": 33.4
+   }
+  }
+ },
+ "truth_h24": {
+  "arrow": {
+   "n": 233,
+   "fires": 204,
+   "within_45": 0.657,
+   "ci": [
+    0.589,
+    0.725
+   ],
+   "median_angle": 25.1
+  },
+  "dots_before": {
+   "n": 141,
+   "fires": 126,
+   "within_45": 0.468,
+   "ci": [
+    0.375,
+    0.56
+   ],
+   "median_angle": 49.1
+  },
+  "dots_arrival": {
+   "n": 233,
+   "fires": 204,
+   "within_45": 0.73,
+   "ci": [
+    0.665,
+    0.792
+   ],
+   "median_angle": 26.1
+  },
+  "paired_arrow_minus_dots_arrival": {
+   "n": 233,
+   "fires": 204,
+   "first": 0.657,
+   "second": 0.73,
+   "diff": -0.073,
+   "diff_ci_by_fire": [
+    -0.148,
+    0.008
+   ]
+  },
+  "paired_arrow_minus_dots_before": {
+   "n": 141,
+   "fires": 126,
+   "first": 0.667,
+   "second": 0.468,
+   "diff": 0.199,
+   "diff_ci_by_fire": [
+    0.095,
+    0.301
+   ]
+  },
+  "paired_dots_arrival_minus_dots_before": {
+   "n": 141,
+   "fires": 126,
+   "first": 0.745,
+   "second": 0.468,
+   "diff": 0.277,
+   "diff_ci_by_fire": [
+    0.163,
+    0.388
+   ]
+  },
+  "early_le2_looks": {
+   "arrow": {
+    "n": 159,
+    "fires": 136,
+    "within_45": 0.635,
+    "ci": [
+     0.549,
+     0.72
+    ],
+    "median_angle": 25.1
+   },
+   "dots_before": {
+    "n": 67,
+    "fires": 58,
+    "within_45": 0.328,
+    "ci": [
+     0.209,
+     0.456
+    ],
+    "median_angle": 64.2
+   },
+   "dots_arrival": {
+    "n": 159,
+    "fires": 136,
+    "within_45": 0.717,
+    "ci": [
+     0.636,
+     0.794
+    ],
+    "median_angle": 27.4
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 159,
+    "fires": 136,
+    "first": 0.635,
+    "second": 0.717,
+    "diff": -0.082,
+    "diff_ci_by_fire": [
+     -0.181,
+     0.019
+    ]
+   }
+  },
+  "later_ge3_looks": {
+   "arrow": {
+    "n": 74,
+    "fires": 68,
+    "within_45": 0.703,
+    "ci": [
+     0.583,
+     0.811
+    ],
+    "median_angle": 25.1
+   },
+   "dots_arrival": {
+    "n": 74,
+    "fires": 68,
+    "within_45": 0.757,
+    "ci": [
+     0.648,
+     0.859
+    ],
+    "median_angle": 24.4
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 74,
+    "fires": 68,
+    "first": 0.703,
+    "second": 0.757,
+    "diff": -0.054,
+    "diff_ci_by_fire": [
+     -0.176,
+     0.069
+    ]
+   }
+  },
+  "with_look_scene_to_arrival": {
+   "arrow": {
+    "n": 233,
+    "fires": 204,
+    "within_45": 0.657,
+    "ci": [
+     0.585,
+     0.726
+    ],
+    "median_angle": 25.1
+   },
+   "dots_arrival": {
+    "n": 233,
+    "fires": 204,
+    "within_45": 0.73,
+    "ci": [
+     0.669,
+     0.794
+    ],
+    "median_angle": 26.1
+   },
+   "paired_arrow_minus_dots_arrival": {
+    "n": 233,
+    "fires": 204,
+    "first": 0.657,
+    "second": 0.73,
+    "diff": -0.073,
+    "diff_ci_by_fire": [
+     -0.15,
+     0.004
+    ]
+   }
+  },
+  "same_passes_all_three": {
+   "n": 141,
+   "arrow": {
+    "n": 141,
+    "fires": 126,
+    "within_45": 0.667,
+    "ci": [
+     0.576,
+     0.752
+    ],
+    "median_angle": 24.6
+   },
+   "dots_before": {
+    "n": 141,
+    "fires": 126,
+    "within_45": 0.468,
+    "ci": [
+     0.379,
+     0.559
+    ],
+    "median_angle": 49.1
+   },
+   "dots_arrival": {
+    "n": 141,
+    "fires": 126,
+    "within_45": 0.745,
+    "ci": [
+     0.662,
+     0.818
+    ],
+    "median_angle": 25.4
+   }
+  }
+ }
+}

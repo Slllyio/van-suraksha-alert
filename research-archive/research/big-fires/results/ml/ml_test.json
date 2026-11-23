@@ -1,0 +1,148 @@
+{
+ "rate": {
+  "n_fires": 867,
+  "results": {
+   "baseline (median of other seasons)": {
+    "mae_log": 0.388
+   },
+   "terrain": {
+    "mae_log": 0.396,
+    "better_than_baseline_pct": -2.0,
+    "spearman_pred_vs_true": 0.222
+   },
+   "fuel+canopy+burn history": {
+    "mae_log": 0.395,
+    "better_than_baseline_pct": -1.7,
+    "spearman_pred_vs_true": 0.18
+   },
+   "weather+date": {
+    "mae_log": 0.405,
+    "better_than_baseline_pct": -4.2,
+    "spearman_pred_vs_true": 0.112
+   },
+   "people/roads": {
+    "mae_log": 0.391,
+    "better_than_baseline_pct": -0.7,
+    "spearman_pred_vs_true": 0.185
+   },
+   "first-look alert fields": {
+    "mae_log": 0.409,
+    "better_than_baseline_pct": -5.5,
+    "spearman_pred_vs_true": 0.057
+   },
+   "all": {
+    "mae_log": 0.38,
+    "better_than_baseline_pct": 2.0,
+    "spearman_pred_vs_true": 0.311
+   }
+  },
+  "single_feature_spearman": {
+   "elev_mean": 0.081,
+   "elev_relief": 0.24,
+   "slope_mean": 0.032,
+   "slope_share_gt5": 0.015,
+   "slope_first": 0.065,
+   "canopy_mean": -0.029,
+   "teak_mean": 0.003,
+   "litter_v3_mean": -0.052,
+   "grass_v3_mean": 0.082,
+   "fuel_total_v3_mean": -0.005,
+   "burn_count_mean": 0.085,
+   "wc_tree": -0.019,
+   "wc_shrub": -0.046,
+   "wc_grass": 0.019,
+   "wc_crop": 0.07,
+   "wx_tmax_c": 0.08,
+   "wx_rh": -0.1,
+   "wx_wind_ms": 0.037,
+   "wx_soil_water": -0.064,
+   "wx_rain7_mm": -0.006,
+   "wx_rain30_mm": -0.01,
+   "doy_start": 0.055,
+   "d_building_first_m": 0.119,
+   "hamlets_4km_first": -0.183,
+   "d_road_first_m": 0.054,
+   "depth_in_forest_first_m": 0.011,
+   "first_frp_sum": -0.003,
+   "first_frp_max": -0.035,
+   "first_ti4_mean": -0.043,
+   "first_ti4_minus_ti5": -0.059,
+   "first_n_det": 0.048,
+   "first_look_night": 0.116,
+   "first_dozier_p_median": -0.057
+  }
+ },
+ "direction": {
+  "n_steps": 1792,
+  "results": {
+   "random": {
+    "top1": 0.125,
+    "within_1_sector": 0.375
+   },
+   "same way as last step": {
+    "top1": 0.2,
+    "within_1_sector": 0.491
+   },
+   "away from first detection": {
+    "top1": 0.172,
+    "within_1_sector": 0.439
+   },
+   "uphill": {
+    "top1": 0.153,
+    "within_1_sector": 0.431
+   },
+   "downhill": {
+    "top1": 0.095,
+    "within_1_sector": 0.333
+   },
+   "most canopy": {
+    "top1": 0.135,
+    "within_1_sector": 0.395
+   },
+   "most litter (v3)": {
+    "top1": 0.129,
+    "within_1_sector": 0.39
+   },
+   "most grass (v3)": {
+    "top1": 0.111,
+    "within_1_sector": 0.371
+   },
+   "least burned already this season": {
+    "top1": 0.104,
+    "within_1_sector": 0.352
+   },
+   "away from own burnt ground": {
+    "top1": 0.124,
+    "within_1_sector": 0.389
+   },
+   "downwind": {
+    "top1": 0.117,
+    "within_1_sector": 0.356
+   },
+   "away from buildings": {
+    "top1": 0.143,
+    "within_1_sector": 0.435
+   },
+   "model: terrain": {
+    "top1": 0.152,
+    "within_1_sector": 0.416
+   },
+   "model: fuel+canopy": {
+    "top1": 0.178,
+    "within_1_sector": 0.441
+   },
+   "model: terrain+fuel+burnt+people+wind": {
+    "top1": 0.201,
+    "within_1_sector": 0.489
+   },
+   "model: history only (last step, from first)": {
+    "top1": 0.175,
+    "within_1_sector": 0.477
+   },
+   "model: history + everything": {
+    "top1": 0.24,
+    "within_1_sector": 0.554
+   }
+  }
+ }
+}

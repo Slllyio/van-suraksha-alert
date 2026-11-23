@@ -1,0 +1,68 @@
+{
+ "nights": 122,
+ "lists_per_method": 3332,
+ "all beats within 5 km of a night dot": {
+  "closest": {
+   "lists": 3332,
+   "lists_with_a_hit": 0.073,
+   "spots_hit": 0.035,
+   "lists_with_a_new_fire_hit": 0.014
+  },
+  "history": {
+   "lists": 3332,
+   "lists_with_a_hit": 0.045,
+   "spots_hit": 0.02,
+   "lists_with_a_new_fire_hit": 0.02
+  },
+  "mixed": {
+   "lists": 3332,
+   "lists_with_a_hit": 0.07,
+   "spots_hit": 0.031,
+   "lists_with_a_new_fire_hit": 0.02
+  },
+  "random": {
+   "lists": 3332,
+   "lists_with_a_hit": 0.037,
+   "spots_hit": 0.015,
+   "lists_with_a_new_fire_hit": 0.023
+  },
+  "ring_1_2km": {
+   "lists": 3332,
+   "lists_with_a_hit": 0.04,
+   "spots_hit": 0.017,
+   "lists_with_a_new_fire_hit": 0.027
+  }
+ },
+ "beats with a night dot inside": {
+  "closest": {
+   "lists": 561,
+   "lists_with_a_hit": 0.235,
+   "spots_hit": 0.105,
+   "lists_with_a_new_fire_hit": 0.004
+  },
+  "history": {
+   "lists": 561,
+   "lists_with_a_hit": 0.137,
+   "spots_hit": 0.058,
+   "lists_with_a_new_fire_hit": 0.041
+  },
+  "mixed": {
+   "lists": 561,
+   "lists_with_a_hit": 0.212,
+   "spots_hit": 0.085,
+   "lists_with_a_new_fire_hit": 0.027
+  },
+  "random": {
+   "lists": 561,
+   "lists_with_a_hit": 0.091,
+   "spots_hit": 0.036,
+   "lists_with_a_new_fire_hit": 0.048
+  },
+  "ring_1_2km": {
+   "lists": 561,
+   "lists_with_a_hit": 0.08,
+   "spots_hit": 0.032,
+   "lists_with_a_new_fire_hit": 0.055
+  }
+ }
+}

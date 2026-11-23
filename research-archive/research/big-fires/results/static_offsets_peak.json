@@ -1,0 +1,852 @@
+{
+ "sites_used": 26,
+ "detections": 29059,
+ "note": "offset = VIIRS point minus Sentinel-2 truth; [mean, 95% CI by site]; pointing_error_sd = [if the source is equally likely anywhere in the pixel, if detection favours the pixel centre]",
+ "all": {
+  "detections": 29059,
+  "sites": 26,
+  "east_m": [
+   -14.6,
+   -61.5,
+   46.1
+  ],
+  "north_m": [
+   -3.8,
+   -32.5,
+   28.6
+  ],
+  "along_track_m": [
+   6.3,
+   -21.7,
+   30.8
+  ],
+  "away_from_nadir_m": [
+   15.3,
+   4.9,
+   26.6
+  ],
+  "dist_to_truth_median_m": 210,
+  "dist_to_truth_p90_m": 428,
+  "pixel_width_median_m": 430,
+  "pixel_length_median_m": 430,
+  "scatter_sd_along_m": 176,
+  "scatter_sd_across_m": 221,
+  "in_pixel_sd_along_m_uniform": 139,
+  "in_pixel_sd_across_m_uniform": 132,
+  "hot_area_sd_m": 88,
+  "pointing_error_sd_along_m": [
+   63,
+   116
+  ],
+  "pointing_error_sd_across_m": [
+   154,
+   180
+  ]
+ },
+ "by_group": {
+  "NOAA-20 day": {
+   "detections": 145,
+   "sites": 10,
+   "east_m": [
+    88.5,
+    -22.9,
+    234.8
+   ],
+   "north_m": [
+    -40.9,
+    -95.4,
+    12.0
+   ],
+   "along_track_m": [
+    -58.4,
+    -121.9,
+    7.2
+   ],
+   "away_from_nadir_m": [
+    110.5,
+    21.0,
+    238.2
+   ],
+   "dist_to_truth_median_m": 171,
+   "dist_to_truth_p90_m": 285,
+   "pixel_width_median_m": 400,
+   "pixel_length_median_m": 400,
+   "scatter_sd_along_m": 157,
+   "scatter_sd_across_m": 144,
+   "in_pixel_sd_along_m_uniform": 133,
+   "in_pixel_sd_across_m_uniform": 124,
+   "hot_area_sd_m": 79,
+   "pointing_error_sd_along_m": [
+    26,
+    98
+   ],
+   "pointing_error_sd_across_m": [
+    0,
+    83
+   ]
+  },
+  "NOAA-20 night": {
+   "detections": 10446,
+   "sites": 26,
+   "east_m": [
+    -26.7,
+    -72.6,
+    35.7
+   ],
+   "north_m": [
+    53.7,
+    22.1,
+    85.4
+   ],
+   "along_track_m": [
+    -47.0,
+    -76.8,
+    -21.3
+   ],
+   "away_from_nadir_m": [
+    13.4,
+    -0.9,
+    25.7
+   ],
+   "dist_to_truth_median_m": 215,
+   "dist_to_truth_p90_m": 441,
+   "pixel_width_median_m": 430,
+   "pixel_length_median_m": 430,
+   "scatter_sd_along_m": 175,
+   "scatter_sd_across_m": 236,
+   "in_pixel_sd_along_m_uniform": 139,
+   "in_pixel_sd_across_m_uniform": 132,
+   "hot_area_sd_m": 88,
+   "pointing_error_sd_along_m": [
+    60,
+    115
+   ],
+   "pointing_error_sd_across_m": [
+    174,
+    197
+   ]
+  },
+  "NOAA-21 day": {
+   "detections": 98,
+   "sites": 8,
+   "east_m": [
+    55.0,
+    -2.7,
+    130.0
+   ],
+   "north_m": [
+    -45.4,
+    -159.0,
+    53.3
+   ],
+   "along_track_m": [
+    -55.8,
+    -179.5,
+    46.7
+   ],
+   "away_from_nadir_m": [
+    49.3,
+    -4.9,
+    105.6
+   ],
+   "dist_to_truth_median_m": 181,
+   "dist_to_truth_p90_m": 308,
+   "pixel_width_median_m": 420,
+   "pixel_length_median_m": 470,
+   "scatter_sd_along_m": 172,
+   "scatter_sd_across_m": 141,
+   "in_pixel_sd_along_m_uniform": 143,
+   "in_pixel_sd_across_m_uniform": 127,
+   "hot_area_sd_m": 86,
+   "pointing_error_sd_along_m": [
+    40,
+    109
+   ],
+   "pointing_error_sd_across_m": [
+    0,
+    67
+   ]
+  },
+  "NOAA-21 night": {
+   "detections": 4552,
+   "sites": 22,
+   "east_m": [
+    6.3,
+    -55.3,
+    88.1
+   ],
+   "north_m": [
+    -80.6,
+    -133.9,
+    -28.7
+   ],
+   "along_track_m": [
+    77.5,
+    33.1,
+    127.1
+   ],
+   "away_from_nadir_m": [
+    35.6,
+    2.8,
+    74.4
+   ],
+   "dist_to_truth_median_m": 229,
+   "dist_to_truth_p90_m": 462,
+   "pixel_width_median_m": 430,
+   "pixel_length_median_m": 440,
+   "scatter_sd_along_m": 179,
+   "scatter_sd_across_m": 229,
+   "in_pixel_sd_along_m_uniform": 141,
+   "in_pixel_sd_across_m_uniform": 133,
+   "hot_area_sd_m": 90,
+   "pointing_error_sd_along_m": [
+    62,
+    117
+   ],
+   "pointing_error_sd_across_m": [
+    163,
+    188
+   ]
+  },
+  "S-NPP day": {
+   "detections": 142,
+   "sites": 9,
+   "east_m": [
+    8.6,
+    -27.8,
+    52.5
+   ],
+   "north_m": [
+    35.5,
+    -38.5,
+    109.0
+   ],
+   "along_track_m": [
+    32.9,
+    -45.9,
+    107.6
+   ],
+   "away_from_nadir_m": [
+    9.4,
+    -24.8,
+    51.8
+   ],
+   "dist_to_truth_median_m": 179,
+   "dist_to_truth_p90_m": 368,
+   "pixel_width_median_m": 410,
+   "pixel_length_median_m": 390,
+   "scatter_sd_along_m": 178,
+   "scatter_sd_across_m": 154,
+   "in_pixel_sd_along_m_uniform": 129,
+   "in_pixel_sd_across_m_uniform": 126,
+   "hot_area_sd_m": 75,
+   "pointing_error_sd_along_m": [
+    98,
+    134
+   ],
+   "pointing_error_sd_across_m": [
+    47,
+    101
+   ]
+  },
+  "S-NPP night": {
+   "detections": 13676,
+   "sites": 26,
+   "east_m": [
+    -14.0,
+    -60.4,
+    44.8
+   ],
+   "north_m": [
+    -28.2,
+    -59.2,
+    3.8
+   ],
+   "along_track_m": [
+    30.5,
+    2.9,
+    56.7
+   ],
+   "away_from_nadir_m": [
+    14.6,
+    5.1,
+    23.8
+   ],
+   "dist_to_truth_median_m": 202,
+   "dist_to_truth_p90_m": 404,
+   "pixel_width_median_m": 430,
+   "pixel_length_median_m": 430,
+   "scatter_sd_along_m": 163,
+   "scatter_sd_across_m": 208,
+   "in_pixel_sd_along_m_uniform": 138,
+   "in_pixel_sd_across_m_uniform": 132,
+   "hot_area_sd_m": 88,
+   "pointing_error_sd_along_m": [
+    0,
+    97
+   ],
+   "pointing_error_sd_across_m": [
+    136,
+    164
+   ]
+  }
+ },
+ "by_pixel_width": {
+  "<=420 m (near nadir)": {
+   "detections": 14264,
+   "sites": 26,
+   "east_m": [
+    -9.9,
+    -55.6,
+    50.2
+   ],
+   "north_m": [
+    -6.6,
+    -34.8,
+    24.2
+   ],
+   "along_track_m": [
+    8.5,
+    -17.6,
+    35.7
+   ],
+   "away_from_nadir_m": [
+    12.8,
+    3.0,
+    21.5
+   ],
+   "dist_to_truth_median_m": 194,
+   "dist_to_truth_p90_m": 412,
+   "pixel_width_median_m": 390,
+   "pixel_length_median_m": 370,
+   "scatter_sd_along_m": 170,
+   "scatter_sd_across_m": 214,
+   "in_pixel_sd_along_m_uniform": 128,
+   "in_pixel_sd_across_m_uniform": 113,
+   "hot_area_sd_m": 89,
+   "pointing_error_sd_along_m": [
+    68,
+    114
+   ],
+   "pointing_error_sd_across_m": [
+    159,
+    178
+   ]
+  },
+  "420-520 m": {
+   "detections": 9929,
+   "sites": 26,
+   "east_m": [
+    -15.2,
+    -60.8,
+    44.6
+   ],
+   "north_m": [
+    -2.1,
+    -32.4,
+    29.1
+   ],
+   "along_track_m": [
+    4.0,
+    -25.0,
+    29.5
+   ],
+   "away_from_nadir_m": [
+    14.5,
+    1.6,
+    27.3
+   ],
+   "dist_to_truth_median_m": 215,
+   "dist_to_truth_p90_m": 426,
+   "pixel_width_median_m": 470,
+   "pixel_length_median_m": 410,
+   "scatter_sd_along_m": 174,
+   "scatter_sd_across_m": 223,
+   "in_pixel_sd_along_m_uniform": 136,
+   "in_pixel_sd_across_m_uniform": 135,
+   "hot_area_sd_m": 89,
+   "pointing_error_sd_along_m": [
+    64,
+    115
+   ],
+   "pointing_error_sd_across_m": [
+    153,
+    181
+   ]
+  },
+  "520-650 m": {
+   "detections": 4081,
+   "sites": 25,
+   "east_m": [
+    -14.7,
+    -69.0,
+    47.1
+   ],
+   "north_m": [
+    -4.4,
+    -39.1,
+    31.3
+   ],
+   "along_track_m": [
+    6.3,
+    -31.3,
+    38.7
+   ],
+   "away_from_nadir_m": [
+    26.2,
+    -0.4,
+    59.9
+   ],
+   "dist_to_truth_median_m": 242,
+   "dist_to_truth_p90_m": 446,
+   "pixel_width_median_m": 560,
+   "pixel_length_median_m": 520,
+   "scatter_sd_along_m": 188,
+   "scatter_sd_across_m": 234,
+   "in_pixel_sd_along_m_uniform": 161,
+   "in_pixel_sd_across_m_uniform": 165,
+   "hot_area_sd_m": 85,
+   "pointing_error_sd_along_m": [
+    46,
+    123
+   ],
+   "pointing_error_sd_across_m": [
+    142,
+    184
+   ]
+  },
+  ">650 m (swath edge)": {
+   "detections": 785,
+   "sites": 14,
+   "east_m": [
+    -165.6,
+    -225.3,
+    -108.0
+   ],
+   "north_m": [
+    68.4,
+    -2.4,
+    136.0
+   ],
+   "along_track_m": [
+    -36.4,
+    -96.1,
+    27.2
+   ],
+   "away_from_nadir_m": [
+    60.3,
+    -32.2,
+    147.2
+   ],
+   "dist_to_truth_median_m": 292,
+   "dist_to_truth_p90_m": 513,
+   "pixel_width_median_m": 720,
+   "pixel_length_median_m": 750,
+   "scatter_sd_along_m": 228,
+   "scatter_sd_across_m": 247,
+   "in_pixel_sd_along_m_uniform": 218,
+   "in_pixel_sd_across_m_uniform": 207,
+   "hot_area_sd_m": 86,
+   "pointing_error_sd_along_m": [
+    0,
+    145
+   ],
+   "pointing_error_sd_across_m": [
+    103,
+    179
+   ]
+  }
+ },
+ "by_side_of_track": {
+  "west of track": {
+   "detections": 14661,
+   "sites": 26,
+   "east_m": [
+    -25.6,
+    -74.2,
+    43.5
+   ],
+   "north_m": [
+    -1.2,
+    -32.7,
+    30.3
+   ],
+   "along_track_m": [
+    7.0,
+    -18.7,
+    31.4
+   ],
+   "away_from_nadir_m": [
+    24.6,
+    -41.2,
+    73.3
+   ],
+   "dist_to_truth_median_m": 217,
+   "dist_to_truth_p90_m": 440,
+   "pixel_width_median_m": 430,
+   "pixel_length_median_m": 430,
+   "scatter_sd_along_m": 180,
+   "scatter_sd_across_m": 222,
+   "in_pixel_sd_along_m_uniform": 140,
+   "in_pixel_sd_across_m_uniform": 132,
+   "hot_area_sd_m": 88,
+   "pointing_error_sd_along_m": [
+    72,
+    123
+   ],
+   "pointing_error_sd_across_m": [
+    155,
+    181
+   ]
+  },
+  "east of track": {
+   "detections": 14398,
+   "sites": 26,
+   "east_m": [
+    -3.8,
+    -49.3,
+    54.7
+   ],
+   "north_m": [
+    -6.6,
+    -37.0,
+    24.5
+   ],
+   "along_track_m": [
+    6.6,
+    -19.9,
+    30.4
+   ],
+   "away_from_nadir_m": [
+    -2.5,
+    -50.0,
+    60.4
+   ],
+   "dist_to_truth_median_m": 203,
+   "dist_to_truth_p90_m": 416,
+   "pixel_width_median_m": 430,
+   "pixel_length_median_m": 430,
+   "scatter_sd_along_m": 171,
+   "scatter_sd_across_m": 217,
+   "in_pixel_sd_along_m_uniform": 138,
+   "in_pixel_sd_across_m_uniform": 132,
+   "hot_area_sd_m": 88,
+   "pointing_error_sd_along_m": [
+    50,
+    109
+   ],
+   "pointing_error_sd_across_m": [
+    148,
+    175
+   ]
+  }
+ },
+ "by_side_far_from_nadir": {
+  "west": {
+   "east_m": [
+    -25.3,
+    -72.0,
+    36.5
+   ],
+   "north_m": [
+    -1.9,
+    -32.2,
+    29.9
+   ],
+   "away_m": [
+    24.2,
+    -40.7,
+    71.8
+   ],
+   "n": 12135
+  },
+  "east": {
+   "east_m": [
+    -0.6,
+    -45.7,
+    63.6
+   ],
+   "north_m": [
+    -8.9,
+    -39.8,
+    23.4
+   ],
+   "away_m": [
+    1.2,
+    -43.5,
+    66.2
+   ],
+   "n": 12037
+  }
+ },
+ "compact_sites_only": {
+  "sites": 5,
+  "by_group": {
+   "NOAA-20 day": {
+    "east_m": [
+     37.2,
+     13.5,
+     69.1
+    ],
+    "north_m": [
+     -47.9,
+     -105.1,
+     23.4
+    ],
+    "n": 26
+   },
+   "NOAA-20 night": {
+    "east_m": [
+     -70.9,
+     -105.5,
+     -36.6
+    ],
+    "north_m": [
+     82.2,
+     52.3,
+     113.6
+    ],
+    "n": 1485
+   },
+   "NOAA-21 day": {
+    "east_m": [
+     142.0,
+     null,
+     null
+    ],
+    "north_m": [
+     -186.0,
+     null,
+     null
+    ],
+    "n": 8
+   },
+   "NOAA-21 night": {
+    "east_m": [
+     41.5,
+     -101.9,
+     238.7
+    ],
+    "north_m": [
+     -160.5,
+     -428.9,
+     28.5
+    ],
+    "n": 510
+   },
+   "S-NPP day": {
+    "east_m": [
+     7.6,
+     -12.5,
+     19.8
+    ],
+    "north_m": [
+     -76.3,
+     -174.8,
+     -1.9
+    ],
+    "n": 43
+   },
+   "S-NPP night": {
+    "east_m": [
+     -68.0,
+     -110.9,
+     -29.0
+    ],
+    "north_m": [
+     -3.8,
+     -33.4,
+     24.9
+    ],
+    "n": 1738
+   }
+  }
+ },
+ "even_vs_odd_years": {
+  "NOAA-20 day | even years": {
+   "east_m": [
+    8.1,
+    -54.9,
+    66.9
+   ],
+   "north_m": [
+    -46.5,
+    -109.6,
+    18.4
+   ],
+   "n": 103
+  },
+  "NOAA-20 day | odd years": {
+   "east_m": [
+    175.3,
+    59.5,
+    360.6
+   ],
+   "north_m": [
+    -11.3,
+    -46.8,
+    21.0
+   ],
+   "n": 42
+  },
+  "NOAA-20 night | even years": {
+   "east_m": [
+    -30.7,
+    -77.9,
+    23.1
+   ],
+   "north_m": [
+    50.1,
+    21.4,
+    87.2
+   ],
+   "n": 5201
+  },
+  "NOAA-20 night | odd years": {
+   "east_m": [
+    -23.3,
+    -65.3,
+    35.0
+   ],
+   "north_m": [
+    57.1,
+    25.3,
+    89.5
+   ],
+   "n": 5245
+  },
+  "NOAA-21 day | even years": {
+   "east_m": [
+    57.4,
+    -10.2,
+    129.3
+   ],
+   "north_m": [
+    -27.3,
+    -151.7,
+    61.6
+   ],
+   "n": 61
+  },
+  "NOAA-21 day | odd years": {
+   "east_m": [
+    28.1,
+    -28.2,
+    90.3
+   ],
+   "north_m": [
+    17.4,
+    -115.5,
+    132.9
+   ],
+   "n": 37
+  },
+  "NOAA-21 night | even years": {
+   "east_m": [
+    8.1,
+    -51.6,
+    92.7
+   ],
+   "north_m": [
+    -81.9,
+    -143.1,
+    -35.2
+   ],
+   "n": 2641
+  },
+  "NOAA-21 night | odd years": {
+   "east_m": [
+    -2.7,
+    -62.1,
+    84.3
+   ],
+   "north_m": [
+    -58.0,
+    -98.2,
+    -17.4
+   ],
+   "n": 1911
+  },
+  "S-NPP day | even years": {
+   "east_m": [
+    8.4,
+    -29.6,
+    46.2
+   ],
+   "north_m": [
+    7.7,
+    -66.1,
+    88.7
+   ],
+   "n": 98
+  },
+  "S-NPP day | odd years": {
+   "east_m": [
+    -71.9,
+    -195.7,
+    12.7
+   ],
+   "north_m": [
+    77.6,
+    4.7,
+    153.4
+   ],
+   "n": 44
+  },
+  "S-NPP night | even years": {
+   "east_m": [
+    -16.8,
+    -61.1,
+    54.5
+   ],
+   "north_m": [
+    -28.1,
+    -55.0,
+    5.4
+   ],
+   "n": 7218
+  },
+  "S-NPP night | odd years": {
+   "east_m": [
+    -11.3,
+    -58.4,
+    50.8
+   ],
+   "north_m": [
+    -29.2,
+    -58.8,
+    -1.2
+   ],
+   "n": 6458
+  }
+ },
+ "truth": "peak",
+ "site_ids": [
+  2,
+  4,
+  7,
+  9,
+  14,
+  15,
+  16,
+  17,
+  18,
+  24,
+  25,
+  26,
+  29,
+  30,
+  32,
+  33,
+  34,
+  35,
+  37,
+  39,
+  41,
+  42,
+  46,
+  47,
+  50,
+  60
+ ]
+}

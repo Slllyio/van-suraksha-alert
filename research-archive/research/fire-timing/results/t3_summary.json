@@ -1,0 +1,129 @@
+{
+ "region_late_share": {
+  "Chhatarpur": 0.20499999821186066,
+  "Dewas": 0.09799999743700027,
+  "Dindori": 0.4860000014305115,
+  "Khandwa": 0.16699999570846558,
+  "Panna_TR": 0.5839999914169312,
+  "Satpura_TR": 0.2329999953508377,
+  "South_Balaghat": 0.2370000034570694,
+  "South_Betul": 0.19699999690055847,
+  "South_Chhindwara": 0.09700000286102295,
+  "Umaria": 0.3199999928474426
+ },
+ "overall": {
+  "+ region timing inputs": {
+   "ha_caught": 0.4362,
+   "big_caught": 0.4498
+  },
+  "one model per phase": {
+   "ha_caught": 0.4031,
+   "big_caught": 0.4091
+  },
+  "one pooled model": {
+   "ha_caught": 0.4263,
+   "big_caught": 0.4433
+  },
+  "trained on similar-timing regions": {
+   "ha_caught": 0.4182,
+   "big_caught": 0.4305
+  }
+ },
+ "by_phase": {
+  "+ region timing inputs": {
+   "P1": 0.4955,
+   "P2": 0.4124,
+   "P3": 0.4107
+  },
+  "one model per phase": {
+   "P1": 0.4434,
+   "P2": 0.3819,
+   "P3": 0.3909
+  },
+  "one pooled model": {
+   "P1": 0.4659,
+   "P2": 0.4014,
+   "P3": 0.4186
+  },
+  "trained on similar-timing regions": {
+   "P1": 0.4677,
+   "P2": 0.3924,
+   "P3": 0.403
+  }
+ },
+ "gain: + region timing inputs": {
+  "mean": 0.0097,
+  "regions_better": 7,
+  "ci95": [
+   -0.0089,
+   0.0281
+  ],
+  "by_region": {
+   "Chhatarpur": 0.0328,
+   "Dewas": -0.0105,
+   "Dindori": -0.0498,
+   "Khandwa": 0.0204,
+   "Panna_TR": 0.0019,
+   "Satpura_TR": 0.0245,
+   "South_Balaghat": 0.0652,
+   "South_Betul": 0.0235,
+   "South_Chhindwara": -0.0161,
+   "Umaria": 0.0051
+  },
+  "by_phase": {
+   "P1": 0.0296,
+   "P2": 0.011,
+   "P3": -0.008
+  }
+ },
+ "gain: trained on similar-timing regions": {
+  "mean": -0.0078,
+  "regions_better": 2,
+  "ci95": [
+   -0.0184,
+   0.0034
+  ],
+  "by_region": {
+   "Chhatarpur": -0.0101,
+   "Dewas": -0.0115,
+   "Dindori": -0.0274,
+   "Khandwa": -0.0095,
+   "Panna_TR": -0.0021,
+   "Satpura_TR": -0.0253,
+   "South_Balaghat": 0.0191,
+   "South_Betul": 0.0239,
+   "South_Chhindwara": -0.0336,
+   "Umaria": -0.0009
+  },
+  "by_phase": {
+   "P1": 0.0017,
+   "P2": -0.009,
+   "P3": -0.0157
+  }
+ },
+ "gain: one model per phase": {
+  "mean": -0.0227,
+  "regions_better": 3,
+  "ci95": [
+   -0.0424,
+   -0.0058
+  ],
+  "by_region": {
+   "Chhatarpur": 0.0041,
+   "Dewas": -0.019,
+   "Dindori": -0.0685,
+   "Khandwa": -0.014,
+   "Panna_TR": 0.01,
+   "Satpura_TR": -0.0819,
+   "South_Balaghat": -0.0222,
+   "South_Betul": -0.0035,
+   "South_Chhindwara": -0.036,
+   "Umaria": 0.0043
+  },
+  "by_phase": {
+   "P1": -0.0225,
+   "P2": -0.0195,
+   "P3": -0.0278
+  }
+ }
+}

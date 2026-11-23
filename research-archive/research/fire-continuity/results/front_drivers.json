@@ -1,0 +1,419 @@
+{
+ "variance_split": {
+  "between_fires": 0.088,
+  "between_looks_same_fire": 0.669,
+  "between_fronts_same_look": 0.243,
+  "n_fronts": 1310
+ },
+ "within_same_fire_and_look": {
+  "all fronts": {
+   "n_fronts": 866,
+   "n_groups": 369,
+   "fire activity (dots, heat, age of front)": {
+    "linear": {
+     "r2": 0.178,
+     "chance_95": 0.0
+    },
+    "trees": {
+     "r2": 0.193,
+     "chance_95": -0.016
+    }
+   },
+   "room to grow (unburned ground around it)": {
+    "linear": {
+     "r2": 0.06,
+     "chance_95": 0.003
+    },
+    "trees": {
+     "r2": 0.049,
+     "chance_95": -0.001
+    }
+   },
+   "tree cover / grass / crops / fuel map": {
+    "linear": {
+     "r2": -0.031,
+     "chance_95": 0.001
+    },
+    "trees": {
+     "r2": -0.069,
+     "chance_95": -0.056
+    }
+   },
+   "terrain (slope, uphill, ridge/valley)": {
+    "linear": {
+     "r2": 0.001,
+     "chance_95": -0.002
+    },
+    "trees": {
+     "r2": -0.045,
+     "chance_95": -0.027
+    }
+   },
+   "burn history (earlier this season, past years)": {
+    "linear": {
+     "r2": 0.005,
+     "chance_95": 0.001
+    },
+    "trees": {
+     "r2": -0.049,
+     "chance_95": -0.027
+    }
+   },
+   "people (roads, villages)": {
+    "linear": {
+     "r2": 0.01,
+     "chance_95": 0.003
+    },
+    "trees": {
+     "r2": -0.034,
+     "chance_95": -0.012
+    }
+   },
+   "downwind side of the fire": {
+    "linear": {
+     "r2": 0.0,
+     "chance_95": 0.002
+    },
+    "trees": {
+     "r2": -0.019,
+     "chance_95": -0.014
+    }
+   },
+   "all local factors (no fire activity)": {
+    "linear": {
+     "r2": 0.057,
+     "chance_95": -0.01
+    },
+    "trees": {
+     "r2": 0.052,
+     "chance_95": -0.036
+    }
+   },
+   "everything": {
+    "linear": {
+     "r2": 0.185,
+     "chance_95": -0.02
+    },
+    "trees": {
+     "r2": 0.2,
+     "chance_95": -0.043
+    }
+   },
+   "single_factor_rho_95": {
+    "age_h": [
+     -0.043,
+     -0.138,
+     0.077
+    ],
+    "avail_ha": [
+     0.286,
+     0.188,
+     0.374
+    ],
+    "burned_earlier": [
+     -0.064,
+     -0.178,
+     0.04
+    ],
+    "crop": [
+     0.013,
+     -0.064,
+     0.117
+    ],
+    "downwind": [
+     0.101,
+     -0.035,
+     0.219
+    ],
+    "frp_last": [
+     0.435,
+     0.368,
+     0.499
+    ],
+    "fuel": [
+     0.093,
+     -0.03,
+     0.227
+    ],
+    "grass": [
+     -0.032,
+     -0.131,
+     0.079
+    ],
+    "local_height": [
+     -0.055,
+     -0.152,
+     0.045
+    ],
+    "n_dots": [
+     0.3,
+     0.211,
+     0.384
+    ],
+    "n_dots_last": [
+     0.467,
+     0.401,
+     0.535
+    ],
+    "prior_burns": [
+     0.074,
+     -0.036,
+     0.173
+    ],
+    "road": [
+     0.018,
+     -0.082,
+     0.108
+    ],
+    "separate": [
+     0.142,
+     0.058,
+     0.22
+    ],
+    "slope": [
+     0.1,
+     -0.007,
+     0.186
+    ],
+    "tree": [
+     0.051,
+     -0.06,
+     0.145
+    ],
+    "uphill": [
+     -0.092,
+     -0.2,
+     0.009
+    ],
+    "village_km": [
+     0.117,
+     0.005,
+     0.22
+    ]
+   }
+  },
+  "connected fronts only": {
+   "n_fronts": 426,
+   "n_groups": 194,
+   "fire activity (dots, heat, age of front)": {
+    "linear": {
+     "r2": 0.142,
+     "chance_95": -0.012
+    },
+    "trees": {
+     "r2": 0.162,
+     "chance_95": -0.059
+    }
+   },
+   "room to grow (unburned ground around it)": {
+    "linear": {
+     "r2": 0.121,
+     "chance_95": 0.007
+    },
+    "trees": {
+     "r2": 0.099,
+     "chance_95": 0.007
+    }
+   },
+   "tree cover / grass / crops / fuel map": {
+    "linear": {
+     "r2": -0.039,
+     "chance_95": 0.004
+    },
+    "trees": {
+     "r2": -0.063,
+     "chance_95": -0.069
+    }
+   },
+   "terrain (slope, uphill, ridge/valley)": {
+    "linear": {
+     "r2": -0.018,
+     "chance_95": 0.009
+    },
+    "trees": {
+     "r2": -0.098,
+     "chance_95": -0.052
+    }
+   },
+   "burn history (earlier this season, past years)": {
+    "linear": {
+     "r2": -0.024,
+     "chance_95": 0.001
+    },
+    "trees": {
+     "r2": -0.021,
+     "chance_95": -0.026
+    }
+   },
+   "people (roads, villages)": {
+    "linear": {
+     "r2": -0.019,
+     "chance_95": 0.016
+    },
+    "trees": {
+     "r2": -0.032,
+     "chance_95": -0.049
+    }
+   },
+   "downwind side of the fire": {
+    "linear": {
+     "r2": -0.002,
+     "chance_95": 0.013
+    },
+    "trees": {
+     "r2": -0.059,
+     "chance_95": 0.014
+    }
+   },
+   "all local factors (no fire activity)": {
+    "linear": {
+     "r2": 0.062,
+     "chance_95": -0.022
+    },
+    "trees": {
+     "r2": 0.031,
+     "chance_95": -0.098
+    }
+   },
+   "everything": {
+    "linear": {
+     "r2": 0.058,
+     "chance_95": -0.031
+    },
+    "trees": {
+     "r2": 0.101,
+     "chance_95": -0.028
+    }
+   },
+   "single_factor_rho_95": {
+    "age_h": [
+     0.164,
+     0.031,
+     0.304
+    ],
+    "avail_ha": [
+     0.36,
+     0.238,
+     0.473
+    ],
+    "burned_earlier": [
+     -0.087,
+     -0.239,
+     0.053
+    ],
+    "crop": [
+     0.047,
+     -0.097,
+     0.175
+    ],
+    "downwind": [
+     0.157,
+     -0.017,
+     0.317
+    ],
+    "frp_last": [
+     0.393,
+     0.277,
+     0.507
+    ],
+    "fuel": [
+     0.138,
+     -0.016,
+     0.315
+    ],
+    "grass": [
+     -0.052,
+     -0.2,
+     0.104
+    ],
+    "local_height": [
+     -0.08,
+     -0.186,
+     0.035
+    ],
+    "n_dots": [
+     0.384,
+     0.274,
+     0.5
+    ],
+    "n_dots_last": [
+     0.414,
+     0.29,
+     0.515
+    ],
+    "prior_burns": [
+     0.032,
+     -0.111,
+     0.161
+    ],
+    "road": [
+     0.069,
+     -0.059,
+     0.221
+    ],
+    "separate": [
+     NaN,
+     NaN,
+     NaN
+    ],
+    "slope": [
+     0.091,
+     -0.06,
+     0.23
+    ],
+    "tree": [
+     0.095,
+     -0.065,
+     0.25
+    ],
+    "uphill": [
+     -0.024,
+     -0.16,
+     0.1
+    ],
+    "village_km": [
+     0.065,
+     -0.102,
+     0.204
+    ]
+   }
+  }
+ },
+ "between_looks_and_fires": {
+  "weather that day (temp, humidity, wind, rain, soil water)": {
+   "r2": -0.102,
+   "chance_95": -0.054
+  },
+  "date in season": {
+   "r2": -0.046,
+   "chance_95": -0.005
+  },
+  "night or afternoon look": {
+   "r2": 0.008,
+   "chance_95": -0.004
+  },
+  "fire activity (dots, heat, hours burning, fronts, room)": {
+   "r2": 0.26,
+   "chance_95": -0.038
+  },
+  "everything": {
+   "r2": 0.263,
+   "chance_95": -0.036
+  },
+  "single_rho": {
+   "tmax": -0.065,
+   "rh": -0.025,
+   "wind": 0.039,
+   "rain7": 0.014,
+   "soil": 0.024,
+   "doy": -0.079,
+   "night": 0.115,
+   "dots_last": 0.328,
+   "frp": 0.246,
+   "age": -0.435,
+   "fronts": 0.076,
+   "avail": -0.119
+  },
+  "n_looks": 813
+ }
+}

@@ -1,0 +1,13 @@
+{
+ "fronts": 4048,
+ "right": [
+  0.673,
+  0.659,
+  0.687
+ ],
+ "first_look_right": 0.673,
+ "open_past500": 0.198,
+ "stop_past500": 0.092,
+ "open_is_the_farthest_sector": 0.208,
+ "chance_farthest": 0.125
+}

@@ -1,0 +1,56 @@
+{
+ "viirs_clusters": 19832,
+ "seen_by_meteosat_pct": 1.95,
+ "viirs_heat_in_clusters_meteosat_saw_pct": 14.2,
+ "by_viirs_frp": [
+  {
+   "viirs_frp": "(0.0, 5.0]",
+   "clusters": "9327",
+   "seen_pct": "0.6",
+   "share_of_viirs_heat": "8.3"
+  },
+  {
+   "viirs_frp": "(5.0, 10.0]",
+   "clusters": "4309",
+   "seen_pct": "0.9",
+   "share_of_viirs_heat": "11.6"
+  },
+  {
+   "viirs_frp": "(10.0, 20.0]",
+   "clusters": "3257",
+   "seen_pct": "1.7",
+   "share_of_viirs_heat": "16.9"
+  },
+  {
+   "viirs_frp": "(20.0, 40.0]",
+   "clusters": "1760",
+   "seen_pct": "2.8",
+   "share_of_viirs_heat": "18.1"
+  },
+  {
+   "viirs_frp": "(40.0, 80.0]",
+   "clusters": "719",
+   "seen_pct": "7.5",
+   "share_of_viirs_heat": "14.5"
+  },
+  {
+   "viirs_frp": "(80.0, 160.0]",
+   "clusters": "292",
+   "seen_pct": "18.2",
+   "share_of_viirs_heat": "11.8"
+  },
+  {
+   "viirs_frp": "(160.0, 100000.0]",
+   "clusters": "168",
+   "seen_pct": "47.6",
+   "share_of_viirs_heat": "18.9"
+  }
+ ],
+ "both_seen_n": 386,
+ "both_median_meteosat_over_viirs": 3.16,
+ "both_rank_corr": 0.423,
+ "seen_pct_day_night": {
+  "false": 2.5,
+  "true": 1.1
+ }
+}

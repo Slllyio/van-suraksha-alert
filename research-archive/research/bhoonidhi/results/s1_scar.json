@@ -1,0 +1,71 @@
+{
+ "tried": 400,
+ "used": 390,
+ "skipped": {
+  "no pre same orbit": 6,
+  "no post": 4
+ },
+ "vv": {
+  "delta_median_db": -0.1,
+  "delta_q25_q75": [
+   -0.24,
+   0.01
+  ],
+  "share_drop_gt_1db": 0.01,
+  "share_rise_gt_1db": 0.0,
+  "pixel_auc_drop_median": 0.53,
+  "share_auc_drop_ge_0p7": 0.028,
+  "share_auc_any_dir_ge_0p7": 0.028,
+  "decoy_delta_median_db": -0.01,
+  "decoy_share_drop_gt_1db": 0.003,
+  "decoy_share_auc_drop_ge_0p7": 0.0,
+  "scar_vs_decoy_auc": 0.662
+ },
+ "vh": {
+  "delta_median_db": -0.13,
+  "delta_q25_q75": [
+   -0.29,
+   0.02
+  ],
+  "share_drop_gt_1db": 0.026,
+  "share_rise_gt_1db": 0.003,
+  "pixel_auc_drop_median": 0.532,
+  "share_auc_drop_ge_0p7": 0.031,
+  "share_auc_any_dir_ge_0p7": 0.033,
+  "decoy_delta_median_db": -0.0,
+  "decoy_share_drop_gt_1db": 0.003,
+  "decoy_share_auc_drop_ge_0p7": 0.003,
+  "scar_vs_decoy_auc": 0.684
+ },
+ "by_size": {
+  "(20, 50]": {
+   "n": 138,
+   "vh_delta": -0.19,
+   "vh_auc_any07": 0.058
+  },
+  "(50, 150]": {
+   "n": 138,
+   "vh_delta": -0.09,
+   "vh_auc_any07": 0.036
+  },
+  "(150, 2000]": {
+   "n": 114,
+   "vh_delta": -0.09,
+   "vh_auc_any07": 0.0
+  }
+ },
+ "by_severity": {
+  "high": {
+   "n": 15,
+   "vh_delta": -0.1
+  },
+  "low": {
+   "n": 373,
+   "vh_delta": -0.13
+  },
+  "moderate": {
+   "n": 2,
+   "vh_delta": -0.24
+  }
+ }
+}

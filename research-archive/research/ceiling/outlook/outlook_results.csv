@@ -1,0 +1,7 @@
+inputs,division anomaly r,statewide year r,top-20 divisions hold % of fires,perfect top-20,median error factor
+normal (division average),,-1.0,56.0,60.4,1.69
++ last season,-0.09,-0.57,55.8,60.4,1.77
++ weather to Jan,0.2,0.07,55.9,60.4,1.74
++ last season + weather,0.2,0.06,55.5,60.4,1.73
++ fires 1 Jan-14 Feb,0.34,0.34,56.2,60.4,1.7
++ all,0.26,0.17,55.4,60.4,1.7

@@ -1,0 +1,7 @@
+sb,leafy_gap_pct,bare_gap_pct,n_leafy,n_open
+"straight down
+(<30 deg)",-14.5,-7.1,293,544
+30-45 deg,-25.0,-13.2,221,433
+45-56 deg,-19.3,-9.8,209,537
+"sideways
+(>56 deg)",-10.7,-11.4,107,486

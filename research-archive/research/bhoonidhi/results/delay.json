@@ -1,0 +1,107 @@
+{
+ "passes_tried": 364,
+ "used": 359,
+ "skipped": {
+  "< 3 hot pixels in window": 5
+ },
+ "lag_0h": {
+  "rule": 0.3655,
+  "same_area": 0.4241,
+  "scene": 0.4547,
+  "gain_vs_same_area": 0.0306,
+  "ci": [
+   0.0175,
+   0.0427
+  ],
+  "gain_vs_rule": 0.0892,
+  "ci_rule": [
+   0.0756,
+   0.1031
+  ],
+  "better_worse": [
+   220,
+   125
+  ],
+  "looks_median": 2.0
+ },
+ "lag_3h": {
+  "rule": 0.469,
+  "same_area": 0.4953,
+  "scene": 0.4996,
+  "gain_vs_same_area": 0.0043,
+  "ci": [
+   -0.0065,
+   0.0146
+  ],
+  "gain_vs_rule": 0.0305,
+  "ci_rule": [
+   0.0178,
+   0.0435
+  ],
+  "better_worse": [
+   170,
+   159
+  ],
+  "looks_median": 3.0
+ },
+ "lag_6h": {
+  "rule": 0.4838,
+  "same_area": 0.5018,
+  "scene": 0.5058,
+  "gain_vs_same_area": 0.004,
+  "ci": [
+   -0.0055,
+   0.0141
+  ],
+  "gain_vs_rule": 0.022,
+  "ci_rule": [
+   0.0093,
+   0.035
+  ],
+  "better_worse": [
+   169,
+   164
+  ],
+  "looks_median": 3.0
+ },
+ "lag_12h": {
+  "rule": 0.4805,
+  "same_area": 0.4998,
+  "scene": 0.5035,
+  "gain_vs_same_area": 0.0037,
+  "ci": [
+   -0.0064,
+   0.0138
+  ],
+  "gain_vs_rule": 0.023,
+  "ci_rule": [
+   0.0106,
+   0.0349
+  ],
+  "better_worse": [
+   168,
+   165
+  ],
+  "looks_median": 3.0
+ },
+ "lag_24h": {
+  "rule": 0.4984,
+  "same_area": 0.5115,
+  "scene": 0.518,
+  "gain_vs_same_area": 0.0065,
+  "ci": [
+   -0.0039,
+   0.0162
+  ],
+  "gain_vs_rule": 0.0196,
+  "ci_rule": [
+   0.0075,
+   0.0319
+  ],
+  "better_worse": [
+   168,
+   161
+  ],
+  "looks_median": 4.0
+ }
+}

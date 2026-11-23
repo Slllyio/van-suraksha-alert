@@ -1,0 +1,13 @@
+{
+ "circle_first": 0.417,
+ "circle_truecentre": 0.6,
+ "buf_first_pass": 0.417,
+ "buf_all_dets": 0.514,
+ "mean": {
+  "circle_first": 0.396,
+  "circle_truecentre": 0.572,
+  "buf_first_pass": 0.398,
+  "buf_all_dets": 0.492
+ },
+ "n": 844
+}

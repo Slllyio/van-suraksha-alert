@@ -1,0 +1,43 @@
+{
+ "n_photos": 209,
+ "n_pixels": 1060210,
+ "share_burned": 0.0352,
+ "p_closest": {
+  "mean_auc_per_photo": 0.83,
+  "found_equal_area": 0.139,
+  "pooled_auc": 0.698,
+  "brier_skill": 0.026
+ },
+ "p_photo_model": {
+  "mean_auc_per_photo": 0.836,
+  "found_equal_area": 0.153,
+  "pooled_auc": 0.729,
+  "brier_skill": 0.002
+ },
+ "p_old_model": {
+  "mean_auc_per_photo": 0.642,
+  "found_equal_area": 0.097,
+  "pooled_auc": 0.564,
+  "brier_skill": 0.005
+ },
+ "auc_gain_vs_closest_95ci": {
+  "photo_model": [
+   -0.004,
+   0.014
+  ],
+  "old_model": [
+   -0.221,
+   -0.159
+  ]
+ },
+ "burned_by_distance": {
+  "(0, 200]": 0.161,
+  "(200, 300]": 0.127,
+  "(300, 400]": 0.092,
+  "(400, 500]": 0.06,
+  "(500, 700]": 0.03,
+  "(700, 1000]": 0.015,
+  "(1000, 1500]": 0.016,
+  "(1500, 3000]": 0.014
+ }
+}

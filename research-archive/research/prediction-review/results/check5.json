@@ -1,0 +1,18 @@
+{
+ "dated_first_burns": 5826,
+ "fixed5": {
+  "warned_1_2_days_before": 33.9,
+  "listed_any_day_before": 50.4,
+  "listings_per_dated_burn_before_fire": 17.39
+ },
+ "no_repeat_2d": {
+  "warned_1_2_days_before": 44.1,
+  "listed_any_day_before": 75.8,
+  "listings_per_dated_burn_before_fire": 10.03
+ },
+ "random": {
+  "warned_1_2_days_before": 26.4,
+  "listed_any_day_before": 89.0,
+  "listings_per_dated_burn_before_fire": 6.55
+ }
+}

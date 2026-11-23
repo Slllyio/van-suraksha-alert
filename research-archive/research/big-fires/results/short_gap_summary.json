@@ -1,0 +1,91 @@
+{
+ "all pairs < 3 h": {
+  "pairs": 3740,
+  "median_gap_min": 49,
+  "median_shift_m": 328,
+  "implied_rate_m_per_h": 466,
+  "shift_same_way_as_next_growth_pct": 52.2,
+  "n_with_reference": 1698,
+  "shift_mean_cos": 0.022,
+  "new_edge_same_way_pct": 53.0,
+  "n_new_edge": 1335,
+  "shift_m_by_gap": {
+   "0-30 min": 304,
+   "30-60 min": 333,
+   "60-90 min": 503,
+   "90-180 min": 354
+  },
+  "same_way_95pct_range": [
+   50.1,
+   54.2
+  ]
+ },
+ "VIIRS to VIIRS": {
+  "pairs": 2533,
+  "median_gap_min": 49,
+  "median_shift_m": 293,
+  "implied_rate_m_per_h": 462,
+  "shift_same_way_as_next_growth_pct": 53.2,
+  "n_with_reference": 1110,
+  "shift_mean_cos": 0.043,
+  "new_edge_same_way_pct": 54.9,
+  "n_new_edge": 843,
+  "shift_m_by_gap": {
+   "0-30 min": 260,
+   "30-60 min": 309,
+   "60-90 min": 340,
+   "90-180 min": 406
+  }
+ },
+ "involving MODIS": {
+  "pairs": 749,
+  "median_gap_min": 28,
+  "median_shift_m": 521,
+  "implied_rate_m_per_h": 1047,
+  "shift_same_way_as_next_growth_pct": 51.0,
+  "n_with_reference": 408,
+  "shift_mean_cos": -0.013,
+  "new_edge_same_way_pct": 49.8,
+  "n_new_edge": 313,
+  "shift_m_by_gap": {
+   "0-30 min": 503,
+   "30-60 min": 535,
+   "60-90 min": 563,
+   "90-180 min": 483
+  }
+ },
+ "involving Sentinel-2/Landsat": {
+  "pairs": 503,
+  "median_gap_min": 138,
+  "median_shift_m": 311,
+  "implied_rate_m_per_h": 160,
+  "shift_same_way_as_next_growth_pct": 48.0,
+  "n_with_reference": 204,
+  "shift_mean_cos": -0.036,
+  "new_edge_same_way_pct": 47.8,
+  "n_new_edge": 201,
+  "shift_m_by_gap": {
+   "0-30 min": 123,
+   "30-60 min": 420,
+   "60-90 min": null,
+   "90-180 min": 322
+  }
+ },
+ "big fires only": {
+  "pairs": 889,
+  "median_gap_min": 48,
+  "median_shift_m": 404,
+  "implied_rate_m_per_h": 612,
+  "shift_same_way_as_next_growth_pct": 56.4,
+  "n_with_reference": 692,
+  "shift_mean_cos": 0.081,
+  "new_edge_same_way_pct": 57.1,
+  "n_new_edge": 562,
+  "shift_m_by_gap": {
+   "0-30 min": 396,
+   "30-60 min": 396,
+   "60-90 min": 545,
+   "90-180 min": 476
+  }
+ }
+}

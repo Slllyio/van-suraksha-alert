@@ -1,0 +1,442 @@
+{
+ "events": {
+  "loso_2017_24": {
+   "climatology": {
+    "n": 4098,
+    "base_rate": 0.3407,
+    "auc": 0.5998,
+    "brier": 0.21808,
+    "logloss": 0.6267,
+    "mean_pred": 0.3341,
+    "bss_vs_base_rate": 0.0291
+   },
+   "fsi_fire_prone_map": {
+    "n": 4098,
+    "base_rate": 0.3407,
+    "auc": 0.604,
+    "brier": 0.21676,
+    "logloss": 0.6246,
+    "mean_pred": 0.3368,
+    "bss_vs_base_rate": 0.0349,
+    "bss_vs_ref": 0.0061
+   },
+   "size_only": {
+    "n": 4098,
+    "base_rate": 0.3407,
+    "auc": 0.6526,
+    "brier": 0.20861,
+    "logloss": 0.6097,
+    "mean_pred": 0.3405,
+    "bss_vs_base_rate": 0.0712,
+    "bss_vs_ref": 0.0434
+   },
+   "full": {
+    "n": 4098,
+    "base_rate": 0.3407,
+    "auc": 0.6829,
+    "brier": 0.20271,
+    "logloss": 0.6021,
+    "mean_pred": 0.3422,
+    "bss_vs_base_rate": 0.0975,
+    "bss_vs_ref": 0.0705
+   },
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 45,
+     "predicted": 0.0004,
+     "observed": 0.0444
+    },
+    {
+     "bin": "[0.02, 0.05)",
+     "n": 1,
+     "predicted": 0.0251,
+     "observed": 0.0
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 324,
+     "predicted": 0.084,
+     "observed": 0.0957
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 489,
+     "predicted": 0.157,
+     "observed": 0.1595
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 899,
+     "predicted": 0.2671,
+     "observed": 0.2781
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 1718,
+     "predicted": 0.3864,
+     "observed": 0.3871
+    },
+    {
+     "bin": "[0.5, 0.7)",
+     "n": 477,
+     "predicted": 0.5867,
+     "observed": 0.5556
+    },
+    {
+     "bin": "[0.7, 1.0)",
+     "n": 145,
+     "predicted": 0.7893,
+     "observed": 0.7241
+    }
+   ],
+   "n_fires": 4098,
+   "mean_new_cells_if_spread": 2.76
+  },
+  "test_2025_26": {
+   "climatology": {
+    "n": 1335,
+    "base_rate": 0.4082,
+    "auc": 0.6293,
+    "brier": 0.23056,
+    "logloss": 0.6521,
+    "mean_pred": 0.3645,
+    "bss_vs_base_rate": 0.0456
+   },
+   "fsi_fire_prone_map": {
+    "n": 1335,
+    "base_rate": 0.4082,
+    "auc": 0.6502,
+    "brier": 0.22979,
+    "logloss": 0.6498,
+    "mean_pred": 0.3623,
+    "bss_vs_base_rate": 0.0488,
+    "bss_vs_ref": 0.0033
+   },
+   "size_only": {
+    "n": 1335,
+    "base_rate": 0.4082,
+    "auc": 0.6813,
+    "brier": 0.21778,
+    "logloss": 0.6335,
+    "mean_pred": 0.3748,
+    "bss_vs_base_rate": 0.0985,
+    "bss_vs_ref": 0.0554
+   },
+   "full": {
+    "n": 1335,
+    "base_rate": 0.4082,
+    "auc": 0.7281,
+    "brier": 0.20276,
+    "logloss": 0.5896,
+    "mean_pred": 0.4207,
+    "bss_vs_base_rate": 0.1607,
+    "bss_vs_ref": 0.1206
+   },
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 3,
+     "predicted": 0.0001,
+     "observed": 0.0
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 64,
+     "predicted": 0.0817,
+     "observed": 0.0625
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 173,
+     "predicted": 0.1526,
+     "observed": 0.1734
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 160,
+     "predicted": 0.2697,
+     "observed": 0.275
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 531,
+     "predicted": 0.4013,
+     "observed": 0.3823
+    },
+    {
+     "bin": "[0.5, 0.7)",
+     "n": 232,
+     "predicted": 0.5921,
+     "observed": 0.5474
+    },
+    {
+     "bin": "[0.7, 1.0)",
+     "n": 172,
+     "predicted": 0.7931,
+     "observed": 0.7965
+    }
+   ],
+   "n_fires": 1335,
+   "mean_new_cells_if_spread": 3.16
+  }
+ },
+ "cells": {
+  "loso_2017_24": {
+   "n_candidate_cells": 62863,
+   "n_fires": 4098,
+   "distance_only": {
+    "n": 62863,
+    "base_rate": 0.0612,
+    "auc": 0.5,
+    "brier": 0.05749,
+    "logloss": 0.2304,
+    "mean_pred": 0.0607,
+    "bss_vs_base_rate": 0.0001,
+    "recall_top3_per_fire": 0.234,
+    "recall_top5_per_fire": 0.3574,
+    "recall_top10_per_fire": 0.6234
+   },
+   "fsi_fire_prone_map": {
+    "n": 62863,
+    "base_rate": 0.0612,
+    "auc": 0.5,
+    "brier": 0.05756,
+    "logloss": 0.2311,
+    "mean_pred": 0.0605,
+    "bss_vs_base_rate": -0.0012,
+    "bss_vs_ref": -0.0012,
+    "recall_top3_per_fire": 0.227,
+    "recall_top5_per_fire": 0.3473,
+    "recall_top10_per_fire": 0.606
+   },
+   "dist_plus_fsi": {
+    "n": 62863,
+    "base_rate": 0.0612,
+    "auc": 0.5492,
+    "brier": 0.05737,
+    "logloss": 0.2294,
+    "mean_pred": 0.0609,
+    "bss_vs_base_rate": 0.0021,
+    "bss_vs_ref": 0.0021,
+    "recall_top3_per_fire": 0.239,
+    "recall_top5_per_fire": 0.3753,
+    "recall_top10_per_fire": 0.6306
+   },
+   "full_no_direction": {
+    "n": 62863,
+    "base_rate": 0.0612,
+    "auc": 0.727,
+    "brier": 0.05534,
+    "logloss": 0.2112,
+    "mean_pred": 0.0617,
+    "bss_vs_base_rate": 0.0375,
+    "bss_vs_ref": 0.0374,
+    "recall_top3_per_fire": 0.3169,
+    "recall_top5_per_fire": 0.4626,
+    "recall_top10_per_fire": 0.706
+   },
+   "full_pass_direction": {
+    "n": 62863,
+    "base_rate": 0.0612,
+    "auc": 0.7283,
+    "brier": 0.05526,
+    "logloss": 0.2109,
+    "mean_pred": 0.0617,
+    "bss_vs_base_rate": 0.0388,
+    "bss_vs_ref": 0.0388,
+    "recall_top3_per_fire": 0.32,
+    "recall_top5_per_fire": 0.4675,
+    "recall_top10_per_fire": 0.7138
+   },
+   "full": {
+    "n": 62863,
+    "base_rate": 0.0612,
+    "auc": 0.7304,
+    "brier": 0.05525,
+    "logloss": 0.2106,
+    "mean_pred": 0.0616,
+    "bss_vs_base_rate": 0.039,
+    "bss_vs_ref": 0.039,
+    "recall_top3_per_fire": 0.3304,
+    "recall_top5_per_fire": 0.4756,
+    "recall_top10_per_fire": 0.7234
+   },
+   "random_top3": 0.2083,
+   "ceiling_top3": 0.72,
+   "random_top5": 0.3366,
+   "ceiling_top5": 0.8696,
+   "random_top10": 0.6,
+   "ceiling_top10": 0.9748,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 14564,
+     "predicted": 0.0096,
+     "observed": 0.0109
+    },
+    {
+     "bin": "[0.02, 0.05)",
+     "n": 18641,
+     "predicted": 0.0322,
+     "observed": 0.0355
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 16938,
+     "predicted": 0.0757,
+     "observed": 0.0753
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 11022,
+     "predicted": 0.1319,
+     "observed": 0.1306
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 1639,
+     "predicted": 0.2284,
+     "observed": 0.1794
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 56,
+     "predicted": 0.3891,
+     "observed": 0.3929
+    },
+    {
+     "bin": "[0.7, 1.0)",
+     "n": 3,
+     "predicted": 0.75,
+     "observed": 0.0
+    }
+   ]
+  },
+  "test_2025_26": {
+   "n_candidate_cells": 22291,
+   "n_fires": 1335,
+   "distance_only": {
+    "n": 22291,
+    "base_rate": 0.0773,
+    "auc": 0.5233,
+    "brier": 0.07155,
+    "logloss": 0.2744,
+    "mean_pred": 0.061,
+    "bss_vs_base_rate": -0.0032,
+    "recall_top3_per_fire": 0.1967,
+    "recall_top5_per_fire": 0.3146,
+    "recall_top10_per_fire": 0.5525
+   },
+   "fsi_fire_prone_map": {
+    "n": 22291,
+    "base_rate": 0.0773,
+    "auc": 0.5596,
+    "brier": 0.07136,
+    "logloss": 0.2727,
+    "mean_pred": 0.0608,
+    "bss_vs_base_rate": -0.0005,
+    "bss_vs_ref": 0.0027,
+    "recall_top3_per_fire": 0.195,
+    "recall_top5_per_fire": 0.3059,
+    "recall_top10_per_fire": 0.5659
+   },
+   "dist_plus_fsi": {
+    "n": 22291,
+    "base_rate": 0.0773,
+    "auc": 0.5722,
+    "brier": 0.07126,
+    "logloss": 0.273,
+    "mean_pred": 0.0607,
+    "bss_vs_base_rate": 0.0009,
+    "bss_vs_ref": 0.0041,
+    "recall_top3_per_fire": 0.1979,
+    "recall_top5_per_fire": 0.3215,
+    "recall_top10_per_fire": 0.5757
+   },
+   "full_no_direction": {
+    "n": 22291,
+    "base_rate": 0.0773,
+    "auc": 0.7386,
+    "brier": 0.06761,
+    "logloss": 0.2463,
+    "mean_pred": 0.0804,
+    "bss_vs_base_rate": 0.052,
+    "bss_vs_ref": 0.0551,
+    "recall_top3_per_fire": 0.2826,
+    "recall_top5_per_fire": 0.4318,
+    "recall_top10_per_fire": 0.6883
+   },
+   "full_pass_direction": {
+    "n": 22291,
+    "base_rate": 0.0773,
+    "auc": 0.7346,
+    "brier": 0.06782,
+    "logloss": 0.2471,
+    "mean_pred": 0.0808,
+    "bss_vs_base_rate": 0.0491,
+    "bss_vs_ref": 0.0522,
+    "recall_top3_per_fire": 0.2751,
+    "recall_top5_per_fire": 0.4167,
+    "recall_top10_per_fire": 0.679
+   },
+   "full": {
+    "n": 22291,
+    "base_rate": 0.0773,
+    "auc": 0.7388,
+    "brier": 0.06771,
+    "logloss": 0.2465,
+    "mean_pred": 0.0807,
+    "bss_vs_base_rate": 0.0506,
+    "bss_vs_ref": 0.0537,
+    "recall_top3_per_fire": 0.2832,
+    "recall_top5_per_fire": 0.4225,
+    "recall_top10_per_fire": 0.693
+   },
+   "random_top3": 0.1863,
+   "ceiling_top3": 0.6692,
+   "random_top5": 0.2972,
+   "ceiling_top5": 0.8334,
+   "random_top10": 0.5763,
+   "ceiling_top10": 0.971,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.02)",
+     "n": 4987,
+     "predicted": 0.0087,
+     "observed": 0.0134
+    },
+    {
+     "bin": "[0.02, 0.05)",
+     "n": 4363,
+     "predicted": 0.0344,
+     "observed": 0.0325
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 4552,
+     "predicted": 0.0787,
+     "observed": 0.0641
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 7227,
+     "predicted": 0.133,
+     "observed": 0.1297
+    },
+    {
+     "bin": "[0.2, 0.3)",
+     "n": 1055,
+     "predicted": 0.2304,
+     "observed": 0.2531
+    },
+    {
+     "bin": "[0.3, 0.5)",
+     "n": 107,
+     "predicted": 0.4058,
+     "observed": 0.1682
+    }
+   ]
+  }
+ }
+}

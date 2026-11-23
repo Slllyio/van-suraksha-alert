@@ -1,0 +1,64 @@
+{
+ "events": 62953,
+ "divisions": 75,
+ "by_phase": {
+  "1 15Feb-15Mar": {
+   "n": 8332.0,
+   "median_ha": 35.24,
+   "p75_ha": 96.64,
+   "p90_ha": 226.952,
+   "ge4": 0.955,
+   "ge7_5": 0.878,
+   "ge25": 0.595,
+   "ha_total": 706356.04
+  },
+  "2 16Mar-15Apr": {
+   "n": 38731.0,
+   "median_ha": 44.56,
+   "p75_ha": 130.0,
+   "p90_ha": 291.8,
+   "ge4": 0.958,
+   "ge7_5": 0.896,
+   "ge25": 0.65,
+   "ha_total": 4141431.6
+  },
+  "3 16Apr-15May": {
+   "n": 14129.0,
+   "median_ha": 31.68,
+   "p75_ha": 93.48,
+   "p90_ha": 234.008,
+   "ge4": 0.938,
+   "ge7_5": 0.857,
+   "ge25": 0.567,
+   "ha_total": 1192594.0
+  },
+  "4 16May-31May": {
+   "n": 1761.0,
+   "median_ha": 16.68,
+   "p75_ha": 45.24,
+   "p90_ha": 114.32,
+   "ge4": 0.872,
+   "ge7_5": 0.731,
+   "ge25": 0.394,
+   "ha_total": 77810.72
+  }
+ },
+ "division_median_ha_range": [
+  13.6,
+  154.8
+ ],
+ "stability_division_median_even_vs_odd": 0.805,
+ "stability_phase_shape_within_division": 0.512,
+ "r2_log_size": {
+  "division": 0.08,
+  "phase": 0.017,
+  "division_x_phase": 0.114,
+  "year": 0.021,
+  "division_x_year": 0.116
+ },
+ "year_median_by_division_spread": 13.86,
+ "divisions_late_bigger_than_early": [
+  44,
+  75
+ ]
+}

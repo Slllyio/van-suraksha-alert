@@ -1,0 +1,30 @@
+{
+ "honest_top_gain": {
+  "doy": 231624.0,
+  "prior": 188132.0,
+  "aoi_season_L25": 179156.0,
+  "s2d_nbr_chg30_K": 164706.0,
+  "rh3": 161799.0,
+  "s2d_ndvi_chg30_K": 121636.0,
+  "RH2M": 99607.0,
+  "s2d_nbr_mean30_K": 93021.0,
+  "s2d_ndvi_mean30_K": 92322.0,
+  "p30": 85210.0,
+  "s2d_ndmi_chg30_K": 82412.0,
+  "s2d_nbr_last_K": 80559.0
+ },
+ "honest_nodry_top_gain": {
+  "doy": 325957.0,
+  "prior": 268108.0,
+  "rh3": 241799.0,
+  "aoi_season_L25": 218433.0,
+  "T2M": 136635.0,
+  "p30": 116472.0,
+  "dist_major_road_km": 73606.0,
+  "RH2M": 70472.0,
+  "elev_m": 68731.0,
+  "aoi_new7_L25": 64195.0,
+  "p7": 61484.0,
+  "wc_crop": 51442.0
+ }
+}

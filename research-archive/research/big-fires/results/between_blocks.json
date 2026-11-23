@@ -1,0 +1,82 @@
+{
+ "ECOSTRESS 70 m (1 h)": {
+  "2 blocks": {
+   "passes": 7,
+   "hot_pixels_median": 5.0,
+   "hot_to_nearest_block_centre_m": 274,
+   "hot_to_cluster_centre_m": 680,
+   "position_in_block_0centre_1edge": 1.19,
+   "share_in_outer_half_of_block": 0.86,
+   "share_closer_to_cluster_centre_than_any_block_centre": 0.18,
+   "hot_centre_offset_from_cluster_centre_m": 665,
+   "hot_centre_offset_from_nearest_block_m": 218,
+   "block_separation_m": 940
+  },
+  "3+ blocks": {
+   "passes": 19,
+   "hot_pixels_median": 25.0,
+   "hot_to_nearest_block_centre_m": 207,
+   "hot_to_cluster_centre_m": 518,
+   "position_in_block_0centre_1edge": 0.88,
+   "share_in_outer_half_of_block": 0.81,
+   "share_closer_to_cluster_centre_than_any_block_centre": 0.09,
+   "hot_centre_offset_from_cluster_centre_m": 334,
+   "hot_centre_offset_from_nearest_block_m": 252,
+   "block_separation_m": 1671
+  },
+  "single block": {
+   "passes": 7,
+   "hot_pixels_median": 9.0,
+   "hot_to_nearest_block_centre_m": 244,
+   "hot_to_cluster_centre_m": 244,
+   "position_in_block_0centre_1edge": 0.77,
+   "share_in_outer_half_of_block": 0.78,
+   "share_closer_to_cluster_centre_than_any_block_centre": 0.0,
+   "hot_centre_offset_from_cluster_centre_m": 228,
+   "hot_centre_offset_from_nearest_block_m": 228,
+   "block_separation_m": 0
+  }
+ },
+ "Sentinel-2/Landsat 30 m (3 h)": {
+  "2 blocks": {
+   "passes": 135,
+   "hot_pixels_median": 54.0,
+   "hot_to_nearest_block_centre_m": 322,
+   "hot_to_cluster_centre_m": 389,
+   "position_in_block_0centre_1edge": 1.22,
+   "share_in_outer_half_of_block": 0.82,
+   "share_closer_to_cluster_centre_than_any_block_centre": 0.28,
+   "hot_centre_offset_from_cluster_centre_m": 347,
+   "hot_centre_offset_from_nearest_block_m": 314,
+   "block_separation_m": 429
+  },
+  "3+ blocks": {
+   "passes": 139,
+   "hot_pixels_median": 134.0,
+   "hot_to_nearest_block_centre_m": 288,
+   "hot_to_cluster_centre_m": 544,
+   "position_in_block_0centre_1edge": 1.12,
+   "share_in_outer_half_of_block": 0.88,
+   "share_closer_to_cluster_centre_than_any_block_centre": 0.14,
+   "hot_centre_offset_from_cluster_centre_m": 453,
+   "hot_centre_offset_from_nearest_block_m": 284,
+   "block_separation_m": 1068
+  },
+  "single block": {
+   "passes": 264,
+   "hot_pixels_median": 34.0,
+   "hot_to_nearest_block_centre_m": 321,
+   "hot_to_cluster_centre_m": 321,
+   "position_in_block_0centre_1edge": 1.31,
+   "share_in_outer_half_of_block": 0.88,
+   "share_closer_to_cluster_centre_than_any_block_centre": 0.0,
+   "hot_centre_offset_from_cluster_centre_m": 310,
+   "hot_centre_offset_from_nearest_block_m": 310,
+   "block_separation_m": 0
+  }
+ },
+ "random_inside_block_reference": {
+  "position_in_block_0centre_1edge": 0.71,
+  "share_in_outer_half_of_block": 0.75
+ }
+}

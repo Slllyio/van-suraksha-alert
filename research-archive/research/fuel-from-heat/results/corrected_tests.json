@@ -1,0 +1,125 @@
+{
+ "fires": 1470,
+ "clean_fires": 209,
+ "median_tha": {
+  "raw": 2.41,
+  "corrected": 2.67,
+  "corrected_clean": 3.22
+ },
+ "by_canopy": [
+  {
+   "canopy": "(0, 20]",
+   "fires": "151",
+   "raw": "2.642",
+   "corrected": "3.116",
+   "map_fuel": "1.123",
+   "corrected_clean": "2.984",
+   "clean_fires": "28"
+  },
+  {
+   "canopy": "(20, 40]",
+   "fires": "366",
+   "raw": "2.169",
+   "corrected": "2.383",
+   "map_fuel": "1.662",
+   "corrected_clean": "2.724",
+   "clean_fires": "54"
+  },
+  {
+   "canopy": "(40, 60]",
+   "fires": "631",
+   "raw": "2.39",
+   "corrected": "2.673",
+   "map_fuel": "1.939",
+   "corrected_clean": "3.558",
+   "clean_fires": "79"
+  },
+  {
+   "canopy": "(60, 100]",
+   "fires": "322",
+   "raw": "2.638",
+   "corrected": "2.86",
+   "map_fuel": "2.016",
+   "corrected_clean": "3.152",
+   "clean_fires": "48"
+  }
+ ],
+ "all": {
+  "n": 1470,
+  "rho_canopy": 0.011,
+  "rho_litter": 0.048,
+  "rho_mapfuel": -0.028,
+  "rho_grass": -0.126,
+  "rho_teak": 0.069,
+  "rho_burnt_last_season": -0.209,
+  "rho_doy": 0.181,
+  "rho_n_pix": -0.501,
+  "rho_mapfuel_within_size_and_month": -0.029,
+  "expected_if_map_right_generous": [
+   0.197,
+   [
+    0.155,
+    0.242
+   ]
+  ],
+  "expected_if_map_right_sat": [
+   0.261,
+   [
+    0.22,
+    0.305
+   ]
+  ],
+  "observed_mapfuel": [
+   -0.028,
+   [
+    -0.087,
+    0.025
+   ]
+  ]
+ },
+ "clean": {
+  "n": 209,
+  "rho_canopy": 0.028,
+  "rho_litter": 0.063,
+  "rho_mapfuel": 0.008,
+  "rho_grass": -0.09,
+  "rho_teak": -0.027,
+  "rho_burnt_last_season": -0.102,
+  "rho_doy": 0.255,
+  "rho_n_pix": -0.576,
+  "rho_mapfuel_within_size_and_month": 0.047,
+  "expected_if_map_right_generous": [
+   0.254,
+   [
+    0.119,
+    0.375
+   ]
+  ],
+  "expected_if_map_right_sat": [
+   0.322,
+   [
+    0.197,
+    0.425
+   ]
+  ],
+  "observed_mapfuel": [
+   0.008,
+   [
+    -0.125,
+    0.126
+   ]
+  ]
+ },
+ "heldout_all": {
+  "n": 966,
+  "size+season+weather": 0.493,
+  "+ground": 0.491,
+  "+ground shuffled": 0.487
+ },
+ "heldout_clean": {
+  "n": 111,
+  "size+season+weather": 0.381,
+  "+ground": 0.301,
+  "+ground shuffled": 0.328
+ }
+}

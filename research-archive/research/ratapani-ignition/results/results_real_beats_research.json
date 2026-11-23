@@ -1,0 +1,106 @@
+{
+ "research_loso_main": {
+  "pseudo68_combined_fixed5": {
+   "recall": 0.2588,
+   "picks_per_day": 328.6
+  },
+  "pseudo68_combined_shared": {
+   "recall": 0.284,
+   "picks_per_day": 337.5
+  },
+  "pseudo68_random_fixed5": {
+   "recall": 0.1484,
+   "picks_per_day": 328.6
+  },
+  "real94_combined_fixed5": {
+   "recall": 0.2697,
+   "picks_per_day": 404.5
+  },
+  "real94_combined_shared": {
+   "recall": 0.3783,
+   "picks_per_day": 479.9
+  },
+  "real94_random_fixed5": {
+   "recall": 0.166,
+   "picks_per_day": 404.5
+  }
+ },
+ "research_2526_main": {
+  "pseudo68_combined_fixed5": {
+   "recall": 0.2484,
+   "picks_per_day": 336.8
+  },
+  "pseudo68_combined_shared": {
+   "recall": 0.2725,
+   "picks_per_day": 340.3
+  },
+  "pseudo68_random_fixed5": {
+   "recall": 0.1378,
+   "picks_per_day": 336.8
+  },
+  "real94_combined_fixed5": {
+   "recall": 0.2625,
+   "picks_per_day": 415.5
+  },
+  "real94_combined_shared": {
+   "recall": 0.3684,
+   "picks_per_day": 487.0
+  },
+  "real94_random_fixed5": {
+   "recall": 0.153,
+   "picks_per_day": 415.5
+  }
+ },
+ "research_loso_truelead_strict": {
+  "pseudo68_combined_fixed5": {
+   "recall": 0.351,
+   "picks_per_day": 328.2
+  },
+  "pseudo68_combined_shared": {
+   "recall": 0.3871,
+   "picks_per_day": 337.5
+  },
+  "pseudo68_random_fixed5": {
+   "recall": 0.1736,
+   "picks_per_day": 328.2
+  },
+  "real94_combined_fixed5": {
+   "recall": 0.3562,
+   "picks_per_day": 402.5
+  },
+  "real94_combined_shared": {
+   "recall": 0.5002,
+   "picks_per_day": 479.5
+  },
+  "real94_random_fixed5": {
+   "recall": 0.1884,
+   "picks_per_day": 402.5
+  }
+ },
+ "research_loso_truelead_lenient": {
+  "pseudo68_combined_fixed5": {
+   "recall": 0.2747,
+   "picks_per_day": 328.5
+  },
+  "pseudo68_combined_shared": {
+   "recall": 0.2923,
+   "picks_per_day": 337.5
+  },
+  "pseudo68_random_fixed5": {
+   "recall": 0.1574,
+   "picks_per_day": 328.5
+  },
+  "real94_combined_fixed5": {
+   "recall": 0.2901,
+   "picks_per_day": 404.1
+  },
+  "real94_combined_shared": {
+   "recall": 0.3876,
+   "picks_per_day": 479.8
+  },
+  "real94_random_fixed5": {
+   "recall": 0.1784,
+   "picks_per_day": 404.1
+  }
+ }
+}

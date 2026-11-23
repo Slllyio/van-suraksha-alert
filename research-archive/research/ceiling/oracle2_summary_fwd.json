@@ -1,0 +1,102 @@
+{
+ "divisions": 87,
+ "events": 54033,
+ "beat_episodes": 46079,
+ "new_events": 8379,
+ "random": {
+  "new_strict": 81.4,
+  "new_loose": 82.3,
+  "not_new_strict": 82.7,
+  "cell": 56.6,
+  "events_strict": 82.5,
+  "events_loose": 83.8,
+  "beats_strict": 97.5,
+  "beats_loose": 97.6,
+  "covered_pct_mean_div": 54.0,
+  "beats_per_range_day": 7.4
+ },
+ "history": {
+  "new_strict": 30.3,
+  "new_loose": 30.9,
+  "not_new_strict": 40.0,
+  "cell": 42.5,
+  "events_strict": 38.5,
+  "events_loose": 39.4,
+  "beats_strict": 62.4,
+  "beats_loose": 62.5,
+  "covered_pct_mean_div": 22.2,
+  "beats_per_range_day": 3.84
+ },
+ "cal_hist": {
+  "new_strict": 27.1,
+  "new_loose": 27.6,
+  "not_new_strict": 49.1,
+  "cell": 48.9,
+  "events_strict": 45.7,
+  "events_loose": 46.5,
+  "beats_strict": 59.4,
+  "beats_loose": 60.2,
+  "covered_pct_mean_div": 17.1,
+  "beats_per_range_day": 2.59
+ },
+ "recent": {
+  "new_strict": 5.4,
+  "new_loose": 11.4,
+  "not_new_strict": 58.0,
+  "cell": 54.0,
+  "events_strict": 49.9,
+  "events_loose": 54.4,
+  "beats_strict": 64.3,
+  "beats_loose": 68.8,
+  "covered_pct_mean_div": 15.6,
+  "beats_per_range_day": 2.57
+ },
+ "oracle_where": {
+  "new_strict": 27.1,
+  "new_loose": 28.0,
+  "not_new_strict": 45.8,
+  "cell": 38.0,
+  "events_strict": 42.9,
+  "events_loose": 44.4,
+  "beats_strict": 64.9,
+  "beats_loose": 65.7,
+  "covered_pct_mean_div": 19.0,
+  "beats_per_range_day": 3.06
+ },
+ "oracle_full": {
+  "new_strict": 44.3,
+  "new_loose": 44.6,
+  "not_new_strict": 66.4,
+  "cell": 72.0,
+  "events_strict": 63.0,
+  "events_loose": 63.4,
+  "beats_strict": 71.6,
+  "beats_loose": 72.0,
+  "covered_pct_mean_div": 18.5,
+  "beats_per_range_day": 2.91
+ },
+ "oracle_full_recent": {
+  "new_strict": 8.9,
+  "new_loose": 14.7,
+  "not_new_strict": 60.0,
+  "cell": 56.9,
+  "events_strict": 52.1,
+  "events_loose": 56.4,
+  "beats_strict": 65.4,
+  "beats_loose": 69.8,
+  "covered_pct_mean_div": 15.4,
+  "beats_per_range_day": 2.54
+ },
+ "oracle_cell": {
+  "new_strict": 80.3,
+  "new_loose": 80.4,
+  "not_new_strict": 87.9,
+  "cell": 87.2,
+  "events_strict": 86.7,
+  "events_loose": 87.0,
+  "beats_strict": 86.2,
+  "beats_loose": 86.6,
+  "covered_pct_mean_div": 34.4,
+  "beats_per_range_day": 5.18
+ }
+}

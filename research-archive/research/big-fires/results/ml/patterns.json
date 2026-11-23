@@ -1,0 +1,244 @@
+{
+ "speed": {
+  "n_fires": 380,
+  "n_big": 134,
+  "target": "log front speed (all passes fit), weighted by 1/CI width",
+  "results": {
+   "baseline: same speed for every fire": {
+    "weighted_abs_log_error": 0.661
+   },
+   "terrain": {
+    "weighted_abs_log_error": 0.658,
+    "better_than_baseline_pct": 0.4,
+    "spearman": 0.098
+   },
+   "fuel/canopy/history": {
+    "weighted_abs_log_error": 0.677,
+    "better_than_baseline_pct": -2.4,
+    "spearman": 0.067
+   },
+   "weather/date": {
+    "weighted_abs_log_error": 0.642,
+    "better_than_baseline_pct": 2.8,
+    "spearman": 0.108
+   },
+   "people/access": {
+    "weighted_abs_log_error": 0.658,
+    "better_than_baseline_pct": 0.4,
+    "spearman": 0.087
+   },
+   "first-look alerts": {
+    "weighted_abs_log_error": 0.678,
+    "better_than_baseline_pct": -2.6,
+    "spearman": -0.03
+   },
+   "fire so far (size/detections)": {
+    "weighted_abs_log_error": 0.619,
+    "better_than_baseline_pct": 6.3,
+    "spearman": 0.245
+   },
+   "all columns": {
+    "weighted_abs_log_error": 0.633,
+    "better_than_baseline_pct": 4.2,
+    "spearman": 0.181
+   }
+  },
+  "permutation_importance_top": {
+   "night_det_share": 0.0158,
+   "n_looks": 0.0087,
+   "d_building_first_m": 0.0047,
+   "slope_first": 0.0041,
+   "first_frp_sum": 0.0028,
+   "teak_mean": 0.0025,
+   "burn_prior_mean": 0.0019,
+   "doy_start": 0.0019,
+   "wx_tmax_c": 0.0017,
+   "wx_rh": 0.0015
+  },
+  "single_column_spearman_top": {
+   "grass_v3_mean": 0.227,
+   "d_building_first_m": 0.196,
+   "elev_mean": 0.16,
+   "litter_v3_mean": -0.16,
+   "n_looks": -0.152,
+   "hamlets_4km_first": -0.136,
+   "canopy_mean": -0.128,
+   "slope_first": 0.12,
+   "elev_relief": 0.119,
+   "wc_tree": -0.118
+  }
+ },
+ "direction": {
+  "n_steps": 1792,
+  "results": {
+   "random": {
+    "top1": 0.125,
+    "within_1_sector": 0.375
+   },
+   "keep going the same way": {
+    "top1": 0.19,
+    "within_1_sector": 0.478
+   },
+   "away from the first detection": {
+    "top1": 0.168,
+    "within_1_sector": 0.45
+   },
+   "history (same way, away from start)": {
+    "top1": 0.168,
+    "within_1_sector": 0.474
+   },
+   "terrain": {
+    "top1": 0.161,
+    "within_1_sector": 0.418
+   },
+   "fuel/canopy": {
+    "top1": 0.157,
+    "within_1_sector": 0.42
+   },
+   "already burnt (this season, own fire)": {
+    "top1": 0.17,
+    "within_1_sector": 0.432
+   },
+   "people": {
+    "top1": 0.143,
+    "within_1_sector": 0.393
+   },
+   "wind": {
+    "top1": 0.123,
+    "within_1_sector": 0.366
+   },
+   "timing": {
+    "top1": 0.141,
+    "within_1_sector": 0.415
+   },
+   "everything but history": {
+    "top1": 0.19,
+    "within_1_sector": 0.492
+   },
+   "everything (trees)": {
+    "top1": 0.228,
+    "within_1_sector": 0.55
+   },
+   "everything (logistic, readable)": {
+    "top1": 0.216,
+    "within_1_sector": 0.531
+   },
+   "everything (trees), big fires only": {
+    "top1": 0.214,
+    "within_1_sector": 0.572,
+    "steps": 603
+   },
+   "everything (trees), seasons 2025-26 only": {
+    "top1": 0.226,
+    "within_1_sector": 0.531,
+    "steps": 439
+   }
+  },
+  "calibration": [
+   {
+    "bin": "(0.0, 0.2]",
+    "n": "503",
+    "predicted": "0.177",
+    "right": "0.165"
+   },
+   {
+    "bin": "(0.2, 0.3]",
+    "n": "1184",
+    "predicted": "0.242",
+    "right": "0.249"
+   },
+   {
+    "bin": "(0.3, 0.4]",
+    "n": "104",
+    "predicted": "0.323",
+    "right": "0.298"
+   },
+   {
+    "bin": "(0.4, 0.6]",
+    "n": "1",
+    "predicted": "0.421",
+    "right": "0.0"
+   }
+  ],
+  "permutation_importance": {
+   "cos_prev0": 0.019,
+   "cos_upslope": 0.003,
+   "wc_nonfuel_rel": 0.003,
+   "canopy_rel": 0.001,
+   "has_prev": -0.001,
+   "slope_rel": -0.001,
+   "wc_tree_rel": -0.001,
+   "gap_h": -0.001,
+   "burned_this_season_before_rel": -0.002,
+   "own_fire_already_rel": -0.002,
+   "night": -0.003,
+   "elev_diff_rel": -0.004,
+   "teak_rel": -0.004,
+   "litter_v3_rel": -0.004,
+   "wind_x_cos": -0.004,
+   "cos_first0": -0.005,
+   "grass_v3_rel": -0.005,
+   "d_building_rel": -0.005,
+   "burn_prior_rel": -0.006,
+   "cos_wind0": -0.006,
+   "night_x_prev": -0.007,
+   "wc_open_rel": -0.009,
+   "d_road_rel": -0.009
+  },
+  "logistic_coefficients_standardised": {
+   "cos_prev0": 0.349,
+   "litter_v3_rel": -0.216,
+   "burned_this_season_before_rel": 0.197,
+   "wind_x_cos": 0.14,
+   "canopy_rel": 0.139,
+   "cos_wind0": -0.128,
+   "grass_v3_rel": -0.114,
+   "burn_prior_rel": 0.101,
+   "slope_rel": 0.099,
+   "elev_diff_rel": 0.089,
+   "own_fire_already_rel": -0.074,
+   "cos_first0": 0.064,
+   "d_building_rel": 0.062,
+   "wc_nonfuel_rel": -0.055,
+   "has_prev": -0.052,
+   "wc_tree_rel": 0.051,
+   "teak_rel": 0.045,
+   "wc_open_rel": -0.026,
+   "d_road_rel": 0.009,
+   "night_x_prev": -0.008,
+   "cos_upslope": 0.003,
+   "gap_h": -0.003,
+   "night": 0.0
+  },
+  "rank_rules": {
+   "went to the highest ground": {
+    "mean_rank_of_chosen_sector_1best_8worst": 4.17,
+    "random": 4.5
+   },
+   "went to the most canopy": {
+    "mean_rank_of_chosen_sector_1best_8worst": 4.21,
+    "random": 4.5
+   },
+   "went to the least already-burnt this season": {
+    "mean_rank_of_chosen_sector_1best_8worst": 4.89,
+    "random": 4.5
+   },
+   "went to ground burnt most often in earlier seasons": {
+    "mean_rank_of_chosen_sector_1best_8worst": 4.15,
+    "random": 4.5
+   },
+   "went to the farthest from buildings": {
+    "mean_rank_of_chosen_sector_1best_8worst": 4.15,
+    "random": 4.5
+   },
+   "went to the most litter (v3)": {
+    "mean_rank_of_chosen_sector_1best_8worst": 4.26,
+    "random": 4.5
+   },
+   "went downwind-most": {
+    "mean_rank_of_chosen_sector_1best_8worst": 4.51,
+    "random": 4.5
+   }
+  }
+ }
+}

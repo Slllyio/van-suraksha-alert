@@ -1,0 +1,38 @@
+{
+ "2025_26": {
+  "ceiling_fixed5": 0.644,
+  "ceiling_pooled340": 0.903,
+  "combined_dynamic_cap15": 0.272,
+  "combined_dynamic_cap15_picks_per_day": 339.0,
+  "combined_dynamic_cap25": 0.272,
+  "combined_dynamic_cap25_picks_per_day": 340.0,
+  "combined_dynamic_cap60": 0.272,
+  "combined_dynamic_cap60_picks_per_day": 340.0,
+  "combined_fixed5": 0.248,
+  "pipeline_lean_dynamic_cap15": 0.301,
+  "pipeline_lean_dynamic_cap15_picks_per_day": 336.0,
+  "pipeline_lean_dynamic_cap25": 0.304,
+  "pipeline_lean_dynamic_cap25_picks_per_day": 340.0,
+  "pipeline_lean_dynamic_cap60": 0.304,
+  "pipeline_lean_dynamic_cap60_picks_per_day": 340.0,
+  "pipeline_lean_fixed5": 0.265
+ },
+ "loso": {
+  "ceiling_fixed5": 0.65,
+  "ceiling_pooled340": 0.906,
+  "combined_dynamic_cap15": 0.283,
+  "combined_dynamic_cap15_picks_per_day": 334.0,
+  "combined_dynamic_cap25": 0.284,
+  "combined_dynamic_cap25_picks_per_day": 335.0,
+  "combined_dynamic_cap60": 0.284,
+  "combined_dynamic_cap60_picks_per_day": 335.0,
+  "combined_fixed5": 0.259,
+  "pipeline_lean_dynamic_cap15": 0.331,
+  "pipeline_lean_dynamic_cap15_picks_per_day": 332.0,
+  "pipeline_lean_dynamic_cap25": 0.334,
+  "pipeline_lean_dynamic_cap25_picks_per_day": 335.0,
+  "pipeline_lean_dynamic_cap60": 0.334,
+  "pipeline_lean_dynamic_cap60_picks_per_day": 335.0,
+  "pipeline_lean_fixed5": 0.286
+ }
+}

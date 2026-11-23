@@ -1,0 +1,44 @@
+{
+ "n_photos": 340,
+ "photos_with_mask": 339,
+ "acc_base": 0.8487,
+ "D1.5h": {
+  "acc": 0.8288,
+  "gain": [
+   -0.0199,
+   -0.0321,
+   -0.0081
+  ],
+  "conflicted_pixels": 140672,
+  "share_of_pixels": 0.2515,
+  "flipped": 18677,
+  "conflicted_right_before": 0.823,
+  "conflicted_right_after": 0.785
+ },
+ "D3.0h": {
+  "acc": 0.8244,
+  "gain": [
+   -0.0243,
+   -0.0375,
+   -0.0108
+  ],
+  "conflicted_pixels": 170496,
+  "share_of_pixels": 0.3048,
+  "flipped": 24772,
+  "conflicted_right_before": 0.822,
+  "conflicted_right_after": 0.781
+ },
+ "D6.0h": {
+  "acc": 0.8204,
+  "gain": [
+   -0.0283,
+   -0.0443,
+   -0.0137
+  ],
+  "conflicted_pixels": 196762,
+  "share_of_pixels": 0.3518,
+  "flipped": 34654,
+  "conflicted_right_before": 0.808,
+  "conflicted_right_after": 0.768
+ }
+}

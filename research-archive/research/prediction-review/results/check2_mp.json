@@ -1,0 +1,30 @@
+{
+ "note": "How much of the MP division models' \"~85% of fire points in or next to the top 10% of squares\" would trivial rules get?\nThe division models live on Akkshay's PC, so this does not rerun them. It rebuilds the scoring rule as described\n(report/PROJECT_REPORT.md section 10.2; train 2019-21, test 2022-24) on the all-MP VIIRS archive and scores three\nrankings that need no model at all:\n  history   = fire square-days in the square and its 8 neighbours, Feb 15-Jun 15 2019-21 (all satellites)\n  recent    = any VIIRS point in the square or its neighbours in the last 7 days, ties broken by history\n  random\nTarget: squares with a VIIRS point (any satellite) on day t+1, issue days Feb 15-Jun 15 2022-24. Squares = the 500 m\nMP beat grid (ratapani/mp_grid/mp_cells.parquet). Flagged = top 10% of a division's squares on that day. A target\nsquare counts if it or any of its 8 neighbours is flagged. \"New fire\" = no VIIRS within 5 km in the past 7 days.\nAssumptions that may differ from the PC rule: horizon (next day), the square grid, all-satellite target.\n",
+ "target_square_days": 81149,
+ "new_fire_square_days": 16697,
+ "history": {
+  "pooled_all": 45.2,
+  "pooled_new_fires": 32.4,
+  "division_mean_all": 45.4,
+  "division_min_all": 27.1,
+  "division_mean_new": 33.9,
+  "ground_share_flagged_or_adjacent": 23.1
+ },
+ "recent": {
+  "pooled_all": 52.3,
+  "pooled_new_fires": 27.7,
+  "division_mean_all": 51.9,
+  "division_min_all": 31.9,
+  "division_mean_new": 29.5,
+  "ground_share_flagged_or_adjacent": 22.9
+ },
+ "random": {
+  "pooled_all": 57.6,
+  "pooled_new_fires": 55.6,
+  "division_mean_all": 57.0,
+  "division_min_all": 39.8,
+  "division_mean_new": 55.0,
+  "ground_share_flagged_or_adjacent": 55.3
+ },
+ "n_divisions_scored": 81
+}

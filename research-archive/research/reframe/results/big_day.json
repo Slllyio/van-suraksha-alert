@@ -1,0 +1,618 @@
+{
+ "N2": {
+  "loso_2017_24": {
+   "climatology": {
+    "n": 1122,
+    "base_rate": 0.2005,
+    "auc": 0.829,
+    "brier": 0.126,
+    "logloss": 0.3748,
+    "mean_pred": 0.1984,
+    "bss_vs_base_rate": 0.2141,
+    "share_of_burning_on_top20pct_days": 0.4292,
+    "auc_by_season": {
+     "2017": 0.819,
+     "2018": 0.923,
+     "2019": 0.913,
+     "2020": 0.588,
+     "2021": 0.865,
+     "2022": 0.838,
+     "2023": 0.826,
+     "2024": 0.912
+    }
+   },
+   "persistence": {
+    "n": 1122,
+    "base_rate": 0.2005,
+    "auc": 0.8764,
+    "brier": 0.10957,
+    "logloss": 0.3274,
+    "mean_pred": 0.1992,
+    "bss_vs_base_rate": 0.3166,
+    "bss_vs_ref": 0.1304,
+    "share_of_burning_on_top20pct_days": 0.5386,
+    "auc_by_season": {
+     "2017": 0.802,
+     "2018": 0.955,
+     "2019": 0.901,
+     "2020": 0.701,
+     "2021": 0.883,
+     "2022": 0.907,
+     "2023": 0.866,
+     "2024": 0.933
+    }
+   },
+   "weather": {
+    "n": 1122,
+    "base_rate": 0.2005,
+    "auc": 0.8677,
+    "brier": 0.11715,
+    "logloss": 0.3663,
+    "mean_pred": 0.2045,
+    "bss_vs_base_rate": 0.2693,
+    "bss_vs_ref": 0.0703,
+    "share_of_burning_on_top20pct_days": 0.5113,
+    "auc_by_season": {
+     "2017": 0.848,
+     "2018": 0.932,
+     "2019": 0.914,
+     "2020": 0.693,
+     "2021": 0.858,
+     "2022": 0.911,
+     "2023": 0.867,
+     "2024": 0.943
+    }
+   },
+   "full": {
+    "n": 1122,
+    "base_rate": 0.2005,
+    "auc": 0.8802,
+    "brier": 0.10977,
+    "logloss": 0.3292,
+    "mean_pred": 0.1983,
+    "bss_vs_base_rate": 0.3153,
+    "bss_vs_ref": 0.1288,
+    "share_of_burning_on_top20pct_days": 0.5248,
+    "auc_by_season": {
+     "2017": 0.86,
+     "2018": 0.959,
+     "2019": 0.91,
+     "2020": 0.78,
+     "2021": 0.887,
+     "2022": 0.929,
+     "2023": 0.8,
+     "2024": 0.945
+    }
+   },
+   "full_no_lean": {
+    "n": 1122,
+    "base_rate": 0.2005,
+    "auc": 0.8807,
+    "brier": 0.10992,
+    "logloss": 0.3444,
+    "mean_pred": 0.1986,
+    "bss_vs_base_rate": 0.3144,
+    "bss_vs_ref": 0.1276,
+    "share_of_burning_on_top20pct_days": 0.5225,
+    "auc_by_season": {
+     "2017": 0.837,
+     "2018": 0.963,
+     "2019": 0.908,
+     "2020": 0.831,
+     "2021": 0.886,
+     "2022": 0.914,
+     "2023": 0.858,
+     "2024": 0.94
+    }
+   },
+   "ceiling_share_top20pct_days": 0.7243,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.05)",
+     "n": 509,
+     "predicted": 0.0031,
+     "observed": 0.0
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 55,
+     "predicted": 0.0774,
+     "observed": 0.2364
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 111,
+     "predicted": 0.1596,
+     "observed": 0.1261
+    },
+    {
+     "bin": "[0.2, 0.35)",
+     "n": 144,
+     "predicted": 0.2744,
+     "observed": 0.2153
+    },
+    {
+     "bin": "[0.35, 0.5)",
+     "n": 118,
+     "predicted": 0.4223,
+     "observed": 0.4576
+    },
+    {
+     "bin": "[0.5, 0.65)",
+     "n": 137,
+     "predicted": 0.5582,
+     "observed": 0.6277
+    },
+    {
+     "bin": "[0.65, 0.8)",
+     "n": 47,
+     "predicted": 0.6835,
+     "observed": 0.5745
+    },
+    {
+     "bin": "[0.8, 1.0)",
+     "n": 1,
+     "predicted": 0.999,
+     "observed": 0.0
+    }
+   ],
+   "count_climatology": {
+    "spearman": 0.699,
+    "mae": 20.38,
+    "cover80": 0.815,
+    "cover95": 0.943,
+    "mean_width80": 57.3
+   },
+   "count_full": {
+    "spearman": 0.783,
+    "mae": 18.01,
+    "cover80": 0.827,
+    "cover95": 0.936,
+    "mean_width80": 51.3
+   }
+  },
+  "test_2025_26": {
+   "climatology": {
+    "n": 280,
+    "base_rate": 0.2071,
+    "auc": 0.8834,
+    "brier": 0.11229,
+    "logloss": 0.328,
+    "mean_pred": 0.1989,
+    "bss_vs_base_rate": 0.3163,
+    "share_of_burning_on_top20pct_days": 0.5504,
+    "auc_by_season": {
+     "2025": 0.929,
+     "2026": 0.838
+    }
+   },
+   "persistence": {
+    "n": 280,
+    "base_rate": 0.2071,
+    "auc": 0.909,
+    "brier": 0.09187,
+    "logloss": 0.2876,
+    "mean_pred": 0.1973,
+    "bss_vs_base_rate": 0.4406,
+    "bss_vs_ref": 0.1819,
+    "share_of_burning_on_top20pct_days": 0.6549,
+    "auc_by_season": {
+     "2025": 0.964,
+     "2026": 0.857
+    }
+   },
+   "weather": {
+    "n": 280,
+    "base_rate": 0.2071,
+    "auc": 0.9261,
+    "brier": 0.09195,
+    "logloss": 0.2838,
+    "mean_pred": 0.179,
+    "bss_vs_base_rate": 0.4401,
+    "bss_vs_ref": 0.1811,
+    "share_of_burning_on_top20pct_days": 0.6418,
+    "auc_by_season": {
+     "2025": 0.964,
+     "2026": 0.886
+    }
+   },
+   "full": {
+    "n": 280,
+    "base_rate": 0.2071,
+    "auc": 0.8929,
+    "brier": 0.10183,
+    "logloss": 0.3102,
+    "mean_pred": 0.1716,
+    "bss_vs_base_rate": 0.38,
+    "bss_vs_ref": 0.0932,
+    "share_of_burning_on_top20pct_days": 0.6176,
+    "auc_by_season": {
+     "2025": 0.932,
+     "2026": 0.863
+    }
+   },
+   "full_no_lean": {
+    "n": 280,
+    "base_rate": 0.2071,
+    "auc": 0.9106,
+    "brier": 0.09469,
+    "logloss": 0.2986,
+    "mean_pred": 0.1616,
+    "bss_vs_base_rate": 0.4234,
+    "bss_vs_ref": 0.1567,
+    "share_of_burning_on_top20pct_days": 0.6251,
+    "auc_by_season": {
+     "2025": 0.953,
+     "2026": 0.873
+    }
+   },
+   "ceiling_share_top20pct_days": 0.7319,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.05)",
+     "n": 117,
+     "predicted": 0.001,
+     "observed": 0.0
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 29,
+     "predicted": 0.0787,
+     "observed": 0.1379
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 1,
+     "predicted": 0.1887,
+     "observed": 0.0
+    },
+    {
+     "bin": "[0.2, 0.35)",
+     "n": 81,
+     "predicted": 0.2077,
+     "observed": 0.1852
+    },
+    {
+     "bin": "[0.35, 0.5)",
+     "n": 20,
+     "predicted": 0.467,
+     "observed": 0.85
+    },
+    {
+     "bin": "[0.5, 0.65)",
+     "n": 32,
+     "predicted": 0.6033,
+     "observed": 0.6875
+    }
+   ],
+   "count_climatology": {
+    "spearman": 0.794,
+    "mae": 21.36,
+    "cover80": 0.857,
+    "cover95": 0.961,
+    "mean_width80": 57.6
+   },
+   "count_full": {
+    "spearman": 0.83,
+    "mae": 18.64,
+    "cover80": 0.829,
+    "cover95": 0.932,
+    "mean_width80": 49.8
+   }
+  }
+ },
+ "F2": {
+  "loso_2017_24": {
+   "climatology": {
+    "n": 1122,
+    "base_rate": 0.1996,
+    "auc": 0.8279,
+    "brier": 0.12358,
+    "logloss": 0.3802,
+    "mean_pred": 0.1959,
+    "bss_vs_base_rate": 0.2266,
+    "share_of_burning_on_top20pct_days": 0.5618,
+    "auc_by_season": {
+     "2017": 0.874,
+     "2018": 0.898,
+     "2019": 0.914,
+     "2020": 0.655,
+     "2021": 0.789,
+     "2022": 0.909,
+     "2023": 0.872,
+     "2024": 0.978
+    }
+   },
+   "persistence": {
+    "n": 1122,
+    "base_rate": 0.1996,
+    "auc": 0.9297,
+    "brier": 0.07763,
+    "logloss": 0.2655,
+    "mean_pred": 0.1953,
+    "bss_vs_base_rate": 0.5142,
+    "bss_vs_ref": 0.3718,
+    "share_of_burning_on_top20pct_days": 0.6604,
+    "auc_by_season": {
+     "2017": 0.906,
+     "2018": 0.939,
+     "2019": 0.929,
+     "2020": 0.839,
+     "2021": 0.89,
+     "2022": 0.936,
+     "2023": 0.876,
+     "2024": 0.984
+    }
+   },
+   "weather": {
+    "n": 1122,
+    "base_rate": 0.1996,
+    "auc": 0.8855,
+    "brier": 0.0998,
+    "logloss": 0.324,
+    "mean_pred": 0.1943,
+    "bss_vs_base_rate": 0.3754,
+    "bss_vs_ref": 0.1924,
+    "share_of_burning_on_top20pct_days": 0.6218,
+    "auc_by_season": {
+     "2017": 0.884,
+     "2018": 0.918,
+     "2019": 0.889,
+     "2020": 0.841,
+     "2021": 0.81,
+     "2022": 0.923,
+     "2023": 0.789,
+     "2024": 0.972
+    }
+   },
+   "full": {
+    "n": 1122,
+    "base_rate": 0.1996,
+    "auc": 0.9231,
+    "brier": 0.0823,
+    "logloss": 0.2738,
+    "mean_pred": 0.1896,
+    "bss_vs_base_rate": 0.4849,
+    "bss_vs_ref": 0.3341,
+    "share_of_burning_on_top20pct_days": 0.6531,
+    "auc_by_season": {
+     "2017": 0.881,
+     "2018": 0.938,
+     "2019": 0.924,
+     "2020": 0.883,
+     "2021": 0.888,
+     "2022": 0.933,
+     "2023": 0.873,
+     "2024": 0.987
+    }
+   },
+   "full_no_lean": {
+    "n": 1122,
+    "base_rate": 0.1996,
+    "auc": 0.921,
+    "brier": 0.08225,
+    "logloss": 0.2787,
+    "mean_pred": 0.1933,
+    "bss_vs_base_rate": 0.4852,
+    "bss_vs_ref": 0.3345,
+    "share_of_burning_on_top20pct_days": 0.6567,
+    "auc_by_season": {
+     "2017": 0.904,
+     "2018": 0.933,
+     "2019": 0.915,
+     "2020": 0.834,
+     "2021": 0.888,
+     "2022": 0.913,
+     "2023": 0.88,
+     "2024": 0.986
+    }
+   },
+   "ceiling_share_top20pct_days": 0.76,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.05)",
+     "n": 550,
+     "predicted": 0.0088,
+     "observed": 0.0145
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 120,
+     "predicted": 0.0764,
+     "observed": 0.0833
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 138,
+     "predicted": 0.1416,
+     "observed": 0.1232
+    },
+    {
+     "bin": "[0.2, 0.35)",
+     "n": 93,
+     "predicted": 0.2638,
+     "observed": 0.3118
+    },
+    {
+     "bin": "[0.35, 0.5)",
+     "n": 37,
+     "predicted": 0.4399,
+     "observed": 0.4324
+    },
+    {
+     "bin": "[0.5, 0.65)",
+     "n": 51,
+     "predicted": 0.5871,
+     "observed": 0.7451
+    },
+    {
+     "bin": "[0.65, 0.8)",
+     "n": 72,
+     "predicted": 0.7206,
+     "observed": 0.75
+    },
+    {
+     "bin": "[0.8, 1.0)",
+     "n": 61,
+     "predicted": 0.9261,
+     "observed": 0.8525
+    }
+   ],
+   "count_climatology": {
+    "spearman": 0.689,
+    "mae": 8.77,
+    "cover80": 0.85,
+    "cover95": 0.955,
+    "mean_width80": 25.4
+   },
+   "count_full": {
+    "spearman": 0.809,
+    "mae": 7.1,
+    "cover80": 0.891,
+    "cover95": 0.962,
+    "mean_width80": 21.8
+   }
+  },
+  "test_2025_26": {
+   "climatology": {
+    "n": 280,
+    "base_rate": 0.1643,
+    "auc": 0.8651,
+    "brier": 0.10183,
+    "logloss": 0.311,
+    "mean_pred": 0.1952,
+    "bss_vs_base_rate": 0.2583,
+    "share_of_burning_on_top20pct_days": 0.5831,
+    "auc_by_season": {
+     "2025": 0.908,
+     "2026": 0.815
+    }
+   },
+   "persistence": {
+    "n": 280,
+    "base_rate": 0.1643,
+    "auc": 0.9195,
+    "brier": 0.08047,
+    "logloss": 0.2613,
+    "mean_pred": 0.1899,
+    "bss_vs_base_rate": 0.4139,
+    "bss_vs_ref": 0.2097,
+    "share_of_burning_on_top20pct_days": 0.7055,
+    "auc_by_season": {
+     "2025": 0.956,
+     "2026": 0.87
+    }
+   },
+   "weather": {
+    "n": 280,
+    "base_rate": 0.1643,
+    "auc": 0.9144,
+    "brier": 0.08119,
+    "logloss": 0.2625,
+    "mean_pred": 0.1643,
+    "bss_vs_base_rate": 0.4086,
+    "bss_vs_ref": 0.2027,
+    "share_of_burning_on_top20pct_days": 0.7094,
+    "auc_by_season": {
+     "2025": 0.944,
+     "2026": 0.876
+    }
+   },
+   "full": {
+    "n": 280,
+    "base_rate": 0.1643,
+    "auc": 0.9174,
+    "brier": 0.08203,
+    "logloss": 0.2611,
+    "mean_pred": 0.1781,
+    "bss_vs_base_rate": 0.4025,
+    "bss_vs_ref": 0.1944,
+    "share_of_burning_on_top20pct_days": 0.7048,
+    "auc_by_season": {
+     "2025": 0.947,
+     "2026": 0.879
+    }
+   },
+   "full_no_lean": {
+    "n": 280,
+    "base_rate": 0.1643,
+    "auc": 0.9167,
+    "brier": 0.08125,
+    "logloss": 0.2608,
+    "mean_pred": 0.1752,
+    "bss_vs_base_rate": 0.4082,
+    "bss_vs_ref": 0.2021,
+    "share_of_burning_on_top20pct_days": 0.7124,
+    "auc_by_season": {
+     "2025": 0.946,
+     "2026": 0.877
+    }
+   },
+   "ceiling_share_top20pct_days": 0.7827,
+   "reliability_full": [
+    {
+     "bin": "[0.0, 0.05)",
+     "n": 126,
+     "predicted": 0.004,
+     "observed": 0.0079
+    },
+    {
+     "bin": "[0.05, 0.1)",
+     "n": 76,
+     "predicted": 0.0699,
+     "observed": 0.0789
+    },
+    {
+     "bin": "[0.1, 0.2)",
+     "n": 9,
+     "predicted": 0.1515,
+     "observed": 0.2222
+    },
+    {
+     "bin": "[0.2, 0.35)",
+     "n": 12,
+     "predicted": 0.2627,
+     "observed": 0.1667
+    },
+    {
+     "bin": "[0.35, 0.5)",
+     "n": 2,
+     "predicted": 0.4,
+     "observed": 0.5
+    },
+    {
+     "bin": "[0.5, 0.65)",
+     "n": 21,
+     "predicted": 0.6,
+     "observed": 0.4286
+    },
+    {
+     "bin": "[0.65, 0.8)",
+     "n": 18,
+     "predicted": 0.727,
+     "observed": 0.7778
+    },
+    {
+     "bin": "[0.8, 1.0)",
+     "n": 16,
+     "predicted": 0.8158,
+     "observed": 0.6875
+    }
+   ],
+   "count_climatology": {
+    "spearman": 0.804,
+    "mae": 8.37,
+    "cover80": 0.911,
+    "cover95": 0.989,
+    "mean_width80": 25.4
+   },
+   "count_full": {
+    "spearman": 0.81,
+    "mae": 7.02,
+    "cover80": 0.861,
+    "cover95": 0.968,
+    "mean_width80": 21.9
+   }
+  }
+ }
+}

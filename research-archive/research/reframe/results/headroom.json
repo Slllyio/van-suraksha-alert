@@ -1,0 +1,14 @@
+{
+ "loso_2017_24": {
+  "model_day_model_cells": 0.6314,
+  "perfect_day_model_cells": 0.6037,
+  "model_day_perfect_cells": 0.9976,
+  "perfect_both": 0.9483
+ },
+ "test_2025_26": {
+  "model_day_model_cells": 0.6371,
+  "perfect_day_model_cells": 0.6445,
+  "model_day_perfect_cells": 1.0,
+  "perfect_both": 0.9819
+ }
+}

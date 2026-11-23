@@ -1,0 +1,46 @@
+{
+ "random": {
+  "patches_all": 2592,
+  "strict_all": 0.1038,
+  "patches_new": 935,
+  "strict_new": 0.1209,
+  "patches_spread": 1657,
+  "strict_spread": 0.0941,
+  "cellwindows": 6973,
+  "cell_recall": 0.0984,
+  "area_recall": 0.097
+ },
+ "burn_freq": {
+  "patches_all": 2592,
+  "strict_all": 0.1478,
+  "patches_new": 935,
+  "strict_new": 0.139,
+  "patches_spread": 1657,
+  "strict_spread": 0.1527,
+  "cellwindows": 6973,
+  "cell_recall": 0.1391,
+  "area_recall": 0.136
+ },
+ "ignition_feats": {
+  "patches_all": 2592,
+  "strict_all": 0.2106,
+  "patches_new": 935,
+  "strict_new": 0.1893,
+  "patches_spread": 1657,
+  "strict_spread": 0.2227,
+  "cellwindows": 6973,
+  "cell_recall": 0.1699,
+  "area_recall": 0.2258
+ },
+ "combined": {
+  "patches_all": 2592,
+  "strict_all": 0.2157,
+  "patches_new": 935,
+  "strict_new": 0.1241,
+  "patches_spread": 1657,
+  "strict_spread": 0.2674,
+  "cellwindows": 6973,
+  "cell_recall": 0.1765,
+  "area_recall": 0.2296
+ }
+}

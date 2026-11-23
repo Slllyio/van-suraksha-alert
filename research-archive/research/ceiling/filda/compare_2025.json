@@ -1,0 +1,30 @@
+{
+ "year": 2025,
+ "filda_forest_night_px": 17941,
+ "filda_extra_px": 721,
+ "firms_forest_night_px_snpp_jpss1": 25833,
+ "firms_matched_by_filda_pct": 66.4,
+ "extra_vs_firms_pct": 2.8,
+ "extra_kind": {
+  "tail (FIRMS only before)": 235,
+  "gap_fill (FIRMS before and after)": 205,
+  "earlier (FIRMS only same day or after)": 203,
+  "isolated (no FIRMS within 1.5 km, +-3 d)": 78
+ },
+ "extra_conf": {
+  "8": 706,
+  "1": 15
+ },
+ "extra_power_median_MW": 1.5203524,
+ "matched_power_median_MW": 1.7578459,
+ "extra_dnb_pos": {
+  "count": 718.0,
+  "mean": 1.0,
+  "std": 0.03,
+  "min": 0.59,
+  "25%": 1.0,
+  "50%": 1.0,
+  "75%": 1.0,
+  "max": 1.0
+ }
+}

@@ -1,0 +1,35 @@
+{
+ "n_scenes": 209,
+ "lead_h_median": 9.183333333333334,
+ "share_burned_median": 0.022454071217963258,
+ "mean_auc": {
+  "arr": 0.631,
+  "raw": 0.613,
+  "ring": 0.58,
+  "persist": 0.839,
+  "nearest_latest": 0.777
+ },
+ "mean_share_found_equal_area": {
+  "arr": 0.099,
+  "raw": 0.056,
+  "ring": 0.043,
+  "persist": 0.138,
+  "nearest_latest": 0.118
+ },
+ "scenes_where_beats_ring": {
+  "arr": 0.512,
+  "raw": 0.512,
+  "persist": 0.842,
+  "nearest_latest": 0.737
+ },
+ "auc_gain_vs_ring_95ci": {
+  "arr": [
+   0.013,
+   0.09
+  ],
+  "raw": [
+   -0.002,
+   0.07
+  ]
+ }
+}

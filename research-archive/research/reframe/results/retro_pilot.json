@@ -1,0 +1,150 @@
+{
+ "2025": {
+  "fixed5_lean (today)": {
+   "staff_hours": 33005,
+   "checks": 50754,
+   "checks_per_day": 423.0,
+   "new_ignitions_found": 0.2957,
+   "near_active_found": 0.2734,
+   "all_found": 0.2845,
+   "checks_with_no_burn": 0.9311,
+   "checks_near_active_fire": 0.1119
+  },
+  "fixed5_random": {
+   "staff_hours": 34176,
+   "checks": 50754,
+   "checks_per_day": 423.0,
+   "new_ignitions_found": 0.1589,
+   "near_active_found": 0.142,
+   "all_found": 0.1504,
+   "checks_with_no_burn": 0.9636,
+   "checks_near_active_fire": 0.0984
+  },
+  "calendar_total_lean": {
+   "staff_hours": 32975,
+   "checks": 54684,
+   "checks_per_day": 455.7,
+   "new_ignitions_found": 0.534,
+   "near_active_found": 0.6524,
+   "all_found": 0.5934,
+   "checks_with_no_burn": 0.8667,
+   "checks_near_active_fire": 0.2428,
+   "budget_multiplier": 0.99
+  },
+  "calendar_total_ranker": {
+   "staff_hours": 32928,
+   "checks": 54999,
+   "checks_per_day": 458.3,
+   "new_ignitions_found": 0.4355,
+   "near_active_found": 0.9127,
+   "all_found": 0.6749,
+   "checks_with_no_burn": 0.8493,
+   "checks_near_active_fire": 0.3952,
+   "budget_multiplier": 0.996
+  },
+  "forecast_total_lean": {
+   "staff_hours": 33038,
+   "checks": 54863,
+   "checks_per_day": 457.2,
+   "new_ignitions_found": 0.5413,
+   "near_active_found": 0.6813,
+   "all_found": 0.6116,
+   "checks_with_no_burn": 0.8631,
+   "checks_near_active_fire": 0.2576,
+   "budget_multiplier": 0.903
+  },
+  "forecast_total_ranker": {
+   "staff_hours": 32984,
+   "checks": 55209,
+   "checks_per_day": 460.1,
+   "new_ignitions_found": 0.4564,
+   "near_active_found": 0.9221,
+   "all_found": 0.69,
+   "checks_with_no_burn": 0.8465,
+   "checks_near_active_fire": 0.4061,
+   "budget_multiplier": 0.908
+  },
+  "positives": {
+   "new_ignition": 6122,
+   "near_active": 6163
+  }
+ },
+ "2026": {
+  "fixed5_lean (today)": {
+   "staff_hours": 31914,
+   "checks": 49057,
+   "checks_per_day": 405.4,
+   "new_ignitions_found": 0.2965,
+   "near_active_found": 0.2863,
+   "all_found": 0.2914,
+   "checks_with_no_burn": 0.9339,
+   "checks_near_active_fire": 0.1039
+  },
+  "fixed5_random": {
+   "staff_hours": 33074,
+   "checks": 49057,
+   "checks_per_day": 405.4,
+   "new_ignitions_found": 0.1694,
+   "near_active_found": 0.1606,
+   "all_found": 0.165,
+   "checks_with_no_burn": 0.9626,
+   "checks_near_active_fire": 0.0877
+  },
+  "calendar_total_lean": {
+   "staff_hours": 31978,
+   "checks": 52963,
+   "checks_per_day": 437.7,
+   "new_ignitions_found": 0.5636,
+   "near_active_found": 0.6239,
+   "all_found": 0.5937,
+   "checks_with_no_burn": 0.8753,
+   "checks_near_active_fire": 0.1882,
+   "budget_multiplier": 0.957
+  },
+  "calendar_total_ranker": {
+   "staff_hours": 31911,
+   "checks": 53279,
+   "checks_per_day": 440.3,
+   "new_ignitions_found": 0.5023,
+   "near_active_found": 0.9326,
+   "all_found": 0.7169,
+   "checks_with_no_burn": 0.8503,
+   "checks_near_active_fire": 0.3294,
+   "budget_multiplier": 0.963
+  },
+  "forecast_total_lean": {
+   "staff_hours": 31993,
+   "checks": 53055,
+   "checks_per_day": 438.5,
+   "new_ignitions_found": 0.5575,
+   "near_active_found": 0.6968,
+   "all_found": 0.627,
+   "checks_with_no_burn": 0.8685,
+   "checks_near_active_fire": 0.2154,
+   "budget_multiplier": 0.946
+  },
+  "forecast_total_ranker": {
+   "staff_hours": 31963,
+   "checks": 53378,
+   "checks_per_day": 441.1,
+   "new_ignitions_found": 0.5237,
+   "near_active_found": 0.9468,
+   "all_found": 0.7347,
+   "checks_with_no_burn": 0.8469,
+   "checks_near_active_fire": 0.3467,
+   "budget_multiplier": 0.952
+  },
+  "positives": {
+   "new_ignition": 5578,
+   "near_active": 5547
+  }
+ },
+ "assumptions": {
+  "speed_kmh": 15.0,
+  "detour": 1.4,
+  "hours_on_site": 0.5,
+  "near_active": "VIIRS (S-NPP, NOAA-20, NOAA-21) within 1.5 km in last 3 days",
+  "model": "frozen: trained 2017-24",
+  "window": "15 Feb-15 Jun"
+ }
+}

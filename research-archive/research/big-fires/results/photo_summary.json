@@ -1,0 +1,188 @@
+{
+ "all|other": {
+  "photos": 61,
+  "fires": 60,
+  "mean_auc": {
+   "points": 0.743,
+   "viirs_blocks": 0.732,
+   "all_blocks": 0.722,
+   "recent_blocks": 0.711,
+   "kernel": 0.768,
+   "kernel_frp": 0.782
+  },
+  "diff_95": {
+   "viirs_blocks - points": [
+    -0.028,
+    0.005
+   ],
+   "all_blocks - points": [
+    -0.044,
+    0.001
+   ],
+   "recent_blocks - points": [
+    -0.079,
+    0.013
+   ],
+   "kernel_frp - kernel": [
+    -0.016,
+    0.041
+   ]
+  },
+  "photos_with_modis_or_hotpix_before": 25
+ },
+ "all|big": {
+  "photos": 140,
+  "fires": 137,
+  "mean_auc": {
+   "points": 0.798,
+   "viirs_blocks": 0.783,
+   "all_blocks": 0.771,
+   "recent_blocks": 0.715,
+   "kernel": 0.812,
+   "kernel_frp": 0.802
+  },
+  "diff_95": {
+   "viirs_blocks - points": [
+    -0.027,
+    -0.002
+   ],
+   "all_blocks - points": [
+    -0.045,
+    -0.007
+   ],
+   "recent_blocks - points": [
+    -0.121,
+    -0.046
+   ],
+   "kernel_frp - kernel": [
+    -0.026,
+    0.004
+   ]
+  },
+  "photos_with_modis_or_hotpix_before": 87
+ },
+ "new_ground|other": {
+  "photos": 56,
+  "fires": 55,
+  "mean_auc": {
+   "points": 0.721,
+   "viirs_blocks": 0.705,
+   "all_blocks": 0.693,
+   "recent_blocks": 0.706,
+   "kernel": 0.739,
+   "kernel_frp": 0.738
+  },
+  "diff_95": {
+   "viirs_blocks - points": [
+    -0.036,
+    0.004
+   ],
+   "all_blocks - points": [
+    -0.053,
+    -0.005
+   ],
+   "recent_blocks - points": [
+    -0.051,
+    0.025
+   ],
+   "kernel_frp - kernel": [
+    -0.036,
+    0.03
+   ]
+  },
+  "photos_with_modis_or_hotpix_before": 23
+ },
+ "new_ground|big": {
+  "photos": 127,
+  "fires": 125,
+  "mean_auc": {
+   "points": 0.751,
+   "viirs_blocks": 0.743,
+   "all_blocks": 0.735,
+   "recent_blocks": 0.687,
+   "kernel": 0.758,
+   "kernel_frp": 0.751
+  },
+  "diff_95": {
+   "viirs_blocks - points": [
+    -0.019,
+    0.001
+   ],
+   "all_blocks - points": [
+    -0.037,
+    0.007
+   ],
+   "recent_blocks - points": [
+    -0.101,
+    -0.028
+   ],
+   "kernel_frp - kernel": [
+    -0.031,
+    0.014
+   ]
+  },
+  "photos_with_modis_or_hotpix_before": 78
+ },
+ "all|all fires": {
+  "photos": 201,
+  "fires": 197,
+  "mean_auc": {
+   "points": 0.781,
+   "viirs_blocks": 0.767,
+   "all_blocks": 0.756,
+   "recent_blocks": 0.714,
+   "kernel": 0.799,
+   "kernel_frp": 0.796
+  },
+  "diff_95": {
+   "viirs_blocks - points": [
+    -0.024,
+    -0.004
+   ],
+   "all_blocks - points": [
+    -0.039,
+    -0.009
+   ],
+   "recent_blocks - points": [
+    -0.097,
+    -0.038
+   ],
+   "kernel_frp - kernel": [
+    -0.018,
+    0.01
+   ]
+  },
+  "photos_with_modis_or_hotpix_before": 112
+ },
+ "new_ground|all fires": {
+  "photos": 183,
+  "fires": 180,
+  "mean_auc": {
+   "points": 0.742,
+   "viirs_blocks": 0.732,
+   "all_blocks": 0.722,
+   "recent_blocks": 0.693,
+   "kernel": 0.752,
+   "kernel_frp": 0.747
+  },
+  "diff_95": {
+   "viirs_blocks - points": [
+    -0.019,
+    -0.001
+   ],
+   "all_blocks - points": [
+    -0.037,
+    -0.003
+   ],
+   "recent_blocks - points": [
+    -0.077,
+    -0.02
+   ],
+   "kernel_frp - kernel": [
+    -0.026,
+    0.012
+   ]
+  },
+  "photos_with_modis_or_hotpix_before": 101
+ }
+}

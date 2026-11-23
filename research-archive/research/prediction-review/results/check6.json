@@ -1,0 +1,148 @@
+{
+ "calibration_loso": {
+  "base_rate": 0.0465,
+  "mean_pred_raw": 0.0421,
+  "mean_pred_iso": 0.0467,
+  "brier_skill_raw_vs_doy_climatology": 0.06,
+  "brier_skill_iso_vs_doy_climatology": 0.054,
+  "reliability_iso": {
+   "(-0.001, 0.01]": {
+    "pred": 0.004,
+    "obs": 0.004,
+    "share_of_celldays": 0.361
+   },
+   "(0.01, 0.02]": {
+    "pred": 0.015,
+    "obs": 0.015,
+    "share_of_celldays": 0.116
+   },
+   "(0.02, 0.05]": {
+    "pred": 0.034,
+    "obs": 0.035,
+    "share_of_celldays": 0.192
+   },
+   "(0.05, 0.1]": {
+    "pred": 0.075,
+    "obs": 0.082,
+    "share_of_celldays": 0.174
+   },
+   "(0.1, 0.2]": {
+    "pred": 0.136,
+    "obs": 0.126,
+    "share_of_celldays": 0.131
+   },
+   "(0.2, 0.3]": {
+    "pred": 0.235,
+    "obs": 0.218,
+    "share_of_celldays": 0.023
+   },
+   "(0.3, 1.0]": {
+    "pred": 0.343,
+    "obs": 0.304,
+    "share_of_celldays": 0.003
+   }
+  },
+  "per_season_mean_pred_vs_obs": {
+   "2017": [
+    0.0509,
+    0.0918
+   ],
+   "2018": [
+    0.0631,
+    0.1036
+   ],
+   "2019": [
+    0.0615,
+    0.0746
+   ],
+   "2020": [
+    0.0395,
+    0.018
+   ],
+   "2021": [
+    0.0375,
+    0.0359
+   ],
+   "2022": [
+    0.0345,
+    0.0474
+   ],
+   "2023": [
+    0.0473,
+    0.0314
+   ],
+   "2024": [
+    0.0517,
+    0.0163
+   ]
+  }
+ },
+ "calibration_test2526": {
+  "base_rate": 0.0401,
+  "mean_pred_raw": 0.0458,
+  "mean_pred_iso": 0.0488,
+  "brier_skill_raw_vs_doy_climatology": 0.044,
+  "brier_skill_iso_vs_doy_climatology": 0.05,
+  "reliability_iso": {
+   "(-0.001, 0.01]": {
+    "pred": 0.003,
+    "obs": 0.004,
+    "share_of_celldays": 0.347
+   },
+   "(0.01, 0.02]": {
+    "pred": 0.015,
+    "obs": 0.009,
+    "share_of_celldays": 0.131
+   },
+   "(0.02, 0.05]": {
+    "pred": 0.033,
+    "obs": 0.022,
+    "share_of_celldays": 0.209
+   },
+   "(0.05, 0.1]": {
+    "pred": 0.075,
+    "obs": 0.056,
+    "share_of_celldays": 0.147
+   },
+   "(0.1, 0.2]": {
+    "pred": 0.142,
+    "obs": 0.127,
+    "share_of_celldays": 0.123
+   },
+   "(0.2, 0.3]": {
+    "pred": 0.237,
+    "obs": 0.206,
+    "share_of_celldays": 0.04
+   },
+   "(0.3, 1.0]": {
+    "pred": 0.331,
+    "obs": 0.287,
+    "share_of_celldays": 0.003
+   }
+  },
+  "per_season_mean_pred_vs_obs": {
+   "2025": [
+    0.0497,
+    0.0401
+   ],
+   "2026": [
+    0.0478,
+    0.04
+   ]
+  }
+ },
+ "livepool_loso": {
+  "scorer_pool_model": 29.0,
+  "scorer_pool_random": 16.4,
+  "live_pool_model": 25.8,
+  "live_pool_random": 12.6,
+  "share_of_live_picks_cells_already_burned_unconfirmed": 0.096
+ },
+ "livepool_test2526": {
+  "scorer_pool_model": 28.8,
+  "scorer_pool_random": 15.6,
+  "live_pool_model": 25.8,
+  "live_pool_random": 12.1,
+  "share_of_live_picks_cells_already_burned_unconfirmed": 0.099
+ }
+}

@@ -1,0 +1,166 @@
+{
+ "timeline": {
+  "first_look_share": [
+   0.093,
+   0.177,
+   0.324
+  ],
+  "max_single_look_share": [
+   0.31,
+   0.394,
+   0.496
+  ],
+  "h50": [
+   12.467,
+   24.358,
+   48.2
+  ],
+  "h90": [
+   46.75,
+   70.975,
+   95.362
+  ],
+  "looks_holding_half": [
+   2.0,
+   2.0,
+   2.0
+  ],
+  "duration_h": [
+   49.033,
+   72.725,
+   108.037
+  ]
+ },
+ "day_night": {
+  "evening/night gap (ends ~01:30)": {
+   "n": 283,
+   "ha_median": 58.36,
+   "ha_per_h_median": 4.104,
+   "share_median": 0.121
+  },
+  "morning gap (ends ~13:30)": {
+   "n": 384,
+   "ha_median": 72.54,
+   "ha_per_h_median": 4.518,
+   "share_median": 0.149
+  }
+ },
+ "fronts": {
+  "looks": 667,
+  "share_looks_with_2plus_new_fronts": 0.217,
+  "share_fires_ever_2plus": 0.603,
+  "far_patch_share_of_new_ground": [
+   0.096,
+   0.401,
+   0.681
+  ]
+ },
+ "terrain_along_growth": {
+  "elev": {
+   "median_r": -0.067,
+   "share_positive": 0.432,
+   "null_median_r": 0.003,
+   "null_share_positive": 0.5,
+   "p_real_vs_null": 0.7494123032250167
+  },
+  "local_height": {
+   "median_r": -0.027,
+   "share_positive": 0.438,
+   "null_median_r": 0.003,
+   "null_share_positive": 0.507,
+   "p_real_vs_null": 0.2173141785726892
+  },
+  "slope": {
+   "median_r": -0.019,
+   "share_positive": 0.438,
+   "null_median_r": 0.002,
+   "null_share_positive": 0.514,
+   "p_real_vs_null": 0.21950680322003702
+  },
+  "tree": {
+   "median_r": -0.01,
+   "share_positive": 0.473,
+   "null_median_r": 0.005,
+   "null_share_positive": 0.507,
+   "p_real_vs_null": 0.6923964674346506
+  }
+ },
+ "edges": {
+  "burned_earlier": {
+   "inside_mean": 0.098,
+   "outside_mean": 0.0732,
+   "share_fires_outside_higher": 0.521,
+   "p": 0.9689987652963534
+  },
+  "tree": {
+   "inside_mean": 0.6377,
+   "outside_mean": 0.5199,
+   "share_fires_outside_higher": 0.212,
+   "p": 1.444918879423273e-14
+  },
+  "grass_shrub": {
+   "inside_mean": 0.3447,
+   "outside_mean": 0.4359,
+   "share_fires_outside_higher": 0.753,
+   "p": 2.0307524917779874e-11
+  },
+  "crop_built": {
+   "inside_mean": 0.0176,
+   "outside_mean": 0.043,
+   "share_fires_outside_higher": 0.829,
+   "p": 7.181888943069056e-18
+  },
+  "local_height": {
+   "inside_mean": 2.0342,
+   "outside_mean": -0.5287,
+   "share_fires_outside_higher": 0.322,
+   "p": 2.6777269015527307e-05
+  },
+  "slope": {
+   "inside_mean": 7.8219,
+   "outside_mean": 7.2871,
+   "share_fires_outside_higher": 0.432,
+   "p": 0.004772783443580967
+  },
+  "road": {
+   "inside_mean": 0.0012,
+   "outside_mean": 0.004,
+   "share_fires_outside_higher": 0.555,
+   "p": 6.407543005109961e-11
+  },
+  "tree_forestedge": {
+   "inside_mean": 0.6377,
+   "outside_mean": 0.5381,
+   "share_fires_outside_higher": 0.226,
+   "p": 1.6037121162716672e-12
+  },
+  "local_height_forestedge": {
+   "inside_mean": 2.0342,
+   "outside_mean": -0.2537,
+   "share_fires_outside_higher": 0.315,
+   "p": 0.00011926858844880735
+  }
+ },
+ "by_month": {
+  "2": {
+   "n": 8,
+   "ha_per_h": 6.34,
+   "area": 415.82
+  },
+  "3": {
+   "n": 111,
+   "ha_per_h": 5.96,
+   "area": 448.68
+  },
+  "4": {
+   "n": 26,
+   "ha_per_h": 7.25,
+   "area": 456.58
+  },
+  "5": {
+   "n": 1,
+   "ha_per_h": 10.95,
+   "area": 528.12
+  }
+ }
+}

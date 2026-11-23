@@ -1,0 +1,30 @@
+{
+ "loso_2017_24": {
+  "cap5": 0.2843,
+  "cap5_picks_per_day": 274.4,
+  "cap8": 0.3922,
+  "cap8_picks_per_day": 348.4,
+  "cap10": 0.4466,
+  "cap10_picks_per_day": 384.4,
+  "cap15": 0.5412,
+  "cap15_picks_per_day": 441.2,
+  "cap25": 0.6126,
+  "cap25_picks_per_day": 470.5,
+  "cap999": 0.6314,
+  "cap999_picks_per_day": 471.5
+ },
+ "test_2025_26": {
+  "cap5": 0.2742,
+  "cap5_picks_per_day": 271.2,
+  "cap8": 0.3833,
+  "cap8_picks_per_day": 336.0,
+  "cap10": 0.4399,
+  "cap10_picks_per_day": 367.7,
+  "cap15": 0.5395,
+  "cap15_picks_per_day": 425.2,
+  "cap25": 0.6201,
+  "cap25_picks_per_day": 454.3,
+  "cap999": 0.6371,
+  "cap999_picks_per_day": 454.3
+ }
+}

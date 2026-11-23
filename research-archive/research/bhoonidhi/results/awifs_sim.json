@@ -1,0 +1,143 @@
+{
+ "passes_tried": 800,
+ "used": 359,
+ "skipped": {
+  "no VIIRS look before scene": 396,
+  "no scar": 38,
+  "< 3 hot pixels in window": 5,
+  "no clear before-fire scene": 2
+ },
+ "s2": {
+  "mean_scene": 0.4436,
+  "mean_same_area": 0.4143,
+  "median_scene": 0.4375,
+  "gain_vs_same_area": 0.0293,
+  "ci": [
+   0.0167,
+   0.0415
+  ],
+  "better_worse": [
+   219,
+   123
+  ],
+  "vs_full_s2": 0.0,
+  "vs_full_s2_ci": [
+   0.0,
+   0.0
+  ],
+  "burnt_ha_median": 156.9,
+  "burnt_in_scar_median": 0.652,
+  "hot_any": 1.0
+ },
+ "s2_60m": {
+  "mean_scene": 0.4404,
+  "mean_same_area": 0.4136,
+  "median_scene": 0.427,
+  "gain_vs_same_area": 0.0268,
+  "ci": [
+   0.0155,
+   0.0379
+  ],
+  "better_worse": [
+   220,
+   120
+  ],
+  "vs_full_s2": -0.0032,
+  "vs_full_s2_ci": [
+   -0.0078,
+   0.001
+  ],
+  "burnt_ha_median": 154.8,
+  "burnt_in_scar_median": 0.652,
+  "hot_any": 0.897
+ },
+ "awifs": {
+  "mean_scene": 0.3625,
+  "mean_same_area": 0.3564,
+  "median_scene": 0.3725,
+  "gain_vs_same_area": 0.006,
+  "ci": [
+   0.0027,
+   0.0093
+  ],
+  "better_worse": [
+   80,
+   44
+  ],
+  "vs_full_s2": -0.0811,
+  "vs_full_s2_ci": [
+   -0.0943,
+   -0.0676
+  ],
+  "burnt_ha_median": 2.9,
+  "burnt_in_scar_median": 0.685,
+  "hot_any": 0.306
+ },
+ "awifs_t05": {
+  "mean_scene": 0.383,
+  "mean_same_area": 0.3764,
+  "median_scene": 0.3857,
+  "gain_vs_same_area": 0.0066,
+  "ci": [
+   0.0012,
+   0.0118
+  ],
+  "better_worse": [
+   141,
+   82
+  ],
+  "vs_full_s2": -0.0606,
+  "vs_full_s2_ci": [
+   -0.0711,
+   -0.0496
+  ],
+  "burnt_ha_median": 31.0,
+  "burnt_in_scar_median": 0.726,
+  "hot_any": 0.306
+ },
+ "awifs_ndvi": {
+  "mean_scene": 0.3872,
+  "mean_same_area": 0.3796,
+  "median_scene": 0.3913,
+  "gain_vs_same_area": 0.0076,
+  "ci": [
+   0.0012,
+   0.014
+  ],
+  "better_worse": [
+   149,
+   75
+  ],
+  "vs_full_s2": -0.0564,
+  "vs_full_s2_ci": [
+   -0.0686,
+   -0.0443
+  ],
+  "burnt_ha_median": 38.2,
+  "burnt_in_scar_median": 0.75,
+  "hot_any": 0.306
+ },
+ "s2_swir1_20m": {
+  "mean_scene": 0.3722,
+  "mean_same_area": 0.3577,
+  "median_scene": 0.3818,
+  "gain_vs_same_area": 0.0144,
+  "ci": [
+   0.0097,
+   0.0192
+  ],
+  "better_worse": [
+   153,
+   72
+  ],
+  "vs_full_s2": -0.0714,
+  "vs_full_s2_ci": [
+   -0.0846,
+   -0.0592
+  ],
+  "burnt_ha_median": 4.4,
+  "burnt_in_scar_median": 0.871,
+  "hot_any": 0.705
+ },
+ "rule_mean": 0.3521
+}

@@ -1,0 +1,60 @@
+{
+ "distinct_fire_passes": 520,
+ "swath_missed": 242,
+ "cloudy_or_partial": 16,
+ "usable": 262,
+ "usable_fires": 240,
+ "usable_big_fires": 64,
+ "visible": {
+  "6K": {
+   "all": 0.202,
+   "n": 53,
+   "day": 0.235,
+   "night": 0.024,
+   "big": 0.219
+  },
+  "10K": {
+   "all": 0.115,
+   "n": 30,
+   "day": 0.136,
+   "night": 0.0,
+   "big": 0.151
+  },
+  "15K": {
+   "all": 0.084,
+   "n": 22,
+   "day": 0.1,
+   "night": 0.0,
+   "big": 0.11
+  }
+ },
+ "visible10": {
+  "passes": 30,
+  "fires": 30,
+  "big_fires": 11,
+  "hot_pixels_median": 13.5,
+  "anomaly_p99_median_K": 12.2
+ },
+ "vs_viirs_within_1h": {
+  "pairs": 23,
+  "gap_min_median": 20.7,
+  "hot_to_nearest_viirs_centre_m_median": 207,
+  "hot_share_inside_block": 0.623,
+  "hot_share_within_500m": 0.852,
+  "viirs_blocks_holding_hot": 0.631,
+  "centre_offset_m_median": 280
+ },
+ "vs_scar_edge": {
+  "median_distance_inside_edge_m": 98.99494936611666,
+  "share_within_150m_of_edge": 0.598
+ },
+ "hot_front_points_to_next_growth": {
+  "n": 25,
+  "within_45": 0.56,
+  "within_90": 0.72,
+  "keep_same_way_within_45": 0.32,
+  "keep_same_way_within_90": 0.52,
+  "n_with_prev": 19
+ },
+ "two_passes_same_fire_both_visible": 0
+}

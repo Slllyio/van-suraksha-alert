@@ -1,0 +1,50 @@
+{
+ "n_rows": 2835248,
+ "n_issues": 3041,
+ "1000-2000 m": {
+  "rate": 0.0142,
+  "background": 0.0036,
+  "ratio": 3.9,
+  "share_issues_with_any": 0.284
+ },
+ "2000-3000 m": {
+  "rate": 0.0081,
+  "background": 0.0033,
+  "ratio": 2.4,
+  "share_issues_with_any": 0.272
+ },
+ "3000-5000 m": {
+  "rate": 0.007,
+  "background": 0.003,
+  "ratio": 2.4,
+  "share_issues_with_any": 0.435
+ },
+ "LOSO_2017_24": {
+  "p": {
+   "auc": 0.746,
+   "caught_in_top10pct": 0.303
+  },
+  "p_dist": {
+   "auc": 0.542,
+   "caught_in_top10pct": 0.18
+  },
+  "p_hist": {
+   "auc": 0.692,
+   "caught_in_top10pct": 0.184
+  }
+ },
+ "forward_2025_26": {
+  "p": {
+   "auc": 0.78,
+   "caught_in_top10pct": 0.343
+  },
+  "p_dist": {
+   "auc": 0.554,
+   "caught_in_top10pct": 0.184
+  },
+  "p_hist": {
+   "auc": 0.714,
+   "caught_in_top10pct": 0.212
+  }
+ }
+}
