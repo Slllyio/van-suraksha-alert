@@ -1,0 +1,2 @@
+event_id,acq_date,status,latitude,longitude,sensor,scan,track,radius_m,n_looks,pre_date,post_date,gap_days,pre_sensor,post_sensor,check_date,persist_checked,scar_ha_core,scar_ha,n_patches,dist_m,rdnbr_median,link_conf,severity,touches_chip_edge,last_checked,beat_uid,division,range,beat
+E20261011-22.8782-77.4560,2026-10-11,scar,22.87824,77.45599,viirs-snpp,0.55,0.51,200.0,6.0,2026-10-09,2026-10-12,3.0,ls,s2,,False,7.24,9.8,3.0,0.0,0.131,high,low,False,2026-10-14,009-008-005,Obedullahganj,Delawari,North_Mathar
