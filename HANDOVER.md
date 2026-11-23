@@ -104,7 +104,9 @@ history the first run starts from), `field-system/pc_models/` (87 division model
 - `Van_Agni_compendium_2026-10-21.zip` (57 MB): report, maps, 46 tables (CSV + Excel), per-division factsheet, key data, all study READMEs.
 - This file, `INTEGRATION.md`, `deploy/README.md`.
 
-**Tier 3: research data, on request** (not needed to run the engine). Kept in the project's cloud folder (~9.5 GB) and on
+**Research code, write-ups and small results are in this repo** under `research-archive/` (2,688 files, 193 MB; see its README).
+
+**Tier 3: big research data, on request** (not needed to run the engine; listed file by file in `research-archive/BIG_FILES_NOT_IN_GIT.csv`). Kept in the project's cloud folder (~9.5 GB) and on
 Akkshay's PC (`E:\FIRE`).
 
 | Set | Size | Where |
