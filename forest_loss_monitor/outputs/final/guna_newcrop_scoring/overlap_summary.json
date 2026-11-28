@@ -1,0 +1,13 @@
+{
+ "ours_ha": {
+  "scrub_to_farm": 13249.5,
+  "clearing": 862.64,
+  "tree_to_shrub": 1597.78
+ },
+ "ours_inside_newcrop_ha": {
+  "scrub_to_farm": 3201.9900000000002,
+  "clearing": 470.41,
+  "tree_to_shrub": 403.16
+ },
+ "union_ha": 21613.69
+}

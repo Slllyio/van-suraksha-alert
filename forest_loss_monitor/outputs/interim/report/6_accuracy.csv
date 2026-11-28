@@ -1,0 +1,19 @@
+test,group,n,real,flagged,precision,p_lo,p_hi,recall,r_lo,r_hi
+Owner's Guna reference (owner's labels),"10 m map, all classes",281,55,59,0.562,0.322,0.892,0.482,0.308,0.765
+Owner's Guna reference (owner's labels),clearing + tree-to-shrub,281,55,58,0.558,0.316,0.89,0.474,0.302,0.755
+Owner's Guna reference (owner's labels),clearing only,281,55,26,0.551,0.271,0.962,0.171,0.092,0.32
+Owner's Guna reference (owner's labels),tree-to-shrub only,281,55,32,0.561,0.26,0.931,0.302,0.152,0.528
+Owner's Guna reference (owner's labels),shrub-to-crop only,281,55,1,1.0,1.0,1.0,0.009,0.0,0.033
+Owner's Guna reference (owner's labels),"Hansen 2018-25, same points",281,55,0,,,,0.0,0.0,0.0
+Round 2 random points (my labels): 10 m rule at points,ALL,510,40,97,0.168,0.09,0.273,0.483,0.284,0.723
+Round 2 random points (my labels): 10 m rule at points,deciduous (teak + mixed dry),338,11,61,0.085,0.008,0.221,0.403,0.045,0.819
+Round 2 random points (my labels): 10 m rule at points,mixed_dry_deciduous,159,4,29,0.014,0.0,0.055,0.079,0.0,1.0
+Round 2 random points (my labels): 10 m rule at points,plantation_mprvvn,43,4,5,0.199,0.0,1.0,0.463,0.0,1.0
+Round 2 random points (my labels): 10 m rule at points,sal_belt,129,25,31,0.36,0.202,0.631,0.548,0.317,0.828
+Round 2 random points (my labels): 10 m rule at points,teak_belt,179,7,32,0.18,0.0,0.427,0.706,0.0,0.939
+Round 2 random points (my labels): Hansen 2018-25,ALL,510,40,32,0.247,0.12,0.459,0.205,0.098,0.375
+Round 2 random points (my labels): Hansen 2018-25,deciduous (teak + mixed dry),338,11,8,0.0,0.0,0.0,0.0,0.0,0.0
+Round 2 random points (my labels): Hansen 2018-25,mixed_dry_deciduous,159,4,3,0.0,0.0,0.0,0.0,0.0,0.0
+Round 2 random points (my labels): Hansen 2018-25,plantation_mprvvn,43,4,11,0.311,0.073,0.644,1.0,1.0,1.0
+Round 2 random points (my labels): Hansen 2018-25,sal_belt,129,25,13,0.577,0.319,0.854,0.243,0.102,0.457
+Round 2 random points (my labels): Hansen 2018-25,teak_belt,179,7,5,0.0,0.0,0.0,0.0,0.0,0.0

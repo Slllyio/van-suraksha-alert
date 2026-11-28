@@ -1,0 +1,43 @@
+group,method,n,ref_loss_n,precision,p_lo,p_hi,recall,r_lo,r_hi,f1,f1_lo,f1_hi,area_flagged_ha
+ALL,AlphaEarth map,510,40,0.257,0.187,0.336,0.535,0.347,0.821,0.347,0.256,0.449,11091.334
+ALL,AlphaEarth + CCDC confirm,510,40,0.27,0.183,0.364,0.408,0.256,0.646,0.325,0.222,0.434,8069.764
+ALL,AlphaEarth wider candidates + CCDC,510,40,0.09,0.044,0.15,0.551,0.341,0.764,0.155,0.079,0.245,32590.47
+ALL,CCDC alone,510,40,0.108,0.044,0.211,0.142,0.058,0.275,0.123,0.053,0.219,6992.714
+ALL,LandTrendr alone,264,23,0.23,0.061,0.492,0.38,0.117,0.665,0.287,0.085,0.524,4986.577
+ALL,AlphaEarth + LandTrendr confirm,264,23,0.326,0.174,0.49,0.305,0.146,0.592,0.315,0.17,0.487,2821.516
+ALL,Hansen,510,40,0.211,0.064,0.511,0.103,0.03,0.209,0.138,0.044,0.263,2595.759
+deciduous (teak + mixed dry),AlphaEarth map,338,11,0.108,0.041,0.189,0.281,0.088,0.878,0.156,0.058,0.273,5545.667
+deciduous (teak + mixed dry),AlphaEarth + CCDC confirm,338,11,0.109,0.024,0.212,0.205,0.048,0.659,0.142,0.039,0.277,3985.312
+deciduous (teak + mixed dry),AlphaEarth wider candidates + CCDC,338,11,0.082,0.012,0.18,0.715,0.235,0.937,0.147,0.022,0.295,18609.868
+deciduous (teak + mixed dry),CCDC alone,338,11,0.088,0.0,0.248,0.114,0.0,0.388,0.099,0.028,0.252,2747.992
+deciduous (teak + mixed dry),LandTrendr alone,159,3,0.0,0.0,0.0,0.0,0.0,0.0,,,,3486.871
+deciduous (teak + mixed dry),AlphaEarth + LandTrendr confirm,159,3,0.055,0.0,0.181,0.109,0.0,1.0,0.073,0.048,0.278,1466.746
+deciduous (teak + mixed dry),Hansen,338,11,0.0,0.0,0.0,0.0,0.0,0.0,,,,1439.268
+mixed_dry_deciduous,AlphaEarth map,159,4,0.033,0.0,0.108,0.079,0.0,1.0,0.047,0.035,0.172,2430.488
+mixed_dry_deciduous,AlphaEarth + CCDC confirm,159,4,0.049,0.0,0.162,0.079,0.0,1.0,0.061,0.041,0.222,1641.127
+mixed_dry_deciduous,AlphaEarth wider candidates + CCDC,159,4,0.053,0.0,0.152,0.646,0.0,1.0,0.098,0.011,0.261,12535.316
+mixed_dry_deciduous,CCDC alone,159,4,0.045,0.0,0.248,0.079,0.0,1.0,0.057,0.034,0.271,1787.82
+mixed_dry_deciduous,LandTrendr alone,133,3,0.0,0.0,0.0,0.0,0.0,0.0,,,,3472.705
+mixed_dry_deciduous,AlphaEarth + LandTrendr confirm,133,3,0.055,0.0,0.186,0.109,0.0,1.0,0.073,0.048,0.28,1466.746
+mixed_dry_deciduous,Hansen,159,4,0.0,0.0,0.0,0.0,0.0,0.0,,,,161.546
+plantation_mprvvn,AlphaEarth map,43,4,0.211,0.054,0.415,1.0,1.0,1.0,0.349,0.102,0.587,1971.524
+plantation_mprvvn,AlphaEarth + CCDC confirm,43,4,0.273,0.062,0.515,1.0,1.0,1.0,0.43,0.137,0.681,1523.621
+plantation_mprvvn,AlphaEarth wider candidates + CCDC,43,4,0.091,0.0,0.211,0.806,0.409,1.0,0.163,0.049,0.342,3703.836
+plantation_mprvvn,CCDC alone,43,4,0.082,0.0,0.409,0.269,0.0,1.0,0.126,0.075,0.473,1363.111
+plantation_mprvvn,LandTrendr alone,15,3,0.0,0.0,0.0,0.0,0.0,0.0,,,,94.939
+plantation_mprvvn,AlphaEarth + LandTrendr confirm,15,3,0.0,0.0,0.0,0.0,0.0,0.0,,,,80.773
+plantation_mprvvn,Hansen,43,4,0.35,0.0,0.8,0.537,0.0,1.0,0.424,0.192,0.777,640.652
+sal_belt,AlphaEarth map,129,25,0.515,0.381,0.655,0.66,0.41,1.0,0.578,0.425,0.742,3574.143
+sal_belt,AlphaEarth + CCDC confirm,129,25,0.517,0.357,0.68,0.475,0.277,0.773,0.495,0.336,0.674,2560.831
+sal_belt,AlphaEarth wider candidates + CCDC,129,25,0.105,0.06,0.17,0.388,0.209,0.659,0.166,0.097,0.25,10276.766
+sal_belt,CCDC alone,129,25,0.14,0.034,0.383,0.145,0.034,0.313,0.143,0.038,0.289,2881.611
+sal_belt,LandTrendr alone,90,17,0.817,0.486,0.987,0.593,0.242,0.812,0.687,0.332,0.852,1404.767
+sal_belt,AlphaEarth + LandTrendr confirm,90,17,0.659,0.408,0.897,0.433,0.213,0.78,0.522,0.295,0.764,1273.997
+sal_belt,Hansen,129,25,0.626,0.21,1.0,0.116,0.025,0.265,0.196,0.052,0.396,515.84
+teak_belt,AlphaEarth map,179,7,0.166,0.054,0.291,0.469,0.142,1.0,0.245,0.087,0.423,3115.179
+teak_belt,AlphaEarth + CCDC confirm,179,7,0.151,0.034,0.294,0.322,0.061,1.0,0.206,0.054,0.407,2344.185
+teak_belt,AlphaEarth wider candidates + CCDC,179,7,0.141,0.013,0.352,0.779,0.2,1.0,0.239,0.031,0.508,6074.552
+teak_belt,CCDC alone,179,7,0.168,0.0,0.463,0.147,0.0,0.639,0.157,0.055,0.43,960.172
+teak_belt,LandTrendr alone,26,0,,,,,,,,,,
+teak_belt,AlphaEarth + LandTrendr confirm,26,0,,,,,,,,,,
+teak_belt,Hansen,179,7,0.0,0.0,0.0,0.0,0.0,0.0,,,,1277.723

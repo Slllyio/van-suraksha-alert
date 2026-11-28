@@ -1,0 +1,7 @@
+our class,year,bare,crops,dense,fallow,forest
+clearing,loss year <= 2021,38.2,64.9,9.4,66.0,14.9
+clearing,loss year >= 2022,9.1,8.6,1.4,2.6,3.7
+scrub_to_farm,loss year <= 2021,15.2,1281.7,28.9,369.5,68.3
+scrub_to_farm,loss year >= 2022,57.7,895.4,22.0,439.8,57.8
+tree_to_shrub,loss year <= 2021,35.2,28.6,18.1,72.6,76.5
+tree_to_shrub,loss year >= 2022,11.3,5.7,16.8,4.5,46.8

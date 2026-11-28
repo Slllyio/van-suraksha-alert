@@ -1,0 +1,11 @@
+type,abrupt,our max-recall view flags it (filtered out),our net did not fire
+bare / open,False,45.8,68.2
+bare / open,True,81.9,68.1
+grass / grazing,False,1.2,2.3
+grass / grazing,True,5.8,4.4
+kharif / rainfed,False,25.8,29.0
+kharif / rainfed,True,43.7,17.6
+rabi farm,False,38.5,23.5
+rabi farm,True,90.4,16.5
+shrub regrowth,False,8.7,22.4
+shrub regrowth,True,18.0,18.6

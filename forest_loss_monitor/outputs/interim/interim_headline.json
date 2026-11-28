@@ -1,0 +1,13 @@
+{
+ "chunks": 669,
+ "covered_ha": 2104085,
+ "forest_ha": 9317460,
+ "coverage_pct": 22.6,
+ "mapped_ha": 3020,
+ "mapped_rate_pct": 0.14,
+ "point_state_ha": 15312,
+ "point_state_rate_pct": 0.164,
+ "point_covered_rate_pct": 0.266,
+ "points_in_covered": 124,
+ "flagged_points_in_covered": 27
+}

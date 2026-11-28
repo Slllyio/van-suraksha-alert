@@ -1,0 +1,25 @@
+view,model,points,op,precision,recall,p_sd,r_sd,positives
+emb,logistic,Guna reference,current filter + 2 px,0.776,0.454,,,
+emb,logistic,Guna reference,max F1,0.376,0.354,0.023,0.058,
+emb,logistic,Guna reference,precision >= 75%,0.66,0.139,0.26,0.028,
+emb,logistic,Guna reference,recall >= 70%,0.308,0.045,0.204,0.042,
+emb,logistic,round2 statewide,current filter + 2 px,0.199,0.409,,,
+emb,logistic,round2 statewide,max F1,0.166,0.296,0.036,0.07,
+emb,logistic,round2 statewide,precision >= 75%,0.196,0.148,0.026,0.025,
+emb,logistic,round2 statewide,recall >= 70%,0.207,0.042,0.061,0.04,
+emb,logistic,round2 mixed_dry_deciduous,max F1,0.127,0.646,,,4.0
+emb,logistic,round2 plantation_mprvvn,max F1,0.735,0.537,,,4.0
+emb,logistic,round2 sal_belt,max F1,0.373,0.406,,,25.0
+emb,logistic,round2 teak_belt,max F1,0.052,0.074,,,7.0
+emb,hgb,Guna reference,current filter + 2 px,0.776,0.454,,,
+emb,hgb,Guna reference,max F1,0.378,0.395,0.087,0.078,
+emb,hgb,Guna reference,precision >= 75%,0.477,0.125,0.128,0.029,
+emb,hgb,Guna reference,recall >= 70%,0.26,0.089,0.094,0.078,
+emb,hgb,round2 statewide,current filter + 2 px,0.199,0.409,,,
+emb,hgb,round2 statewide,max F1,0.143,0.515,0.092,0.06,
+emb,hgb,round2 statewide,precision >= 75%,0.261,0.277,0.066,0.073,
+emb,hgb,round2 statewide,recall >= 70%,0.301,0.144,0.127,0.055,
+emb,hgb,round2 mixed_dry_deciduous,max F1,0.102,0.646,,,4.0
+emb,hgb,round2 plantation_mprvvn,max F1,0.221,0.537,,,4.0
+emb,hgb,round2 sal_belt,max F1,0.329,0.464,,,25.0
+emb,hgb,round2 teak_belt,max F1,0.274,0.706,,,7.0

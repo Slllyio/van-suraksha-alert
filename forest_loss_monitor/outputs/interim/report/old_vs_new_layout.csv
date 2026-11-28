@@ -1,0 +1,4 @@
+chunk,old_ha,new_ha,both_ha,iou,old_patches_ge_01ha,found_in_new,corr_ndvi_fall,corr_nbr_fall,filter_pass_old_ha,filter_pass_new_ha,filter_both_ha,missing_new
+r01c04_02700_07200,91.4,87.5,62.2,0.532,178,170,0.981,0.986,74.4,73.2,72.1,0.001
+r03c03_01800_06300,27.1,24.8,17.7,0.518,47,45,0.995,0.988,22.1,22.9,22.0,0.0
+r05c02_00900_06300,14.6,13.7,9.7,0.519,23,22,0.994,0.991,12.2,12.2,12.0,0.0

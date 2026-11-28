@@ -1,0 +1,1 @@
+{"rule": [-1.6, 0.15, 25], "th": {"grow_px": 2, "small_z": 99, "small_tree_drop": 9, "small_min_px": 6, "clear_post_tree": 0.3, "clear_tree_drop": 0.25, "rec_fraction": 0.5, "core_z": -1.6, "core_tree_drop": 0.15, "core_min_px": 25, "grow_z": -2.0, "grow_tree_drop": 0.09999999999999999}}

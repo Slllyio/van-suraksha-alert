@@ -1,0 +1,8 @@
+variant,flagged,real,false,precision,p_ci,recall,r_ci,picks
+"rule at training precision >= 0.66, held out",48,40,8,0.732,"[0.465, 0.953]",0.429,"[0.264, 0.692]","[((0, 0.15, 0, 9), 5), ((0, 0.15, 0, 9), 1)]"
+"tree drop 0.08 at training precision >= 0.66, held out",57,46,11,0.677,"[0.427, 0.939]",0.569,"[0.35, 0.849]","[((0, 0.15, 0, 9), 1), ((0, 0.15, 0, 9), 1)]"
+"rolling at training precision >= 0.66, held out",38,34,4,0.641,"[0.429, 1.0]",0.378,"[0.209, 0.63]","[((0, 0.15, 0, 9), 9), ((0.15, 0, 0, 9), 5)]"
+"NBR trigger at training precision >= 0.66, held out",53,44,9,0.515,"[0.298, 0.833]",0.552,"[0.323, 0.832]","[((0, 0, 0, 9), 9), ((0.15, 0, 0, 9), 5)]"
+"rule + scrub-to-farm at training precision >= 0.66, held out",50,41,9,0.726,"[0.466, 0.944]",0.437,"[0.27, 0.706]","[((0, 0.15, 0, 9), 5), ((0, 0.15, 0, 9), 1)]"
+"rolling + scrub-to-farm at training precision >= 0.66, held out",39,34,5,0.632,"[0.424, 0.976]",0.378,"[0.209, 0.63]","[((0, 0.15, 0, 9), 9), ((0.15, 0, 0, 9), 5)]"
+"rolling + NBR + tree 0.08 + scrub-to-farm at training precision >= 0.66, held out",51,43,8,0.515,"[0.296, 0.839]",0.543,"[0.316, 0.82]","[((0, 0.15, 0, 9), 9), ((0.15, 0, 0, 9), 5)]"

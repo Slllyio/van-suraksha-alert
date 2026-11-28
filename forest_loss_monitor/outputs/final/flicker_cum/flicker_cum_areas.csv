@@ -1,0 +1,10 @@
+method,guna_ha
+default tree loss (clearing + tree-to-shrub),2441
+clearing only,831
+"clearing, confirmed (DW trees <= 0.10 next year)",60
+tree-to-shrub only,1569
+"tree-to-shrub, confirmed",62
+default with confirmation on tree-to-shrub only,896
+default with confirmation on both,125
+max-recall view: default + cumulative NBR trigger,24523
+cumulative NBR trigger alone (new area),22068

@@ -1,0 +1,19 @@
+stratum,level,old_field,dist_farmland,ha,n
+0,map flag,not old field,< 200 m,4934.91,51
+1,map flag,not old field,200-500 m,940.3100000000001,10
+2,map flag,not old field,> 500 m,154.33,4
+3,map flag,old field 2017-19,< 200 m,5536.63,57
+4,map flag,old field 2017-19,200-500 m,0.0,0
+5,map flag,old field 2017-19,> 500 m,0.0,0
+6,net fired only,not old field,< 200 m,3053.58,38
+7,net fired only,not old field,200-500 m,816.19,10
+8,net fired only,not old field,> 500 m,122.31,4
+9,net fired only,old field 2017-19,< 200 m,1957.03,25
+10,net fired only,old field 2017-19,200-500 m,0.0,0
+11,net fired only,old field 2017-19,> 500 m,0.0,0
+12,quiet,not old field,< 200 m,69648.13,36
+13,quiet,not old field,200-500 m,29028.31,15
+14,quiet,not old field,> 500 m,8059.650000000001,4
+15,quiet,old field 2017-19,< 200 m,98707.78,50
+16,quiet,old field 2017-19,200-500 m,0.0,0
+17,quiet,old field 2017-19,> 500 m,0.0,0

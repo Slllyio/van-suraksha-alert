@@ -1,0 +1,8 @@
+net,guna_recall_weighted,guna_precision,guna_losses,background_losses,bamori_validated,felling_alert_verdict,candidate_pct_random300,random_real_caught
+rule,0.48,0.56,46/55,1/6,12/222,51/51,0.3,0/13
++ tree 0.08,0.577,0.503,47/55,2/6,12/222,51/51,0.3,0/13
++ rolling,0.78,0.446,50/55,4/6,14/222,51/51,2.0,0/13
++ NBR,0.78,0.321,50/55,4/6,14/222,51/51,2.7,0/13
++ scrub tight,0.806,0.303,53/55,4/6,197/222,51/51,10.3,10/13
++ scrub loose,0.797,0.297,52/55,4/6,195/222,51/51,23.3,11/13
++ BSI,0.991,0.066,54/55,6/6,195/222,51/51,36.0,11/13

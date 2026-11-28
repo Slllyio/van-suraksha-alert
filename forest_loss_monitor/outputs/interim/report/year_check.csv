@@ -1,0 +1,3 @@
+method,n,exact,within_1,median_error,mean_abs,early,late
+current NBR window,51,16,28,1.0,1.71,8,27
+fitted break,51,16,29,1.0,1.61,5,30

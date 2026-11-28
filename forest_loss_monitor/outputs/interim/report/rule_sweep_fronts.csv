@@ -1,0 +1,162 @@
+forest,tree_drop,ndvi_drop,recent,rolling,ndvi_fall,nbr_fall,npix,set,precision,recall
+woody,0.06,0.08,False,True,0.05,0.0,1,Guna (owner labels),0.425,0.789
+woody,0.08,0.08,True,True,0.0,0.0,1,Guna (owner labels),0.446,0.78
+woody,0.06,0.08,False,True,0.1,0.15,1,Guna (owner labels),0.509,0.683
+woody,0.08,0.05,True,False,0.0,0.15,2,Guna (owner labels),0.553,0.674
+trees,0.06,0.05,False,False,0.05,0.15,3,Guna (owner labels),0.663,0.674
+trees,0.12,0.05,True,False,0.0,0.0,5,Guna (owner labels),0.69,0.586
+woody,0.08,0.05,True,False,0.0,0.15,5,Guna (owner labels),0.702,0.577
+trees,0.1,0.05,False,False,0.05,0.15,5,Guna (owner labels),0.709,0.577
+trees,0.12,0.03,True,False,0.0,0.15,5,Guna (owner labels),0.815,0.577
+trees,0.12,0.03,True,False,0.05,0.2,3,Guna (owner labels),0.818,0.552
+woody,0.06,0.03,False,False,0.0,0.15,9,Guna (owner labels),0.824,0.535
+woody,0.12,0.03,True,False,0.15,0.15,5,Guna (owner labels),0.969,0.535
+trees,0.08,0.05,False,True,0.15,0.2,5,Guna (owner labels),0.984,0.509
+woody,0.08,0.03,True,True,0.2,0.1,9,Guna (owner labels),1.0,0.373
+woody,0.08,0.03,True,True,0.0,0.0,1,Statewide (my labels),0.019,0.765
+woody,0.1,0.03,True,True,0.0,0.0,1,Statewide (my labels),0.036,0.765
+woody,0.1,0.03,True,True,0.0,0.0,2,Statewide (my labels),0.049,0.757
+woody,0.1,0.03,True,True,0.1,0.0,1,Statewide (my labels),0.178,0.754
+woody,0.1,0.05,True,True,0.1,0.0,1,Statewide (my labels),0.182,0.754
+woody,0.1,0.05,True,True,0.1,0.05,1,Statewide (my labels),0.185,0.748
+woody,0.1,0.03,False,True,0.1,0.0,1,Statewide (my labels),0.188,0.747
+woody,0.1,0.05,False,True,0.1,0.0,1,Statewide (my labels),0.189,0.747
+woody,0.1,0.05,False,True,0.1,0.05,1,Statewide (my labels),0.192,0.741
+woody,0.1,0.08,False,True,0.1,0.0,1,Statewide (my labels),0.192,0.739
+woody,0.08,0.08,False,True,0.1,0.1,1,Statewide (my labels),0.193,0.733
+woody,0.1,0.08,False,True,0.1,0.05,1,Statewide (my labels),0.195,0.733
+woody,0.1,0.05,False,True,0.1,0.0,2,Statewide (my labels),0.195,0.729
+woody,0.12,0.08,True,True,0.1,0.1,1,Statewide (my labels),0.195,0.728
+woody,0.1,0.03,True,True,0.15,0.0,1,Statewide (my labels),0.2,0.726
+woody,0.1,0.05,True,True,0.15,0.0,1,Statewide (my labels),0.203,0.726
+woody,0.12,0.05,True,True,0.15,0.0,1,Statewide (my labels),0.204,0.721
+woody,0.1,0.03,True,True,0.15,0.05,1,Statewide (my labels),0.204,0.72
+woody,0.1,0.05,True,True,0.15,0.05,1,Statewide (my labels),0.208,0.72
+woody,0.1,0.05,False,True,0.15,0.0,1,Statewide (my labels),0.213,0.719
+woody,0.1,0.03,False,True,0.15,0.05,1,Statewide (my labels),0.217,0.713
+woody,0.1,0.05,False,True,0.15,0.05,1,Statewide (my labels),0.218,0.713
+woody,0.1,0.08,False,True,0.15,0.05,1,Statewide (my labels),0.221,0.706
+woody,0.1,0.08,False,True,0.1,0.15,1,Statewide (my labels),0.222,0.697
+woody,0.12,0.05,False,True,0.15,0.05,1,Statewide (my labels),0.222,0.697
+woody,0.1,0.03,False,True,0.15,0.0,2,Statewide (my labels),0.222,0.69
+woody,0.1,0.05,False,True,0.15,0.0,2,Statewide (my labels),0.223,0.69
+woody,0.1,0.03,False,True,0.15,0.05,2,Statewide (my labels),0.226,0.676
+woody,0.1,0.05,False,True,0.15,0.05,2,Statewide (my labels),0.226,0.676
+woody,0.06,0.05,False,True,0.1,0.1,5,Statewide (my labels),0.233,0.675
+woody,0.08,0.05,True,True,0.05,0.2,1,Statewide (my labels),0.244,0.669
+woody,0.08,0.05,False,True,0.0,0.2,1,Statewide (my labels),0.248,0.669
+woody,0.1,0.05,False,True,0.0,0.2,1,Statewide (my labels),0.253,0.662
+woody,0.08,0.03,False,True,0.0,0.2,2,Statewide (my labels),0.269,0.656
+woody,0.08,0.03,False,True,0.05,0.2,2,Statewide (my labels),0.27,0.656
+woody,0.08,0.05,False,True,0.05,0.2,2,Statewide (my labels),0.272,0.656
+woody,0.1,0.03,False,True,0.0,0.2,2,Statewide (my labels),0.276,0.648
+woody,0.1,0.05,False,True,0.0,0.2,2,Statewide (my labels),0.277,0.648
+woody,0.1,0.05,False,True,0.05,0.2,2,Statewide (my labels),0.278,0.648
+woody,0.06,0.08,False,True,0.1,0.2,3,Statewide (my labels),0.278,0.599
+woody,0.08,0.08,False,True,0.05,0.2,3,Statewide (my labels),0.279,0.599
+woody,0.08,0.03,False,True,0.2,0.1,3,Statewide (my labels),0.282,0.598
+woody,0.08,0.03,False,True,0.15,0.2,3,Statewide (my labels),0.284,0.591
+woody,0.06,0.08,False,True,0.15,0.15,5,Statewide (my labels),0.286,0.583
+woody,0.08,0.03,False,True,0.2,0.15,3,Statewide (my labels),0.287,0.578
+woody,0.06,0.03,False,True,0.2,0.1,5,Statewide (my labels),0.291,0.573
+woody,0.06,0.05,False,True,0.2,0.1,5,Statewide (my labels),0.298,0.573
+woody,0.06,0.03,False,True,0.2,0.15,5,Statewide (my labels),0.304,0.561
+woody,0.06,0.03,True,False,0.2,0.15,5,Statewide (my labels),0.313,0.522
+woody,0.06,0.08,True,False,0.2,0.15,5,Statewide (my labels),0.316,0.461
+woody,0.08,0.08,True,False,0.2,0.05,9,Statewide (my labels),0.317,0.383
+woody,0.1,0.08,True,False,0.2,0.05,9,Statewide (my labels),0.324,0.383
+woody,0.1,0.08,True,False,0.2,0.1,9,Statewide (my labels),0.324,0.377
+woody,0.12,0.08,True,False,0.2,0.05,9,Statewide (my labels),0.325,0.363
+woody,0.12,0.08,True,False,0.2,0.1,9,Statewide (my labels),0.325,0.358
+trees,0.1,0.08,False,False,0.2,0.2,9,Statewide (my labels),0.329,0.239
+woody,0.08,0.03,False,True,0.0,0.0,1,Statewide mixed_dry_deciduous,0.027,0.705
+woody,0.08,0.03,False,True,0.0,0.0,2,Statewide mixed_dry_deciduous,0.106,0.705
+woody,0.08,0.03,False,True,0.0,0.0,3,Statewide mixed_dry_deciduous,0.11,0.705
+woody,0.08,0.03,False,True,0.0,0.0,5,Statewide mixed_dry_deciduous,0.119,0.705
+woody,0.1,0.03,True,True,0.0,0.0,5,Statewide mixed_dry_deciduous,0.119,0.705
+woody,0.06,0.03,False,True,0.05,0.05,5,Statewide mixed_dry_deciduous,0.123,0.668
+woody,0.06,0.03,False,True,0.05,0.1,3,Statewide mixed_dry_deciduous,0.124,0.668
+woody,0.06,0.03,False,True,0.05,0.15,1,Statewide mixed_dry_deciduous,0.131,0.668
+woody,0.08,0.03,False,True,0.05,0.1,3,Statewide mixed_dry_deciduous,0.133,0.668
+woody,0.08,0.03,False,True,0.05,0.15,1,Statewide mixed_dry_deciduous,0.14,0.668
+woody,0.06,0.03,False,True,0.2,0.15,1,Statewide mixed_dry_deciduous,0.164,0.668
+woody,0.06,0.03,False,True,0.15,0.0,5,Statewide mixed_dry_deciduous,0.181,0.668
+woody,0.06,0.03,False,True,0.2,0.05,5,Statewide mixed_dry_deciduous,0.229,0.668
+woody,0.08,0.03,True,True,0.2,0.05,5,Statewide mixed_dry_deciduous,0.231,0.668
+woody,0.1,0.05,True,True,0.2,0.05,5,Statewide mixed_dry_deciduous,0.234,0.668
+woody,0.1,0.08,True,True,0.2,0.1,3,Statewide mixed_dry_deciduous,0.237,0.668
+woody,0.12,0.08,True,True,0.2,0.1,3,Statewide mixed_dry_deciduous,0.241,0.668
+woody,0.1,0.08,True,False,0.15,0.05,9,Statewide mixed_dry_deciduous,0.241,0.498
+woody,0.1,0.08,True,False,0.1,0.1,9,Statewide mixed_dry_deciduous,0.243,0.498
+woody,0.1,0.08,True,False,0.2,0.0,9,Statewide mixed_dry_deciduous,0.248,0.498
+woody,0.1,0.08,True,False,0.2,0.1,9,Statewide mixed_dry_deciduous,0.249,0.473
+woody,0.1,0.03,True,True,0.1,0.1,1,Statewide plantation_mprvvn,0.341,0.949
+woody,0.1,0.03,True,True,0.1,0.1,2,Statewide plantation_mprvvn,0.414,0.949
+trees,0.06,0.03,False,True,0.1,0.0,5,Statewide plantation_mprvvn,0.425,0.949
+trees,0.08,0.03,True,True,0.1,0.1,3,Statewide plantation_mprvvn,0.435,0.949
+trees,0.06,0.05,True,True,0.1,0.2,1,Statewide plantation_mprvvn,0.514,0.906
+woody,0.12,0.03,False,False,0.1,0.15,1,Statewide plantation_mprvvn,0.52,0.872
+trees,0.12,0.03,False,False,0.1,0.15,1,Statewide plantation_mprvvn,0.524,0.872
+woody,0.12,0.03,False,False,0.1,0.2,1,Statewide plantation_mprvvn,0.56,0.829
+trees,0.12,0.03,False,False,0.1,0.2,1,Statewide plantation_mprvvn,0.566,0.829
+woody,0.06,0.05,True,True,0.05,0.2,5,Statewide plantation_mprvvn,0.631,0.787
+trees,0.06,0.03,False,True,0.1,0.2,5,Statewide plantation_mprvvn,0.634,0.787
+woody,0.06,0.05,True,True,0.15,0.2,5,Statewide plantation_mprvvn,0.649,0.71
+woody,0.06,0.03,False,False,0.15,0.2,5,Statewide plantation_mprvvn,0.655,0.657
+woody,0.06,0.05,False,False,0.15,0.2,5,Statewide plantation_mprvvn,0.677,0.614
+trees,0.06,0.05,True,False,0.15,0.2,5,Statewide plantation_mprvvn,0.682,0.614
+woody,0.08,0.03,False,False,0.2,0.1,3,Statewide plantation_mprvvn,0.686,0.58
+trees,0.08,0.03,True,True,0.2,0.05,3,Statewide plantation_mprvvn,0.689,0.58
+woody,0.08,0.05,True,False,0.2,0.15,3,Statewide plantation_mprvvn,0.722,0.58
+trees,0.08,0.03,True,False,0.2,0.0,3,Statewide plantation_mprvvn,0.734,0.58
+trees,0.06,0.03,True,False,0.2,0.2,5,Statewide plantation_mprvvn,0.86,0.495
+woody,0.1,0.03,True,True,0.0,0.0,3,Statewide sal_belt,0.024,0.802
+woody,0.12,0.08,True,True,0.0,0.0,1,Statewide sal_belt,0.045,0.802
+woody,0.12,0.08,True,True,0.05,0.0,2,Statewide sal_belt,0.288,0.802
+woody,0.1,0.05,True,True,0.1,0.0,1,Statewide sal_belt,0.306,0.802
+woody,0.12,0.03,True,True,0.1,0.05,1,Statewide sal_belt,0.312,0.784
+woody,0.12,0.08,True,True,0.1,0.0,2,Statewide sal_belt,0.318,0.77
+woody,0.12,0.03,False,True,0.1,0.0,2,Statewide sal_belt,0.336,0.77
+woody,0.12,0.05,True,True,0.15,0.0,1,Statewide sal_belt,0.376,0.752
+woody,0.12,0.03,True,True,0.15,0.0,2,Statewide sal_belt,0.401,0.752
+woody,0.12,0.05,True,True,0.2,0.0,1,Statewide sal_belt,0.43,0.72
+woody,0.12,0.03,True,True,0.2,0.1,1,Statewide sal_belt,0.445,0.681
+woody,0.12,0.08,False,True,0.05,0.2,2,Statewide sal_belt,0.531,0.675
+woody,0.12,0.03,True,True,0.15,0.2,2,Statewide sal_belt,0.532,0.643
+woody,0.06,0.03,True,True,0.05,0.2,3,Statewide sal_belt,0.579,0.622
+woody,0.12,0.05,True,True,0.15,0.0,9,Statewide sal_belt,0.667,0.613
+woody,0.12,0.05,True,True,0.15,0.05,9,Statewide sal_belt,0.681,0.574
+woody,0.12,0.08,False,False,0.05,0.05,9,Statewide sal_belt,0.697,0.497
+woody,0.12,0.08,True,False,0.1,0.05,9,Statewide sal_belt,0.711,0.479
+trees,0.12,0.08,True,False,0.1,0.05,9,Statewide sal_belt,0.726,0.39
+woody,0.06,0.03,False,True,0.15,0.1,1,Statewide teak_belt,0.023,0.672
+woody,0.06,0.05,False,True,0.1,0.05,1,Statewide teak_belt,0.122,0.672
+woody,0.06,0.05,False,True,0.1,0.15,1,Statewide teak_belt,0.149,0.672
+woody,0.1,0.05,False,True,0.15,0.05,1,Statewide teak_belt,0.154,0.641
+woody,0.12,0.05,False,True,0.1,0.15,1,Statewide teak_belt,0.156,0.618
+woody,0.06,0.05,True,True,0.2,0.15,1,Statewide teak_belt,0.157,0.602
+woody,0.06,0.05,False,True,0.2,0.15,1,Statewide teak_belt,0.166,0.602
+woody,0.12,0.05,True,True,0.1,0.2,1,Statewide teak_belt,0.168,0.579
+woody,0.06,0.05,False,True,0.1,0.2,1,Statewide teak_belt,0.177,0.579
+woody,0.06,0.03,False,True,0.0,0.2,2,Statewide teak_belt,0.179,0.548
+woody,0.08,0.05,False,True,0.0,0.2,2,Statewide teak_belt,0.182,0.548
+woody,0.12,0.03,False,True,0.0,0.2,3,Statewide teak_belt,0.19,0.517
+woody,0.06,0.03,True,False,0.0,0.2,2,Statewide teak_belt,0.197,0.516
+woody,0.06,0.03,False,False,0.1,0.2,2,Statewide teak_belt,0.212,0.516
+woody,0.06,0.03,False,False,0.2,0.15,5,Statewide teak_belt,0.214,0.469
+woody,0.06,0.03,False,True,0.2,0.1,9,Statewide teak_belt,0.216,0.469
+woody,0.12,0.03,True,True,0.2,0.05,9,Statewide teak_belt,0.219,0.469
+woody,0.1,0.05,True,True,0.2,0.05,9,Statewide teak_belt,0.222,0.469
+woody,0.08,0.05,False,True,0.2,0.1,9,Statewide teak_belt,0.225,0.469
+woody,0.06,0.03,True,True,0.2,0.15,9,Statewide teak_belt,0.234,0.438
+woody,0.06,0.05,False,True,0.2,0.15,9,Statewide teak_belt,0.238,0.438
+woody,0.1,0.05,False,True,0.2,0.15,9,Statewide teak_belt,0.246,0.438
+woody,0.06,0.03,False,True,0.2,0.2,9,Statewide teak_belt,0.248,0.391
+woody,0.08,0.05,True,True,0.2,0.2,9,Statewide teak_belt,0.253,0.391
+woody,0.08,0.05,False,True,0.2,0.2,9,Statewide teak_belt,0.257,0.391
+woody,0.1,0.05,False,True,0.2,0.2,9,Statewide teak_belt,0.263,0.391
+woody,0.08,0.03,False,False,0.2,0.2,9,Statewide teak_belt,0.264,0.344
+trees,0.12,0.05,True,False,0.2,0.1,9,Statewide teak_belt,0.3,0.314
+trees,0.12,0.05,True,False,0.2,0.2,9,Statewide teak_belt,0.342,0.267
+trees,0.06,0.08,False,False,0.2,0.2,9,Statewide teak_belt,0.345,0.267
+trees,0.12,0.08,False,False,0.2,0.2,9,Statewide teak_belt,0.371,0.267

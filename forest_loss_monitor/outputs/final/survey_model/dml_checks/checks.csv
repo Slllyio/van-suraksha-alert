@@ -1,0 +1,97 @@
+test,quantity,rel_diff,ok
+loss gather dense unweighted,loss value,0.0,True
+loss gather dense unweighted,dL/dlogits,4.114661322773827e-08,True
+loss gather dense unweighted [cpu formula],dL/dlogits,0.0,True
+loss onehot dense unweighted,loss value,0.0,True
+loss onehot dense unweighted,dL/dlogits,4.114661322773827e-08,True
+loss onehot dense unweighted [cpu formula],dL/dlogits,0.0,True
+loss gather dense weighted,loss value,1.1823261628798533e-07,True
+loss gather dense weighted,dL/dlogits,2.6287852961104363e-07,True
+loss gather dense weighted [cpu formula],dL/dlogits,1.8751360641999781e-07,True
+loss onehot dense weighted,loss value,1.1823261628798533e-07,True
+loss onehot dense weighted,dL/dlogits,2.6287852961104363e-07,True
+loss onehot dense weighted [cpu formula],dL/dlogits,1.8751360641999781e-07,True
+loss gather mixed unweighted,loss value,0.0,True
+loss gather mixed unweighted,dL/dlogits,3.983227614412499e-08,True
+loss gather mixed unweighted [cpu formula],dL/dlogits,0.0,True
+loss onehot mixed unweighted,loss value,0.0,True
+loss onehot mixed unweighted,dL/dlogits,3.983227614412499e-08,True
+loss onehot mixed unweighted [cpu formula],dL/dlogits,0.0,True
+loss gather mixed weighted,loss value,0.0,True
+loss gather mixed weighted,dL/dlogits,4.1931542682505096e-08,True
+loss gather mixed weighted [cpu formula],dL/dlogits,0.0,True
+loss onehot mixed weighted,loss value,0.0,True
+loss onehot mixed weighted,dL/dlogits,4.1931542682505096e-08,True
+loss onehot mixed weighted [cpu formula],dL/dlogits,0.0,True
+loss gather all ignored unweighted,loss value,0.0,True
+loss gather all ignored unweighted,dL/dlogits,0.0,True
+loss gather all ignored unweighted [cpu formula],dL/dlogits,0.0,True
+loss onehot all ignored unweighted,loss value,0.0,True
+loss onehot all ignored unweighted,dL/dlogits,0.0,True
+loss onehot all ignored unweighted [cpu formula],dL/dlogits,0.0,True
+loss gather all ignored weighted,loss value,0.0,True
+loss gather all ignored weighted,dL/dlogits,0.0,True
+loss gather all ignored weighted [cpu formula],dL/dlogits,0.0,True
+loss onehot all ignored weighted,loss value,0.0,True
+loss onehot all ignored weighted,dL/dlogits,0.0,True
+loss onehot all ignored weighted [cpu formula],dL/dlogits,0.0,True
+A forward dense,logits,1.4899442248861305e-06,True
+A forward dense,argmax agreement (1 - frac equal),0.0,True
+A loss dense weighted,loss value,2.1757323814359114e-07,True
+A grad dense,blocks.20.attn.qkv.weight,1.203970896312967e-06,True
+A grad dense,blocks.21.mlp.fc1.weight,1.0929745712928707e-06,True
+A grad dense,blocks.23.attn.proj.weight,1.0278930631102412e-06,True
+A grad dense,blocks.23.norm2.weight,8.243534352914139e-07,True
+A grad dense,norm.weight,7.847077085898491e-07,True
+A grad dense,head.c1.weight,8.164297469193116e-07,True
+A grad dense,head.c2.weight,1.878006059996551e-06,True
+A grad dense,head.c3.weight,8.763561254454544e-07,True
+A grad dense,head.c3.bias,6.276462954701856e-06,True
+A forward mixed,logits,1.6110253682199982e-06,True
+A forward mixed,argmax agreement (1 - frac equal),0.0,True
+A loss mixed weighted,loss value,2.168089601939833e-07,True
+A grad mixed,blocks.20.attn.qkv.weight,1.5083876405697083e-06,True
+A grad mixed,blocks.21.mlp.fc1.weight,1.4772429040021962e-06,True
+A grad mixed,blocks.23.attn.proj.weight,1.1484693231977872e-06,True
+A grad mixed,blocks.23.norm2.weight,7.644558763786335e-07,True
+A grad mixed,norm.weight,6.299214305727219e-07,True
+A grad mixed,head.c1.weight,6.808498369537119e-07,True
+A grad mixed,head.c2.weight,1.994686726902728e-06,True
+A grad mixed,head.c3.weight,4.128549448978447e-07,True
+A grad mixed,head.c3.bias,5.2593854888982605e-06,True
+AdamW A 2 steps,blocks.20.attn.qkv.weight (param),7.91736098904039e-08,True
+AdamW A 2 steps,blocks.20.attn.qkv.weight (update),1.3147072422725614e-05,True
+AdamW A 2 steps,blocks.21.mlp.fc1.weight (param),1.1007237077365062e-07,True
+AdamW A 2 steps,blocks.21.mlp.fc1.weight (update),1.7445114281144924e-05,True
+AdamW A 2 steps,blocks.23.attn.proj.weight (param),1.7673274044227583e-07,True
+AdamW A 2 steps,blocks.23.attn.proj.weight (update),2.765771387203131e-05,True
+AdamW A 2 steps,blocks.23.norm2.weight (param),4.171127887531156e-09,True
+AdamW A 2 steps,blocks.23.norm2.weight (update),1.8739978258963674e-05,True
+AdamW A 2 steps,norm.weight (param),0.0,True
+AdamW A 2 steps,norm.weight (update),0.0,True
+AdamW A 2 steps,head.c1.weight (update),5.010511813452467e-05,True
+AdamW A 2 steps,head.c2.weight (update),5.9939935454167426e-05,True
+AdamW A 2 steps,head.c3.weight (update),2.6180185841440107e-07,True
+AdamW A 2 steps,head.c3.bias (update),0.0,True
+AdamW b + cosine 2 steps,blocks.20.attn.qkv.weight (param),8.841258392067175e-09,True
+AdamW b + cosine 2 steps,blocks.20.attn.qkv.weight (update),1.4706848560308572e-05,True
+AdamW b + cosine 2 steps,blocks.21.mlp.fc1.weight (param),1.189329079664958e-08,True
+AdamW b + cosine 2 steps,blocks.21.mlp.fc1.weight (update),1.8858427210943773e-05,True
+AdamW b + cosine 2 steps,blocks.23.attn.proj.weight (param),1.8296615778012892e-08,True
+AdamW b + cosine 2 steps,blocks.23.attn.proj.weight (update),2.863597183022648e-05,True
+AdamW b + cosine 2 steps,blocks.23.norm2.weight (param),0.0,True
+AdamW b + cosine 2 steps,blocks.23.norm2.weight (update),0.0,True
+AdamW b + cosine 2 steps,norm.weight (param),0.0,True
+AdamW b + cosine 2 steps,norm.weight (update),0.0,True
+AdamW b + cosine 2 steps,head.c1.weight (update),5.007454819860868e-05,True
+AdamW b + cosine 2 steps,head.c2.weight (update),5.994487946736626e-05,True
+AdamW b + cosine 2 steps,head.c3.weight (update),9.799620102057816e-07,True
+AdamW b + cosine 2 steps,head.c3.bias (update),0.0,True
+a tokens block 24 (eval),tokens,3.6236122014088323e-07,True
+a loss mixed weighted,loss value,0.0,True
+a grad,lin.weight,3.5804330877908797e-07,True
+a grad,lin.bias,1.5108057027646282e-07,True
+Adam a 1 step,lin.weight (update),5.990984845993808e-07,True
+embed (Conv2d proj + cls + pos),tokens,7.516902087445487e-07,True
+blocks 0-20 from embed,tokens,3.946547622035723e-06,True
+cached block-20 tokens vs CPU recompute,tokens (fp16 cache),0.00042484153527766466,True

@@ -1,0 +1,3 @@
+reference,mapped_ha,adjusted_ha,ci95_ha,low,high
+loss = L or D,30059,9863,2811,7052,12674
+"loss = L, D or T",30059,12333,3379,8954,15712

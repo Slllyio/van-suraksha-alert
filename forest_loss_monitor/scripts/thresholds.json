@@ -1,0 +1,16 @@
+{
+  "pre_ndvi_min": 0.35,
+  "crop_max": 0.15,
+  "core_mag": 0.20,
+  "core_ndvi_drop": 0.15,
+  "core_min_px": 25,
+  "grow_mag": 0.15,
+  "grow_ndvi_drop": 0.10,
+  "grow_px": 2,
+  "small_mag": 0.30,
+  "small_ndvi_drop": 0.15,
+  "small_min_px": 6,
+  "clearing_mag": 0.30,
+  "clearing_post_ndvi": 0.50,
+  "rec_fraction": 0.5
+}

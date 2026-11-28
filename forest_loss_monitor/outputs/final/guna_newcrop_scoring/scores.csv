@@ -1,0 +1,61 @@
+labels,group,n,real,flagged,true_flags,precision,p_range,recall,r_range,share_polygons_flagged,share_area_flagged
+"owner's reference points, area-weighted, truth = any loss",all,284,55.0,23,20.0,0.56,"[0.23, 1.0]",0.259,"[0.1, 0.49]",,
+"owner's reference points, area-weighted, truth = any loss",group2015=new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),246,49.0,23,20.0,0.56,"[0.2, 1.0]",0.301,"[0.11, 0.56]",,
+"owner's reference points, area-weighted, truth = any loss","group2015=other or not surveyed (tank, river, outside survey)",15,3.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = any loss",group2015=rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),23,3.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = any loss",Range=Aron,19,2.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = any loss",Range=Bamori,44,10.0,8,7.0,0.875,"[0.49, 1.0]",0.343,"[0.04, 1.0]",,
+"owner's reference points, area-weighted, truth = any loss",Range=Binaganj,36,5.0,2,2.0,1.0,,0.806,,,
+"owner's reference points, area-weighted, truth = any loss",Range=Fatehgarh,37,8.0,5,3.0,0.116,"[0.0, 1.0]",0.163,"[0.0, 1.0]",,
+"owner's reference points, area-weighted, truth = any loss",Range=Maksudangarh,36,9.0,4,4.0,1.0,"[1.0, 1.0]",0.206,"[0.0, 0.5]",,
+"owner's reference points, area-weighted, truth = any loss",Range=North_Guna,45,6.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = any loss",Range=North_Lateri,1,1.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = any loss",Range=Raghogarh,33,4.0,3,3.0,1.0,"[1.0, 1.0]",0.75,"[0.5, 1.0]",,
+"owner's reference points, area-weighted, truth = any loss",Range=South_Guna,33,10.0,1,1.0,1.0,,0.049,,,
+"owner's reference points, area-weighted, truth = any loss","Range=Aron, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",19,2.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = any loss","Range=Bamori, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",38,9.0,8,7.0,0.875,"[0.5, 1.0]",0.36,"[0.04, 1.0]",,
+"owner's reference points, area-weighted, truth = any loss","Range=Bamori, rotation (2015 CULTIVATION/PATTA/ENCROACHMENT)",6,1.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = any loss","Range=Binaganj, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",34,5.0,2,2.0,1.0,,0.806,,,
+"owner's reference points, area-weighted, truth = any loss","Range=Fatehgarh, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",29,8.0,5,3.0,0.116,"[0.0, 1.0]",0.163,"[0.0, 1.0]",,
+"owner's reference points, area-weighted, truth = any loss","Range=Maksudangarh, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",33,9.0,4,4.0,1.0,"[1.0, 1.0]",0.206,"[0.0, 0.5]",,
+"owner's reference points, area-weighted, truth = any loss","Range=North_Guna, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",38,4.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = any loss","Range=North_Guna, rotation (2015 CULTIVATION/PATTA/ENCROACHMENT)",7,2.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = any loss","Range=North_Lateri, other or not surveyed (tank, river, outside survey)",1,1.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = any loss","Range=Raghogarh, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",28,4.0,3,3.0,1.0,"[1.0, 1.0]",0.75,"[0.0, 1.0]",,
+"owner's reference points, area-weighted, truth = any loss","Range=South_Guna, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",27,8.0,1,1.0,1.0,,0.054,,,
+"owner's reference points, area-weighted, truth = any loss","Range=South_Guna, other or not surveyed (tank, river, outside survey)",6,2.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = loss that ends as crop (DW 2023-25 proxy)",all,246,17.0,12,9.0,0.274,"[0.09, 1.0]",0.529,"[0.23, 0.83]",,
+"owner's reference points, truth = loss ending as crop",group2015=new encroachment (2015 BLANK/UNDER STOCK/PLANTATION),213,16.0,12,9.0,0.274,"[0.05, 1.0]",0.562,"[0.25, 0.86]",,
+"owner's reference points, truth = loss ending as crop","group2015=other or not surveyed (tank, river, outside survey)",12,0.0,0,0.0,,,,,,
+"owner's reference points, truth = loss ending as crop",group2015=rotation (2015 CULTIVATION/PATTA/ENCROACHMENT),21,1.0,0,0.0,,,0.0,,,
+"owner's reference points, area-weighted, truth = any loss","precision, patch 0.5-1 ha",3,,3,3.0,1.0,,,,,
+"owner's reference points, area-weighted, truth = any loss","precision, patch 1-5 ha",5,,5,3.0,0.194,,,,,
+"owner's reference points, area-weighted, truth = any loss","precision, patch >5 ha",15,,15,14.0,0.681,,,,,
+owner's 51 dated fellings,flagged as new crop,51,51.0,36,,,,0.706,,,
+"owner's Bamori polygons, centre 3 x 3",flagged as new crop,222,222.0,149,,,,0.671,,,
+Bamori change polygons,class bare_to_crop,52,,38,,,,,,0.731,0.373
+Bamori change polygons,class forest_to_bare,1,,1,,,,,,1.0,0.443
+Bamori change polygons,class forest_to_crop,37,,36,,,,,,0.973,0.703
+Bamori change polygons,class shrub_to_crop,131,,115,,,,,,0.878,0.674
+Bamori change polygons,class unspecified,1,,1,,,,,,1.0,0.793
+e_Netra field and reference sites,class loss,7,,5,,,,,,0.714,0.651
+e_Netra field and reference sites,class no_change,239,,7,,,,,,0.029,0.018
+"land-cover polygons 2022, interior",class b,19,,8,,,,,,0.421,0.081
+"land-cover polygons 2022, interior",class c,57,,37,,,,,,0.649,0.264
+"land-cover polygons 2022, interior",class c2,49,,38,,,,,,0.776,0.446
+"land-cover polygons 2022, interior",class df,10,,2,,,,,,0.2,0.001
+"land-cover polygons 2022, interior",class f,18,,8,,,,,,0.444,0.062
+Bamori change polygons,"not crop labels, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",2,,2,,,,,,1.0,0.449
+Bamori change polygons,"crop labels, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",208,,181,,,,,,0.87,0.634
+Bamori change polygons,"crop labels, rotation (2015 CULTIVATION/PATTA/ENCROACHMENT)",12,,8,,,,,,0.667,0.234
+"land-cover polygons 2022, interior","not crop labels, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",47,,18,,,,,,0.383,0.047
+"land-cover polygons 2022, interior","crop labels, new encroachment (2015 BLANK/UNDER STOCK/PLANTATION)",99,,73,,,,,,0.737,0.412
+"land-cover polygons 2022, interior","crop labels, rotation (2015 CULTIVATION/PATTA/ENCROACHMENT)",7,,2,,,,,,0.286,0.032
+"land-cover polygons 2022, interior, six doubtful removed",class b,19,,8,,,,,,0.421,0.081
+"land-cover polygons 2022, interior, six doubtful removed",class c,56,,36,,,,,,0.643,0.263
+"land-cover polygons 2022, interior, six doubtful removed",class c2,44,,38,,,,,,0.864,0.498
+"land-cover polygons 2022, interior, six doubtful removed",class df,10,,2,,,,,,0.2,0.001
+"land-cover polygons 2022, interior, six doubtful removed",class f,18,,8,,,,,,0.444,0.062
+Bamori change polygons,polygon size <1 ha,92,,71,,,,,,0.772,0.536
+Bamori change polygons,polygon size 1-5 ha,94,,85,,,,,,0.904,0.598
+Bamori change polygons,polygon size >5 ha,36,,35,,,,,,0.972,0.631

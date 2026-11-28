@@ -1,0 +1,101 @@
+view,model,points,th,precision,recall
+both,logistic,random300,0.0017,0.183,0.846
+both,logistic,random300,0.0031,0.19,0.846
+both,logistic,random300,0.0036,0.2,0.846
+both,logistic,random300,0.0051,0.208,0.846
+both,logistic,random300,0.0063,0.216,0.846
+both,logistic,random300,0.0108,0.229,0.846
+both,logistic,random300,0.0128,0.239,0.846
+both,logistic,random300,0.0149,0.256,0.846
+both,logistic,random300,0.0177,0.268,0.846
+both,logistic,random300,0.0229,0.289,0.846
+both,logistic,random300,0.0254,0.306,0.846
+both,logistic,random300,0.0263,0.333,0.846
+both,logistic,random300,0.0278,0.355,0.846
+both,logistic,random300,0.0345,0.379,0.846
+both,logistic,random300,0.0414,0.423,0.846
+both,logistic,random300,0.0672,0.458,0.846
+both,logistic,random300,0.0821,0.524,0.846
+both,logistic,random300,0.1082,0.526,0.769
+both,logistic,random300,0.2047,0.625,0.769
+both,logistic,random300,0.4081,0.643,0.692
+both,logistic,random300,0.5111,0.727,0.615
+both,logistic,random300,0.6823,0.778,0.538
+both,logistic,random300,0.8189,0.857,0.462
+both,logistic,random300,0.9017,1.0,0.308
+both,logistic,random300,0.9803,1.0,0.154
+both,logistic,round2 statewide,0.0059,0.0,0.0
+both,logistic,round2 statewide,0.0085,0.0,0.0
+both,logistic,round2 statewide,0.0158,0.0,0.0
+both,logistic,round2 statewide,0.0194,0.0,0.0
+both,logistic,round2 statewide,0.024,0.0,0.0
+both,logistic,round2 statewide,0.0261,0.0,0.0
+both,logistic,round2 statewide,0.03,0.0,0.0
+both,logistic,round2 statewide,0.0352,0.0,0.0
+both,logistic,round2 statewide,0.0474,0.0,0.0
+both,logistic,round2 statewide,0.0547,0.0,0.0
+both,logistic,round2 statewide,0.0727,0.0,0.0
+both,logistic,round2 statewide,0.0747,0.0,0.0
+both,logistic,round2 statewide,0.1007,0.0,0.0
+both,logistic,round2 statewide,0.136,0.0,0.0
+both,logistic,round2 statewide,0.1563,0.0,0.0
+both,logistic,round2 statewide,0.1829,0.0,0.0
+both,logistic,round2 statewide,0.2227,0.0,0.0
+both,logistic,round2 statewide,0.2359,0.0,0.0
+both,logistic,round2 statewide,0.2531,0.0,0.0
+both,logistic,round2 statewide,0.3518,0.0,0.0
+both,logistic,round2 statewide,0.4358,0.0,0.0
+both,logistic,round2 statewide,0.4577,0.0,0.0
+both,logistic,round2 statewide,0.5075,0.0,0.0
+both,logistic,round2 statewide,0.6582,0.0,0.0
+both,logistic,round2 statewide,0.9269,0.0,0.0
+both,hgb,random300,0.0093,0.183,0.846
+both,hgb,random300,0.0109,0.19,0.846
+both,hgb,random300,0.0116,0.2,0.846
+both,hgb,random300,0.0121,0.208,0.846
+both,hgb,random300,0.0128,0.216,0.846
+both,hgb,random300,0.0132,0.229,0.846
+both,hgb,random300,0.014,0.239,0.846
+both,hgb,random300,0.0142,0.256,0.846
+both,hgb,random300,0.0159,0.268,0.846
+both,hgb,random300,0.0166,0.289,0.846
+both,hgb,random300,0.0172,0.306,0.846
+both,hgb,random300,0.0204,0.303,0.769
+both,hgb,random300,0.0213,0.323,0.769
+both,hgb,random300,0.0232,0.345,0.769
+both,hgb,random300,0.026,0.385,0.769
+both,hgb,random300,0.0284,0.417,0.769
+both,hgb,random300,0.0351,0.429,0.692
+both,hgb,random300,0.0435,0.474,0.692
+both,hgb,random300,0.057,0.5,0.615
+both,hgb,random300,0.1488,0.571,0.615
+both,hgb,random300,0.4645,0.636,0.538
+both,hgb,random300,0.6933,0.667,0.462
+both,hgb,random300,0.8344,0.857,0.462
+both,hgb,random300,0.9778,0.75,0.231
+both,hgb,random300,0.9895,0.5,0.077
+both,hgb,round2 statewide,0.0121,0.0,0.0
+both,hgb,round2 statewide,0.0154,0.0,0.0
+both,hgb,round2 statewide,0.0198,0.0,0.0
+both,hgb,round2 statewide,0.0213,0.0,0.0
+both,hgb,round2 statewide,0.0238,0.0,0.0
+both,hgb,round2 statewide,0.0274,0.0,0.0
+both,hgb,round2 statewide,0.033,0.0,0.0
+both,hgb,round2 statewide,0.0452,0.0,0.0
+both,hgb,round2 statewide,0.0467,0.0,0.0
+both,hgb,round2 statewide,0.0583,0.0,0.0
+both,hgb,round2 statewide,0.0683,0.0,0.0
+both,hgb,round2 statewide,0.0708,0.0,0.0
+both,hgb,round2 statewide,0.0859,0.0,0.0
+both,hgb,round2 statewide,0.1009,0.0,0.0
+both,hgb,round2 statewide,0.143,0.0,0.0
+both,hgb,round2 statewide,0.1865,0.0,0.0
+both,hgb,round2 statewide,0.246,0.0,0.0
+both,hgb,round2 statewide,0.3205,0.0,0.0
+both,hgb,round2 statewide,0.3793,0.0,0.0
+both,hgb,round2 statewide,0.4721,0.0,0.0
+both,hgb,round2 statewide,0.5153,0.0,0.0
+both,hgb,round2 statewide,0.5809,0.0,0.0
+both,hgb,round2 statewide,0.7145,0.0,0.0
+both,hgb,round2 statewide,0.8189,0.0,0.0
+both,hgb,round2 statewide,0.9736,0.0,0.0

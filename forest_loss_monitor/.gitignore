@@ -1,0 +1,8 @@
+work/
+__pycache__/
+outputs/**/chips/
+outputs/**/review/
+outputs/**/review.html
+outputs/**/sheet_*.png
+outputs/**/*.jsonl
+outputs/**/*.parquet

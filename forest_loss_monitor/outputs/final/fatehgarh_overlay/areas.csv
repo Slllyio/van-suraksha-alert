@@ -1,0 +1,12 @@
+item,ha
+Fatehgarh range forest in both footprints,42769.0
+"ours (default view, all classes)",4366.3
+"theirs, confirmed 2019-24",1171.8
+"theirs, 2025 unconfirmed",314.9
+both,541.4
+ours only,3790.6
+ours inside their 2025,34.3
+theirs only,630.4
+our precision against theirs (any year incl. 2025),0.132
+our recall of their confirmed 2019-24,0.462
+ours only but within 30 m of theirs (edge),277.2
